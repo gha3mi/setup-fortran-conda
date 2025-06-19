@@ -1,0 +1,10 @@
+{
+  "name": "setup-fortran-conda",
+  "version": "1.0.0",
+  "description": "GitHub Action to setup Fortran compiler and dependencies",
+  "main": "index.js",
+  "dependencies": {
+    "@actions/core": "^1.10.0",
+    "@actions/exec": "^1.1.1"
+  }
+}

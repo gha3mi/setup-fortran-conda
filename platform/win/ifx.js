@@ -90,7 +90,7 @@ async function ensureMsvcLinkerInPath(prefix) {
 }
 
 export async function setup() {
-  const packageName = 'ifx_win-64';
+  const packageName = ['ifx_win-64', 'intel-fortran-rt'];
 
   startGroup('Conda install');
   await _exec('conda', [
@@ -98,7 +98,7 @@ export async function setup() {
     '--yes',
     '--name',
     'fortran',
-    packageName,
+    ...packageName,
     '-c',
     'conda-forge',
   ]);

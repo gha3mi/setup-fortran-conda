@@ -1,9 +1,4 @@
 name = "test"
-version = "0.1.0"
-license = "license"
-author = "Seyed Ali Ghasemi"
-maintainer = "info@gha3mi.com"
-copyright = "Copyright 2025, Seyed Ali Ghasemi"
 [build]
 auto-executables = true
 auto-tests = true

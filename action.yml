@@ -1,0 +1,17 @@
+name: Setup Fortran Compiler with Conda
+description: Installs Fortran compilers and extra packages using Conda
+author: Seyed Ali Ghasemi
+inputs:
+  compiler:
+    description: 'Fortran compiler to install (gfortran, ifx, lfortran, flang)'
+    required: true
+  platform:
+    description: 'Runner OS platform (ubuntu-latest, windows-latest, macos-latest)'
+    required: true
+  extra-packages:
+    description: 'list of additional Conda packages (e.g., cmake ninja)'
+    required: false
+    default: ''
+runs:
+  using: 'node20'
+  main: 'index.js'

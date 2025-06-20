@@ -1,0 +1,12 @@
+{
+  "name": "setup-fortran-conda",
+  "description": "GitHub Action to install Fortran compilers with Conda",
+  "author": "Seyed Ali Ghasemi",
+  "keywords": [],
+  "main": "index.js",
+  "type": "module",
+  "dependencies": {
+    "@actions/core": "^1.11.1",
+    "@actions/exec": "^1.1.1"
+  }
+}

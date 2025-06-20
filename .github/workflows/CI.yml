@@ -2,21 +2,25 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [main, dev]
   pull_request:
     branches: [main]
 
 jobs:
-  build-and-test:
+  test:
     runs-on: ${{ matrix.os }}
-    defaults:
-      run:
-        shell: bash -el {0}
     strategy:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
         compiler: [gfortran, ifx, lfortran, flang-new]
+        include:
+        - os: ubuntu-latest
+          extra-packages: ""
+        - os: windows-latest
+          extra-packages: ""
+        - os: macos-latest
+          extra-packages: ""
         exclude:
           - os: macos-latest
             compiler: flang-new
@@ -24,7 +28,8 @@ jobs:
             compiler: ifx
           - os: windows-latest
             compiler: lfortran
-
+          - os: windows-latest
+            compiler: flang-new
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -32,26 +37,19 @@ jobs:
       - name: Setup Conda
         uses: conda-incubator/setup-miniconda@v3
         with:
+          auto-update-conda: true
           activate-environment: fortran
           channels: conda-forge, defaults
 
-      - name: Install setup-fortran-conda dependencies
-        run: npm install
-        working-directory: ./.github/actions/setup-fortran-conda
-
-      - name: Setup Fortran Conda environment
-        uses: ./.github/actions/setup-fortran-conda
+      - name: Setup Fortran
+        uses: gha3mi/setup-fortran-conda@main
         with:
           compiler: ${{ matrix.compiler }}
           platform: ${{ matrix.os }}
-
-      - name: Verify installations
-        run: |
-          fpm --version
-          # ${{ matrix.compiler }} --version
+          extra-packages: ${{ matrix.extra-packages }}
 
       - name: fpm test (debug)
-        run: fpm test --compiler ${{ matrix.compiler }} --profile debug
+        run: fpm test --compiler ${{ matrix.compiler }} --profile debug --verbose
 
       - name: fpm test (release)
-        run: fpm test --compiler ${{ matrix.compiler }} --profile release
+        run: fpm test --compiler ${{ matrix.compiler }} --profile release --verbose

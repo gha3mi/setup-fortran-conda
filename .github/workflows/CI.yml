@@ -16,11 +16,58 @@ jobs:
         compiler: [gfortran, ifx, lfortran, flang-new]
         include:
         - os: ubuntu-latest
+          compiler: gfortran
+          flag-debug: ""
+          flag-release: ""
           extra-packages: ""
-        - os: windows-latest
+        - os: ubuntu-latest
+          compiler: ifx
+          flag-debug: ""
+          flag-release: ""
+          extra-packages: ""
+        - os: ubuntu-latest
+          compiler: lfortran
+          flag-debug: ""
+          flag-release: ""
+          extra-packages: ""
+        - os: ubuntu-latest
+          compiler: flang-new
+          flag-debug: ""
+          flag-release: ""
+          extra-packages: ""
+
+        - os: macos-latest
+          compiler: gfortran
+          flag-debug: ""
+          flag-release: ""
           extra-packages: ""
         - os: macos-latest
+          compiler: lfortran
+          flag-debug: ""
+          flag-release: ""
           extra-packages: ""
+
+        - os: windows-latest
+          compiler: gfortran
+          flag-debug: ""
+          flag-release: ""
+          extra-packages: ""
+        - os: windows-latest
+          compiler: ifx
+          flag-debug: ""
+          flag-release: ""
+          extra-packages: ""
+        - os: windows-latest
+          compiler: lfortran
+          flag-debug: ""
+          flag-release: ""
+          extra-packages: ""
+        - os: windows-latest
+          compiler: flang-new
+          flag-debug: ""
+          flag-release: ""
+          extra-packages: ""
+
         exclude:
           - os: macos-latest
             compiler: flang-new
@@ -45,7 +92,7 @@ jobs:
           extra-packages: ${{ matrix.extra-packages }}
 
       - name: fpm test (debug)
-        run: fpm test --compiler ${{ matrix.compiler }} --profile debug --verbose
+        run: fpm test --compiler ${{ matrix.compiler }} --profile debug --flag "${{ matrix.flag-debug }}"  --verbose
 
       - name: fpm test (release)
-        run: fpm test --compiler ${{ matrix.compiler }} --profile release --verbose
+        run: fpm test --compiler ${{ matrix.compiler }} --profile release --flag "${{ matrix.flag-release }}" --verbose

@@ -1,11 +1,11 @@
 program check
    use, intrinsic :: iso_fortran_env
    use main
-   use fortime
+   ! use fortime
    implicit none
-   type(timer) :: t
+   ! type(timer) :: t
 
-   call t%timer_start()
+   ! call t%timer_start()
    call say_hello()
-   call t%timer_stop()
+   ! call t%timer_stop()
 end program

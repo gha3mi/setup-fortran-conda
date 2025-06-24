@@ -12,3 +12,19 @@ implicit-typing = false
 implicit-external = false
 source-form = "free"
 
+[extra.ford]
+project             = "test"
+project_github      = "https://github.com/gha3mi/setup-fortran-conda"
+author              = "Seyed Ali Ghasemi"
+email               = "info@gha3mi.com"
+github              = "https://github.com/gha3mi"
+src_dir             = ["src", "test"]
+output_dir          = "doc/ford"
+source              = true
+incl_src            = true
+graph               = true
+coloured_edges      = true
+search              = true
+print_creation_date = true
+sort                = "permission-alpha"
+display             = ["public", "private", "protected"]

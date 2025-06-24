@@ -10,10 +10,10 @@ A GitHub Action that sets up a Fortran development environment using Conda. Insp
 | `compiler`       | Compiler to install (`gfortran`, `ifx`, `lfortran`, `flang`)      | yes      | —       |
 | `extra-packages` | list of additional Conda packages                                 | no       | `""`    |
 
-## Example Usage (CI Workflow)
+## Example: FPM CI Workflow
 
 ```yaml
-name: CI
+name: CI_fpm
 
 on:
   push:
@@ -22,7 +22,7 @@ on:
     branches: [main]
 
 jobs:
-  test:
+  CI_fpm:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -69,9 +69,101 @@ jobs:
       - name: fpm test (release)
         run: fpm test --compiler ${{ matrix.compiler }} --profile release --verbose
 ```
+## Example: Build FORD Documentation
+
+```yaml
+name: Doc_ford
+
+on:
+  push:
+    branches: [main, dev]
+permissions:
+  contents: write
+
+jobs:
+  Doc_ford:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        compiler: [gfortran]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Conda
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          auto-update-conda: true
+          activate-environment: fortran
+          channels: conda-forge, defaults
+
+      - name: Setup Fortran
+        uses: gha3mi/setup-fortran-conda@dev
+        with:
+          compiler: ${{ matrix.compiler }}
+          platform: ${{ matrix.os }}
+          extra-packages: ""
+
+      - name: Build FORD Documentation
+        run: ford README.md
+      - name: Deploy FORD Documentation
+        uses: JamesIves/github-pages-deploy-action@v4.7.3
+        with:
+          branch: gh-pages-ford
+          folder: doc/ford
+```
+
+## Example: Build Doxygen Documentation
+
+```yaml
+name: Doc_doxygen
+
+on:
+  push:
+    branches: [main, dev]
+permissions:
+  contents: write
+
+jobs:
+  Doc_doxygen:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        compiler: [gfortran]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Conda
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          auto-update-conda: true
+          activate-environment: fortran
+          channels: conda-forge, defaults
+
+      - name: Setup Fortran
+        uses: gha3mi/setup-fortran-conda@dev
+        with:
+          compiler: ${{ matrix.compiler }}
+          platform: ${{ matrix.os }}
+          extra-packages: ""
+
+      - name: Build Doxygen Documentation
+        run: doxygen Doxyfile
+      - name: Deploy Doxygen Documentation
+        uses: JamesIves/github-pages-deploy-action@v4.7.3
+        with:
+          branch: gh-pages-doxygen
+          folder: doc/doxygen
+```
 
 ## See Also
 
 - [fortran-lang/setup-fortran](fortran-lang/setup-fortran)
 - [https://degenerateconic.com/conda-plus-fortran.html](https://degenerateconic.com/conda-plus-fortran.html)
+- [Fortran Discourse: GitHub Action: Setup Fortran with Conda](https://fortran-lang.discourse.group/t/github-action-setup-fortran-with-conda/9869/17)
 - [Fortran Discourse: Simple CI with Conda](https://fortran-lang.discourse.group/t/very-simple-ci-workflow-for-fortran-apps-using-conda/9867)

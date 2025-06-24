@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['example_20usage_20ci_20workflow_0',['Example Usage (CI Workflow)',['../md_README.html#autotoc_md2',1,'']]]
+  ['ci_20workflow_0',['Example: FPM CI Workflow',['../md_README.html#autotoc_md2',1,'']]],
+  ['conda_1',['Setup Fortran with Conda',['../md_README.html',1,'']]]
 ];

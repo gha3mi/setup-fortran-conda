@@ -19,10 +19,10 @@ A Git\+Hub Action that sets up a Fortran development environment using Conda. In
 {\ttfamily compiler}   &Compiler to install ({\ttfamily gfortran}, {\ttfamily ifx}, {\ttfamily lfortran}, {\ttfamily flang})   &yes   &—    \\\cline{1-4}
 {\ttfamily extra-\/packages}   &list of additional Conda packages   &no   &{\ttfamily "{}"{}}   \\\cline{1-4}
 \end{longtabu}
-\hypertarget{md_README_autotoc_md2}{}\doxysection{\texorpdfstring{Example Usage (CI Workflow)}{Example Usage (CI Workflow)}}\label{md_README_autotoc_md2}
+\hypertarget{md_README_autotoc_md2}{}\doxysection{\texorpdfstring{Example\+: FPM CI Workflow}{Example\+: FPM CI Workflow}}\label{md_README_autotoc_md2}
 
 \begin{DoxyCode}{0}
-\DoxyCodeLine{name:\ CI}
+\DoxyCodeLine{name:\ CI\_fpm}
 \DoxyCodeLine{}
 \DoxyCodeLine{on:}
 \DoxyCodeLine{\ \ push:}
@@ -31,7 +31,7 @@ A Git\+Hub Action that sets up a Fortran development environment using Conda. In
 \DoxyCodeLine{\ \ \ \ branches:\ [main]}
 \DoxyCodeLine{}
 \DoxyCodeLine{jobs:}
-\DoxyCodeLine{\ \ test:}
+\DoxyCodeLine{\ \ CI\_fpm:}
 \DoxyCodeLine{\ \ \ \ runs-\/on:\ \$\{\{\ matrix.os\ \}\}}
 \DoxyCodeLine{\ \ \ \ strategy:}
 \DoxyCodeLine{\ \ \ \ \ \ fail-\/fast:\ false}
@@ -79,10 +79,103 @@ A Git\+Hub Action that sets up a Fortran development environment using Conda. In
 \DoxyCodeLine{\ \ \ \ \ \ \ \ run:\ fpm\ test\ -\/-\/compiler\ \$\{\{\ matrix.compiler\ \}\}\ -\/-\/profile\ release\ -\/-\/verbose}
 
 \end{DoxyCode}
-\hypertarget{md_README_autotoc_md3}{}\doxysection{\texorpdfstring{See Also}{See Also}}\label{md_README_autotoc_md3}
+ \hypertarget{md_README_autotoc_md3}{}\doxysection{\texorpdfstring{Example\+: Build FORD Documentation}{Example\+: Build FORD Documentation}}\label{md_README_autotoc_md3}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{name:\ Doc\_ford}
+\DoxyCodeLine{}
+\DoxyCodeLine{on:}
+\DoxyCodeLine{\ \ push:}
+\DoxyCodeLine{\ \ \ \ branches:\ [main,\ dev]}
+\DoxyCodeLine{permissions:}
+\DoxyCodeLine{\ \ contents:\ write}
+\DoxyCodeLine{}
+\DoxyCodeLine{jobs:}
+\DoxyCodeLine{\ \ Doc\_ford:}
+\DoxyCodeLine{\ \ \ \ runs-\/on:\ \$\{\{\ matrix.os\ \}\}}
+\DoxyCodeLine{\ \ \ \ strategy:}
+\DoxyCodeLine{\ \ \ \ \ \ fail-\/fast:\ false}
+\DoxyCodeLine{\ \ \ \ \ \ matrix:}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ os:\ [ubuntu-\/latest]}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ compiler:\ [gfortran]}
+\DoxyCodeLine{\ \ \ \ steps:}
+\DoxyCodeLine{\ \ \ \ \ \ -\/\ name:\ Checkout\ repository}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ uses:\ actions/checkout@v4}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \ \ -\/\ name:\ Setup\ Conda}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ uses:\ conda-\/incubator/setup-\/miniconda@v3}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ with:}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ auto-\/update-\/conda:\ true}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ activate-\/environment:\ fortran}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ channels:\ conda-\/forge,\ defaults}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \ \ -\/\ name:\ Setup\ Fortran}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ uses:\ gha3mi/setup-\/fortran-\/conda@main}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ with:}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ compiler:\ \$\{\{\ matrix.compiler\ \}\}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ platform:\ \$\{\{\ matrix.os\ \}\}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ extra-\/packages:\ "{}"{}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \ \ -\/\ name:\ Build\ FORD\ Documentation}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ run:\ ford\ README.md}
+\DoxyCodeLine{\ \ \ \ \ \ -\/\ name:\ Deploy\ FORD\ Documentation}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ uses:\ JamesIves/github-\/pages-\/deploy-\/action@v4.7.3}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ with:}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ branch:\ gh-\/pages-\/ford}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ folder:\ doc/ford}
+
+\end{DoxyCode}
+\hypertarget{md_README_autotoc_md4}{}\doxysection{\texorpdfstring{Example\+: Build Doxygen Documentation}{Example\+: Build Doxygen Documentation}}\label{md_README_autotoc_md4}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{name:\ Doc\_doxygen}
+\DoxyCodeLine{}
+\DoxyCodeLine{on:}
+\DoxyCodeLine{\ \ push:}
+\DoxyCodeLine{\ \ \ \ branches:\ [main,\ dev]}
+\DoxyCodeLine{permissions:}
+\DoxyCodeLine{\ \ contents:\ write}
+\DoxyCodeLine{}
+\DoxyCodeLine{jobs:}
+\DoxyCodeLine{\ \ Doc\_doxygen:}
+\DoxyCodeLine{\ \ \ \ runs-\/on:\ \$\{\{\ matrix.os\ \}\}}
+\DoxyCodeLine{\ \ \ \ strategy:}
+\DoxyCodeLine{\ \ \ \ \ \ fail-\/fast:\ false}
+\DoxyCodeLine{\ \ \ \ \ \ matrix:}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ os:\ [ubuntu-\/latest]}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ compiler:\ [gfortran]}
+\DoxyCodeLine{\ \ \ \ steps:}
+\DoxyCodeLine{\ \ \ \ \ \ -\/\ name:\ Checkout\ repository}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ uses:\ actions/checkout@v4}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \ \ -\/\ name:\ Setup\ Conda}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ uses:\ conda-\/incubator/setup-\/miniconda@v3}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ with:}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ auto-\/update-\/conda:\ true}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ activate-\/environment:\ fortran}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ channels:\ conda-\/forge,\ defaults}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \ \ -\/\ name:\ Setup\ Fortran}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ uses:\ gha3mi/setup-\/fortran-\/conda@main}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ with:}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ compiler:\ \$\{\{\ matrix.compiler\ \}\}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ platform:\ \$\{\{\ matrix.os\ \}\}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ extra-\/packages:\ "{}"{}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \ \ -\/\ name:\ Build\ Doxygen\ Documentation}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ run:\ doxygen\ Doxyfile}
+\DoxyCodeLine{\ \ \ \ \ \ -\/\ name:\ Deploy\ Doxygen\ Documentation}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ uses:\ JamesIves/github-\/pages-\/deploy-\/action@v4.7.3}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ with:}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ branch:\ gh-\/pages-\/doxygen}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ folder:\ doc/doxygen}
+
+\end{DoxyCode}
+\hypertarget{md_README_autotoc_md5}{}\doxysection{\texorpdfstring{See Also}{See Also}}\label{md_README_autotoc_md5}
 
 \begin{DoxyItemize}
 \item \href{fortran-lang/setup-fortran}{\texttt{ fortran-\/lang/setup-\/fortran}}
 \item \href{https://degenerateconic.com/conda-plus-fortran.html}{\texttt{ https\+://degenerateconic.\+com/conda-\/plus-\/fortran.\+html}}
+\item \href{https://fortran-lang.discourse.group/t/github-action-setup-fortran-with-conda/9869/17}{\texttt{ Fortran Discourse\+: Git\+Hub Action\+: Setup Fortran with Conda}}
 \item \href{https://fortran-lang.discourse.group/t/very-simple-ci-workflow-for-fortran-apps-using-conda/9867}{\texttt{ Fortran Discourse\+: Simple CI with Conda}} 
 \end{DoxyItemize}

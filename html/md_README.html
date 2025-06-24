@@ -114,8 +114,8 @@ Inputs</h1>
 <td class="markdownTableBodyNone"><code>extra-packages</code>   </td><td class="markdownTableBodyNone">list of additional Conda packages   </td><td class="markdownTableBodyNone">no   </td><td class="markdownTableBodyNone"><code>""</code>   </td></tr>
 </table>
 <h1><a class="anchor" id="autotoc_md2"></a>
-Example Usage (CI Workflow)</h1>
-<div class="fragment"><div class="line">name: CI</div>
+Example: FPM CI Workflow</h1>
+<div class="fragment"><div class="line">name: CI_fpm</div>
 <div class="line"> </div>
 <div class="line">on:</div>
 <div class="line">  push:</div>
@@ -124,7 +124,7 @@ Example Usage (CI Workflow)</h1>
 <div class="line">    branches: [main]</div>
 <div class="line"> </div>
 <div class="line">jobs:</div>
-<div class="line">  test:</div>
+<div class="line">  CI_fpm:</div>
 <div class="line">    runs-on: ${{ matrix.os }}</div>
 <div class="line">    strategy:</div>
 <div class="line">      fail-fast: false</div>
@@ -170,11 +170,98 @@ Example Usage (CI Workflow)</h1>
 <div class="line"> </div>
 <div class="line">      - name: fpm test (release)</div>
 <div class="line">        run: fpm test --compiler ${{ matrix.compiler }} --profile release --verbose</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md3"></a>
+</div><!-- fragment --> <h1><a class="anchor" id="autotoc_md3"></a>
+Example: Build FORD Documentation</h1>
+<div class="fragment"><div class="line">name: Doc_ford</div>
+<div class="line"> </div>
+<div class="line">on:</div>
+<div class="line">  push:</div>
+<div class="line">    branches: [main, dev]</div>
+<div class="line">permissions:</div>
+<div class="line">  contents: write</div>
+<div class="line"> </div>
+<div class="line">jobs:</div>
+<div class="line">  Doc_ford:</div>
+<div class="line">    runs-on: ${{ matrix.os }}</div>
+<div class="line">    strategy:</div>
+<div class="line">      fail-fast: false</div>
+<div class="line">      matrix:</div>
+<div class="line">        os: [ubuntu-latest]</div>
+<div class="line">        compiler: [gfortran]</div>
+<div class="line">    steps:</div>
+<div class="line">      - name: Checkout repository</div>
+<div class="line">        uses: actions/checkout@v4</div>
+<div class="line"> </div>
+<div class="line">      - name: Setup Conda</div>
+<div class="line">        uses: conda-incubator/setup-miniconda@v3</div>
+<div class="line">        with:</div>
+<div class="line">          auto-update-conda: true</div>
+<div class="line">          activate-environment: fortran</div>
+<div class="line">          channels: conda-forge, defaults</div>
+<div class="line"> </div>
+<div class="line">      - name: Setup Fortran</div>
+<div class="line">        uses: gha3mi/setup-fortran-conda@main</div>
+<div class="line">        with:</div>
+<div class="line">          compiler: ${{ matrix.compiler }}</div>
+<div class="line">          platform: ${{ matrix.os }}</div>
+<div class="line">          extra-packages: &quot;&quot;</div>
+<div class="line"> </div>
+<div class="line">      - name: Build FORD Documentation</div>
+<div class="line">        run: ford README.md</div>
+<div class="line">      - name: Deploy FORD Documentation</div>
+<div class="line">        uses: JamesIves/github-pages-deploy-action@v4.7.3</div>
+<div class="line">        with:</div>
+<div class="line">          branch: gh-pages-ford</div>
+<div class="line">          folder: doc/ford</div>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md4"></a>
+Example: Build Doxygen Documentation</h1>
+<div class="fragment"><div class="line">name: Doc_doxygen</div>
+<div class="line"> </div>
+<div class="line">on:</div>
+<div class="line">  push:</div>
+<div class="line">    branches: [main, dev]</div>
+<div class="line">permissions:</div>
+<div class="line">  contents: write</div>
+<div class="line"> </div>
+<div class="line">jobs:</div>
+<div class="line">  Doc_doxygen:</div>
+<div class="line">    runs-on: ${{ matrix.os }}</div>
+<div class="line">    strategy:</div>
+<div class="line">      fail-fast: false</div>
+<div class="line">      matrix:</div>
+<div class="line">        os: [ubuntu-latest]</div>
+<div class="line">        compiler: [gfortran]</div>
+<div class="line">    steps:</div>
+<div class="line">      - name: Checkout repository</div>
+<div class="line">        uses: actions/checkout@v4</div>
+<div class="line"> </div>
+<div class="line">      - name: Setup Conda</div>
+<div class="line">        uses: conda-incubator/setup-miniconda@v3</div>
+<div class="line">        with:</div>
+<div class="line">          auto-update-conda: true</div>
+<div class="line">          activate-environment: fortran</div>
+<div class="line">          channels: conda-forge, defaults</div>
+<div class="line"> </div>
+<div class="line">      - name: Setup Fortran</div>
+<div class="line">        uses: gha3mi/setup-fortran-conda@main</div>
+<div class="line">        with:</div>
+<div class="line">          compiler: ${{ matrix.compiler }}</div>
+<div class="line">          platform: ${{ matrix.os }}</div>
+<div class="line">          extra-packages: &quot;&quot;</div>
+<div class="line"> </div>
+<div class="line">      - name: Build Doxygen Documentation</div>
+<div class="line">        run: doxygen Doxyfile</div>
+<div class="line">      - name: Deploy Doxygen Documentation</div>
+<div class="line">        uses: JamesIves/github-pages-deploy-action@v4.7.3</div>
+<div class="line">        with:</div>
+<div class="line">          branch: gh-pages-doxygen</div>
+<div class="line">          folder: doc/doxygen</div>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md5"></a>
 See Also</h1>
 <ul>
 <li><a href="fortran-lang/setup-fortran">fortran-lang/setup-fortran</a></li>
 <li><a href="https://degenerateconic.com/conda-plus-fortran.html">https://degenerateconic.com/conda-plus-fortran.html</a></li>
+<li><a href="https://fortran-lang.discourse.group/t/github-action-setup-fortran-with-conda/9869/17">Fortran Discourse: GitHub Action: Setup Fortran with Conda</a></li>
 <li><a href="https://fortran-lang.discourse.group/t/very-simple-ci-workflow-for-fortran-apps-using-conda/9867">Fortran Discourse: Simple CI with Conda</a> </li>
 </ul>
 </div></div><!-- contents -->

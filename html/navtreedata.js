@@ -27,8 +27,10 @@ var NAVTREE =
   [ "My Project", "index.html", [
     [ "Setup Fortran with Conda", "md_README.html", [
       [ "Inputs", "md_README.html#autotoc_md1", null ],
-      [ "Example Usage (CI Workflow)", "md_README.html#autotoc_md2", null ],
-      [ "See Also", "md_README.html#autotoc_md3", null ]
+      [ "Example: FPM CI Workflow", "md_README.html#autotoc_md2", null ],
+      [ "Example: Build FORD Documentation", "md_README.html#autotoc_md3", null ],
+      [ "Example: Build Doxygen Documentation", "md_README.html#autotoc_md4", null ],
+      [ "See Also", "md_README.html#autotoc_md5", null ]
     ] ]
   ] ]
 ];

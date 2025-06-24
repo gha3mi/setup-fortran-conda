@@ -249,6 +249,9 @@ Example: Build Doxygen Documentation</h1>
 <div class="line">          platform: ${{ matrix.os }}</div>
 <div class="line">          extra-packages: &quot;&quot;</div>
 <div class="line"> </div>
+<div class="line">      - name: Create Doxygen output directory</div>
+<div class="line">        run: mkdir -p doc/doxygen</div>
+<div class="line"> </div>
 <div class="line">      - name: Build Doxygen Documentation</div>
 <div class="line">        run: doxygen Doxyfile</div>
 <div class="line">      - name: Deploy Doxygen Documentation</div>

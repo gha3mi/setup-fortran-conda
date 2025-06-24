@@ -162,6 +162,9 @@ A Git\+Hub Action that sets up a Fortran development environment using Conda. In
 \DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ platform:\ \$\{\{\ matrix.os\ \}\}}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ extra-\/packages:\ "{}"{}}
 \DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \ \ -\/\ name:\ Create\ Doxygen\ output\ directory}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ run:\ mkdir\ -\/p\ doc/doxygen}
+\DoxyCodeLine{}
 \DoxyCodeLine{\ \ \ \ \ \ -\/\ name:\ Build\ Doxygen\ Documentation}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ run:\ doxygen\ Doxyfile}
 \DoxyCodeLine{\ \ \ \ \ \ -\/\ name:\ Deploy\ Doxygen\ Documentation}

@@ -100,7 +100,7 @@ jobs:
           channels: conda-forge, defaults
 
       - name: Setup Fortran
-        uses: gha3mi/setup-fortran-conda@dev
+        uses: gha3mi/setup-fortran-conda@main
         with:
           compiler: ${{ matrix.compiler }}
           platform: ${{ matrix.os }}
@@ -146,7 +146,7 @@ jobs:
           channels: conda-forge, defaults
 
       - name: Setup Fortran
-        uses: gha3mi/setup-fortran-conda@dev
+        uses: gha3mi/setup-fortran-conda@main
         with:
           compiler: ${{ matrix.compiler }}
           platform: ${{ matrix.os }}

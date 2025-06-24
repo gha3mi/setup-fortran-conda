@@ -1,0 +1,41 @@
+name: Doc_ford
+
+on:
+  push:
+    branches: [main, dev]
+permissions:
+  contents: write
+
+jobs:
+  Doc_ford:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        compiler: [gfortran]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Conda
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          auto-update-conda: true
+          activate-environment: fortran
+          channels: conda-forge, defaults
+
+      - name: Setup Fortran
+        uses: gha3mi/setup-fortran-conda@main
+        with:
+          compiler: ${{ matrix.compiler }}
+          platform: ${{ matrix.os }}
+          extra-packages: ""
+
+      - name: Build FORD Documentation
+        run: ford README.md
+      - name: Deploy FORD Documentation
+        uses: JamesIves/github-pages-deploy-action@v4.7.3
+        with:
+          branch: gh-pages-ford
+          folder: doc/ford

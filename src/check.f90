@@ -1,11 +1,9 @@
 program check
-   use, intrinsic :: iso_fortran_env
+   use, intrinsic :: iso_fortran_env, only: real64
    use main
-   ! use fortime
    implicit none
-   ! type(timer) :: t
-
-   ! call t%timer_start()
+   real(real64) :: x
    call say_hello()
-   ! call t%timer_stop()
+   x = 1.0_real64
+   print *, "x = ", x
 end program

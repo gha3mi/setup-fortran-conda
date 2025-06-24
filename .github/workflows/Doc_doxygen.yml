@@ -32,6 +32,9 @@ jobs:
           platform: ${{ matrix.os }}
           extra-packages: ""
 
+      - name: Create Doxygen output directory
+        run: mkdir -p doc/doxygen
+
       - name: Build Doxygen Documentation
         run: doxygen Doxyfile
       - name: Deploy Doxygen Documentation

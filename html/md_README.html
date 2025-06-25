@@ -119,12 +119,13 @@ Example: FPM CI Workflow</h1>
 <div class="line"> </div>
 <div class="line">on:</div>
 <div class="line">  push:</div>
-<div class="line">    branches: [main]</div>
+<div class="line">    branches: [main, dev]</div>
 <div class="line">  pull_request:</div>
 <div class="line">    branches: [main]</div>
 <div class="line"> </div>
 <div class="line">jobs:</div>
-<div class="line">  CI_fpm:</div>
+<div class="line">  test:</div>
+<div class="line">    name: ${{ matrix.os }}_${{ matrix.compiler }}</div>
 <div class="line">    runs-on: ${{ matrix.os }}</div>
 <div class="line">    strategy:</div>
 <div class="line">      fail-fast: false</div>
@@ -170,6 +171,76 @@ Example: FPM CI Workflow</h1>
 <div class="line"> </div>
 <div class="line">      - name: fpm test (release)</div>
 <div class="line">        run: fpm test --compiler ${{ matrix.compiler }} --profile release --verbose</div>
+<div class="line"> </div>
+<div class="line">  summary:</div>
+<div class="line">    permissions:</div>
+<div class="line">      contents: write</div>
+<div class="line">    name: Generate job status table</div>
+<div class="line">    if: always()</div>
+<div class="line">    needs: test</div>
+<div class="line">    runs-on: ubuntu-latest</div>
+<div class="line">    steps:</div>
+<div class="line">      - name: Checkout</div>
+<div class="line">        uses: actions/checkout@v4</div>
+<div class="line"> </div>
+<div class="line">      - name: Generate summary from GitHub API</div>
+<div class="line">        env:</div>
+<div class="line">          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}</div>
+<div class="line">          REPO: ${{ github.repository }}</div>
+<div class="line">          RUN_ID: ${{ github.run_id }}</div>
+<div class="line">        run: |</div>
+<div class="line">          badge_line=&quot;&quot;</div>
+<div class="line"> </div>
+<div class="line">          mapfile -t job_lines &lt; &lt;(</div>
+<div class="line">            curl -s -H &quot;Authorization: token $GH_TOKEN&quot; \</div>
+<div class="line">              https://api.github.com/repos/$REPO/actions/runs/$RUN_ID/jobs \</div>
+<div class="line">              | jq -r &#39;.jobs[] | select(.name | test(&quot;.*_.*&quot;)) | [.name, .conclusion] | @tsv&#39;</div>
+<div class="line">          )</div>
+<div class="line"> </div>
+<div class="line">          for line in &quot;${job_lines[@]}&quot;; do</div>
+<div class="line">            name=&quot;${line%%$&#39;\t&#39;*}&quot;</div>
+<div class="line">            conclusion=&quot;${line#*$&#39;\t&#39;}&quot;</div>
+<div class="line"> </div>
+<div class="line">            os=&quot;${name%%_*}&quot;</div>
+<div class="line">            compiler=&quot;${name#*_}&quot;</div>
+<div class="line">            key=&quot;${os}_${compiler}&quot;</div>
+<div class="line"> </div>
+<div class="line">            # shields.io escaping</div>
+<div class="line">            safe_os=&quot;${os//-/&#39;--&#39;}&quot;</div>
+<div class="line">            safe_compiler=&quot;${compiler//-/&#39;--&#39;}&quot;</div>
+<div class="line">            safe_key=&quot;${safe_os}_${safe_compiler}&quot;</div>
+<div class="line"> </div>
+<div class="line">            if [[ &quot;$conclusion&quot; == &quot;success&quot; ]]; then</div>
+<div class="line">              color=&quot;brightgreen&quot;</div>
+<div class="line">              label=&quot;passing&quot;</div>
+<div class="line">            elif [[ &quot;$conclusion&quot; == &quot;failure&quot; ]]; then</div>
+<div class="line">              color=&quot;red&quot;</div>
+<div class="line">              label=&quot;failing&quot;</div>
+<div class="line">            elif [[ &quot;$conclusion&quot; == &quot;cancelled&quot; ]]; then</div>
+<div class="line">              color=&quot;lightgrey&quot;</div>
+<div class="line">              label=&quot;cancelled&quot;</div>
+<div class="line">            else</div>
+<div class="line">              color=&quot;lightgrey&quot;</div>
+<div class="line">              label=&quot;pending&quot;</div>
+<div class="line">            fi</div>
+<div class="line"> </div>
+<div class="line">            badge=&quot;![${key}](https://img.shields.io/badge/${safe_key}-${label}-${color})&quot;</div>
+<div class="line">            badge_line=&quot;$badge_line $badge&quot;</div>
+<div class="line">          done</div>
+<div class="line"> </div>
+<div class="line">          echo &quot;$badge_line&quot; &gt; STATUS.md</div>
+<div class="line"> </div>
+<div class="line">          mkdir -p status</div>
+<div class="line">          mv STATUS.md status/STATUS.md</div>
+<div class="line">          cat status/STATUS.md</div>
+<div class="line"> </div>
+<div class="line">      - name: Deploy STATUS.md to GitHub Pages</div>
+<div class="line">        uses: JamesIves/github-pages-deploy-action@v4.7.3</div>
+<div class="line">        with:</div>
+<div class="line">          branch: gh-pages-status</div>
+<div class="line">          folder: status</div>
+<div class="line">          clean: true</div>
+<div class="line">          commit-message: &quot;Deploy status&quot;</div>
 </div><!-- fragment --> <h1><a class="anchor" id="autotoc_md3"></a>
 Example: Build FORD Documentation</h1>
 <div class="fragment"><div class="line">name: Doc_ford</div>

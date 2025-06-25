@@ -26,12 +26,13 @@ A Git\+Hub Action that sets up a Fortran development environment using Conda. In
 \DoxyCodeLine{}
 \DoxyCodeLine{on:}
 \DoxyCodeLine{\ \ push:}
-\DoxyCodeLine{\ \ \ \ branches:\ [main]}
+\DoxyCodeLine{\ \ \ \ branches:\ [main,\ dev]}
 \DoxyCodeLine{\ \ pull\_request:}
 \DoxyCodeLine{\ \ \ \ branches:\ [main]}
 \DoxyCodeLine{}
 \DoxyCodeLine{jobs:}
-\DoxyCodeLine{\ \ CI\_fpm:}
+\DoxyCodeLine{\ \ test:}
+\DoxyCodeLine{\ \ \ \ name:\ \$\{\{\ matrix.os\ \}\}\_\$\{\{\ matrix.compiler\ \}\}}
 \DoxyCodeLine{\ \ \ \ runs-\/on:\ \$\{\{\ matrix.os\ \}\}}
 \DoxyCodeLine{\ \ \ \ strategy:}
 \DoxyCodeLine{\ \ \ \ \ \ fail-\/fast:\ false}
@@ -77,6 +78,76 @@ A Git\+Hub Action that sets up a Fortran development environment using Conda. In
 \DoxyCodeLine{}
 \DoxyCodeLine{\ \ \ \ \ \ -\/\ name:\ fpm\ test\ (release)}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ run:\ fpm\ test\ -\/-\/compiler\ \$\{\{\ matrix.compiler\ \}\}\ -\/-\/profile\ release\ -\/-\/verbose}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ summary:}
+\DoxyCodeLine{\ \ \ \ permissions:}
+\DoxyCodeLine{\ \ \ \ \ \ contents:\ write}
+\DoxyCodeLine{\ \ \ \ name:\ Generate\ job\ status\ table}
+\DoxyCodeLine{\ \ \ \ if:\ always()}
+\DoxyCodeLine{\ \ \ \ needs:\ test}
+\DoxyCodeLine{\ \ \ \ runs-\/on:\ ubuntu-\/latest}
+\DoxyCodeLine{\ \ \ \ steps:}
+\DoxyCodeLine{\ \ \ \ \ \ -\/\ name:\ Checkout}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ uses:\ actions/checkout@v4}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \ \ -\/\ name:\ Generate\ summary\ from\ GitHub\ API}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ env:}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ GH\_TOKEN:\ \$\{\{\ secrets.GITHUB\_TOKEN\ \}\}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ REPO:\ \$\{\{\ github.repository\ \}\}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ RUN\_ID:\ \$\{\{\ github.run\_id\ \}\}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ run:\ |}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ badge\_line="{}"{}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ mapfile\ -\/t\ job\_lines\ <\ <(}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ curl\ -\/s\ -\/H\ "{}Authorization:\ token\ \$GH\_TOKEN"{}\ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ https://api.github.com/repos/\$REPO/actions/runs/\$RUN\_ID/jobs\ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ |\ jq\ -\/r\ '.jobs[]\ |\ select(.name\ |\ test("{}.*\_.*"{}))\ |\ [.name,\ .conclusion]\ |\ @tsv'}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ )}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ for\ line\ in\ "{}\$\{job\_lines[@]\}"{};\ do}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ name="{}\$\{line\%\%\$'\(\backslash\)t'*\}"{}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ conclusion="{}\$\{line\#*\$'\(\backslash\)t'\}"{}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ os="{}\$\{name\%\%\_*\}"{}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ compiler="{}\$\{name\#*\_\}"{}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ key="{}\$\{os\}\_\$\{compiler\}"{}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \#\ shields.io\ escaping}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ safe\_os="{}\$\{os//-\//'-\/-\/'\}"{}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ safe\_compiler="{}\$\{compiler//-\//'-\/-\/'\}"{}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ safe\_key="{}\$\{safe\_os\}\_\$\{safe\_compiler\}"{}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ if\ [[\ "{}\$conclusion"{}\ ==\ "{}success"{}\ ]];\ then}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ color="{}brightgreen"{}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ label="{}passing"{}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ elif\ [[\ "{}\$conclusion"{}\ ==\ "{}failure"{}\ ]];\ then}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ color="{}red"{}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ label="{}failing"{}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ elif\ [[\ "{}\$conclusion"{}\ ==\ "{}cancelled"{}\ ]];\ then}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ color="{}lightgrey"{}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ label="{}cancelled"{}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ else}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ color="{}lightgrey"{}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ label="{}pending"{}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ fi}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ badge="{}![\$\{key\}](https://img.shields.io/badge/\$\{safe\_key\}-\/\$\{label\}-\/\$\{color\})"{}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ badge\_line="{}\$badge\_line\ \$badge"{}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ done}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ echo\ "{}\$badge\_line"{}\ >\ STATUS.md}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ mkdir\ -\/p\ status}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ mv\ STATUS.md\ status/STATUS.md}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ cat\ status/STATUS.md}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \ \ -\/\ name:\ Deploy\ STATUS.md\ to\ GitHub\ Pages}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ uses:\ JamesIves/github-\/pages-\/deploy-\/action@v4.7.3}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ with:}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ branch:\ gh-\/pages-\/status}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ folder:\ status}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ clean:\ true}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ commit-\/message:\ "{}Deploy\ status"{}}
 
 \end{DoxyCode}
  \hypertarget{md_README_autotoc_md3}{}\doxysection{\texorpdfstring{Example\+: Build FORD Documentation}{Example\+: Build FORD Documentation}}\label{md_README_autotoc_md3}

@@ -7,6 +7,8 @@ import {
 } from '@actions/core';
 import { exec as _exec } from '@actions/exec';
 import { sep, join } from 'path';
+import { appendFileSync } from 'fs';
+import { EOL } from 'os';
 
 async function getCondaPrefix(envName) {
   let raw = '';
@@ -24,12 +26,13 @@ async function getCondaPrefix(envName) {
 async function setUlimits() {
   if (process.platform !== 'linux') return;
 
-  startGroup('Set unlimited ulimits on Linux');
-  try {
-    await _exec('bash', ['-c', 'ulimit -c unlimited -d unlimited -f unlimited -m unlimited -s unlimited -t unlimited -v unlimited -x unlimited']);
-  } catch (err) {
-    console.warn('Warning: Failed to apply ulimit settings:', err.message);
-  }
+  startGroup('Set unlimited ulimits (Linux, persistent)');
+  const ulimitCmd = 'ulimit -c unlimited -d unlimited -f unlimited -m unlimited -s unlimited -t unlimited -v unlimited -x unlimited';
+
+  // Inject into bash shell for all future steps
+  appendFileSync(process.env.GITHUB_ENV, `BASH_ENV=${process.env.RUNNER_TEMP}/ulimit.sh${EOL}`);
+  appendFileSync(`${process.env.RUNNER_TEMP}/ulimit.sh`, `${ulimitCmd}${EOL}`);
+
   endGroup();
 }
 

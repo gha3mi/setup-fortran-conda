@@ -58,7 +58,7 @@ jobs:
   summary:
     permissions:
       contents: write
-    name: Generate job status table
+    name: Generate STATUS.md
     if: always()
     needs: test
     runs-on: ubuntu-latest

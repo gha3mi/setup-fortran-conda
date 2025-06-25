@@ -8,6 +8,7 @@ on:
 
 jobs:
   test:
+    name: ${{ matrix.os }}_${{ matrix.compiler }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -53,3 +54,73 @@ jobs:
 
       - name: fpm test (release)
         run: fpm test --compiler ${{ matrix.compiler }} --profile release --verbose
+
+  summary:
+    permissions:
+      contents: write
+    name: Generate STATUS.md
+    if: always()
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Generate summary from GitHub API
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          badge_line=""
+
+          mapfile -t job_lines < <(
+            curl -s -H "Authorization: token $GH_TOKEN" \
+              https://api.github.com/repos/$REPO/actions/runs/$RUN_ID/jobs \
+              | jq -r '.jobs[] | select(.name | test(".*_.*")) | [.name, .conclusion] | @tsv'
+          )
+
+          for line in "${job_lines[@]}"; do
+            name="${line%%$'\t'*}"
+            conclusion="${line#*$'\t'}"
+
+            os="${name%%_*}"
+            compiler="${name#*_}"
+            key="${os}_${compiler}"
+
+            # shields.io escaping
+            safe_os="${os//-/'--'}"
+            safe_compiler="${compiler//-/'--'}"
+            safe_key="${safe_os}_${safe_compiler}"
+
+            if [[ "$conclusion" == "success" ]]; then
+              color="brightgreen"
+              label="passing"
+            elif [[ "$conclusion" == "failure" ]]; then
+              color="red"
+              label="failing"
+            elif [[ "$conclusion" == "cancelled" ]]; then
+              color="lightgrey"
+              label="cancelled"
+            else
+              color="lightgrey"
+              label="pending"
+            fi
+
+            badge="![${key}](https://img.shields.io/badge/${safe_key}-${label}-${color})"
+            badge_line="$badge_line $badge"
+          done
+
+          echo "$badge_line" > STATUS.md
+
+          mkdir -p status
+          mv STATUS.md status/STATUS.md
+          cat status/STATUS.md
+
+      - name: Deploy STATUS.md to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4.7.3
+        with:
+          branch: gh-pages-status
+          folder: status
+          clean: true
+          commit-message: "Deploy status"

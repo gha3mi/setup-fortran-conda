@@ -21,6 +21,18 @@ async function getCondaPrefix(envName) {
   throw new Error(`Unable to locate Conda environment "${envName}".`);
 }
 
+async function setUlimits() {
+  if (process.platform !== 'linux') return;
+
+  startGroup('Set unlimited ulimits on Linux');
+  try {
+    await _exec('bash', ['-c', 'ulimit -c unlimited -d unlimited -f unlimited -m unlimited -s unlimited -t unlimited -v unlimited -x unlimited']);
+  } catch (err) {
+    console.warn('Warning: Failed to apply ulimit settings:', err.message);
+  }
+  endGroup();
+}
+
 export async function setup() {
   const packageName = 'flang';
 
@@ -46,4 +58,5 @@ export async function setup() {
   info(`LD_LIBRARY_PATH → ${newLd}`);
   endGroup();
 
+  await setUlimits();
 }

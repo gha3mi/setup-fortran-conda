@@ -1,2 +1,3 @@
-# CI Status (badges)
-
+**ubuntu-latest** ![ubuntu-latest_ifx](https://img.shields.io/badge/ubuntu-latest_ifx-passing-brightgreen) ![ubuntu-latest_flang-new](https://img.shields.io/badge/ubuntu-latest_flang-new-passing-brightgreen) ![ubuntu-latest_gfortran](https://img.shields.io/badge/ubuntu-latest_gfortran-passing-brightgreen) ![ubuntu-latest_lfortran](https://img.shields.io/badge/ubuntu-latest_lfortran-passing-brightgreen)
+**windows-latest** ![windows-latest_ifx](https://img.shields.io/badge/windows-latest_ifx-passing-brightgreen) ![windows-latest_gfortran](https://img.shields.io/badge/windows-latest_gfortran-failing-red)
+**macos-latest** ![macos-latest_lfortran](https://img.shields.io/badge/macos-latest_lfortran-passing-brightgreen) ![macos-latest_gfortran](https://img.shields.io/badge/macos-latest_gfortran-passing-brightgreen)

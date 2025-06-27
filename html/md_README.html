@@ -144,10 +144,6 @@ Example: FPM CI Workflow</h1>
 <div class="line">            compiler: flang-new</div>
 <div class="line">          - os: macos-latest</div>
 <div class="line">            compiler: ifx</div>
-<div class="line">          - os: windows-latest</div>
-<div class="line">            compiler: lfortran</div>
-<div class="line">          - os: windows-latest</div>
-<div class="line">            compiler: flang-new</div>
 <div class="line">    steps:</div>
 <div class="line">      - name: Checkout repository</div>
 <div class="line">        uses: actions/checkout@v4</div>
@@ -175,7 +171,7 @@ Example: FPM CI Workflow</h1>
 <div class="line">  summary:</div>
 <div class="line">    permissions:</div>
 <div class="line">      contents: write</div>
-<div class="line">    name: Generate job status table</div>
+<div class="line">    name: Generate STATUS.md</div>
 <div class="line">    if: always()</div>
 <div class="line">    needs: test</div>
 <div class="line">    runs-on: ubuntu-latest</div>

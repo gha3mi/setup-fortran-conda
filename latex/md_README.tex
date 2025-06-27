@@ -51,10 +51,6 @@ A Git\+Hub Action that sets up a Fortran development environment using Conda. In
 \DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ compiler:\ flang-\/new}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ -\/\ os:\ macos-\/latest}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ compiler:\ ifx}
-\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ -\/\ os:\ windows-\/latest}
-\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ compiler:\ lfortran}
-\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ -\/\ os:\ windows-\/latest}
-\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ compiler:\ flang-\/new}
 \DoxyCodeLine{\ \ \ \ steps:}
 \DoxyCodeLine{\ \ \ \ \ \ -\/\ name:\ Checkout\ repository}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ uses:\ actions/checkout@v4}
@@ -82,7 +78,7 @@ A Git\+Hub Action that sets up a Fortran development environment using Conda. In
 \DoxyCodeLine{\ \ summary:}
 \DoxyCodeLine{\ \ \ \ permissions:}
 \DoxyCodeLine{\ \ \ \ \ \ contents:\ write}
-\DoxyCodeLine{\ \ \ \ name:\ Generate\ job\ status\ table}
+\DoxyCodeLine{\ \ \ \ name:\ Generate\ STATUS.md}
 \DoxyCodeLine{\ \ \ \ if:\ always()}
 \DoxyCodeLine{\ \ \ \ needs:\ test}
 \DoxyCodeLine{\ \ \ \ runs-\/on:\ ubuntu-\/latest}

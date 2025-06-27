@@ -2,7 +2,7 @@ import { exec as _exec } from '@actions/exec';
 import { startGroup, endGroup, info } from '@actions/core';
 
 export async function installExtras(env = 'fortran', extras = []) {
-  const pkgs = ['git', 'fpm', 'doxygen', ...extras.map(p => p.trim()).filter(Boolean)];
+  const pkgs = ['fpm', 'doxygen', ...extras.map(p => p.trim()).filter(Boolean)];
   if (!pkgs.length) return;
 
   startGroup(`Installing extra packages: ${pkgs.join(', ')}`);

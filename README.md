@@ -42,10 +42,6 @@ jobs:
             compiler: flang-new
           - os: macos-latest
             compiler: ifx
-          - os: windows-latest
-            compiler: lfortran
-          - os: windows-latest
-            compiler: flang-new
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -73,7 +69,7 @@ jobs:
   summary:
     permissions:
       contents: write
-    name: Generate job status table
+    name: Generate STATUS.md
     if: always()
     needs: test
     runs-on: ubuntu-latest

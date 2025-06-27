@@ -54,7 +54,7 @@ jobs:
           channels: conda-forge, defaults
 
       - name: Setup Fortran
-        uses: gha3mi/setup-fortran-conda@vv0.2.1
+        uses: gha3mi/setup-fortran-conda@v0.2.1
         with:
           compiler: ${{ matrix.compiler }}
           platform: ${{ matrix.os }}

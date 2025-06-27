@@ -2,7 +2,7 @@ name: CI_fpm
 
 on:
   push:
-    branches: [main, dev]
+    branches: [main, dev, nvfortran]
   pull_request:
     branches: [main]
 
@@ -14,7 +14,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        compiler: [gfortran, ifx, lfortran, flang-new]
+        compiler: [gfortran, ifx, lfortran, flang-new, nvfortran]
         include:
         - os: ubuntu-latest
           extra-packages: ""
@@ -27,6 +27,11 @@ jobs:
             compiler: flang-new
           - os: macos-latest
             compiler: ifx
+          - os: macos-latest
+            compiler: nvfortran
+          - os: windows-latest
+            compiler: nvfortran
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -39,7 +44,7 @@ jobs:
           channels: conda-forge, defaults
 
       - name: Setup Fortran
-        uses: gha3mi/setup-fortran-conda@v0.2.1
+        uses: gha3mi/setup-fortran-conda@latest
         with:
           compiler: ${{ matrix.compiler }}
           platform: ${{ matrix.os }}

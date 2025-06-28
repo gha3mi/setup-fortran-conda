@@ -21,7 +21,7 @@ name: CI_fpm
 
 on:
   push:
-    branches: [main, dev, nvfortran]
+    branches: [main, dev]
   pull_request:
     branches: [main]
 

@@ -4,11 +4,11 @@ A GitHub Action that sets up a Fortran development environment using Conda. Insp
 
 ## Inputs
 
-| Name             | Description                                                       | Required | Default |
-| ---------------- | ----------------------------------------------------------------- | -------- | ------- |
-| `platform`       | Platform (`ubuntu-latest`, `windows-latest`, `macos-latest`) | yes      | —       |
-| `compiler`       | Compiler to install (`gfortran`, `ifx`, `lfortran`, `flang`)      | yes      | —       |
-| `extra-packages` | list of additional Conda packages                                 | no       | `""`    |
+| Name             | Description                                                               | Required | Default |
+| ---------------- | ------------------------------------------------------------------------- | -------- | ------- |
+| `platform`       | Platform (`ubuntu-latest`, `windows-latest`, `macos-latest`)              | yes      | —       |
+| `compiler`       | Compiler to install (`gfortran`, `ifx`, `lfortran`, `flang`, `nvfortran`) | yes      | —       |
+| `extra-packages` | list of additional Conda packages                                         | no       | `""`    |
 
 ## Example: FPM CI Workflow
 
@@ -17,7 +17,7 @@ name: CI_fpm
 
 on:
   push:
-    branches: [main, dev]
+    branches: [main, dev, nvfortran]
   pull_request:
     branches: [main]
 
@@ -29,19 +29,24 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        compiler: [gfortran, ifx, lfortran, flang-new]
+        compiler: [gfortran, ifx, lfortran, flang-new, nvfortran]
         include:
         - os: ubuntu-latest
-          extra-packages: "" # additional conda packages if needed
+          extra-packages: ""
         - os: windows-latest
-          extra-packages: "" # additional conda packages if needed
+          extra-packages: ""
         - os: macos-latest
-          extra-packages: "" # additional conda packages if needed
+          extra-packages: ""
         exclude:
           - os: macos-latest
             compiler: flang-new
           - os: macos-latest
             compiler: ifx
+          - os: macos-latest
+            compiler: nvfortran
+          - os: windows-latest
+            compiler: nvfortran
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

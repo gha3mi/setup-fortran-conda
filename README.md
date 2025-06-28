@@ -1,3 +1,7 @@
+<!-- STATUS:START -->
+ ![ubuntu-latest_ifx](https://img.shields.io/badge/ubuntu--latest_ifx-passing-brightgreen) ![ubuntu-latest_lfortran](https://img.shields.io/badge/ubuntu--latest_lfortran-passing-brightgreen) ![macos-latest_gfortran](https://img.shields.io/badge/macos--latest_gfortran-passing-brightgreen) ![ubuntu-latest_flang-new](https://img.shields.io/badge/ubuntu--latest_flang--new-passing-brightgreen) ![ubuntu-latest_gfortran](https://img.shields.io/badge/ubuntu--latest_gfortran-passing-brightgreen) ![ubuntu-latest_nvfortran](https://img.shields.io/badge/ubuntu--latest_nvfortran-passing-brightgreen) ![macos-latest_lfortran](https://img.shields.io/badge/macos--latest_lfortran-passing-brightgreen) ![windows-latest_gfortran](https://img.shields.io/badge/windows--latest_gfortran-passing-brightgreen) ![windows-latest_ifx](https://img.shields.io/badge/windows--latest_ifx-passing-brightgreen) ![windows-latest_flang-new](https://img.shields.io/badge/windows--latest_flang--new-failing-red) ![windows-latest_lfortran](https://img.shields.io/badge/windows--latest_lfortran-passing-brightgreen)
+<!-- STATUS:END -->
+
 # Setup Fortran with Conda
 
 A GitHub Action that sets up a Fortran development environment using Conda. Inspired by [Conda + Fortran](https://degenerateconic.com/conda-plus-fortran.html).

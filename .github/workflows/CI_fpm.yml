@@ -8,7 +8,7 @@ on:
 
 jobs:
   test:
-    name: ${{ matrix.os }}_${{ matrix.compiler }}
+    name: ${{ matrix.os }}_${{ matrix.compiler }}_fpm
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -78,7 +78,7 @@ jobs:
           mapfile -t job_lines < <(
             curl -s -H "Authorization: token $GH_TOKEN" \
               https://api.github.com/repos/$REPO/actions/runs/$RUN_ID/jobs \
-              | jq -r '.jobs[] | select(.name | test(".*_.*")) | [.name, .conclusion] | @tsv'
+              | jq -r '.jobs[] | select(.name | test(".*_.*_fpm$")) | [.name, .conclusion] | @tsv'
           )
 
           for line in "${job_lines[@]}"; do
@@ -86,13 +86,15 @@ jobs:
             conclusion="${line#*$'\t'}"
 
             os="${name%%_*}"
-            compiler="${name#*_}"
-            key="${os}_${compiler}"
+            remainder="${name#*_}"
+            compiler="${remainder%_fpm}"
+
+            os="${os%-latest}"
+
+            key="${os}_${compiler}_fpm"
 
             # shields.io escaping
-            safe_os="${os//-/'--'}"
-            safe_compiler="${compiler//-/'--'}"
-            safe_key="${safe_os}_${safe_compiler}"
+            safe_key="${key//-/'--'}"
 
             if [[ "$conclusion" == "success" ]]; then
               color="brightgreen"
@@ -114,14 +116,14 @@ jobs:
 
           echo "$badge_line" > STATUS.md
 
-          mkdir -p status
-          mv STATUS.md status/STATUS.md
-          cat status/STATUS.md
+          mkdir -p status-fpm
+          mv STATUS.md status-fpm/STATUS.md
+          cat status-fpm/STATUS.md
 
       - name: Deploy STATUS.md to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4.7.3
         with:
-          branch: gh-pages-status
-          folder: status
+          branch: status-fpm
+          folder: status-fpm
           clean: true
           commit-message: "Deploy status"

@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.13.2"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>My Project: Setup Fortran with Conda</title>
+<title>My Project: README</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -96,13 +96,15 @@ $(function(){initNavTree('md_README.html',''); initResizable(true); });
 </div>
 
 <div><div class="header">
-  <div class="headertitle"><div class="title">Setup Fortran with Conda</div></div>
+  <div class="headertitle"><div class="title">README</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a class="anchor" id="autotoc_md0"></a></p>
+<div class="textblock"><p><img src="https://img.shields.io/badge/ubuntu--latest_ifx-passing-brightgreen" alt="ubuntu-latest_ifx" class="inline"/> <img src="https://img.shields.io/badge/ubuntu--latest_lfortran-passing-brightgreen" alt="ubuntu-latest_lfortran" class="inline"/> <img src="https://img.shields.io/badge/macos--latest_gfortran-passing-brightgreen" alt="macos-latest_gfortran" class="inline"/> <img src="https://img.shields.io/badge/ubuntu--latest_flang--new-passing-brightgreen" alt="ubuntu-latest_flang-new" class="inline"/> <img src="https://img.shields.io/badge/ubuntu--latest_gfortran-passing-brightgreen" alt="ubuntu-latest_gfortran" class="inline"/> <img src="https://img.shields.io/badge/ubuntu--latest_nvfortran-passing-brightgreen" alt="ubuntu-latest_nvfortran" class="inline"/> <img src="https://img.shields.io/badge/macos--latest_lfortran-passing-brightgreen" alt="macos-latest_lfortran" class="inline"/> <img src="https://img.shields.io/badge/windows--latest_gfortran-passing-brightgreen" alt="windows-latest_gfortran" class="inline"/> <img src="https://img.shields.io/badge/windows--latest_ifx-passing-brightgreen" alt="windows-latest_ifx" class="inline"/> <img src="https://img.shields.io/badge/windows--latest_flang--new-failing-red" alt="windows-latest_flang-new" class="inline"/> <img src="https://img.shields.io/badge/windows--latest_lfortran-passing-brightgreen" alt="windows-latest_lfortran" class="inline"/></p>
+<h1><a class="anchor" id="autotoc_md0"></a>
+Setup Fortran with Conda</h1>
 <p>A GitHub Action that sets up a Fortran development environment using Conda. Inspired by <a href="https://degenerateconic.com/conda-plus-fortran.html">Conda + Fortran</a>.</p>
-<h1><a class="anchor" id="autotoc_md1"></a>
-Inputs</h1>
+<h2><a class="anchor" id="autotoc_md1"></a>
+Inputs</h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
 <th class="markdownTableHeadNone">Name   </th><th class="markdownTableHeadNone">Description   </th><th class="markdownTableHeadNone">Required   </th><th class="markdownTableHeadNone">Default    </th></tr>
@@ -113,8 +115,8 @@ Inputs</h1>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone"><code>extra-packages</code>   </td><td class="markdownTableBodyNone">list of additional Conda packages   </td><td class="markdownTableBodyNone">no   </td><td class="markdownTableBodyNone"><code>""</code>   </td></tr>
 </table>
-<h1><a class="anchor" id="autotoc_md2"></a>
-Example: FPM CI Workflow</h1>
+<h2><a class="anchor" id="autotoc_md2"></a>
+Example: FPM CI Workflow</h2>
 <div class="fragment"><div class="line">name: CI_fpm</div>
 <div class="line"> </div>
 <div class="line">on:</div>
@@ -242,8 +244,8 @@ Example: FPM CI Workflow</h1>
 <div class="line">          folder: status</div>
 <div class="line">          clean: true</div>
 <div class="line">          commit-message: &quot;Deploy status&quot;</div>
-</div><!-- fragment --> <h1><a class="anchor" id="autotoc_md3"></a>
-Example: Build FORD Documentation</h1>
+</div><!-- fragment --> <h2><a class="anchor" id="autotoc_md3"></a>
+Example: Build FORD Documentation</h2>
 <div class="fragment"><div class="line">name: Doc_ford</div>
 <div class="line"> </div>
 <div class="line">on:</div>
@@ -285,8 +287,8 @@ Example: Build FORD Documentation</h1>
 <div class="line">        with:</div>
 <div class="line">          branch: gh-pages-ford</div>
 <div class="line">          folder: doc/ford</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md4"></a>
-Example: Build Doxygen Documentation</h1>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md4"></a>
+Example: Build Doxygen Documentation</h2>
 <div class="fragment"><div class="line">name: Doc_doxygen</div>
 <div class="line"> </div>
 <div class="line">on:</div>
@@ -331,8 +333,8 @@ Example: Build Doxygen Documentation</h1>
 <div class="line">        with:</div>
 <div class="line">          branch: gh-pages-doxygen</div>
 <div class="line">          folder: doc/doxygen</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md5"></a>
-See Also</h1>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md5"></a>
+See Also</h2>
 <ul>
 <li><a href="fortran-lang/setup-fortran">fortran-lang/setup-fortran</a></li>
 <li><a href="https://degenerateconic.com/conda-plus-fortran.html">https://degenerateconic.com/conda-plus-fortran.html</a></li>

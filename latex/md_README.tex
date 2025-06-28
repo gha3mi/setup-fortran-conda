@@ -16,7 +16,7 @@ A Git\+Hub Action that sets up a Fortran development environment using Conda. In
 \PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Name   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Description   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Required   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Default    }\\\cline{1-4}
 \endhead
 {\ttfamily platform}   &Platform ({\ttfamily ubuntu-\/latest}, {\ttfamily windows-\/latest}, {\ttfamily macos-\/latest})   &yes   &—    \\\cline{1-4}
-{\ttfamily compiler}   &Compiler to install ({\ttfamily gfortran}, {\ttfamily ifx}, {\ttfamily lfortran}, {\ttfamily flang})   &yes   &—    \\\cline{1-4}
+{\ttfamily compiler}   &Compiler to install ({\ttfamily gfortran}, {\ttfamily ifx}, {\ttfamily lfortran}, {\ttfamily flang}, {\ttfamily nvfortran})   &yes   &—    \\\cline{1-4}
 {\ttfamily extra-\/packages}   &list of additional Conda packages   &no   &{\ttfamily "{}"{}}   \\\cline{1-4}
 \end{longtabu}
 \hypertarget{md_README_autotoc_md2}{}\doxysection{\texorpdfstring{Example\+: FPM CI Workflow}{Example\+: FPM CI Workflow}}\label{md_README_autotoc_md2}
@@ -26,7 +26,7 @@ A Git\+Hub Action that sets up a Fortran development environment using Conda. In
 \DoxyCodeLine{}
 \DoxyCodeLine{on:}
 \DoxyCodeLine{\ \ push:}
-\DoxyCodeLine{\ \ \ \ branches:\ [main,\ dev]}
+\DoxyCodeLine{\ \ \ \ branches:\ [main,\ dev,\ nvfortran]}
 \DoxyCodeLine{\ \ pull\_request:}
 \DoxyCodeLine{\ \ \ \ branches:\ [main]}
 \DoxyCodeLine{}
@@ -38,19 +38,24 @@ A Git\+Hub Action that sets up a Fortran development environment using Conda. In
 \DoxyCodeLine{\ \ \ \ \ \ fail-\/fast:\ false}
 \DoxyCodeLine{\ \ \ \ \ \ matrix:}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ os:\ [ubuntu-\/latest,\ macos-\/latest,\ windows-\/latest]}
-\DoxyCodeLine{\ \ \ \ \ \ \ \ compiler:\ [gfortran,\ ifx,\ lfortran,\ flang-\/new]}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ compiler:\ [gfortran,\ ifx,\ lfortran,\ flang-\/new,\ nvfortran]}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ include:}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ os:\ ubuntu-\/latest}
-\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ extra-\/packages:\ "{}"{}\ \#\ additional\ conda\ packages\ if\ needed}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ extra-\/packages:\ "{}"{}}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ os:\ windows-\/latest}
-\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ extra-\/packages:\ "{}"{}\ \#\ additional\ conda\ packages\ if\ needed}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ extra-\/packages:\ "{}"{}}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ os:\ macos-\/latest}
-\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ extra-\/packages:\ "{}"{}\ \#\ additional\ conda\ packages\ if\ needed}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ extra-\/packages:\ "{}"{}}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ exclude:}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ -\/\ os:\ macos-\/latest}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ compiler:\ flang-\/new}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ -\/\ os:\ macos-\/latest}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ compiler:\ ifx}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ -\/\ os:\ macos-\/latest}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ compiler:\ nvfortran}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ -\/\ os:\ windows-\/latest}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ compiler:\ nvfortran}
+\DoxyCodeLine{}
 \DoxyCodeLine{\ \ \ \ steps:}
 \DoxyCodeLine{\ \ \ \ \ \ -\/\ name:\ Checkout\ repository}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ uses:\ actions/checkout@v4}

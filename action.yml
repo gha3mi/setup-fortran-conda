@@ -1,17 +1,237 @@
-name: Setup Fortran Compiler with Conda
-description: Installs Fortran compilers and extra packages using Conda
+name: Setup Fortran with Conda
+description: Installs Fortran compilers and extra packages using Conda. Optionally builds and deploys FORD and/or Doxygen docs.
 author: Seyed Ali Ghasemi
+
 inputs:
   compiler:
-    description: 'Fortran compiler to install (gfortran, ifx, lfortran, flang)'
-    required: true
-  platform:
-    description: 'Runner OS platform (ubuntu-latest, windows-latest, macos-latest)'
-    required: true
-  extra-packages:
-    description: 'list of additional Conda packages (e.g., cmake ninja)'
+    description: "Fortran compiler to install (gfortran, ifx, lfortran, flang)"
     required: false
-    default: ''
+    default: ""
+  platform:
+    description: "Runner OS platform (ubuntu-latest, windows-latest, macos-latest)"
+    required: false
+    default: ""
+  extra-packages:
+    description: "List of additional Conda packages (e.g., cmake ninja)"
+    required: false
+    default: ""
+  checkout-repo:
+    description: "Whether to checkout the repository before setup"
+    required: false
+    default: "true"
+
+  generate-doc-ford:
+    description: "Whether to build and deploy FORD documentation"
+    required: false
+    default: "false"
+  ford-config:
+    description: "Path to FORD config file (e.g., README.md or ford.md)"
+    required: false
+    default: "README.md"
+  ford-branch:
+    description: "Branch to deploy FORD docs to"
+    required: false
+    default: "gh-pages-ford"
+
+  generate-doc-doxygen:
+    description: "Whether to build and deploy Doxygen documentation"
+    required: false
+    default: "false"
+  doxygen-config:
+    description: "Path to Doxygen config file (e.g., Doxyfile)"
+    required: false
+    default: "Doxyfile"
+  doxygen-branch:
+    description: "Branch to deploy Doxygen docs to"
+    required: false
+    default: "gh-pages-doxygen"
+
+  generate-status-fpm:
+    description: 'Generate STATUS.md for test_fpm jobs'
+    required: false
+    default: 'false'
+
+  generate-status-cmake:
+    description: 'Generate STATUS.md for test_cmake jobs'
+    required: false
+    default: 'false'
+
 runs:
-  using: 'node20'
-  main: 'index.js'
+  using: "composite"
+  steps:
+    - name: Checkout repository
+      if: ${{ inputs.checkout-repo == 'true' || inputs.generate-doc-ford == 'true' || inputs.generate-doc-doxygen == 'true' }}
+      uses: actions/checkout@v4
+
+    - name: Setup Miniconda
+      uses: conda-incubator/setup-miniconda@v3
+      with:
+        auto-update-conda: true
+        activate-environment: fortran
+        channels: conda-forge, defaults
+
+    - name: Run Fortran compiler setup script
+      if: ${{ inputs.compiler != '' && inputs.platform != '' }}
+      shell: bash
+      run: |
+        node "${{ github.action_path }}/index.js"
+      env:
+        INPUT_COMPILER: ${{ inputs.compiler }}
+        INPUT_PLATFORM: ${{ inputs.platform }}
+        INPUT_EXTRA_PACKAGES: ${{ inputs.extra-packages }}
+
+    - name: Build FORD documentation
+      if: ${{ inputs.generate-doc-ford == 'true' }}
+      shell: bash
+      run: |
+        source "${CONDA}/etc/profile.d/conda.sh"
+        conda activate fortran
+        conda install -y graphviz ford
+        mkdir -p doc/ford
+        ford "${{ inputs.ford-config }}"
+
+    - name: Deploy FORD documentation
+      if: ${{ inputs.generate-doc-ford == 'true' }}
+      uses: JamesIves/github-pages-deploy-action@v4.7.3
+      with:
+        branch: ${{ inputs.ford-branch }}
+        folder: doc/ford
+        clean: true
+        commit-message: "Deploy FORD docs"
+
+    - name: Build Doxygen documentation
+      if: ${{ inputs.generate-doc-doxygen == 'true' }}
+      shell: bash
+      run: |
+        source "${CONDA}/etc/profile.d/conda.sh"
+        conda activate fortran
+        conda install -y doxygen
+        mkdir -p doc/doxygen
+        doxygen "${{ inputs.doxygen-config }}"
+
+    - name: Deploy Doxygen documentation
+      if: ${{ inputs.generate-doc-doxygen == 'true' }}
+      uses: JamesIves/github-pages-deploy-action@v4.7.3
+      with:
+        branch: ${{ inputs.doxygen-branch }}
+        folder: doc/doxygen
+        clean: true
+        commit-message: "Deploy Doxygen docs"
+
+    - name: Generate STATUS.md for test_fpm
+      if: ${{ inputs.generate-status-fpm == 'true' }}
+      shell: bash
+      env:
+        GH_TOKEN: ${{ github.token }}
+        REPO: ${{ github.repository }}
+        RUN_ID: ${{ github.run_id }}
+      run: |
+        echo "Generating STATUS.md for test_fpm..."
+        badge_line=""
+
+        mapfile -t job_lines < <(
+          curl -s -H "Authorization: token $GH_TOKEN" \
+            https://api.github.com/repos/$REPO/actions/runs/$RUN_ID/jobs \
+            | jq -r '.jobs[] | select(.name | test("^.*_.*$") and .name | contains("test_fpm")) | [.name, .conclusion] | @tsv'
+        )
+
+        for line in "${job_lines[@]}"; do
+          name="${line%%$'\t'*}"
+          conclusion="${line#*$'\t'}"
+
+          os="${name%%_*}"
+          compiler="${name#*_}"
+          key="${os}_${compiler}"
+
+          safe_key="${key//-/'--'}"
+
+          if [[ "$conclusion" == "success" ]]; then
+            color="brightgreen"
+            label="passing"
+          elif [[ "$conclusion" == "failure" ]]; then
+            color="red"
+            label="failing"
+          elif [[ "$conclusion" == "cancelled" ]]; then
+            color="lightgrey"
+            label="cancelled"
+          else
+            color="lightgrey"
+            label="pending"
+          fi
+
+          badge="![${key}](https://img.shields.io/badge/${safe_key}-${label}-${color})"
+          badge_line="$badge_line $badge"
+        done
+
+        echo "$badge_line" > STATUS.md
+        mkdir -p status-fpm
+        mv STATUS.md status-fpm/STATUS.md
+        cat status-fpm/STATUS.md
+
+    - name: Deploy STATUS.md (test_fpm)
+      if: ${{ inputs.generate-status-fpm == 'true' }}
+      uses: JamesIves/github-pages-deploy-action@v4.7.3
+      with:
+        branch: status-fpm
+        folder: status-fpm
+        clean: true
+        commit-message: "Deploy fpm status"
+
+    - name: Generate STATUS.md for test_cmake
+      if: ${{ inputs.generate-status-cmake == 'true' }}
+      shell: bash
+      env:
+        GH_TOKEN: ${{ github.token }}
+        REPO: ${{ github.repository }}
+        RUN_ID: ${{ github.run_id }}
+      run: |
+        echo "Generating STATUS.md for test_cmake..."
+        badge_line=""
+
+        mapfile -t job_lines < <(
+          curl -s -H "Authorization: token $GH_TOKEN" \
+            https://api.github.com/repos/$REPO/actions/runs/$RUN_ID/jobs \
+            | jq -r '.jobs[] | select(.name | test("^.*_.*$") and .name | contains("test_cmake")) | [.name, .conclusion] | @tsv'
+        )
+
+        for line in "${job_lines[@]}"; do
+          name="${line%%$'\t'*}"
+          conclusion="${line#*$'\t'}"
+
+          os="${name%%_*}"
+          compiler="${name#*_}"
+          key="${os}_${compiler}"
+
+          safe_key="${key//-/'--'}"
+
+          if [[ "$conclusion" == "success" ]]; then
+            color="brightgreen"
+            label="passing"
+          elif [[ "$conclusion" == "failure" ]]; then
+            color="red"
+            label="failing"
+          elif [[ "$conclusion" == "cancelled" ]]; then
+            color="lightgrey"
+            label="cancelled"
+          else
+            color="lightgrey"
+            label="pending"
+          fi
+
+          badge="![${key}](https://img.shields.io/badge/${safe_key}-${label}-${color})"
+          badge_line="$badge_line $badge"
+        done
+
+        echo "$badge_line" > STATUS.md
+        mkdir -p status-cmake
+        mv STATUS.md status-cmake/STATUS.md
+        cat status-cmake/STATUS.md
+
+    - name: Deploy STATUS.md (test_cmake)
+      if: ${{ inputs.generate-status-cmake == 'true' }}
+      uses: JamesIves/github-pages-deploy-action@v4.7.3
+      with:
+        branch: status-cmake
+        folder: status-cmake
+        clean: true
+        commit-message: "Deploy cmake status"

@@ -32,7 +32,7 @@ async function run() {
     const extras = extrasInput.split(',').map(p => p.trim()).filter(Boolean);
     await installExtras('fortran', extras);
 
-    // install compiler
+    // Install compiler
     const { setup } = await import(`./platform/${osKey}/${compiler}.js`);
     await setup();
 
@@ -40,7 +40,7 @@ async function run() {
     const compilerVersion = await getVersion(compiler);
     const fpmVersion = await getVersion('fpm');
 
-    // GitHub Actions job summary only
+    // GitHub Actions job summary
     await summary
       .addTable([
         ['OS', 'Compiler', 'Version', 'FPM Version'],

@@ -9,7 +9,7 @@ name: Setup Fortran Conda CI/CD
 
 on:
   push:
-    branches: [main, master, dev, status_table]
+    branches: [main, master, dev]
   pull_request:
     branches: [main, master]
 
@@ -44,7 +44,7 @@ jobs:
 
     steps:
       - name: Setup Fortran
-        uses: gha3mi/setup-fortran-conda@status_table
+        uses: gha3mi/setup-fortran-conda@latest
         with:
           compiler: ${{ matrix.compiler }}
           platform: ${{ matrix.os }}
@@ -83,7 +83,7 @@ jobs:
 
     steps:
       - name: Setup Fortran
-        uses: gha3mi/setup-fortran-conda@status_table
+        uses: gha3mi/setup-fortran-conda@latest
         with:
           compiler: ${{ matrix.compiler }}
           platform: ${{ matrix.os }}
@@ -106,7 +106,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Setup and Generate FORD Documentation
-        uses: gha3mi/setup-fortran-conda@status_table
+        uses: gha3mi/setup-fortran-conda@latest
         with:
           compiler: gfortran
           platform: ubuntu-latest
@@ -119,7 +119,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Setup and Generate Doxygen Documentation
-        uses: gha3mi/setup-fortran-conda@status_table
+        uses: gha3mi/setup-fortran-conda@latest
         with:
           compiler: gfortran
           platform: ubuntu-latest
@@ -135,7 +135,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Generate summary
-        uses: gha3mi/setup-fortran-conda@status_table
+        uses: gha3mi/setup-fortran-conda@latest
         with:
           generate-status-fpm: true
 
@@ -146,7 +146,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Generate summary
-        uses: gha3mi/setup-fortran-conda@status_table
+        uses: gha3mi/setup-fortran-conda@latest
         with:
           generate-status-cmake: true
 
@@ -160,20 +160,20 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Generate README Matrix
-        uses: gha3mi/setup-fortran-conda@status_table
+        uses: gha3mi/setup-fortran-conda@latest
         with:
           generate-status-table: true
 
       - name: Commit README update
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "Seyed Ali Ghaemi" # Update with your name
+          git config user.email "info@gha3mi.com" # Update with your email
           if git diff --quiet README.md; then
             echo "No changes to commit."
           else
             git add README.md
             git commit -m "Update README.md status table [ci skip]"
-            git push
+            git push -f
           fi
 ```
 

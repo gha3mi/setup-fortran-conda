@@ -56,6 +56,11 @@ inputs:
     required: false
     default: 'false'
 
+  generate-status-table:
+    description: "Generate and inject CI status table into README.md"
+    required: false
+    default: "false"
+
 runs:
   using: "composite"
   steps:
@@ -235,3 +240,9 @@ runs:
         folder: status-cmake
         clean: true
         commit-message: "Deploy cmake status"
+
+    - name: Generate and Inject CI Matrix into README
+      if: ${{ inputs.generate-status-table == 'true' }}
+      shell: bash
+      run: |
+        bash "${{ github.action_path }}/scripts/update-readme-status.sh"

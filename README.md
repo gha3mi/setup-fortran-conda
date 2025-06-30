@@ -2,7 +2,6 @@
 
 A GitHub Action that sets up a Fortran development environment using Conda. Inspired by [Conda + Fortran](https://degenerateconic.com/conda-plus-fortran.html).
 
-
 ## Usage Example
 
 ```yaml
@@ -10,7 +9,7 @@ name: Setup Fortran Conda CI/CD
 
 on:
   push:
-    branches: [main, master, dev]
+    branches: [main, master, dev, status_table]
   pull_request:
     branches: [main, master]
 
@@ -45,7 +44,7 @@ jobs:
 
     steps:
       - name: Setup Fortran
-        uses: gha3mi/setup-fortran-conda@latest
+        uses: gha3mi/setup-fortran-conda@status_table
         with:
           compiler: ${{ matrix.compiler }}
           platform: ${{ matrix.os }}
@@ -84,7 +83,7 @@ jobs:
 
     steps:
       - name: Setup Fortran
-        uses: gha3mi/setup-fortran-conda@latest
+        uses: gha3mi/setup-fortran-conda@status_table
         with:
           compiler: ${{ matrix.compiler }}
           platform: ${{ matrix.os }}
@@ -107,7 +106,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Setup and Generate FORD Documentation
-        uses: gha3mi/setup-fortran-conda@latest
+        uses: gha3mi/setup-fortran-conda@status_table
         with:
           compiler: gfortran
           platform: ubuntu-latest
@@ -120,7 +119,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Setup and Generate Doxygen Documentation
-        uses: gha3mi/setup-fortran-conda@latest
+        uses: gha3mi/setup-fortran-conda@status_table
         with:
           compiler: gfortran
           platform: ubuntu-latest
@@ -136,7 +135,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Generate summary
-        uses: gha3mi/setup-fortran-conda@latest
+        uses: gha3mi/setup-fortran-conda@status_table
         with:
           generate-status-fpm: true
 
@@ -147,26 +146,40 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Generate summary
-        uses: gha3mi/setup-fortran-conda@latest
+        uses: gha3mi/setup-fortran-conda@status_table
         with:
           generate-status-cmake: true
+
+  update_readme_table:
+    name: Update README.md status table
+    if: always()
+    needs: [status_fpm, status_cmake]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Generate README Matrix
+        uses: gha3mi/setup-fortran-conda@status_table
+        with:
+          generate-status-table: true
+
+      - name: Commit README update
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet README.md; then
+            echo "No changes to commit."
+          else
+            git add README.md
+            git commit -m "Update README.md status table [ci skip]"
+            git push
+          fi
 ```
 
 ## Status
 
-Run the following command to update the status in the `README.md` file:
-
-```shell
-bash update-readme-status.sh
-```
 <!-- STATUS:setup-fortran-conda:START -->
-| Compiler   | macos | ubuntu | windows |
-|------------|----------------------|----------------------|----------------------|
-| `flang-new` | - | fpm ✅  cmake ✅ | fpm ❌  cmake ✅ |
-| `gfortran` | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ |
-| `ifx` | - | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ |
-| `lfortran` | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ |
-| `nvfortran` | - | fpm ✅  cmake ✅ | - |
 <!-- STATUS:setup-fortran-conda:END -->
 
 - [STATUS.md (FPM)](https://github.com/gha3mi/setup-fortran-conda/blob/status-fpm/STATUS.md)

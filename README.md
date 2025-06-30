@@ -154,7 +154,7 @@ jobs:
 
 ## Status
 
-Run the following command to update the status table in this README:
+Run the following command to update the status in the `README.md` file:
 
 ```shell
 bash update-readme-status.sh

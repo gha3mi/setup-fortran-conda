@@ -8,6 +8,7 @@ on:
 
 permissions:
   contents: write
+  pull-requests: write
 
 jobs:
   test_fpm:
@@ -166,9 +167,9 @@ jobs:
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GH_PAT }}
           commit-message: "Update README.md status table [ci skip]"
           branch: update/readme-status-table
-          title: "📊 Auto-update README.md status table"
+          title: "update README.md status table"
           body: "This PR updates the CI status table in the README.md."
           delete-branch: true

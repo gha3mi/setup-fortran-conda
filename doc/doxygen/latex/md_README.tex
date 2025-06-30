@@ -61,13 +61,6 @@ To enable automatic CI status table injection, add the following to your {\ttfam
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{<!-\/-\/\ STATUS:setup-\/fortran-\/conda:START\ -\/-\/>}
-\DoxyCodeLine{|\ Compiler\ \ \ |\ macos\ |\ ubuntu\ |\ windows\ |}
-\DoxyCodeLine{|-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/|-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/|-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/|-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/|}
-\DoxyCodeLine{|\ \`{}flang-\/new`\ |\ -\/\ |\ fpm\ ✅\ \ cmake\ ✅\ |\ fpm\ ❌\ \ cmake\ ✅\ |}
-\DoxyCodeLine{|\ \`{}gfortran`\ |\ fpm\ ✅\ \ cmake\ ✅\ |\ fpm\ ✅\ \ cmake\ ✅\ |\ fpm\ ✅\ \ cmake\ ✅\ |}
-\DoxyCodeLine{|\ \`{}ifx`\ |\ -\/\ |\ fpm\ ✅\ \ cmake\ ✅\ |\ fpm\ ✅\ \ cmake\ ✅\ |}
-\DoxyCodeLine{|\ \`{}lfortran`\ |\ fpm\ ✅\ \ cmake\ ✅\ |\ fpm\ ✅\ \ cmake\ ✅\ |\ fpm\ ✅\ \ cmake\ ✅\ |}
-\DoxyCodeLine{|\ \`{}nvfortran`\ |\ -\/\ |\ fpm\ ✅\ \ cmake\ ✅\ |\ -\/\ |}
 \DoxyCodeLine{<!-\/-\/\ STATUS:setup-\/fortran-\/conda:END\ -\/-\/>}
 
 \end{DoxyCode}
@@ -249,7 +242,9 @@ modify this example workflow file to your needs, and save it as {\ttfamily .gith
 \DoxyCodeLine{}
 \DoxyCodeLine{\ \ update\_readme\_table:}
 \DoxyCodeLine{\ \ \ \ name:\ Update\ README.md\ status\ table}
-\DoxyCodeLine{\ \ \ \ if:\ always()}
+\DoxyCodeLine{\ \ \ \ if:\ |}
+\DoxyCodeLine{\ \ \ \ \ \ always()\ \&\&}
+\DoxyCodeLine{\ \ \ \ \ \ github.ref\ !=\ 'refs/heads/update-\/readme-\/table'}
 \DoxyCodeLine{\ \ \ \ needs:\ [status\_fpm,\ status\_cmake]}
 \DoxyCodeLine{\ \ \ \ runs-\/on:\ ubuntu-\/latest}
 \DoxyCodeLine{\ \ \ \ steps:}

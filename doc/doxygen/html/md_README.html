@@ -150,13 +150,6 @@ Overview</h2>
 README Integration</h2>
 <p>To enable automatic CI status table injection, add the following to your <code>README.md</code>:</p>
 <div class="fragment"><div class="line">&lt;!-- STATUS:setup-fortran-conda:START --&gt;</div>
-<div class="line">| Compiler   | macos | ubuntu | windows |</div>
-<div class="line">|------------|----------------------|----------------------|----------------------|</div>
-<div class="line">| `flang-new` | - | fpm ✅  cmake ✅ | fpm ❌  cmake ✅ |</div>
-<div class="line">| `gfortran` | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ |</div>
-<div class="line">| `ifx` | - | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ |</div>
-<div class="line">| `lfortran` | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ |</div>
-<div class="line">| `nvfortran` | - | fpm ✅  cmake ✅ | - |</div>
 <div class="line">&lt;!-- STATUS:setup-fortran-conda:END --&gt;</div>
 </div><!-- fragment --><h2><a class="anchor" id="autotoc_md5"></a>
 Job Breakdown</h2>
@@ -332,7 +325,9 @@ Job Breakdown</h2>
 <div class="line"> </div>
 <div class="line">  update_readme_table:</div>
 <div class="line">    name: Update README.md status table</div>
-<div class="line">    if: always()</div>
+<div class="line">    if: |</div>
+<div class="line">      always() &amp;&amp;</div>
+<div class="line">      github.ref != &#39;refs/heads/update-readme-table&#39;</div>
 <div class="line">    needs: [status_fpm, status_cmake]</div>
 <div class="line">    runs-on: ubuntu-latest</div>
 <div class="line">    steps:</div>

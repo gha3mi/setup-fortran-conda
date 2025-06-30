@@ -132,7 +132,7 @@ runs:
         mapfile -t job_lines < <(
           curl -s -H "Authorization: token $GH_TOKEN" \
             https://api.github.com/repos/$REPO/actions/runs/$RUN_ID/jobs \
-            | jq -r '.jobs[] | select(.name | test("^.*_.*$") and .name | contains("test_fpm")) | [.name, .conclusion] | @tsv'
+            | jq -r '.jobs[] | select(.name | test("^.*_.*$") and .name | test(".*_fpm$")) | [.name, .conclusion] | @tsv'
         )
 
         for line in "${job_lines[@]}"; do
@@ -191,7 +191,7 @@ runs:
         mapfile -t job_lines < <(
           curl -s -H "Authorization: token $GH_TOKEN" \
             https://api.github.com/repos/$REPO/actions/runs/$RUN_ID/jobs \
-            | jq -r '.jobs[] | select(.name | test("^.*_.*$") and .name | contains("test_cmake")) | [.name, .conclusion] | @tsv'
+            | jq -r '.jobs[] | select(.name | test("^.*_.*$") and .name | test(".*_cmake$")) | [.name, .conclusion] | @tsv'
         )
 
         for line in "${job_lines[@]}"; do

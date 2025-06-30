@@ -32,6 +32,10 @@ inputs:
     description: "Branch to deploy FORD docs to"
     required: false
     default: "gh-pages-ford"
+  ford-working-directory:
+    description: "Directory to run FORD from (relative to root)"
+    required: false
+    default: "."
 
   generate-doc-doxygen:
     description: "Whether to build and deploy Doxygen documentation"
@@ -45,6 +49,10 @@ inputs:
     description: "Branch to deploy Doxygen docs to"
     required: false
     default: "gh-pages-doxygen"
+  doxygen-working-directory:
+    description: "Directory to run Doxygen from (relative to root)"
+    required: false
+    default: "."
 
   generate-status-fpm:
     description: 'Generate STATUS.md for test_fpm jobs'
@@ -93,7 +101,7 @@ runs:
         conda activate fortran
         conda install -y graphviz ford
         mkdir -p doc/ford
-        ford "${{ inputs.ford-config }}"
+        (cd "${{ inputs.ford-working-directory }}" && ford "${{ inputs.ford-config }}")
 
     - name: Deploy FORD documentation
       if: ${{ inputs.generate-doc-ford == 'true' }}
@@ -112,7 +120,7 @@ runs:
         conda activate fortran
         conda install -y doxygen
         mkdir -p doc/doxygen
-        doxygen "${{ inputs.doxygen-config }}"
+        (cd "${{ inputs.doxygen-working-directory }}" && doxygen "${{ inputs.doxygen-config }}")
 
     - name: Deploy Doxygen documentation
       if: ${{ inputs.generate-doc-doxygen == 'true' }}

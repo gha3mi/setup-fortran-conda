@@ -59,18 +59,10 @@ This example automates Fortran CI/\+CD\+:
 To enable automatic CI status table injection, add the following to your {\ttfamily README.\+md}\+:
 
 
-\begin{DoxyCode}{0}
-\DoxyCodeLine{<!-\/-\/\ STATUS:setup-\/fortran-\/conda:START\ -\/-\/>}
-\DoxyCodeLine{|\ Compiler\ \ \ |\ macos\ |\ ubuntu\ |\ windows\ |}
-\DoxyCodeLine{|-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/|-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/|-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/|-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/|}
-\DoxyCodeLine{|\ \`{}flang-\/new`\ |\ -\/\ |\ fpm\ ✅\ \ cmake\ ✅\ |\ fpm\ ❌\ \ cmake\ ✅\ |}
-\DoxyCodeLine{|\ \`{}gfortran`\ |\ fpm\ ✅\ \ cmake\ ✅\ |\ fpm\ ✅\ \ cmake\ ✅\ |\ fpm\ ✅\ \ cmake\ ✅\ |}
-\DoxyCodeLine{|\ \`{}ifx`\ |\ -\/\ |\ fpm\ ✅\ \ cmake\ ✅\ |\ fpm\ ✅\ \ cmake\ ✅\ |}
-\DoxyCodeLine{|\ \`{}lfortran`\ |\ fpm\ ✅\ \ cmake\ ✅\ |\ fpm\ ✅\ \ cmake\ ✅\ |\ fpm\ ✅\ \ cmake\ ✅\ |}
-\DoxyCodeLine{|\ \`{}nvfortran`\ |\ -\/\ |\ fpm\ ✅\ \ cmake\ ✅\ |\ -\/\ |}
-\DoxyCodeLine{<!-\/-\/\ STATUS:setup-\/fortran-\/conda:END\ -\/-\/>}
-
-\end{DoxyCode}
+\begin{DoxyPre}
+<!-\/-\/ STATUS:setup-\/fortran-\/conda:START -\/-\/>
+<!-\/-\/ STATUS:setup-\/fortran-\/conda:END -\/-\/>
+\end{DoxyPre}
 \hypertarget{md_README_autotoc_md5}{}\doxysubsection{\texorpdfstring{Job Breakdown}{Job Breakdown}}\label{md_README_autotoc_md5}
 \tabulinesep=1mm
 \begin{longtabu}spread 0pt [c]{*{2}{|X[-1]}|}

@@ -4,7 +4,89 @@
 \Hypertarget{md_README_autotoc_md0}%
 
 
-A Git\+Hub Action that sets up a Fortran development environment using Conda. Inspired by \href{https://degenerateconic.com/conda-plus-fortran.html}{\texttt{ Conda + Fortran}}.\hypertarget{md_README_autotoc_md1}{}\doxysection{\texorpdfstring{Usage Example}{Usage Example}}\label{md_README_autotoc_md1}
+A Git\+Hub Action that sets up a Fortran development environment using Conda. Inspired by \href{https://degenerateconic.com/conda-plus-fortran.html}{\texttt{ Conda + Fortran}}.\hypertarget{md_README_autotoc_md1}{}\doxysection{\texorpdfstring{📋 Workflow Example}{📋 Workflow Example}}\label{md_README_autotoc_md1}
+\hypertarget{md_README_autotoc_md2}{}\doxysubsection{\texorpdfstring{🔐 IMPORTANT NOTE}{🔐 IMPORTANT NOTE}}\label{md_README_autotoc_md2}
+\begin{quote}
+⚠️ {\bfseries{Use your own name and email!}} Don’t copy the example values. \end{quote}
+
+
+To enable automatic updates to the CI status table in {\ttfamily README.\+md} via the {\ttfamily update\+\_\+readme\+\_\+table} job\+:
+
+
+\begin{DoxyEnumerate}
+\item Create a Git\+Hub {\bfseries{Personal Access Token (PAT)}} with {\ttfamily repo} scope.
+\item Add it to your repo secrets, e.\+g. {\ttfamily GH\+\_\+\+PAT}.
+\item Configure these inputs\+:
+\end{DoxyEnumerate}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{update-\/readme-\/token:\ \$\{\{\ secrets.GH\_PAT\ \}\}}
+\DoxyCodeLine{update-\/readme-\/user-\/name:\ "{}Your\ Name"{}}
+\DoxyCodeLine{update-\/readme-\/user-\/email:\ "{}you@example.com"{}}
+
+\end{DoxyCode}
+\hypertarget{md_README_autotoc_md3}{}\doxysubsection{\texorpdfstring{Overview}{Overview}}\label{md_README_autotoc_md3}
+This example automates Fortran CI/\+CD\+:
+
+
+\begin{DoxyItemize}
+\item 📦 {\bfseries{Fortran compiler setup}}\+:
+\begin{DoxyItemize}
+\item Supports\+: {\ttfamily gfortran}, {\ttfamily ifx}, {\ttfamily lfortran}, {\ttfamily flang-\/new}, {\ttfamily nvfortran}
+\end{DoxyItemize}
+\item 🖥️ {\bfseries{Cross-\/platform testing}}\+:
+\begin{DoxyItemize}
+\item Ubuntu, Windows, mac\+OS Git\+Hub runners
+\end{DoxyItemize}
+\item 🧪 {\bfseries{Testing}}\+:
+\begin{DoxyItemize}
+\item {\ttfamily fpm} test with {\ttfamily debug} and {\ttfamily release} profiles
+\item {\ttfamily CMake} with {\ttfamily Ninja} and {\ttfamily CTest}
+\end{DoxyItemize}
+\item 📄 {\bfseries{Documentation}}\+:
+\begin{DoxyItemize}
+\item \href{https://github.com/Fortran-FOSS-Programmers/ford}{\texttt{ FORD}}
+\item \href{https://www.doxygen.nl}{\texttt{ Doxygen}}
+\end{DoxyItemize}
+\item 📊 {\bfseries{Status Reporting}}\+:
+\begin{DoxyItemize}
+\item Auto-\/generates {\ttfamily STATUS.\+md} for {\ttfamily fpm}/{\ttfamily cmake} test results
+\item Injects summary into {\ttfamily README.\+md}
+\item creates PRs to update the status table in {\ttfamily README.\+md}
+\end{DoxyItemize}
+\end{DoxyItemize}\hypertarget{md_README_autotoc_md4}{}\doxysubsection{\texorpdfstring{README Integration}{README Integration}}\label{md_README_autotoc_md4}
+To enable automatic CI status table injection, add the following to your {\ttfamily README.\+md}\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{<!-\/-\/\ STATUS:setup-\/fortran-\/conda:START\ -\/-\/>}
+\DoxyCodeLine{<!-\/-\/\ STATUS:setup-\/fortran-\/conda:END\ -\/-\/>}
+
+\end{DoxyCode}
+\hypertarget{md_README_autotoc_md5}{}\doxysubsection{\texorpdfstring{Job Breakdown}{Job Breakdown}}\label{md_README_autotoc_md5}
+\tabulinesep=1mm
+\begin{longtabu}spread 0pt [c]{*{2}{|X[-1]}|}
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Job Name   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Description    }\\\cline{1-2}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Job Name   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Description    }\\\cline{1-2}
+\endhead
+{\ttfamily test\+\_\+fpm}   &Run {\ttfamily fpm} tests (debug + release) for each OS/compiler    \\\cline{1-2}
+{\ttfamily test\+\_\+cmake}   &Run CMake/\+Ninja builds and tests    \\\cline{1-2}
+{\ttfamily doc\+\_\+ford}   &Build and deploy FORD-\/generated docs    \\\cline{1-2}
+{\ttfamily doc\+\_\+doxygen}   &Build and deploy Doxygen-\/generated docs    \\\cline{1-2}
+{\ttfamily status\+\_\+fpm}   &Generate {\ttfamily STATUS.\+md} with fpm test results    \\\cline{1-2}
+{\ttfamily status\+\_\+cmake}   &Generate {\ttfamily STATUS.\+md} with cmake test results    \\\cline{1-2}
+{\ttfamily update\+\_\+readme\+\_\+table}   &Inject CI summary table into {\ttfamily README.\+md} and open a pull request   \\\cline{1-2}
+\end{longtabu}
+
+
+modify this example workflow file to your needs, and save it as {\ttfamily .github/workflows/\+CI-\/\+CD.\+yml} in your repository\+:
+
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{name:\ Setup\ Fortran\ Conda\ CI/CD}
@@ -169,11 +251,11 @@ A Git\+Hub Action that sets up a Fortran development environment using Conda. In
 \DoxyCodeLine{\ \ \ \ \ \ \ \ with:}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ update-\/readme-\/table:\ true}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ update-\/readme-\/token:\ \$\{\{\ secrets.GH\_PAT\ \}\}\ \ \ \#\ Update\ with\ your\ GitHub\ personal\ access\ token}
-\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ update-\/readme-\/user-\/name:\ "{}Seyed\ Ali\ Ghasemi"{}\ \#\ Update\ with\ your\ name}
-\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ update-\/readme-\/user-\/email:\ "{}info@gha3mi.com"{}\ \ \#\ Update\ with\ your\ email}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ update-\/readme-\/user-\/name:\ "{}Your\ Name"{}\ \#\ Update\ with\ your\ name}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ update-\/readme-\/user-\/email:\ "{}you@example.com"{}\ \ \#\ Update\ with\ your\ email}
 
 \end{DoxyCode}
-\hypertarget{md_README_autotoc_md2}{}\doxysection{\texorpdfstring{Status}{Status}}\label{md_README_autotoc_md2}
+\hypertarget{md_README_autotoc_md6}{}\doxysection{\texorpdfstring{✅ Status}{✅ Status}}\label{md_README_autotoc_md6}
 \tabulinesep=1mm
 \begin{longtabu}spread 0pt [c]{*{4}{|X[-1]}|}
 \hline
@@ -196,7 +278,7 @@ A Git\+Hub Action that sets up a Fortran development environment using Conda. In
 \begin{DoxyItemize}
 \item \href{https://github.com/gha3mi/setup-fortran-conda/blob/status-fpm/STATUS.md}{\texttt{ STATUS.\+md (FPM)}}
 \item \href{https://github.com/gha3mi/setup-fortran-conda/blob/status-cmake/STATUS.md}{\texttt{ STATUS.\+md (CMake)}}
-\end{DoxyItemize}\hypertarget{md_README_autotoc_md3}{}\doxysection{\texorpdfstring{See Also}{See Also}}\label{md_README_autotoc_md3}
+\end{DoxyItemize}\hypertarget{md_README_autotoc_md7}{}\doxysection{\texorpdfstring{🔗 See Also}{🔗 See Also}}\label{md_README_autotoc_md7}
 
 \begin{DoxyItemize}
 \item \href{https://github.com/fortran-lang/setup-fortran}{\texttt{ fortran-\/lang/setup-\/fortran}}

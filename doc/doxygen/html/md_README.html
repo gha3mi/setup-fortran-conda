@@ -102,7 +102,76 @@ $(function(){initNavTree('md_README.html',''); initResizable(true); });
 <div class="textblock"><p><a class="anchor" id="autotoc_md0"></a></p>
 <p>A GitHub Action that sets up a Fortran development environment using Conda. Inspired by <a href="https://degenerateconic.com/conda-plus-fortran.html">Conda + Fortran</a>.</p>
 <h1><a class="anchor" id="autotoc_md1"></a>
-Usage Example</h1>
+📋 Workflow Example</h1>
+<h2><a class="anchor" id="autotoc_md2"></a>
+🔐 IMPORTANT NOTE</h2>
+<blockquote class="doxtable">
+<p>⚠️ <b>Use your own name and email!</b> Don’t copy the example values. </p>
+</blockquote>
+<p>To enable automatic updates to the CI status table in <code>README.md</code> via the <code>update_readme_table</code> job:</p>
+<ol type="1">
+<li>Create a GitHub <b>Personal Access Token (PAT)</b> with <code>repo</code> scope.</li>
+<li>Add it to your repo secrets, e.g. <code>GH_PAT</code>.</li>
+<li>Configure these inputs:</li>
+</ol>
+<div class="fragment"><div class="line">update-readme-token: ${{ secrets.GH_PAT }}</div>
+<div class="line">update-readme-user-name: &quot;Your Name&quot;</div>
+<div class="line">update-readme-user-email: &quot;you@example.com&quot;</div>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md3"></a>
+Overview</h2>
+<p>This example automates Fortran CI/CD:</p>
+<ul>
+<li>📦 <b>Fortran compiler setup</b>:<ul>
+<li>Supports: <code>gfortran</code>, <code>ifx</code>, <code>lfortran</code>, <code>flang-new</code>, <code>nvfortran</code></li>
+</ul>
+</li>
+<li>🖥️ <b>Cross-platform testing</b>:<ul>
+<li>Ubuntu, Windows, macOS GitHub runners</li>
+</ul>
+</li>
+<li>🧪 <b>Testing</b>:<ul>
+<li><code>fpm</code> test with <code>debug</code> and <code>release</code> profiles</li>
+<li><code>CMake</code> with <code>Ninja</code> and <code>CTest</code></li>
+</ul>
+</li>
+<li>📄 <b>Documentation</b>:<ul>
+<li><a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a></li>
+<li><a href="https://www.doxygen.nl">Doxygen</a></li>
+</ul>
+</li>
+<li>📊 <b>Status Reporting</b>:<ul>
+<li>Auto-generates <code>STATUS.md</code> for <code>fpm</code>/<code>cmake</code> test results</li>
+<li>Injects summary into <code>README.md</code></li>
+<li>creates PRs to update the status table in <code>README.md</code></li>
+</ul>
+</li>
+</ul>
+<h2><a class="anchor" id="autotoc_md4"></a>
+README Integration</h2>
+<p>To enable automatic CI status table injection, add the following to your <code>README.md</code>:</p>
+<div class="fragment"><div class="line">&lt;!-- STATUS:setup-fortran-conda:START --&gt;</div>
+<div class="line">&lt;!-- STATUS:setup-fortran-conda:END --&gt;</div>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md5"></a>
+Job Breakdown</h2>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Job Name   </th><th class="markdownTableHeadNone">Description    </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>test_fpm</code>   </td><td class="markdownTableBodyNone">Run <code>fpm</code> tests (debug + release) for each OS/compiler    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>test_cmake</code>   </td><td class="markdownTableBodyNone">Run CMake/Ninja builds and tests    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>doc_ford</code>   </td><td class="markdownTableBodyNone">Build and deploy FORD-generated docs    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>doc_doxygen</code>   </td><td class="markdownTableBodyNone">Build and deploy Doxygen-generated docs    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>status_fpm</code>   </td><td class="markdownTableBodyNone">Generate <code>STATUS.md</code> with fpm test results    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>status_cmake</code>   </td><td class="markdownTableBodyNone">Generate <code>STATUS.md</code> with cmake test results    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>update_readme_table</code>   </td><td class="markdownTableBodyNone">Inject CI summary table into <code>README.md</code> and open a pull request   </td></tr>
+</table>
+<p>modify this example workflow file to your needs, and save it as <code>.github/workflows/CI-CD.yml</code> in your repository:</p>
 <div class="fragment"><div class="line">name: Setup Fortran Conda CI/CD</div>
 <div class="line"> </div>
 <div class="line">on:</div>
@@ -265,10 +334,10 @@ Usage Example</h1>
 <div class="line">        with:</div>
 <div class="line">          update-readme-table: true</div>
 <div class="line">          update-readme-token: ${{ secrets.GH_PAT }}   # Update with your GitHub personal access token</div>
-<div class="line">          update-readme-user-name: &quot;Seyed Ali Ghasemi&quot; # Update with your name</div>
-<div class="line">          update-readme-user-email: &quot;info@gha3mi.com&quot;  # Update with your email</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md2"></a>
-Status</h1>
+<div class="line">          update-readme-user-name: &quot;Your Name&quot; # Update with your name</div>
+<div class="line">          update-readme-user-email: &quot;you@example.com&quot;  # Update with your email</div>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md6"></a>
+✅ Status</h1>
 <table class="markdownTable">
 <tr class="markdownTableHead">
 <th class="markdownTableHeadNone">Compiler   </th><th class="markdownTableHeadNone">macos   </th><th class="markdownTableHeadNone">ubuntu   </th><th class="markdownTableHeadNone">windows    </th></tr>
@@ -287,8 +356,8 @@ Status</h1>
 <li><a href="https://github.com/gha3mi/setup-fortran-conda/blob/status-fpm/STATUS.md">STATUS.md (FPM)</a></li>
 <li><a href="https://github.com/gha3mi/setup-fortran-conda/blob/status-cmake/STATUS.md">STATUS.md (CMake)</a></li>
 </ul>
-<h1><a class="anchor" id="autotoc_md3"></a>
-See Also</h1>
+<h1><a class="anchor" id="autotoc_md7"></a>
+🔗 See Also</h1>
 <ul>
 <li><a href="https://github.com/fortran-lang/setup-fortran">fortran-lang/setup-fortran</a></li>
 <li><a href="https://degenerateconic.com/conda-plus-fortran.html">https://degenerateconic.com/conda-plus-fortran.html</a></li>

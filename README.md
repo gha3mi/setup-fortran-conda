@@ -112,7 +112,9 @@ jobs:
           compiler: gfortran
           platform: ubuntu-latest
           generate-doc-ford: true
+          ford-working-directory: .
           ford-config: README.md
+          ford-output-directory: doc/ford
           ford-branch: gh-pages-ford
 
   doc_doxygen:
@@ -125,7 +127,9 @@ jobs:
           compiler: gfortran
           platform: ubuntu-latest
           generate-doc-doxygen: true
+          doxygen-working-directory: .
           doxygen-config: Doxyfile
+          doxygen-output-directory: doc/doxygen
           doxygen-branch: gh-pages-doxygen
 
 

@@ -94,7 +94,110 @@
           <h1>test</h1>
           <h1>Setup Fortran with Conda</h1>
 <p>A GitHub Action that sets up a Fortran development environment using Conda. Inspired by <a href="https://degenerateconic.com/conda-plus-fortran.html">Conda + Fortran</a>.</p>
-<h2>Usage Example</h2>
+<h2>📋 Workflow Example</h2>
+<h3>🔐 IMPORTANT NOTE</h3>
+<blockquote>
+<p>⚠️ <strong>Use your own name and email!</strong> Don’t copy the example values.</p>
+</blockquote>
+<p>To enable automatic updates to the CI status table in <code>README.md</code> via the <code>update_readme_table</code> job:</p>
+<ol>
+<li>Create a GitHub <strong>Personal Access Token (PAT)</strong> with <code>repo</code> scope.</li>
+<li>Add it to your repo secrets, e.g. <code>GH_PAT</code>.</li>
+<li>Configure these inputs:</li>
+</ol>
+<div class="codehilite"><pre><span></span><code><span class="nt">update-readme-token</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.GH_PAT }}</span><span class="w"></span>
+<span class="nt">update-readme-user-name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Your</span><span class="nv"> </span><span class="s">Name&quot;</span><span class="w"></span>
+<span class="nt">update-readme-user-email</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;you@example.com&quot;</span><span class="w"></span>
+</code></pre></div>
+
+<h3>Overview</h3>
+<p>This example automates Fortran CI/CD:</p>
+<ul>
+<li>
+<p>📦 <strong>Fortran compiler setup</strong>:</p>
+</li>
+<li>
+<p>Supports: <code>gfortran</code>, <code>ifx</code>, <code>lfortran</code>, <code>flang-new</code>, <code>nvfortran</code></p>
+</li>
+<li>
+<p>🖥️ <strong>Cross-platform testing</strong>:</p>
+</li>
+<li>
+<p>Ubuntu, Windows, macOS GitHub runners</p>
+</li>
+<li>
+<p>🧪 <strong>Testing</strong>:</p>
+</li>
+<li>
+<p><code>fpm</code> test with <code>debug</code> and <code>release</code> profiles</p>
+</li>
+<li>
+<p><code>CMake</code> with <code>Ninja</code> and <code>CTest</code></p>
+</li>
+<li>
+<p>📄 <strong>Documentation</strong>:</p>
+</li>
+<li>
+<p><a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a> </p>
+</li>
+<li>
+<p><a href="https://www.doxygen.nl">Doxygen</a></p>
+</li>
+<li>
+<p>📊 <strong>Status Reporting</strong>:</p>
+</li>
+<li>
+<p>Auto-generates <code>STATUS.md</code> for <code>fpm</code>/<code>cmake</code> test results</p>
+</li>
+<li>Injects summary into <code>README.md</code></li>
+<li>creates PRs to update the status table in <code>README.md</code></li>
+</ul>
+<h3>README Integration</h3>
+<p>To enable automatic CI status table injection, add the following to your <code>README.md</code>:</p>
+<div class="codehilite"><pre><span></span><code>&lt;!-- STATUS:setup-fortran-conda:START --&gt;
+&lt;!-- STATUS:setup-fortran-conda:END --&gt;
+</code></pre></div>
+
+<h3>Job Breakdown</h3>
+<table>
+<thead>
+<tr>
+<th>Job Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>test_fpm</code></td>
+<td>Run <code>fpm</code> tests (debug + release) for each OS/compiler</td>
+</tr>
+<tr>
+<td><code>test_cmake</code></td>
+<td>Run CMake/Ninja builds and tests</td>
+</tr>
+<tr>
+<td><code>doc_ford</code></td>
+<td>Build and deploy FORD-generated docs</td>
+</tr>
+<tr>
+<td><code>doc_doxygen</code></td>
+<td>Build and deploy Doxygen-generated docs</td>
+</tr>
+<tr>
+<td><code>status_fpm</code></td>
+<td>Generate <code>STATUS.md</code> with fpm test results</td>
+</tr>
+<tr>
+<td><code>status_cmake</code></td>
+<td>Generate <code>STATUS.md</code> with cmake test results</td>
+</tr>
+<tr>
+<td><code>update_readme_table</code></td>
+<td>Inject CI summary table into <code>README.md</code> and open a pull request</td>
+</tr>
+</tbody>
+</table>
+<p>modify this example workflow file to your needs, and save it as <code>.github/workflows/CI-CD.yml</code> in your repository:</p>
 <div class="codehilite"><pre><span></span><code><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Setup Fortran Conda CI/CD</span><span class="w"></span>
 
 <span class="nt">on</span><span class="p">:</span><span class="w"></span>
@@ -257,11 +360,11 @@
 <span class="w">        </span><span class="nt">with</span><span class="p">:</span><span class="w"></span>
 <span class="w">          </span><span class="nt">update-readme-table</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
 <span class="w">          </span><span class="nt">update-readme-token</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.GH_PAT }}</span><span class="w">   </span><span class="c1"># Update with your GitHub personal access token</span><span class="w"></span>
-<span class="w">          </span><span class="nt">update-readme-user-name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Seyed</span><span class="nv"> </span><span class="s">Ali</span><span class="nv"> </span><span class="s">Ghasemi&quot;</span><span class="w"> </span><span class="c1"># Update with your name</span><span class="w"></span>
-<span class="w">          </span><span class="nt">update-readme-user-email</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;info@gha3mi.com&quot;</span><span class="w">  </span><span class="c1"># Update with your email</span><span class="w"></span>
+<span class="w">          </span><span class="nt">update-readme-user-name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Your</span><span class="nv"> </span><span class="s">Name&quot;</span><span class="w"> </span><span class="c1"># Update with your name</span><span class="w"></span>
+<span class="w">          </span><span class="nt">update-readme-user-email</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;you@example.com&quot;</span><span class="w">  </span><span class="c1"># Update with your email</span><span class="w"></span>
 </code></pre></div>
 
-<h2>Status</h2>
+<h2>✅ Status</h2>
 <!-- STATUS:setup-fortran-conda:START -->
 <table>
 <thead>
@@ -311,7 +414,7 @@
 <li><a href="https://github.com/gha3mi/setup-fortran-conda/blob/status-fpm/STATUS.md">STATUS.md (FPM)</a></li>
 <li><a href="https://github.com/gha3mi/setup-fortran-conda/blob/status-cmake/STATUS.md">STATUS.md (CMake)</a></li>
 </ul>
-<h2>See Also</h2>
+<h2>🔗 See Also</h2>
 <ul>
 <li><a href="https://github.com/fortran-lang/setup-fortran">fortran-lang/setup-fortran</a></li>
 <li><a href="https://degenerateconic.com/conda-plus-fortran.html">https://degenerateconic.com/conda-plus-fortran.html</a></li>
@@ -389,7 +492,7 @@
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2025-06-30T15:48:56.484850+0000             </p>
+ on 2025-06-30T16:41:23.489771+0000             </p>
           </div>
         </div>
         <br>

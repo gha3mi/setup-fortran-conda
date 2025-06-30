@@ -152,19 +152,19 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Generate README Matrix
+      - name: Generate status table
         uses: gha3mi/setup-fortran-conda@latest
         with:
           generate-status-table: true
 
       - name: Commit README update
         run: |
-          git config user.name "Seyed Ali Ghaemi"
-          git config user.email "info@gha3mi.com"
+          git config user.name "Seyed Ali Ghaemi" # Update with your name
+          git config user.email "info@gha3mi.com" # Update with your email
           if git diff --quiet README.md; then
             echo "No changes to commit."
           else
             git add README.md
             git commit -m "Update README.md status table [ci skip]"
-            git push
+            git push -f
           fi

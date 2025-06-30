@@ -14,9 +14,9 @@ name: Setup Fortran Conda CI/CD
 
 on:
   push:
-    branches: [main, dev]
+    branches: [main, master, dev]
   pull_request:
-    branches: [main]
+    branches: [main, master]
 
 permissions:
   contents: write
@@ -73,9 +73,9 @@ jobs:
           - os: ubuntu-latest
             extra-packages: "cmake, ninja"
           - os: windows-latest
-            extra-packages: ""
+            extra-packages: "cmake, ninja"
           - os: macos-latest
-            extra-packages: ""
+            extra-packages: "cmake, ninja"
         exclude:
           - os: macos-latest
             compiler: flang-new
@@ -154,6 +154,7 @@ jobs:
         with:
           generate-status-cmake: true
 ```
+
 
 ## See Also
 

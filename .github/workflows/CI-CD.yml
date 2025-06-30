@@ -61,9 +61,9 @@ jobs:
           - os: ubuntu-latest
             extra-packages: "cmake, ninja"
           - os: windows-latest
-            extra-packages: ""
+            extra-packages: "cmake, ninja"
           - os: macos-latest
-            extra-packages: ""
+            extra-packages: "cmake, ninja"
         exclude:
           - os: macos-latest
             compiler: flang-new

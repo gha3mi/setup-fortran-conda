@@ -19,7 +19,7 @@ async function run() {
   try {
     const compiler = getInput('compiler', { required: true }).toLowerCase();
     const platform = getInput('platform', { required: true }).toLowerCase();
-    const extrasInput = getInput('extra-packages') || '';
+    const extrasInput = process.env.INPUT_EXTRA_PACKAGES || '';
 
     const osKey = platform.includes('ubuntu') ? 'lin'
       : platform.includes('windows') ? 'win'

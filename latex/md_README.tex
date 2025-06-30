@@ -8,9 +8,9 @@ A Git\+Hub Action that sets up a Fortran development environment using Conda. In
 \DoxyCodeLine{}
 \DoxyCodeLine{on:}
 \DoxyCodeLine{\ \ push:}
-\DoxyCodeLine{\ \ \ \ branches:\ [main,\ dev]}
+\DoxyCodeLine{\ \ \ \ branches:\ [main,\ master,\ dev]}
 \DoxyCodeLine{\ \ pull\_request:}
-\DoxyCodeLine{\ \ \ \ branches:\ [main]}
+\DoxyCodeLine{\ \ \ \ branches:\ [main,\ master]}
 \DoxyCodeLine{}
 \DoxyCodeLine{permissions:}
 \DoxyCodeLine{\ \ contents:\ write}
@@ -67,9 +67,9 @@ A Git\+Hub Action that sets up a Fortran development environment using Conda. In
 \DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ -\/\ os:\ ubuntu-\/latest}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ extra-\/packages:\ "{}cmake,\ ninja"{}}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ -\/\ os:\ windows-\/latest}
-\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ extra-\/packages:\ "{}"{}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ extra-\/packages:\ "{}cmake,\ ninja"{}}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ -\/\ os:\ macos-\/latest}
-\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ extra-\/packages:\ "{}"{}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ extra-\/packages:\ "{}cmake,\ ninja"{}}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ exclude:}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ -\/\ os:\ macos-\/latest}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ compiler:\ flang-\/new}

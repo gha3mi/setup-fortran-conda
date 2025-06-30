@@ -109,9 +109,9 @@ Usage Example</h2>
 <div class="line"> </div>
 <div class="line">on:</div>
 <div class="line">  push:</div>
-<div class="line">    branches: [main, dev]</div>
+<div class="line">    branches: [main, master, dev]</div>
 <div class="line">  pull_request:</div>
-<div class="line">    branches: [main]</div>
+<div class="line">    branches: [main, master]</div>
 <div class="line"> </div>
 <div class="line">permissions:</div>
 <div class="line">  contents: write</div>
@@ -168,9 +168,9 @@ Usage Example</h2>
 <div class="line">          - os: ubuntu-latest</div>
 <div class="line">            extra-packages: &quot;cmake, ninja&quot;</div>
 <div class="line">          - os: windows-latest</div>
-<div class="line">            extra-packages: &quot;&quot;</div>
+<div class="line">            extra-packages: &quot;cmake, ninja&quot;</div>
 <div class="line">          - os: macos-latest</div>
-<div class="line">            extra-packages: &quot;&quot;</div>
+<div class="line">            extra-packages: &quot;cmake, ninja&quot;</div>
 <div class="line">        exclude:</div>
 <div class="line">          - os: macos-latest</div>
 <div class="line">            compiler: flang-new</div>

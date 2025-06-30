@@ -148,7 +148,7 @@ Usage Example</h2>
 <div class="line">        with:</div>
 <div class="line">          compiler: ${{ matrix.compiler }}</div>
 <div class="line">          platform: ${{ matrix.os }}</div>
-<div class="line">          extra-packages: &quot;&quot;</div>
+<div class="line">          extra-packages: ${{ matrix.extra-packages }}</div>
 <div class="line"> </div>
 <div class="line">      - name: fpm test (debug)</div>
 <div class="line">        run: fpm test --compiler ${{ matrix.compiler }} --profile debug --verbose</div>
@@ -187,7 +187,7 @@ Usage Example</h2>
 <div class="line">        with:</div>
 <div class="line">          compiler: ${{ matrix.compiler }}</div>
 <div class="line">          platform: ${{ matrix.os }}</div>
-<div class="line">          extra-packages: &quot;cmake, ninja&quot;</div>
+<div class="line">          extra-packages: ${{ matrix.extra-packages }}</div>
 <div class="line">      - name: cmake test (debug)</div>
 <div class="line">        run: |</div>
 <div class="line">          cmake -S . -B build/debug -DCMAKE_BUILD_TYPE=Debug -DCMAKE_Fortran_COMPILER=${{ matrix.compiler }} -G Ninja</div>

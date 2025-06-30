@@ -47,7 +47,7 @@ A Git\+Hub Action that sets up a Fortran development environment using Conda. In
 \DoxyCodeLine{\ \ \ \ \ \ \ \ with:}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ compiler:\ \$\{\{\ matrix.compiler\ \}\}}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ platform:\ \$\{\{\ matrix.os\ \}\}}
-\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ extra-\/packages:\ "{}"{}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ extra-\/packages:\ \$\{\{\ matrix.extra-\/packages\ \}\}}
 \DoxyCodeLine{}
 \DoxyCodeLine{\ \ \ \ \ \ -\/\ name:\ fpm\ test\ (debug)}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ run:\ fpm\ test\ -\/-\/compiler\ \$\{\{\ matrix.compiler\ \}\}\ -\/-\/profile\ debug\ -\/-\/verbose}
@@ -86,7 +86,7 @@ A Git\+Hub Action that sets up a Fortran development environment using Conda. In
 \DoxyCodeLine{\ \ \ \ \ \ \ \ with:}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ compiler:\ \$\{\{\ matrix.compiler\ \}\}}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ platform:\ \$\{\{\ matrix.os\ \}\}}
-\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ extra-\/packages:\ "{}cmake,\ ninja"{}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ extra-\/packages:\ \$\{\{\ matrix.extra-\/packages\ \}\}}
 \DoxyCodeLine{\ \ \ \ \ \ -\/\ name:\ cmake\ test\ (debug)}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ run:\ |}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ cmake\ -\/S\ .\ -\/B\ build/debug\ -\/DCMAKE\_BUILD\_TYPE=Debug\ -\/DCMAKE\_Fortran\_COMPILER=\$\{\{\ matrix.compiler\ \}\}\ -\/G\ Ninja}

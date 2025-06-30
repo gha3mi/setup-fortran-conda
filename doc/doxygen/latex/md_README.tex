@@ -1,0 +1,206 @@
+\chapter{Setup Fortran with Conda}
+\hypertarget{md_README}{}\label{md_README}\index{Setup Fortran with Conda@{Setup Fortran with Conda}}
+\label{md_README_autotoc_md0}%
+\Hypertarget{md_README_autotoc_md0}%
+
+
+A Git\+Hub Action that sets up a Fortran development environment using Conda. Inspired by \href{https://degenerateconic.com/conda-plus-fortran.html}{\texttt{ Conda + Fortran}}.\hypertarget{md_README_autotoc_md1}{}\doxysection{\texorpdfstring{Usage Example}{Usage Example}}\label{md_README_autotoc_md1}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{name:\ Setup\ Fortran\ Conda\ CI/CD}
+\DoxyCodeLine{}
+\DoxyCodeLine{on:}
+\DoxyCodeLine{\ \ push:}
+\DoxyCodeLine{\ \ \ \ branches:\ [main,\ master,\ dev]}
+\DoxyCodeLine{\ \ pull\_request:}
+\DoxyCodeLine{\ \ \ \ branches:\ [main,\ master]}
+\DoxyCodeLine{}
+\DoxyCodeLine{permissions:}
+\DoxyCodeLine{\ \ contents:\ write}
+\DoxyCodeLine{\ \ pull-\/requests:\ write}
+\DoxyCodeLine{}
+\DoxyCodeLine{jobs:}
+\DoxyCodeLine{\ \ test\_fpm:}
+\DoxyCodeLine{\ \ \ \ name:\ \$\{\{\ matrix.os\ \}\}\_\$\{\{\ matrix.compiler\ \}\}\_fpm}
+\DoxyCodeLine{\ \ \ \ runs-\/on:\ \$\{\{\ matrix.os\ \}\}}
+\DoxyCodeLine{\ \ \ \ strategy:}
+\DoxyCodeLine{\ \ \ \ \ \ fail-\/fast:\ false}
+\DoxyCodeLine{\ \ \ \ \ \ matrix:}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ os:\ [ubuntu-\/latest,\ macos-\/latest,\ windows-\/latest]}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ compiler:\ [gfortran,\ ifx,\ lfortran,\ flang-\/new,\ nvfortran]}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ include:}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ -\/\ os:\ ubuntu-\/latest}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ extra-\/packages:\ "{}"{}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ -\/\ os:\ windows-\/latest}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ extra-\/packages:\ "{}"{}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ -\/\ os:\ macos-\/latest}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ extra-\/packages:\ "{}"{}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ exclude:}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ -\/\ os:\ macos-\/latest}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ compiler:\ flang-\/new}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ -\/\ os:\ macos-\/latest}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ compiler:\ ifx}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ -\/\ os:\ macos-\/latest}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ compiler:\ nvfortran}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ -\/\ os:\ windows-\/latest}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ compiler:\ nvfortran}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ steps:}
+\DoxyCodeLine{\ \ \ \ \ \ -\/\ name:\ Setup\ Fortran}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ uses:\ gha3mi/setup-\/fortran-\/conda@latest}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ with:}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ compiler:\ \$\{\{\ matrix.compiler\ \}\}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ platform:\ \$\{\{\ matrix.os\ \}\}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ extra-\/packages:\ \$\{\{\ matrix.extra-\/packages\ \}\}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \ \ -\/\ name:\ fpm\ test\ (debug)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ run:\ fpm\ test\ -\/-\/compiler\ \$\{\{\ matrix.compiler\ \}\}\ -\/-\/profile\ debug\ -\/-\/verbose}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \ \ -\/\ name:\ fpm\ test\ (release)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ run:\ fpm\ test\ -\/-\/compiler\ \$\{\{\ matrix.compiler\ \}\}\ -\/-\/profile\ release\ -\/-\/verbose}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ test\_cmake:}
+\DoxyCodeLine{\ \ \ \ name:\ \$\{\{\ matrix.os\ \}\}\_\$\{\{\ matrix.compiler\ \}\}\_cmake}
+\DoxyCodeLine{\ \ \ \ runs-\/on:\ \$\{\{\ matrix.os\ \}\}}
+\DoxyCodeLine{\ \ \ \ strategy:}
+\DoxyCodeLine{\ \ \ \ \ \ fail-\/fast:\ false}
+\DoxyCodeLine{\ \ \ \ \ \ matrix:}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ os:\ [ubuntu-\/latest,\ macos-\/latest,\ windows-\/latest]}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ compiler:\ [gfortran,\ ifx,\ lfortran,\ flang-\/new,\ nvfortran]}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ include:}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ -\/\ os:\ ubuntu-\/latest}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ extra-\/packages:\ "{}cmake,\ ninja"{}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ -\/\ os:\ windows-\/latest}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ extra-\/packages:\ "{}cmake,\ ninja"{}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ -\/\ os:\ macos-\/latest}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ extra-\/packages:\ "{}cmake,\ ninja"{}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ exclude:}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ -\/\ os:\ macos-\/latest}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ compiler:\ flang-\/new}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ -\/\ os:\ macos-\/latest}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ compiler:\ ifx}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ -\/\ os:\ macos-\/latest}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ compiler:\ nvfortran}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ -\/\ os:\ windows-\/latest}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ compiler:\ nvfortran}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ steps:}
+\DoxyCodeLine{\ \ \ \ \ \ -\/\ name:\ Setup\ Fortran}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ uses:\ gha3mi/setup-\/fortran-\/conda@latest}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ with:}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ compiler:\ \$\{\{\ matrix.compiler\ \}\}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ platform:\ \$\{\{\ matrix.os\ \}\}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ extra-\/packages:\ \$\{\{\ matrix.extra-\/packages\ \}\}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \ \ -\/\ name:\ cmake\ test\ (debug)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ run:\ |}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ cmake\ -\/S\ .\ -\/B\ build/debug\ -\/DCMAKE\_BUILD\_TYPE=Debug\ -\/DCMAKE\_Fortran\_COMPILER=\$\{\{\ matrix.compiler\ \}\}\ -\/G\ Ninja}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ cmake\ -\/-\/build\ build/debug}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ ctest\ -\/-\/test-\/dir\ build/debug\ -\/-\/output-\/on-\/failure}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \ \ -\/\ name:\ cmake\ test\ (release)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ run:\ |}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ cmake\ -\/S\ .\ -\/B\ build/release\ -\/DCMAKE\_BUILD\_TYPE=Release\ -\/DCMAKE\_Fortran\_COMPILER=\$\{\{\ matrix.compiler\ \}\}\ -\/G\ Ninja}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ cmake\ -\/-\/build\ build/release}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ ctest\ -\/-\/test-\/dir\ build/release\ -\/-\/output-\/on-\/failure}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ doc\_ford:}
+\DoxyCodeLine{\ \ \ \ name:\ Generate\ FORD\ Documentation}
+\DoxyCodeLine{\ \ \ \ runs-\/on:\ ubuntu-\/latest}
+\DoxyCodeLine{\ \ \ \ steps:}
+\DoxyCodeLine{\ \ \ \ \ \ -\/\ name:\ Setup\ and\ Generate\ FORD\ Documentation}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ uses:\ gha3mi/setup-\/fortran-\/conda@latest}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ with:}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ compiler:\ gfortran}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ platform:\ ubuntu-\/latest}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ generate-\/doc-\/ford:\ true}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ ford-\/working-\/directory:\ .}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ ford-\/config:\ README.md}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ ford-\/output-\/directory:\ doc/ford}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ ford-\/branch:\ gh-\/pages-\/ford}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ ford-\/target-\/folder:\ doc/ford}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ doc\_doxygen:}
+\DoxyCodeLine{\ \ \ \ name:\ Generate\ Doxygen\ Documentation}
+\DoxyCodeLine{\ \ \ \ runs-\/on:\ ubuntu-\/latest}
+\DoxyCodeLine{\ \ \ \ steps:}
+\DoxyCodeLine{\ \ \ \ \ \ -\/\ name:\ Setup\ and\ Generate\ Doxygen\ Documentation}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ uses:\ gha3mi/setup-\/fortran-\/conda@latest}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ with:}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ compiler:\ gfortran}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ platform:\ ubuntu-\/latest}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ generate-\/doc-\/doxygen:\ true}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ doxygen-\/working-\/directory:\ .}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ doxygen-\/config:\ Doxyfile}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ doxygen-\/output-\/directory:\ doc/doxygen}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ doxygen-\/branch:\ gh-\/pages-\/doxygen}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ doxygen-\/target-\/folder:\ doc/doxygen}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ status\_fpm:}
+\DoxyCodeLine{\ \ \ \ name:\ Generate\ STATUS.md}
+\DoxyCodeLine{\ \ \ \ if:\ always()}
+\DoxyCodeLine{\ \ \ \ needs:\ test\_fpm}
+\DoxyCodeLine{\ \ \ \ runs-\/on:\ ubuntu-\/latest}
+\DoxyCodeLine{\ \ \ \ steps:}
+\DoxyCodeLine{\ \ \ \ \ \ -\/\ name:\ Generate\ summary}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ uses:\ gha3mi/setup-\/fortran-\/conda@latest}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ with:}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ generate-\/status-\/fpm:\ true}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ status\_cmake:}
+\DoxyCodeLine{\ \ \ \ name:\ Generate\ STATUS.md}
+\DoxyCodeLine{\ \ \ \ if:\ always()}
+\DoxyCodeLine{\ \ \ \ needs:\ test\_cmake}
+\DoxyCodeLine{\ \ \ \ runs-\/on:\ ubuntu-\/latest}
+\DoxyCodeLine{\ \ \ \ steps:}
+\DoxyCodeLine{\ \ \ \ \ \ -\/\ name:\ Generate\ summary}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ uses:\ gha3mi/setup-\/fortran-\/conda@latest}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ with:}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ generate-\/status-\/cmake:\ true}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ update\_readme\_table:}
+\DoxyCodeLine{\ \ \ \ name:\ Update\ README.md\ status\ table}
+\DoxyCodeLine{\ \ \ \ if:\ always()}
+\DoxyCodeLine{\ \ \ \ needs:\ [status\_fpm,\ status\_cmake]}
+\DoxyCodeLine{\ \ \ \ runs-\/on:\ ubuntu-\/latest}
+\DoxyCodeLine{\ \ \ \ steps:}
+\DoxyCodeLine{\ \ \ \ \ \ -\/\ name:\ Update\ README\ status}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ uses:\ gha3mi/setup-\/fortran-\/conda@latest}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ with:}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ update-\/readme-\/table:\ true}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ update-\/readme-\/token:\ \$\{\{\ secrets.GH\_PAT\ \}\}\ \ \ \#\ Update\ with\ your\ GitHub\ personal\ access\ token}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ update-\/readme-\/user-\/name:\ "{}Seyed\ Ali\ Ghasemi"{}\ \#\ Update\ with\ your\ name}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ update-\/readme-\/user-\/email:\ "{}info@gha3mi.com"{}\ \ \#\ Update\ with\ your\ email}
+
+\end{DoxyCode}
+\hypertarget{md_README_autotoc_md2}{}\doxysection{\texorpdfstring{Status}{Status}}\label{md_README_autotoc_md2}
+\tabulinesep=1mm
+\begin{longtabu}spread 0pt [c]{*{4}{|X[-1]}|}
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Compiler   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ macos   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ ubuntu   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ windows    }\\\cline{1-4}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Compiler   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ macos   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ ubuntu   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ windows    }\\\cline{1-4}
+\endhead
+{\ttfamily flang-\/new}   &-\/   &fpm ✅ cmake ✅   &fpm ❌ cmake ✅    \\\cline{1-4}
+{\ttfamily gfortran}   &fpm ✅ cmake ✅   &fpm ✅ cmake ✅   &fpm ✅ cmake ✅    \\\cline{1-4}
+{\ttfamily ifx}   &-\/   &fpm ✅ cmake ✅   &fpm ✅ cmake ✅    \\\cline{1-4}
+{\ttfamily lfortran}   &fpm ✅ cmake ✅   &fpm ✅ cmake ✅   &fpm ✅ cmake ✅    \\\cline{1-4}
+{\ttfamily nvfortran}   &-\/   &fpm ✅ cmake ✅   &-\/   \\\cline{1-4}
+\end{longtabu}
+
+
+
+\begin{DoxyItemize}
+\item \href{https://github.com/gha3mi/setup-fortran-conda/blob/status-fpm/STATUS.md}{\texttt{ STATUS.\+md (FPM)}}
+\item \href{https://github.com/gha3mi/setup-fortran-conda/blob/status-cmake/STATUS.md}{\texttt{ STATUS.\+md (CMake)}}
+\end{DoxyItemize}\hypertarget{md_README_autotoc_md3}{}\doxysection{\texorpdfstring{See Also}{See Also}}\label{md_README_autotoc_md3}
+
+\begin{DoxyItemize}
+\item \href{https://github.com/fortran-lang/setup-fortran}{\texttt{ fortran-\/lang/setup-\/fortran}}
+\item \href{https://degenerateconic.com/conda-plus-fortran.html}{\texttt{ https\+://degenerateconic.\+com/conda-\/plus-\/fortran.\+html}}
+\item \href{https://fortran-lang.discourse.group/t/github-action-setup-fortran-with-conda/9869/17}{\texttt{ Fortran Discourse\+: Git\+Hub Action\+: Setup Fortran with Conda}}
+\item \href{https://fortran-lang.discourse.group/t/very-simple-ci-workflow-for-fortran-apps-using-conda/9867}{\texttt{ Fortran Discourse\+: Simple CI with Conda}} 
+\end{DoxyItemize}

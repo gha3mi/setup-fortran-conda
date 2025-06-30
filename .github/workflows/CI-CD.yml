@@ -151,20 +151,24 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
-
+        with:
+          persist-credentials: false
       - name: Generate status table
         uses: gha3mi/setup-fortran-conda@latest
         with:
           generate-status-table: true
 
-      - name: Commit README update
+      - name: Setup Git author
         run: |
-          git config user.name "Seyed Ali Ghaemi" # Update with your name
-          git config user.email "info@gha3mi.com" # Update with your email
-          if git diff --quiet README.md; then
-            echo "No changes to commit."
-          else
-            git add README.md
-            git commit -m "Update README.md status table [ci skip]"
-            git push -f
-          fi
+          git config user.name "Seyed Ali Ghasemi" # Update with your name
+          git config user.email "info@gha3mi.com"  # Update with your email
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "Update README.md status table [ci skip]"
+          branch: update/readme-status-table
+          title: "📊 Auto-update README.md status table"
+          body: "This PR updates the CI status table in the README.md."
+          delete-branch: true

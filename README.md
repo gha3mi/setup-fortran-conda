@@ -54,17 +54,10 @@ This example automates Fortran CI/CD:
 
 To enable automatic CI status table injection, add the following to your `README.md`:
 
-```markdown
-<!-- STATUS:setup-fortran-conda:START -->
-| Compiler   | macos | ubuntu | windows |
-|------------|----------------------|----------------------|----------------------|
-| `flang-new` | - | fpm ✅  cmake ✅ | fpm ❌  cmake ✅ |
-| `gfortran` | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ |
-| `ifx` | - | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ |
-| `lfortran` | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ |
-| `nvfortran` | - | fpm ✅  cmake ✅ | - |
-<!-- STATUS:setup-fortran-conda:END -->
-```
+<pre>
+&lt;!-- STATUS:setup-fortran-conda:START --&gt;
+&lt;!-- STATUS:setup-fortran-conda:END --&gt;
+</pre>
 
 ### Job Breakdown
 

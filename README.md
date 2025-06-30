@@ -152,15 +152,29 @@ jobs:
           generate-status-cmake: true
 ```
 
- ## Status
-  
-  [STATUS.md (FPM)](https://github.com/gha3mi/setup-fortran-conda/blob/status-fpm/STATUS.md)
+## Status
 
-  [STATUS.md (CMake)](https://github.com/gha3mi/setup-fortran-conda/blob/status-cmake/STATUS.md)
+Run the following command to update the status table in this README:
+
+```shell
+bash update-readme-status.sh
+```
+<!-- STATUS:setup-fortran-conda:START -->
+| Compiler   | macos | ubuntu | windows |
+|------------|----------------------|----------------------|----------------------|
+| `flang-new` | - | fpm ✅  cmake ✅ | fpm ❌  cmake ✅ |
+| `gfortran` | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ |
+| `ifx` | - | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ |
+| `lfortran` | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ |
+| `nvfortran` | - | fpm ✅  cmake ✅ | - |
+<!-- STATUS:setup-fortran-conda:END -->
+
+- [STATUS.md (FPM)](https://github.com/gha3mi/setup-fortran-conda/blob/status-fpm/STATUS.md)
+- [STATUS.md (CMake)](https://github.com/gha3mi/setup-fortran-conda/blob/status-cmake/STATUS.md)
 
 ## See Also
 
-- [fortran-lang/setup-fortran](fortran-lang/setup-fortran)
+- [fortran-lang/setup-fortran](https://github.com/fortran-lang/setup-fortran)
 - [https://degenerateconic.com/conda-plus-fortran.html](https://degenerateconic.com/conda-plus-fortran.html)
 - [Fortran Discourse: GitHub Action: Setup Fortran with Conda](https://fortran-lang.discourse.group/t/github-action-setup-fortran-with-conda/9869/17)
 - [Fortran Discourse: Simple CI with Conda](https://fortran-lang.discourse.group/t/very-simple-ci-workflow-for-fortran-apps-using-conda/9867)

@@ -17,8 +17,8 @@ async function getVersion(cmd, args = ['--version']) {
 
 async function run() {
   try {
-    const compiler = getInput('compiler', { required: true }).toLowerCase();
-    const platform = getInput('platform', { required: true }).toLowerCase();
+    const compiler = (process.env.INPUT_COMPILER || '').toLowerCase();
+    const platform = (process.env.INPUT_PLATFORM || '').toLowerCase();
     const extrasInput = process.env.INPUT_EXTRA_PACKAGES || '';
 
     const osKey = platform.includes('ubuntu') ? 'lin'
@@ -29,7 +29,10 @@ async function run() {
 
     // Install extra packages
     const { installExtras } = await import('./extra.js');
-    const extras = extrasInput.split(',').map(p => p.trim()).filter(Boolean);
+    const extras = extrasInput
+      .split(/[\s,]+/) // handles commas, spaces, or newlines
+      .map(p => p.trim())
+      .filter(Boolean);
     await installExtras('fortran', extras);
 
     // Install compiler

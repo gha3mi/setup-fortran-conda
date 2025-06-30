@@ -53,7 +53,7 @@ jobs:
         with:
           compiler: ${{ matrix.compiler }}
           platform: ${{ matrix.os }}
-          extra-packages: ""
+          extra-packages: ${{ matrix.extra-packages }}
 
       - name: fpm test (debug)
         run: fpm test --compiler ${{ matrix.compiler }} --profile debug --verbose
@@ -92,7 +92,7 @@ jobs:
         with:
           compiler: ${{ matrix.compiler }}
           platform: ${{ matrix.os }}
-          extra-packages: "cmake, ninja"
+          extra-packages: ${{ matrix.extra-packages }}
       - name: cmake test (debug)
         run: |
           cmake -S . -B build/debug -DCMAKE_BUILD_TYPE=Debug -DCMAKE_Fortran_COMPILER=${{ matrix.compiler }} -G Ninja

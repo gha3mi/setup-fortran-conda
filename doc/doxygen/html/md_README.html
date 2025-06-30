@@ -150,6 +150,13 @@ Overview</h2>
 README Integration</h2>
 <p>To enable automatic CI status table injection, add the following to your <code>README.md</code>:</p>
 <div class="fragment"><div class="line">&lt;!-- STATUS:setup-fortran-conda:START --&gt;</div>
+<div class="line">| Compiler   | macos | ubuntu | windows |</div>
+<div class="line">|------------|----------------------|----------------------|----------------------|</div>
+<div class="line">| `flang-new` | - | fpm ✅  cmake ✅ | fpm ❌  cmake ✅ |</div>
+<div class="line">| `gfortran` | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ |</div>
+<div class="line">| `ifx` | - | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ |</div>
+<div class="line">| `lfortran` | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ |</div>
+<div class="line">| `nvfortran` | - | fpm ✅  cmake ✅ | - |</div>
 <div class="line">&lt;!-- STATUS:setup-fortran-conda:END --&gt;</div>
 </div><!-- fragment --><h2><a class="anchor" id="autotoc_md5"></a>
 Job Breakdown</h2>

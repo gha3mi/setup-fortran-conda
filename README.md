@@ -2,7 +2,6 @@
 
 A GitHub Action that sets up a Fortran development environment using Conda. Inspired by [Conda + Fortran](https://degenerateconic.com/conda-plus-fortran.html).
 
-
 ## Usage Example
 
 ```yaml
@@ -150,23 +149,37 @@ jobs:
         uses: gha3mi/setup-fortran-conda@latest
         with:
           generate-status-cmake: true
+
+  update_readme_table:
+    name: Update README.md status table
+    if: always()
+    needs: [status_fpm, status_cmake]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Generate README Matrix
+        uses: gha3mi/setup-fortran-conda@latest
+        with:
+          generate-status-table: true
+
+      - name: Commit README update
+        run: |
+          git config user.name "Seyed Ali Ghaemi" # Update with your name
+          git config user.email "info@gha3mi.com" # Update with your email
+          if git diff --quiet README.md; then
+            echo "No changes to commit."
+          else
+            git add README.md
+            git commit -m "Update README.md status table [ci skip]"
+            git push -f
+          fi
 ```
 
 ## Status
 
-Run the following command to update the status in the `README.md` file:
-
-```shell
-bash update-readme-status.sh
-```
 <!-- STATUS:setup-fortran-conda:START -->
-| Compiler   | macos | ubuntu | windows |
-|------------|----------------------|----------------------|----------------------|
-| `flang-new` | - | fpm ✅  cmake ✅ | fpm ❌  cmake ✅ |
-| `gfortran` | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ |
-| `ifx` | - | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ |
-| `lfortran` | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ |
-| `nvfortran` | - | fpm ✅  cmake ✅ | - |
 <!-- STATUS:setup-fortran-conda:END -->
 
 - [STATUS.md (FPM)](https://github.com/gha3mi/setup-fortran-conda/blob/status-fpm/STATUS.md)

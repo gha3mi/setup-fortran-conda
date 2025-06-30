@@ -5,8 +5,12 @@ TMP_FPM="status_fpm.tmp"
 TMP_CMAKE="status_cmake.tmp"
 
 # Remote URLs
-URL_FPM="https://raw.githubusercontent.com/gha3mi/setup-fortran-conda/status-fpm/STATUS.md"
-URL_CMAKE="https://raw.githubusercontent.com/gha3mi/setup-fortran-conda/status-cmake/STATUS.md"
+# Dynamic remote URLs for any GitHub repo
+REPO="${GITHUB_REPOSITORY:-gha3mi/setup-fortran-conda}"
+RAW_BASE="https://raw.githubusercontent.com/${REPO}"
+
+URL_FPM="${RAW_BASE}/status-fpm/STATUS.md"
+URL_CMAKE="${RAW_BASE}/status-cmake/STATUS.md"
 
 # Flags for file availability
 HAS_FPM=false

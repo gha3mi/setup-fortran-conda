@@ -32,11 +32,11 @@ jobs:
         compiler: [gfortran, ifx, lfortran, flang-new, nvfortran]
         include:
           - os: ubuntu-latest
-            extra-packages: "cmake, ninja"
+            extra-packages: ""
           - os: windows-latest
-            extra-packages: "cmake, ninja"
+            extra-packages: ""
           - os: macos-latest
-            extra-packages: "cmake, ninja"
+            extra-packages: ""
         exclude:
           - os: macos-latest
             compiler: flang-new

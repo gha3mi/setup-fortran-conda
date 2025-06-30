@@ -227,7 +227,9 @@ jobs:
 
   update_readme_table:
     name: Update README.md status table
-    if: always()
+    if: |
+      always() &&
+      github.ref != 'refs/heads/update-readme-table'
     needs: [status_fpm, status_cmake]
     runs-on: ubuntu-latest
     steps:

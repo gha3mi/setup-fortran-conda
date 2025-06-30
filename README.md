@@ -180,6 +180,13 @@ jobs:
 ## Status
 
 <!-- STATUS:setup-fortran-conda:START -->
+| Compiler   | macos | ubuntu | windows |
+|------------|----------------------|----------------------|----------------------|
+| `flang-new` | - | fpm ✅  cmake ✅ | fpm ❌  cmake ✅ |
+| `gfortran` | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ |
+| `ifx` | - | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ |
+| `lfortran` | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ |
+| `nvfortran` | - | fpm ✅  cmake ✅ | - |
 <!-- STATUS:setup-fortran-conda:END -->
 
 - [STATUS.md (FPM)](https://github.com/gha3mi/setup-fortran-conda/blob/status-fpm/STATUS.md)

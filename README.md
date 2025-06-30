@@ -151,7 +151,7 @@ jobs:
           generate-status-cmake: true
 ```
 
- ## View Status Pages:
+ ## Status
   
   [STATUS.md (FPM)](https://github.com/gha3mi/setup-fortran-conda/blob/status-fpm/STATUS.md)
 

@@ -104,20 +104,8 @@ $(function(){initNavTree('md_README.html',''); initResizable(true); });
 Setup Fortran with Conda</h1>
 <p>A GitHub Action that sets up a Fortran development environment using Conda. Inspired by <a href="https://degenerateconic.com/conda-plus-fortran.html">Conda + Fortran</a>.</p>
 <h2><a class="anchor" id="autotoc_md1"></a>
-Inputs</h2>
-<table class="markdownTable">
-<tr class="markdownTableHead">
-<th class="markdownTableHeadNone">Name   </th><th class="markdownTableHeadNone">Description   </th><th class="markdownTableHeadNone">Required   </th><th class="markdownTableHeadNone">Default    </th></tr>
-<tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><code>platform</code>   </td><td class="markdownTableBodyNone">Platform (<code>ubuntu-latest</code>, <code>windows-latest</code>, <code>macos-latest</code>)   </td><td class="markdownTableBodyNone">yes   </td><td class="markdownTableBodyNone">—    </td></tr>
-<tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone"><code>compiler</code>   </td><td class="markdownTableBodyNone">Compiler to install (<code>gfortran</code>, <code>ifx</code>, <code>lfortran</code>, <code>flang</code>, <code>nvfortran</code>)   </td><td class="markdownTableBodyNone">yes   </td><td class="markdownTableBodyNone">—    </td></tr>
-<tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><code>extra-packages</code>   </td><td class="markdownTableBodyNone">list of additional Conda packages   </td><td class="markdownTableBodyNone">no   </td><td class="markdownTableBodyNone"><code>""</code>   </td></tr>
-</table>
-<h2><a class="anchor" id="autotoc_md2"></a>
-Example: FPM CI Workflow</h2>
-<div class="fragment"><div class="line">name: CI_fpm</div>
+Usage Example</h2>
+<div class="fragment"><div class="line">name: Setup Fortran Conda CI/CD</div>
 <div class="line"> </div>
 <div class="line">on:</div>
 <div class="line">  push:</div>
@@ -125,9 +113,12 @@ Example: FPM CI Workflow</h2>
 <div class="line">  pull_request:</div>
 <div class="line">    branches: [main]</div>
 <div class="line"> </div>
+<div class="line">permissions:</div>
+<div class="line">  contents: write</div>
+<div class="line"> </div>
 <div class="line">jobs:</div>
-<div class="line">  test:</div>
-<div class="line">    name: ${{ matrix.os }}_${{ matrix.compiler }}</div>
+<div class="line">  test_fpm:</div>
+<div class="line">    name: ${{ matrix.os }}_${{ matrix.compiler }}_fpm</div>
 <div class="line">    runs-on: ${{ matrix.os }}</div>
 <div class="line">    strategy:</div>
 <div class="line">      fail-fast: false</div>
@@ -135,12 +126,12 @@ Example: FPM CI Workflow</h2>
 <div class="line">        os: [ubuntu-latest, macos-latest, windows-latest]</div>
 <div class="line">        compiler: [gfortran, ifx, lfortran, flang-new, nvfortran]</div>
 <div class="line">        include:</div>
-<div class="line">        - os: ubuntu-latest</div>
-<div class="line">          extra-packages: &quot;&quot;</div>
-<div class="line">        - os: windows-latest</div>
-<div class="line">          extra-packages: &quot;&quot;</div>
-<div class="line">        - os: macos-latest</div>
-<div class="line">          extra-packages: &quot;&quot;</div>
+<div class="line">          - os: ubuntu-latest</div>
+<div class="line">            extra-packages: &quot;cmake, ninja&quot;</div>
+<div class="line">          - os: windows-latest</div>
+<div class="line">            extra-packages: &quot;cmake, ninja&quot;</div>
+<div class="line">          - os: macos-latest</div>
+<div class="line">            extra-packages: &quot;cmake, ninja&quot;</div>
 <div class="line">        exclude:</div>
 <div class="line">          - os: macos-latest</div>
 <div class="line">            compiler: flang-new</div>
@@ -152,22 +143,12 @@ Example: FPM CI Workflow</h2>
 <div class="line">            compiler: nvfortran</div>
 <div class="line"> </div>
 <div class="line">    steps:</div>
-<div class="line">      - name: Checkout repository</div>
-<div class="line">        uses: actions/checkout@v4</div>
-<div class="line"> </div>
-<div class="line">      - name: Setup Conda</div>
-<div class="line">        uses: conda-incubator/setup-miniconda@v3</div>
-<div class="line">        with:</div>
-<div class="line">          auto-update-conda: true</div>
-<div class="line">          activate-environment: fortran</div>
-<div class="line">          channels: conda-forge, defaults</div>
-<div class="line"> </div>
 <div class="line">      - name: Setup Fortran</div>
 <div class="line">        uses: gha3mi/setup-fortran-conda@latest</div>
 <div class="line">        with:</div>
 <div class="line">          compiler: ${{ matrix.compiler }}</div>
 <div class="line">          platform: ${{ matrix.os }}</div>
-<div class="line">          extra-packages: ${{ matrix.extra-packages }}</div>
+<div class="line">          extra-packages: &quot;&quot;</div>
 <div class="line"> </div>
 <div class="line">      - name: fpm test (debug)</div>
 <div class="line">        run: fpm test --compiler ${{ matrix.compiler }} --profile debug --verbose</div>
@@ -175,165 +156,99 @@ Example: FPM CI Workflow</h2>
 <div class="line">      - name: fpm test (release)</div>
 <div class="line">        run: fpm test --compiler ${{ matrix.compiler }} --profile release --verbose</div>
 <div class="line"> </div>
-<div class="line">  summary:</div>
-<div class="line">    permissions:</div>
-<div class="line">      contents: write</div>
-<div class="line">    name: Generate STATUS.md</div>
-<div class="line">    if: always()</div>
-<div class="line">    needs: test</div>
+<div class="line">  test_cmake:</div>
+<div class="line">    name: ${{ matrix.os }}_${{ matrix.compiler }}_cmake</div>
+<div class="line">    runs-on: ${{ matrix.os }}</div>
+<div class="line">    strategy:</div>
+<div class="line">      fail-fast: false</div>
+<div class="line">      matrix:</div>
+<div class="line">        os: [ubuntu-latest, macos-latest, windows-latest]</div>
+<div class="line">        compiler: [gfortran, ifx, lfortran, flang-new, nvfortran]</div>
+<div class="line">        include:</div>
+<div class="line">          - os: ubuntu-latest</div>
+<div class="line">            extra-packages: &quot;cmake, ninja&quot;</div>
+<div class="line">          - os: windows-latest</div>
+<div class="line">            extra-packages: &quot;&quot;</div>
+<div class="line">          - os: macos-latest</div>
+<div class="line">            extra-packages: &quot;&quot;</div>
+<div class="line">        exclude:</div>
+<div class="line">          - os: macos-latest</div>
+<div class="line">            compiler: flang-new</div>
+<div class="line">          - os: macos-latest</div>
+<div class="line">            compiler: ifx</div>
+<div class="line">          - os: macos-latest</div>
+<div class="line">            compiler: nvfortran</div>
+<div class="line">          - os: windows-latest</div>
+<div class="line">            compiler: nvfortran</div>
+<div class="line"> </div>
+<div class="line">    steps:</div>
+<div class="line">      - name: Setup Fortran</div>
+<div class="line">        uses: gha3mi/setup-fortran-conda@latest</div>
+<div class="line">        with:</div>
+<div class="line">          compiler: ${{ matrix.compiler }}</div>
+<div class="line">          platform: ${{ matrix.os }}</div>
+<div class="line">          extra-packages: &quot;cmake, ninja&quot;</div>
+<div class="line">      - name: cmake test (debug)</div>
+<div class="line">        run: |</div>
+<div class="line">          cmake -S . -B build/debug -DCMAKE_BUILD_TYPE=Debug -DCMAKE_Fortran_COMPILER=${{ matrix.compiler }} -G Ninja</div>
+<div class="line">          cmake --build build/debug</div>
+<div class="line">          ctest --test-dir build/debug --output-on-failure</div>
+<div class="line"> </div>
+<div class="line">      - name: cmake test (release)</div>
+<div class="line">        run: |</div>
+<div class="line">          cmake -S . -B build/release -DCMAKE_BUILD_TYPE=Release -DCMAKE_Fortran_COMPILER=${{ matrix.compiler }} -G Ninja</div>
+<div class="line">          cmake --build build/release</div>
+<div class="line">          ctest --test-dir build/release --output-on-failure</div>
+<div class="line"> </div>
+<div class="line">  doc_ford:</div>
+<div class="line">    name: Generate FORD Documentation</div>
 <div class="line">    runs-on: ubuntu-latest</div>
 <div class="line">    steps:</div>
-<div class="line">      - name: Checkout</div>
-<div class="line">        uses: actions/checkout@v4</div>
-<div class="line"> </div>
-<div class="line">      - name: Generate summary from GitHub API</div>
-<div class="line">        env:</div>
-<div class="line">          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}</div>
-<div class="line">          REPO: ${{ github.repository }}</div>
-<div class="line">          RUN_ID: ${{ github.run_id }}</div>
-<div class="line">        run: |</div>
-<div class="line">          badge_line=&quot;&quot;</div>
-<div class="line"> </div>
-<div class="line">          mapfile -t job_lines &lt; &lt;(</div>
-<div class="line">            curl -s -H &quot;Authorization: token $GH_TOKEN&quot; \</div>
-<div class="line">              https://api.github.com/repos/$REPO/actions/runs/$RUN_ID/jobs \</div>
-<div class="line">              | jq -r &#39;.jobs[] | select(.name | test(&quot;.*_.*&quot;)) | [.name, .conclusion] | @tsv&#39;</div>
-<div class="line">          )</div>
-<div class="line"> </div>
-<div class="line">          for line in &quot;${job_lines[@]}&quot;; do</div>
-<div class="line">            name=&quot;${line%%$&#39;\t&#39;*}&quot;</div>
-<div class="line">            conclusion=&quot;${line#*$&#39;\t&#39;}&quot;</div>
-<div class="line"> </div>
-<div class="line">            os=&quot;${name%%_*}&quot;</div>
-<div class="line">            compiler=&quot;${name#*_}&quot;</div>
-<div class="line">            key=&quot;${os}_${compiler}&quot;</div>
-<div class="line"> </div>
-<div class="line">            # shields.io escaping</div>
-<div class="line">            safe_os=&quot;${os//-/&#39;--&#39;}&quot;</div>
-<div class="line">            safe_compiler=&quot;${compiler//-/&#39;--&#39;}&quot;</div>
-<div class="line">            safe_key=&quot;${safe_os}_${safe_compiler}&quot;</div>
-<div class="line"> </div>
-<div class="line">            if [[ &quot;$conclusion&quot; == &quot;success&quot; ]]; then</div>
-<div class="line">              color=&quot;brightgreen&quot;</div>
-<div class="line">              label=&quot;passing&quot;</div>
-<div class="line">            elif [[ &quot;$conclusion&quot; == &quot;failure&quot; ]]; then</div>
-<div class="line">              color=&quot;red&quot;</div>
-<div class="line">              label=&quot;failing&quot;</div>
-<div class="line">            elif [[ &quot;$conclusion&quot; == &quot;cancelled&quot; ]]; then</div>
-<div class="line">              color=&quot;lightgrey&quot;</div>
-<div class="line">              label=&quot;cancelled&quot;</div>
-<div class="line">            else</div>
-<div class="line">              color=&quot;lightgrey&quot;</div>
-<div class="line">              label=&quot;pending&quot;</div>
-<div class="line">            fi</div>
-<div class="line"> </div>
-<div class="line">            badge=&quot;![${key}](https://img.shields.io/badge/${safe_key}-${label}-${color})&quot;</div>
-<div class="line">            badge_line=&quot;$badge_line $badge&quot;</div>
-<div class="line">          done</div>
-<div class="line"> </div>
-<div class="line">          echo &quot;$badge_line&quot; &gt; STATUS.md</div>
-<div class="line"> </div>
-<div class="line">          mkdir -p status</div>
-<div class="line">          mv STATUS.md status/STATUS.md</div>
-<div class="line">          cat status/STATUS.md</div>
-<div class="line"> </div>
-<div class="line">      - name: Deploy STATUS.md to GitHub Pages</div>
-<div class="line">        uses: JamesIves/github-pages-deploy-action@v4.7.3</div>
-<div class="line">        with:</div>
-<div class="line">          branch: gh-pages-status</div>
-<div class="line">          folder: status</div>
-<div class="line">          clean: true</div>
-<div class="line">          commit-message: &quot;Deploy status&quot;</div>
-</div><!-- fragment --> <h2><a class="anchor" id="autotoc_md3"></a>
-Example: Build FORD Documentation</h2>
-<div class="fragment"><div class="line">name: Doc_ford</div>
-<div class="line"> </div>
-<div class="line">on:</div>
-<div class="line">  push:</div>
-<div class="line">    branches: [main, dev]</div>
-<div class="line">permissions:</div>
-<div class="line">  contents: write</div>
-<div class="line"> </div>
-<div class="line">jobs:</div>
-<div class="line">  Doc_ford:</div>
-<div class="line">    runs-on: ${{ matrix.os }}</div>
-<div class="line">    strategy:</div>
-<div class="line">      fail-fast: false</div>
-<div class="line">      matrix:</div>
-<div class="line">        os: [ubuntu-latest]</div>
-<div class="line">        compiler: [gfortran]</div>
-<div class="line">    steps:</div>
-<div class="line">      - name: Checkout repository</div>
-<div class="line">        uses: actions/checkout@v4</div>
-<div class="line"> </div>
-<div class="line">      - name: Setup Conda</div>
-<div class="line">        uses: conda-incubator/setup-miniconda@v3</div>
-<div class="line">        with:</div>
-<div class="line">          auto-update-conda: true</div>
-<div class="line">          activate-environment: fortran</div>
-<div class="line">          channels: conda-forge, defaults</div>
-<div class="line"> </div>
-<div class="line">      - name: Setup Fortran</div>
+<div class="line">      - name: Setup and Generate FORD Documentation</div>
 <div class="line">        uses: gha3mi/setup-fortran-conda@latest</div>
 <div class="line">        with:</div>
-<div class="line">          compiler: ${{ matrix.compiler }}</div>
-<div class="line">          platform: ${{ matrix.os }}</div>
-<div class="line">          extra-packages: &quot;&quot;</div>
+<div class="line">          compiler: gfortran</div>
+<div class="line">          platform: ubuntu-latest</div>
+<div class="line">          generate-doc-ford: true</div>
+<div class="line">          ford-config: README.md</div>
+<div class="line">          ford-branch: gh-pages-ford</div>
 <div class="line"> </div>
-<div class="line">      - name: Build FORD Documentation</div>
-<div class="line">        run: ford README.md</div>
-<div class="line">      - name: Deploy FORD Documentation</div>
-<div class="line">        uses: JamesIves/github-pages-deploy-action@v4.7.3</div>
-<div class="line">        with:</div>
-<div class="line">          branch: gh-pages-ford</div>
-<div class="line">          folder: doc/ford</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md4"></a>
-Example: Build Doxygen Documentation</h2>
-<div class="fragment"><div class="line">name: Doc_doxygen</div>
-<div class="line"> </div>
-<div class="line">on:</div>
-<div class="line">  push:</div>
-<div class="line">    branches: [main, dev]</div>
-<div class="line">permissions:</div>
-<div class="line">  contents: write</div>
-<div class="line"> </div>
-<div class="line">jobs:</div>
-<div class="line">  Doc_doxygen:</div>
-<div class="line">    runs-on: ${{ matrix.os }}</div>
-<div class="line">    strategy:</div>
-<div class="line">      fail-fast: false</div>
-<div class="line">      matrix:</div>
-<div class="line">        os: [ubuntu-latest]</div>
-<div class="line">        compiler: [gfortran]</div>
+<div class="line">  doc_doxygen:</div>
+<div class="line">    name: Generate Doxygen Documentation</div>
+<div class="line">    runs-on: ubuntu-latest</div>
 <div class="line">    steps:</div>
-<div class="line">      - name: Checkout repository</div>
-<div class="line">        uses: actions/checkout@v4</div>
-<div class="line"> </div>
-<div class="line">      - name: Setup Conda</div>
-<div class="line">        uses: conda-incubator/setup-miniconda@v3</div>
-<div class="line">        with:</div>
-<div class="line">          auto-update-conda: true</div>
-<div class="line">          activate-environment: fortran</div>
-<div class="line">          channels: conda-forge, defaults</div>
-<div class="line"> </div>
-<div class="line">      - name: Setup Fortran</div>
+<div class="line">      - name: Setup and Generate Doxygen Documentation</div>
 <div class="line">        uses: gha3mi/setup-fortran-conda@latest</div>
 <div class="line">        with:</div>
-<div class="line">          compiler: ${{ matrix.compiler }}</div>
-<div class="line">          platform: ${{ matrix.os }}</div>
-<div class="line">          extra-packages: &quot;&quot;</div>
+<div class="line">          compiler: gfortran</div>
+<div class="line">          platform: ubuntu-latest</div>
+<div class="line">          generate-doc-doxygen: true</div>
+<div class="line">          doxygen-config: Doxyfile</div>
+<div class="line">          doxygen-branch: gh-pages-doxygen</div>
 <div class="line"> </div>
-<div class="line">      - name: Create Doxygen output directory</div>
-<div class="line">        run: mkdir -p doc/doxygen</div>
 <div class="line"> </div>
-<div class="line">      - name: Build Doxygen Documentation</div>
-<div class="line">        run: doxygen Doxyfile</div>
-<div class="line">      - name: Deploy Doxygen Documentation</div>
-<div class="line">        uses: JamesIves/github-pages-deploy-action@v4.7.3</div>
+<div class="line">  status_fpm:</div>
+<div class="line">    name: Generate STATUS.md</div>
+<div class="line">    if: always()</div>
+<div class="line">    needs: test_fpm</div>
+<div class="line">    runs-on: ubuntu-latest</div>
+<div class="line">    steps:</div>
+<div class="line">      - name: Generate summary</div>
+<div class="line">        uses: gha3mi/setup-fortran-conda@latest</div>
 <div class="line">        with:</div>
-<div class="line">          branch: gh-pages-doxygen</div>
-<div class="line">          folder: doc/doxygen</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md5"></a>
+<div class="line">          generate-status-fpm: true</div>
+<div class="line"> </div>
+<div class="line">  status_cmake:</div>
+<div class="line">    name: Generate STATUS.md</div>
+<div class="line">    if: always()</div>
+<div class="line">    needs: test_cmake</div>
+<div class="line">    runs-on: ubuntu-latest</div>
+<div class="line">    steps:</div>
+<div class="line">      - name: Generate summary</div>
+<div class="line">        uses: gha3mi/setup-fortran-conda@latest</div>
+<div class="line">        with:</div>
+<div class="line">          generate-status-cmake: true</div>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md2"></a>
 See Also</h2>
 <ul>
 <li><a href="fortran-lang/setup-fortran">fortran-lang/setup-fortran</a></li>

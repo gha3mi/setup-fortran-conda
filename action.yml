@@ -40,6 +40,10 @@ inputs:
     description: "Path to generated FORD documentation (used by deployment)"
     required: false
     default: "doc/ford"
+  ford-target-folder:
+    description: "Target folder in repo for deployed FORD docs (used only if branch is main or master)"
+    required: false
+    default: "doc/ford"
 
   generate-doc-doxygen:
     description: "Whether to build and deploy Doxygen documentation"
@@ -59,6 +63,10 @@ inputs:
     default: "."
   doxygen-output-directory:
     description: "Path to generated Doxygen documentation (used by deployment)"
+    required: false
+    default: "doc/doxygen"
+  doxygen-target-folder:
+    description: "Target folder in repo for deployed Doxygen docs (used only if branch is main or master)"
     required: false
     default: "doc/doxygen"
 
@@ -117,7 +125,8 @@ runs:
       with:
         branch: ${{ inputs.ford-branch }}
         folder: ${{ inputs.ford-output-directory }}
-        clean: true
+        target-folder: ${{ inputs.ford-target-folder }}
+        clean: ${{ !contains('main master', inputs.ford-branch) }}
         commit-message: "Deploy FORD docs"
 
     - name: Build Doxygen documentation
@@ -137,7 +146,8 @@ runs:
       with:
         branch: ${{ inputs.doxygen-branch }}
         folder: ${{ inputs.doxygen-output-directory }}
-        clean: true
+        target-folder: ${{ inputs.doxygen-target-folder }}
+        clean: ${{ !contains('main master', inputs.doxygen-branch) }}
         commit-message: "Deploy Doxygen docs"
 
     - name: Generate STATUS.md for test_fpm

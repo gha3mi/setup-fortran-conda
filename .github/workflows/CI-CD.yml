@@ -109,6 +109,7 @@ jobs:
           ford-config: README.md
           ford-output-directory: doc/ford
           ford-branch: gh-pages-ford
+          ford-target-folder: doc/ford
 
   doc_doxygen:
     name: Generate Doxygen Documentation
@@ -124,7 +125,7 @@ jobs:
           doxygen-config: Doxyfile
           doxygen-output-directory: doc/doxygen
           doxygen-branch: gh-pages-doxygen
-
+          doxygen-target-folder: doc/doxygen
 
   status_fpm:
     name: Generate STATUS.md

@@ -89,6 +89,7 @@ jobs:
           compiler: ${{ matrix.compiler }}
           platform: ${{ matrix.os }}
           extra-packages: ${{ matrix.extra-packages }}
+
       - name: cmake test (debug)
         run: |
           cmake -S . -B build/debug -DCMAKE_BUILD_TYPE=Debug -DCMAKE_Fortran_COMPILER=${{ matrix.compiler }} -G Ninja

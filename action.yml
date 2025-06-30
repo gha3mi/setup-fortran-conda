@@ -85,6 +85,21 @@ inputs:
     required: false
     default: "false"
 
+  update-readme-table:
+    description: "Whether to auto-update the status table in README.md and commit it"
+    required: false
+    default: "false"
+  update-readme-user-name:
+    description: "Git user.name for README.md update commit"
+    required: false
+  update-readme-user-email:
+    description: "Git user.email for README.md update commit"
+    required: false
+  update-readme-token:
+    description: "GitHub token used to create the PR for updating the README table"
+    required: false
+
+
 runs:
   using: "composite"
   steps:
@@ -273,3 +288,33 @@ runs:
       shell: bash
       run: |
         bash "${{ github.action_path }}/scripts/update-readme-status.sh"
+
+    - name: Checkout repository (for README update)
+      if: ${{ inputs.update-readme-table == 'true' }}
+      uses: actions/checkout@v4
+      with:
+        persist-credentials: false
+
+    - name: Generate status table in README
+      if: ${{ inputs.update-readme-table == 'true' }}
+      shell: bash
+      run: |
+        bash "${{ github.action_path }}/scripts/update-readme-status.sh"
+
+    - name: Setup Git author
+      if: ${{ inputs.update-readme-table == 'true' }}
+      shell: bash
+      run: |
+        git config user.name "${{ inputs.update-readme-user-name }}"
+        git config user.email "${{ inputs.update-readme-user-email }}"
+
+    - name: Create Pull Request for README table
+      if: ${{ inputs.update-readme-table == 'true' }}
+      uses: peter-evans/create-pull-request@v5
+      with:
+        token: "${{ inputs.update-readme-token }}"
+        commit-message: "Update README.md status table [ci skip]"
+        branch: update/readme-status-table
+        title: "update README.md status table"
+        body: "This PR updates the CI status table in the README.md."
+        delete-branch: true

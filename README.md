@@ -162,29 +162,13 @@ jobs:
     needs: [status_fpm, status_cmake]
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-      - name: Generate status table
+      - name: Update README status
         uses: gha3mi/setup-fortran-conda@latest
         with:
-          generate-status-table: true
-
-      - name: Setup Git author
-        run: |
-          git config user.name "Seyed Ali Ghasemi" # Update with your name
-          git config user.email "info@gha3mi.com"  # Update with your email
-
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v5
-        with:
-          token: ${{ secrets.GH_PAT }}
-          commit-message: "Update README.md status table [ci skip]"
-          branch: update/readme-status-table
-          title: "update README.md status table"
-          body: "This PR updates the CI status table in the README.md."
-          delete-branch: true
+          update-readme-table: true
+          update-readme-token: ${{ secrets.GH_PAT }}   # Update with your GitHub personal access token
+          update-readme-user-name: "Seyed Ali Ghasemi" # Update with your name
+          update-readme-user-email: "info@gha3mi.com"  # Update with your email
 ```
 
 ## Status

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['readme_0',['README',['../md_README.html',1,'']]]
+  ['conda_0',['Setup Fortran with Conda',['../md_README.html',1,'']]]
 ];

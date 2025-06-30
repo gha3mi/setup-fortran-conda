@@ -25,11 +25,10 @@
 var NAVTREE =
 [
   [ "My Project", "index.html", [
-    [ "README", "md_README.html", [
-      [ "Setup Fortran with Conda", "md_README.html#autotoc_md0", [
-        [ "Usage Example", "md_README.html#autotoc_md1", null ],
-        [ "See Also", "md_README.html#autotoc_md2", null ]
-      ] ]
+    [ "Setup Fortran with Conda", "md_README.html", [
+      [ "Usage Example", "md_README.html#autotoc_md1", null ],
+      [ "View Status Pages:", "md_README.html#autotoc_md2", null ],
+      [ "See Also", "md_README.html#autotoc_md3", null ]
     ] ]
   ] ]
 ];

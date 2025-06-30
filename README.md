@@ -2,7 +2,76 @@
 
 A GitHub Action that sets up a Fortran development environment using Conda. Inspired by [Conda + Fortran](https://degenerateconic.com/conda-plus-fortran.html).
 
-## Usage Example
+
+## 📋 Workflow Example
+
+### 🔐 IMPORTANT NOTE
+
+> ⚠️ **Use your own name and email!** Don’t copy the example values.
+
+To enable automatic updates to the CI status table in `README.md` via the `update_readme_table` job:
+
+1. Create a GitHub **Personal Access Token (PAT)** with `repo` scope.
+2. Add it to your repo secrets, e.g. `GH_PAT`.
+3. Configure these inputs:
+
+```yaml
+update-readme-token: ${{ secrets.GH_PAT }}
+update-readme-user-name: "Your Name"
+update-readme-user-email: "you@example.com"
+```
+
+### Overview
+
+This example automates Fortran CI/CD:
+
+* 📦 **Fortran compiler setup**:
+
+  * Supports: `gfortran`, `ifx`, `lfortran`, `flang-new`, `nvfortran`
+
+* 🖥️ **Cross-platform testing**:
+
+  * Ubuntu, Windows, macOS GitHub runners
+
+* 🧪 **Testing**:
+
+  * `fpm` test with `debug` and `release` profiles
+  * `CMake` with `Ninja` and `CTest`
+ 
+* 📄 **Documentation**:
+
+  * [FORD](https://github.com/Fortran-FOSS-Programmers/ford) 
+  * [Doxygen](https://www.doxygen.nl)
+
+* 📊 **Status Reporting**:
+
+  * Auto-generates `STATUS.md` for `fpm`/`cmake` test results
+  * Injects summary into `README.md`
+  * creates PRs to update the status table in `README.md`
+
+
+### README Integration
+
+To enable automatic CI status table injection, add the following to your `README.md`:
+
+```markdown
+<!-- STATUS:setup-fortran-conda:START -->
+<!-- STATUS:setup-fortran-conda:END -->
+```
+
+### Job Breakdown
+
+| Job Name              | Description                                                      |
+| --------------------- | ---------------------------------------------------------------- |
+| `test_fpm`            | Run `fpm` tests (debug + release) for each OS/compiler           |
+| `test_cmake`          | Run CMake/Ninja builds and tests                                 |
+| `doc_ford`            | Build and deploy FORD-generated docs                             |
+| `doc_doxygen`         | Build and deploy Doxygen-generated docs                          |
+| `status_fpm`          | Generate `STATUS.md` with fpm test results                       |
+| `status_cmake`        | Generate `STATUS.md` with cmake test results                     |
+| `update_readme_table` | Inject CI summary table into `README.md` and open a pull request |
+
+modify this example workflow file to your needs, and save it as `.github/workflows/CI-CD.yml` in your repository:
 
 ```yaml
 name: Setup Fortran Conda CI/CD
@@ -167,26 +236,26 @@ jobs:
         with:
           update-readme-table: true
           update-readme-token: ${{ secrets.GH_PAT }}   # Update with your GitHub personal access token
-          update-readme-user-name: "Seyed Ali Ghasemi" # Update with your name
-          update-readme-user-email: "info@gha3mi.com"  # Update with your email
+          update-readme-user-name: "Your Name" # Update with your name
+          update-readme-user-email: "you@example.com"  # Update with your email
 ```
 
-## Status
+## ✅ Status
 
 <!-- STATUS:setup-fortran-conda:START -->
-| Compiler   | macos | ubuntu | windows |
-|------------|----------------------|----------------------|----------------------|
-| `flang-new` | - | fpm ✅  cmake ✅ | fpm ❌  cmake ✅ |
-| `gfortran` | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ |
-| `ifx` | - | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ |
-| `lfortran` | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ |
-| `nvfortran` | - | fpm ✅  cmake ✅ | - |
+| Compiler    | macos          | ubuntu         | windows        |
+| ----------- | -------------- | -------------- | -------------- |
+| `flang-new` | -              | fpm ✅  cmake ✅ | fpm ❌  cmake ✅ |
+| `gfortran`  | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ |
+| `ifx`       | -              | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ |
+| `lfortran`  | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ |
+| `nvfortran` | -              | fpm ✅  cmake ✅ | -              |
 <!-- STATUS:setup-fortran-conda:END -->
 
 - [STATUS.md (FPM)](https://github.com/gha3mi/setup-fortran-conda/blob/status-fpm/STATUS.md)
 - [STATUS.md (CMake)](https://github.com/gha3mi/setup-fortran-conda/blob/status-cmake/STATUS.md)
 
-## See Also
+## 🔗 See Also
 
 - [fortran-lang/setup-fortran](https://github.com/fortran-lang/setup-fortran)
 - [https://degenerateconic.com/conda-plus-fortran.html](https://degenerateconic.com/conda-plus-fortran.html)

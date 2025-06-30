@@ -2,7 +2,7 @@ name: Setup Fortran Conda CI/CD
 
 on:
   push:
-    branches: [main, master, dev]
+    branches: [main, master, dev, extra]
   pull_request:
     branches: [main, master]
 
@@ -37,7 +37,7 @@ jobs:
 
     steps:
       - name: Setup Fortran
-        uses: gha3mi/setup-fortran-conda@latest
+        uses: gha3mi/setup-fortran-conda@extra
         with:
           compiler: ${{ matrix.compiler }}
           platform: ${{ matrix.os }}
@@ -76,11 +76,18 @@ jobs:
 
     steps:
       - name: Setup Fortran
-        uses: gha3mi/setup-fortran-conda@latest
+        uses: gha3mi/setup-fortran-conda@extra
         with:
           compiler: ${{ matrix.compiler }}
           platform: ${{ matrix.os }}
           extra-packages: ${{ matrix.extra-packages }}
+
+      - name: Debug matrix input
+        run: |
+          echo "OS: ${{ matrix.os }}"
+          echo "Compiler: ${{ matrix.compiler }}"
+          echo "Extras: ${{ matrix.extra-packages }}"
+
       - name: cmake test (debug)
         run: |
           cmake -S . -B build/debug -DCMAKE_BUILD_TYPE=Debug -DCMAKE_Fortran_COMPILER=${{ matrix.compiler }} -G Ninja
@@ -98,7 +105,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Setup and Generate FORD Documentation
-        uses: gha3mi/setup-fortran-conda@latest
+        uses: gha3mi/setup-fortran-conda@extra
         with:
           compiler: gfortran
           platform: ubuntu-latest
@@ -111,7 +118,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Setup and Generate Doxygen Documentation
-        uses: gha3mi/setup-fortran-conda@latest
+        uses: gha3mi/setup-fortran-conda@extra
         with:
           compiler: gfortran
           platform: ubuntu-latest
@@ -127,7 +134,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Generate summary
-        uses: gha3mi/setup-fortran-conda@latest
+        uses: gha3mi/setup-fortran-conda@extra
         with:
           generate-status-fpm: true
 
@@ -138,6 +145,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Generate summary
-        uses: gha3mi/setup-fortran-conda@latest
+        uses: gha3mi/setup-fortran-conda@extra
         with:
           generate-status-cmake: true

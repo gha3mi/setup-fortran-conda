@@ -15,6 +15,7 @@ on:
 
 permissions:
   contents: write
+  pull-requests: write
 
 jobs:
   test_fpm:
@@ -158,23 +159,27 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
-
-      - name: Generate README Matrix
+        with:
+          persist-credentials: false
+      - name: Generate status table
         uses: gha3mi/setup-fortran-conda@latest
         with:
           generate-status-table: true
 
-      - name: Commit README update
+      - name: Setup Git author
         run: |
-          git config user.name "Seyed Ali Ghaemi" # Update with your name
-          git config user.email "info@gha3mi.com" # Update with your email
-          if git diff --quiet README.md; then
-            echo "No changes to commit."
-          else
-            git add README.md
-            git commit -m "Update README.md status table [ci skip]"
-            git push -f
-          fi
+          git config user.name "Seyed Ali Ghasemi" # Update with your name
+          git config user.email "info@gha3mi.com"  # Update with your email
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GH_PAT }}
+          commit-message: "Update README.md status table [ci skip]"
+          branch: update/readme-status-table
+          title: "update README.md status table"
+          body: "This PR updates the CI status table in the README.md."
+          delete-branch: true
 ```
 
 ## Status

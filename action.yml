@@ -99,6 +99,14 @@ inputs:
     description: "GitHub token used to create the PR for updating the README table"
     required: false
 
+  fortitude-check:
+    description: "Run Fortitude check (https://github.com/PlasmaFAIR/fortitude)"
+    required: false
+    default: "false"
+  fortitude-settings:
+    description: "Extra flags for 'fortitude check'"
+    required: false
+    default: "--output-format github"
 
 runs:
   using: "composite"
@@ -123,6 +131,20 @@ runs:
         INPUT_COMPILER: ${{ inputs.compiler }}
         INPUT_PLATFORM: ${{ inputs.platform }}
         INPUT_EXTRA_PACKAGES: ${{ inputs.extra-packages }}
+
+    - name: Install and Run Fortitude Linter
+      if: ${{ inputs.fortitude-check == 'true' }}
+      shell: bash
+      run: |
+        source "${CONDA}/etc/profile.d/conda.sh"
+        conda activate fortran
+
+        echo "::group:: Installing Fortitude"
+        pip install fortitude-lint
+        echo "::endgroup::"
+
+        echo "Running Fortitude with settings: ${{ inputs.fortitude-settings }}"
+        fortitude check ${{ inputs.fortitude-settings }}
 
     - name: Build FORD documentation
       if: ${{ inputs.generate-doc-ford == 'true' }}

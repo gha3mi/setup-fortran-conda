@@ -105,10 +105,10 @@ runs:
   steps:
     - name: Checkout repository
       if: ${{ inputs.checkout-repo == 'true' || inputs.generate-doc-ford == 'true' || inputs.generate-doc-doxygen == 'true' }}
-      uses: actions/checkout@v4
+      uses: actions/checkout@v4.2.2
 
     - name: Setup Miniconda
-      uses: conda-incubator/setup-miniconda@v3
+      uses: conda-incubator/setup-miniconda@v3.2.0
       with:
         auto-update-conda: true
         activate-environment: fortran
@@ -291,7 +291,7 @@ runs:
 
     - name: Checkout repository (for README update)
       if: ${{ inputs.update-readme-table == 'true' }}
-      uses: actions/checkout@v4
+      uses: actions/checkout@v4.2.2
       with:
         persist-credentials: false
 
@@ -310,7 +310,7 @@ runs:
 
     - name: Create Pull Request for README table
       if: ${{ inputs.update-readme-table == 'true' }}
-      uses: peter-evans/create-pull-request@v5
+      uses: peter-evans/create-pull-request@v7.0.8
       with:
         token: "${{ inputs.update-readme-token }}"
         commit-message: "Update README.md status table [ci skip]"

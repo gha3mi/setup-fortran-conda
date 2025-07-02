@@ -212,6 +212,8 @@
 <span class="w">  </span><span class="nt">pull-requests</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span><span class="w"></span>
 
 <span class="nt">jobs</span><span class="p">:</span><span class="w"></span>
+
+<span class="w">  </span><span class="c1"># Run FPM tests (debug + release) on all OS/compiler combinations</span><span class="w"></span>
 <span class="w">  </span><span class="nt">test_fpm</span><span class="p">:</span><span class="w"></span>
 <span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ matrix.os }}_${{ matrix.compiler }}_fpm</span><span class="w"></span>
 <span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ matrix.os }}</span><span class="w"></span>
@@ -251,6 +253,7 @@
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fpm test (release)</span><span class="w"></span>
 <span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fpm test --compiler ${{ matrix.compiler }} --profile release --verbose</span><span class="w"></span>
 
+<span class="w">  </span><span class="c1"># Run CMake + Ninja build/tests across OS/compiler matrix</span><span class="w"></span>
 <span class="w">  </span><span class="nt">test_cmake</span><span class="p">:</span><span class="w"></span>
 <span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ matrix.os }}_${{ matrix.compiler }}_cmake</span><span class="w"></span>
 <span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ matrix.os }}</span><span class="w"></span>
@@ -296,6 +299,7 @@
 <span class="w">          </span><span class="no">cmake --build build/release</span><span class="w"></span>
 <span class="w">          </span><span class="no">ctest --test-dir build/release --output-on-failure</span><span class="w"></span>
 
+<span class="w">  </span><span class="c1"># Build and deploy FORD documentation</span><span class="w"></span>
 <span class="w">  </span><span class="nt">doc_ford</span><span class="p">:</span><span class="w"></span>
 <span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Generate FORD Documentation</span><span class="w"></span>
 <span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span><span class="w"></span>
@@ -312,6 +316,7 @@
 <span class="w">          </span><span class="nt">ford-branch</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gh-pages-ford</span><span class="w"></span>
 <span class="w">          </span><span class="nt">ford-target-folder</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">doc/ford</span><span class="w"></span>
 
+<span class="w">  </span><span class="c1"># Build and deploy Doxygen documentation</span><span class="w"></span>
 <span class="w">  </span><span class="nt">doc_doxygen</span><span class="p">:</span><span class="w"></span>
 <span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Generate Doxygen Documentation</span><span class="w"></span>
 <span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span><span class="w"></span>
@@ -328,6 +333,7 @@
 <span class="w">          </span><span class="nt">doxygen-branch</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gh-pages-doxygen</span><span class="w"></span>
 <span class="w">          </span><span class="nt">doxygen-target-folder</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">doc/doxygen</span><span class="w"></span>
 
+<span class="w">  </span><span class="c1"># Generate STATUS.md from FPM job results</span><span class="w"></span>
 <span class="w">  </span><span class="nt">status_fpm</span><span class="p">:</span><span class="w"></span>
 <span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Generate STATUS.md</span><span class="w"></span>
 <span class="w">    </span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">always()</span><span class="w"></span>
@@ -339,6 +345,7 @@
 <span class="w">        </span><span class="nt">with</span><span class="p">:</span><span class="w"></span>
 <span class="w">          </span><span class="nt">generate-status-fpm</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
 
+<span class="w">  </span><span class="c1"># Generate STATUS.md from CMake job results</span><span class="w"></span>
 <span class="w">  </span><span class="nt">status_cmake</span><span class="p">:</span><span class="w"></span>
 <span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Generate STATUS.md</span><span class="w"></span>
 <span class="w">    </span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">always()</span><span class="w"></span>
@@ -350,6 +357,7 @@
 <span class="w">        </span><span class="nt">with</span><span class="p">:</span><span class="w"></span>
 <span class="w">          </span><span class="nt">generate-status-cmake</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
 
+<span class="w">  </span><span class="c1"># Inject CI status table into README.md</span><span class="w"></span>
 <span class="w">  </span><span class="nt">update_readme_table</span><span class="p">:</span><span class="w"></span>
 <span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Update README.md status table</span><span class="w"></span>
 <span class="w">    </span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span><span class="w"></span>
@@ -365,6 +373,18 @@
 <span class="w">          </span><span class="nt">update-readme-token</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.GH_PAT }}</span><span class="w">   </span><span class="c1"># Update with your GitHub personal access token</span><span class="w"></span>
 <span class="w">          </span><span class="nt">update-readme-user-name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Your</span><span class="nv"> </span><span class="s">Name&quot;</span><span class="w"> </span><span class="c1"># Update with your name</span><span class="w"></span>
 <span class="w">          </span><span class="nt">update-readme-user-email</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;you@example.com&quot;</span><span class="w">  </span><span class="c1"># Update with your email</span><span class="w"></span>
+
+<span class="w">  </span><span class="c1"># Run Fortran linter with Fortitude</span><span class="w"></span>
+<span class="w">  </span><span class="nt">linter_fortitude</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Run Fortitude Linter</span><span class="w"></span>
+<span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span><span class="w"></span>
+<span class="w">    </span><span class="nt">steps</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Run Fortitude Linter</span><span class="w"></span>
+<span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gha3mi/setup-fortran-conda@latest</span><span class="w"></span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">platform</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span><span class="w"></span>
+<span class="w">          </span><span class="nt">fortitude-check</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
+<span class="w">          </span><span class="nt">fortitude-settings</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;--output-format</span><span class="nv"> </span><span class="s">github&quot;</span><span class="w"></span>
 </code></pre></div>
 
 <h2>✅ Status</h2>
@@ -495,7 +515,7 @@
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2025-07-02T11:39:01.233913+0000             </p>
+ on 2025-07-02T11:47:19.236796+0000             </p>
           </div>
         </div>
         <br>

@@ -188,7 +188,6 @@ jobs:
         uses: gha3mi/setup-fortran-conda@latest
         with:
           compiler: gfortran
-          platform: ubuntu-latest
           generate-doc-ford: true
           ford-working-directory: .
           ford-config: README.md
@@ -205,7 +204,6 @@ jobs:
         uses: gha3mi/setup-fortran-conda@latest
         with:
           compiler: gfortran
-          platform: ubuntu-latest
           generate-doc-doxygen: true
           doxygen-working-directory: .
           doxygen-config: Doxyfile

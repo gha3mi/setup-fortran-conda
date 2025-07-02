@@ -1,4 +1,4 @@
-import { getInput, setFailed, summary } from '@actions/core';
+import { setFailed, summary } from '@actions/core';
 import { exec as _exec } from '@actions/exec';
 
 async function getVersion(cmd, args = ['--version']) {
@@ -30,7 +30,7 @@ async function run() {
     // Install extra packages
     const { installExtras } = await import('./extra.js');
     const extras = extrasInput
-      .split(/[\s,]+/) // handles commas, spaces, or newlines
+      .split(/[\s,]+/)
       .map(p => p.trim())
       .filter(Boolean);
     await installExtras('fortran', extras);
@@ -39,15 +39,14 @@ async function run() {
     const { setup } = await import(`./platform/${osKey}/${compiler}.js`);
     await setup();
 
-    // Get versions
+    // Get compiler version
     const compilerVersion = await getVersion(compiler);
-    const fpmVersion = await getVersion('fpm');
 
-    // GitHub Actions job summary
+    // Write GitHub Actions summary
     await summary
       .addTable([
-        ['OS', 'Compiler', 'Version', 'FPM Version'],
-        [platform, compiler, compilerVersion, fpmVersion]
+        ['OS', 'Compiler', 'Version'],
+        [platform, compiler, compilerVersion]
       ])
       .write();
 

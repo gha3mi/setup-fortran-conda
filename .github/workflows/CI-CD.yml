@@ -164,3 +164,14 @@ jobs:
           update-readme-token: ${{ secrets.GH_PAT }}   # Update with your GitHub personal access token
           update-readme-user-name: "Seyed Ali Ghasemi" # Update with your name
           update-readme-user-email: "info@gha3mi.com"  # Update with your email
+
+  linter_fortitude:
+    name: Run Fortitude Linter
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run Fortitude Linter
+        uses: gha3mi/setup-fortran-conda@latest
+        with:
+          platform: ubuntu-latest
+          fortitude-check: true
+          fortitude-settings: "--output-format github"

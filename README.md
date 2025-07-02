@@ -70,6 +70,7 @@ To enable automatic CI status table injection, add the following to your `README
 | `status_fpm`          | Generate `STATUS.md` with fpm test results                       |
 | `status_cmake`        | Generate `STATUS.md` with cmake test results                     |
 | `update_readme_table` | Inject CI summary table into `README.md` and open a pull request |
+| `linter_fortitude`    | Run [Fortitude](https://github.com/PlasmaFAIR/fortitude) linter  |
 
 modify this example workflow file to your needs, and save it as `.github/workflows/CI-CD.yml` in your repository:
 
@@ -87,6 +88,8 @@ permissions:
   pull-requests: write
 
 jobs:
+
+  # Run FPM tests (debug + release) on all OS/compiler combinations
   test_fpm:
     name: ${{ matrix.os }}_${{ matrix.compiler }}_fpm
     runs-on: ${{ matrix.os }}
@@ -126,6 +129,7 @@ jobs:
       - name: fpm test (release)
         run: fpm test --compiler ${{ matrix.compiler }} --profile release --verbose
 
+  # Run CMake + Ninja build/tests across OS/compiler matrix
   test_cmake:
     name: ${{ matrix.os }}_${{ matrix.compiler }}_cmake
     runs-on: ${{ matrix.os }}
@@ -171,6 +175,7 @@ jobs:
           cmake --build build/release
           ctest --test-dir build/release --output-on-failure
 
+  # Build and deploy FORD documentation
   doc_ford:
     name: Generate FORD Documentation
     runs-on: ubuntu-latest
@@ -187,6 +192,7 @@ jobs:
           ford-branch: gh-pages-ford
           ford-target-folder: doc/ford
 
+  # Build and deploy Doxygen documentation
   doc_doxygen:
     name: Generate Doxygen Documentation
     runs-on: ubuntu-latest
@@ -203,6 +209,7 @@ jobs:
           doxygen-branch: gh-pages-doxygen
           doxygen-target-folder: doc/doxygen
 
+  # Generate STATUS.md from FPM job results
   status_fpm:
     name: Generate STATUS.md
     if: always()
@@ -214,6 +221,7 @@ jobs:
         with:
           generate-status-fpm: true
 
+  # Generate STATUS.md from CMake job results
   status_cmake:
     name: Generate STATUS.md
     if: always()
@@ -225,6 +233,7 @@ jobs:
         with:
           generate-status-cmake: true
 
+  # Inject CI status table into README.md
   update_readme_table:
     name: Update README.md status table
     if: |
@@ -240,6 +249,18 @@ jobs:
           update-readme-token: ${{ secrets.GH_PAT }}   # Update with your GitHub personal access token
           update-readme-user-name: "Your Name" # Update with your name
           update-readme-user-email: "you@example.com"  # Update with your email
+
+  # Run Fortran linter with Fortitude
+  linter_fortitude:
+    name: Run Fortitude Linter
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run Fortitude Linter
+        uses: gha3mi/setup-fortran-conda@latest
+        with:
+          platform: ubuntu-latest
+          fortitude-check: true
+          fortitude-settings: "--output-format github"
 ```
 
 ## ✅ Status

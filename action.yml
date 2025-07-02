@@ -99,6 +99,14 @@ inputs:
     description: "GitHub token used to create the PR for updating the README table"
     required: false
 
+  fortitude-check:
+    description: "Run Fortitude check (https://github.com/PlasmaFAIR/fortitude)"
+    required: false
+    default: "false"
+  fortitude-settings:
+    description: "Extra flags for 'fortitude check'"
+    required: false
+    default: "--output-format github"
 
 runs:
   using: "composite"
@@ -124,15 +132,32 @@ runs:
         INPUT_PLATFORM: ${{ inputs.platform }}
         INPUT_EXTRA_PACKAGES: ${{ inputs.extra-packages }}
 
+    - name: Install and Run Fortitude Linter
+      if: ${{ inputs.fortitude-check == 'true' }}
+      shell: bash
+      run: |
+        source "${CONDA}/etc/profile.d/conda.sh"
+        conda activate fortran
+
+        echo "::group:: Installing Fortitude"
+        pip install fortitude-lint
+        echo "::endgroup::"
+
+        echo "Running Fortitude with settings: ${{ inputs.fortitude-settings }}"
+        fortitude check ${{ inputs.fortitude-settings }}
+
     - name: Build FORD documentation
       if: ${{ inputs.generate-doc-ford == 'true' }}
       shell: bash
       run: |
         source "${CONDA}/etc/profile.d/conda.sh"
         conda activate fortran
+        echo "::group:: Setting up FORD documentation"
         conda install -y graphviz ford
         mkdir -p "${{ inputs.ford-output-directory }}"
-        (cd "${{ inputs.ford-working-directory }}" && ford "${{ inputs.ford-config }}")
+        cd "${{ inputs.ford-working-directory }}"
+        echo "::endgroup::"
+        ford "${{ inputs.ford-config }}"
 
     - name: Deploy FORD documentation
       if: ${{ inputs.generate-doc-ford == 'true' }}
@@ -150,10 +175,12 @@ runs:
       run: |
         source "${CONDA}/etc/profile.d/conda.sh"
         conda activate fortran
+        echo "::group:: Setting up Doxygen documentation"
         conda install -y graphviz doxygen
         mkdir -p "${{ inputs.doxygen-output-directory }}"
-        (cd "${{ inputs.doxygen-working-directory }}" && doxygen "${{ inputs.doxygen-config }}")
-
+        cd "${{ inputs.doxygen-working-directory }}"
+        echo "::endgroup::"
+        doxygen "${{ inputs.doxygen-config }}"
 
     - name: Deploy Doxygen documentation
       if: ${{ inputs.generate-doc-doxygen == 'true' }}

@@ -263,6 +263,42 @@ jobs:
           fortitude-check: true
           fortitude-settings: "--output-format github"
 ```
+### Specifying Compiler Versions
+
+By default, the above example installs the latest available versions of each compiler.
+To use a specific version, add a `compiler-version` entry in your matrix:
+
+```yml
+matrix:
+  # os: [ubuntu-latest, macos-latest, windows-latest]
+  # compiler: [gfortran, ifx, lfortran, flang-new, nvfortran]
+  include:
+    # gfortran
+    - os: ubuntu-latest
+      compiler: gfortran
+      compiler-version: 15.1.0
+      extra-packages: "cmake, ninja"
+    - os: macos-latest
+      compiler: gfortran
+      compiler-version: 15.1.0
+      extra-packages: "cmake, ninja"
+    - os: windows-latest
+      compiler: gfortran
+      compiler-version: 15.1.0
+      extra-packages: "cmake, ninja"
+```
+Then, reference `compiler-version` in the setup step:
+
+```yaml
+- name: Setup Fortran
+  uses: gha3mi/setup-fortran-conda@dev
+  with:
+    compiler: ${{ matrix.compiler }}
+    compiler-version: ${{ matrix.compiler-version }} # must be specified
+    platform: ${{ matrix.os }}
+    extra-packages: ${{ matrix.extra-packages }}
+```
+If `compiler-version` is set to an empty string `""`, the latest version will be installed.
 
 ## ✅ Status
 

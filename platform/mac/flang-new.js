@@ -36,6 +36,6 @@ async function setMacOSSDKROOT() {
   }
 }
 
-export async function setup() {
+export async function setup(version = '') {
   throw new Error("Compiler 'flang' is not supported on macOS via Conda.");
 }

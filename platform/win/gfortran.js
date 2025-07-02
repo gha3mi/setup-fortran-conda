@@ -20,8 +20,9 @@ async function getCondaPrefix(envName) {
   throw new Error(`Unable to locate Conda environment "${envName}".`);
 }
 
-export async function setup() {
-  const packages = ['gfortran', 'binutils'];
+export async function setup(version = '') {
+  const gfortranPkg = version ? `gfortran=${version}` : 'gfortran';
+  const packageName = [gfortranPkg, 'binutils'];
 
   startGroup('Conda install');
   await _exec('conda', [
@@ -31,7 +32,7 @@ export async function setup() {
     'fortran',
     '-c',
     'conda-forge',
-    ...packages,
+    ...packageName,
   ]);
   endGroup();
 

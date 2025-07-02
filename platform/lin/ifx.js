@@ -36,8 +36,8 @@ async function setUlimits() {
   endGroup();
 }
 
-export async function setup() {
-  const packageName = 'ifx_linux-64';
+export async function setup(version = '') {
+  const packageName = version ? `ifx_linux-64=${version}` : 'ifx_linux-64';
 
   startGroup('Conda install');
   await _exec('conda', [

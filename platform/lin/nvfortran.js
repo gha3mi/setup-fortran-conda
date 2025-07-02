@@ -34,8 +34,8 @@ async function setUlimits() {
   endGroup();
 }
 
-export async function setup() {
-  const version = '25.5';
+export async function setup(version = '25.5') {
+  version = version?.trim() || '25.5';
   const arch = 'Linux_x86_64';
   const base = '/opt/nvidia/hpc_sdk';
 

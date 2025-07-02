@@ -216,30 +216,41 @@ runs:
           os="${name%%_*}"
           compiler="${name#*_}"
           key="${os}_${compiler}"
-
           safe_key="${key//-/'--'}"
 
+          # status → badge
           if [[ "$conclusion" == "success" ]]; then
-            color="brightgreen"
-            label="passing"
+            color="brightgreen"; label="passing"
           elif [[ "$conclusion" == "failure" ]]; then
-            color="red"
-            label="failing"
+            color="red"; label="failing"
           elif [[ "$conclusion" == "cancelled" ]]; then
-            color="lightgrey"
-            label="cancelled"
+            color="lightgrey"; label="cancelled"
           else
-            color="lightgrey"
-            label="pending"
+            color="lightgrey"; label="pending"
           fi
 
           badge="![${key}](https://img.shields.io/badge/${safe_key}-${label}-${color})"
           badge_line="$badge_line $badge"
+
+          if [[ "$conclusion" == "success" ]]; then
+            compiler_version="$(gfortran --version | head -n1)"
+            fpm_version="$(fpm --version | head -n1)"
+
+            mkdir -p status-fpm
+            {
+              echo "$badge"
+              echo
+              echo "VERSIONS:"
+              echo "os=$os"
+              echo "compiler=$compiler"
+              echo "compiler_version=$compiler_version"
+              echo "tool=fpm"
+              echo "tool_version=$fpm_version"
+              echo
+            } >> status-fpm/STATUS.md
+          fi
         done
 
-        echo "$badge_line" > STATUS.md
-        mkdir -p status-fpm
-        mv STATUS.md status-fpm/STATUS.md
         cat status-fpm/STATUS.md
 
     - name: Deploy STATUS.md (test_fpm)
@@ -275,30 +286,41 @@ runs:
           os="${name%%_*}"
           compiler="${name#*_}"
           key="${os}_${compiler}"
-
           safe_key="${key//-/'--'}"
 
+          # status → badge
           if [[ "$conclusion" == "success" ]]; then
-            color="brightgreen"
-            label="passing"
+            color="brightgreen"; label="passing"
           elif [[ "$conclusion" == "failure" ]]; then
-            color="red"
-            label="failing"
+            color="red"; label="failing"
           elif [[ "$conclusion" == "cancelled" ]]; then
-            color="lightgrey"
-            label="cancelled"
+            color="lightgrey"; label="cancelled"
           else
-            color="lightgrey"
-            label="pending"
+            color="lightgrey"; label="pending"
           fi
 
           badge="![${key}](https://img.shields.io/badge/${safe_key}-${label}-${color})"
           badge_line="$badge_line $badge"
+
+          if [[ "$conclusion" == "success" ]]; then
+            compiler_version="$(gfortran --version | head -n1)"
+            cmake_version="$(cmake --version | head -n1)"
+
+            mkdir -p status-cmake
+            {
+              echo "$badge"
+              echo
+              echo "VERSIONS:"
+              echo "os=$os"
+              echo "compiler=$compiler"
+              echo "compiler_version=$compiler_version"
+              echo "tool=cmake"
+              echo "tool_version=$cmake_version"
+              echo
+            } >> status-cmake/STATUS.md
+          fi
         done
 
-        echo "$badge_line" > STATUS.md
-        mkdir -p status-cmake
-        mv STATUS.md status-cmake/STATUS.md
         cat status-cmake/STATUS.md
 
     - name: Deploy STATUS.md (test_cmake)

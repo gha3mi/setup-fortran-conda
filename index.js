@@ -17,7 +17,11 @@ async function getVersion(cmd, args = ['--version']) {
 
 async function run() {
   try {
-    const compiler = (process.env.INPUT_COMPILER || '').toLowerCase();
+    const compilerInput = (process.env.INPUT_COMPILER || '').toLowerCase();
+    const [compiler, version] = compilerInput.includes('=')
+      ? compilerInput.split('=')
+      : [compilerInput, ''];
+
     const platform = (process.env.INPUT_PLATFORM || '').toLowerCase();
     const extrasInput = process.env.INPUT_EXTRA_PACKAGES || '';
 
@@ -37,7 +41,7 @@ async function run() {
 
     // Install compiler
     const { setup } = await import(`./platform/${osKey}/${compiler}.js`);
-    await setup();
+    await setup(version);
 
     // Get compiler version
     const compilerVersion = await getVersion(compiler);

@@ -269,11 +269,16 @@ jobs:
 <!-- STATUS:setup-fortran-conda:START -->
 | Compiler   | macos | ubuntu | windows |
 |------------|----------------------|----------------------|----------------------|
-| `flang-new` | - | fpm ✅  cmake ✅ | fpm ❌  cmake ✅ |
-| `gfortran` | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ |
-| `ifx` | - | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ |
-| `lfortran` | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ |
-| `nvfortran` | - | fpm ✅  cmake ✅ | - |
+| `flang-new` | - | cmake ✅ | cmake ✅ |
+| `flang-new=20.1.6` | fpm ❌ | fpm ❌ | fpm ❌ |
+| `gfortran` | cmake ✅ | cmake ✅ | cmake ✅ |
+| `gfortran=15.1.0` | fpm ❌ | fpm ❌ | fpm ❌ |
+| `ifx` | - | cmake ✅ | cmake ✅ |
+| `ifx=2025.2.0` | fpm ❌ | fpm ❌ | fpm ❌ |
+| `lfortran` | cmake ✅ | cmake ✅ | cmake ✅ |
+| `lfortran=0.54.0` | fpm ❌ | fpm ❌ | fpm ❌ |
+| `nvfortran` | - | cmake ❌ | - |
+| `nvfortran=25.5` | fpm ❌ | fpm ❌ | fpm ❌ |
 <!-- STATUS:setup-fortran-conda:END -->
 
 - [STATUS.md (FPM)](https://github.com/gha3mi/setup-fortran-conda/blob/status-fpm/STATUS.md)

@@ -9,9 +9,6 @@ updates:
     directory: "/"         # Looks in .github/workflows and root for 'uses:' statements
     schedule:
       interval: "daily"
-    ignore:
-      - dependency-name: "gha3mi/setup-fortran-conda"
-        versions: ["*"]  # Ignore all updates (keep using @latest tag)
 
   # npm dependencies declared in package.json and package-lock.json
   - package-ecosystem: "npm"

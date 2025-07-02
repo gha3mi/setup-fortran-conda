@@ -103,7 +103,6 @@ jobs:
         uses: gha3mi/setup-fortran-conda@latest
         with:
           compiler: gfortran
-          platform: ubuntu-latest
           generate-doc-ford: true
           ford-working-directory: .
           ford-config: README.md
@@ -119,7 +118,6 @@ jobs:
         uses: gha3mi/setup-fortran-conda@latest
         with:
           compiler: gfortran
-          platform: ubuntu-latest
           generate-doc-doxygen: true
           doxygen-working-directory: .
           doxygen-config: Doxyfile
@@ -172,6 +170,5 @@ jobs:
       - name: Run Fortitude Linter
         uses: gha3mi/setup-fortran-conda@latest
         with:
-          platform: ubuntu-latest
           fortitude-check: true
           fortitude-settings: "--output-format github"

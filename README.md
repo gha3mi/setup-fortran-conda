@@ -49,6 +49,10 @@ This example automates Fortran CI/CD:
   * Injects summary into `README.md`
   * creates PRs to update the status table in `README.md`
 
+* 🧹 **Linting**:
+
+  * Runs Fortitude check
+
 
 ### README Integration
 
@@ -258,7 +262,6 @@ jobs:
       - name: Run Fortitude Linter
         uses: gha3mi/setup-fortran-conda@latest
         with:
-          platform: ubuntu-latest
           fortitude-check: true
           fortitude-settings: "--output-format github"
 ```

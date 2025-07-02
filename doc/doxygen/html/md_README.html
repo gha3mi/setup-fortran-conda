@@ -145,6 +145,10 @@ Overview</h2>
 <li>creates PRs to update the status table in <code>README.md</code></li>
 </ul>
 </li>
+<li>🧹 <b>Linting</b>:<ul>
+<li>Runs Fortitude check</li>
+</ul>
+</li>
 </ul>
 <h2><a class="anchor" id="autotoc_md4"></a>
 README Integration</h2>
@@ -358,7 +362,6 @@ Job Breakdown</h2>
 <div class="line">      - name: Run Fortitude Linter</div>
 <div class="line">        uses: gha3mi/setup-fortran-conda@latest</div>
 <div class="line">        with:</div>
-<div class="line">          platform: ubuntu-latest</div>
 <div class="line">          fortitude-check: true</div>
 <div class="line">          fortitude-settings: &quot;--output-format github&quot;</div>
 </div><!-- fragment --><h1><a class="anchor" id="autotoc_md6"></a>

@@ -55,6 +55,10 @@ This example automates Fortran CI/\+CD\+:
 \item Injects summary into {\ttfamily README.\+md}
 \item creates PRs to update the status table in {\ttfamily README.\+md}
 \end{DoxyItemize}
+\item 🧹 {\bfseries{Linting}}\+:
+\begin{DoxyItemize}
+\item Runs Fortitude check
+\end{DoxyItemize}
 \end{DoxyItemize}\hypertarget{md_README_autotoc_md4}{}\doxysubsection{\texorpdfstring{README Integration}{README Integration}}\label{md_README_autotoc_md4}
 To enable automatic CI status table injection, add the following to your {\ttfamily README.\+md}\+:
 
@@ -272,7 +276,6 @@ modify this example workflow file to your needs, and save it as {\ttfamily .gith
 \DoxyCodeLine{\ \ \ \ \ \ -\/\ name:\ Run\ Fortitude\ Linter}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ uses:\ gha3mi/setup-\/fortran-\/conda@latest}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ with:}
-\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ platform:\ ubuntu-\/latest}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ fortitude-\/check:\ true}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ fortitude-\/settings:\ "{}-\/-\/output-\/format\ github"{}}
 

@@ -152,9 +152,12 @@ runs:
       run: |
         source "${CONDA}/etc/profile.d/conda.sh"
         conda activate fortran
+        echo "::group:: Setting up FORD documentation"
         conda install -y graphviz ford
         mkdir -p "${{ inputs.ford-output-directory }}"
-        (cd "${{ inputs.ford-working-directory }}" && ford "${{ inputs.ford-config }}")
+        cd "${{ inputs.ford-working-directory }}"
+        echo "::endgroup::"
+        ford "${{ inputs.ford-config }}"
 
     - name: Deploy FORD documentation
       if: ${{ inputs.generate-doc-ford == 'true' }}
@@ -172,10 +175,12 @@ runs:
       run: |
         source "${CONDA}/etc/profile.d/conda.sh"
         conda activate fortran
+        echo "::group:: Setting up Doxygen documentation"
         conda install -y graphviz doxygen
         mkdir -p "${{ inputs.doxygen-output-directory }}"
-        (cd "${{ inputs.doxygen-working-directory }}" && doxygen "${{ inputs.doxygen-config }}")
-
+        cd "${{ inputs.doxygen-working-directory }}"
+        echo "::endgroup::"
+        doxygen "${{ inputs.doxygen-config }}"
 
     - name: Deploy Doxygen documentation
       if: ${{ inputs.generate-doc-doxygen == 'true' }}

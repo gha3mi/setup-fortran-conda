@@ -17,30 +17,67 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-        compiler: [gfortran, ifx, lfortran, flang-new, nvfortran]
         include:
+          # gfortran
           - os: ubuntu-latest
+            compiler: gfortran
+            compiler-version: 15.1.0
+            extra-packages: ""
+          - os: macos-latest
+            compiler: gfortran
+            compiler-version: 15.1.0
             extra-packages: ""
           - os: windows-latest
+            compiler: gfortran
+            compiler-version: 15.1.0
             extra-packages: ""
-          - os: macos-latest
-            extra-packages: ""
-        exclude:
-          - os: macos-latest
-            compiler: flang-new
-          - os: macos-latest
+
+          # ifx
+          - os: ubuntu-latest
             compiler: ifx
-          - os: macos-latest
-            compiler: nvfortran
+            compiler-version: 2025.2.0
+            extra-packages: ""
           - os: windows-latest
+            compiler: ifx
+            compiler-version: 2025.2.0
+            extra-packages: ""
+
+          # lfortran
+          - os: ubuntu-latest
+            compiler: lfortran
+            compiler-version: 0.54.0
+            extra-packages: ""
+          - os: macos-latest
+            compiler: lfortran
+            compiler-version: 0.54.0
+            extra-packages: ""
+          - os: windows-latest
+            compiler: lfortran
+            compiler-version: 0.54.0
+            extra-packages: ""
+
+          # nvfortran
+          - os: ubuntu-latest
             compiler: nvfortran
+            compiler-version: 25.5
+            extra-packages: ""
+
+          # flang-new
+          - os: ubuntu-latest
+            compiler: flang-new
+            compiler-version: 20.1.6
+            extra-packages: ""
+          - os: windows-latest
+            compiler: flang-new
+            compiler-version: 20.1.6
+            extra-packages: ""
 
     steps:
       - name: Setup Fortran
-        uses: gha3mi/setup-fortran-conda@latest
+        uses: gha3mi/setup-fortran-conda@dev
         with:
           compiler: ${{ matrix.compiler }}
+          compiler-version: ${{ matrix.compiler-version }}
           platform: ${{ matrix.os }}
           extra-packages: ${{ matrix.extra-packages }}
 
@@ -56,28 +93,64 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-        compiler: [gfortran, ifx, lfortran, flang-new, nvfortran]
         include:
+          # gfortran
           - os: ubuntu-latest
+            compiler: gfortran
+            compiler-version: 15.1.0
+            extra-packages: "cmake, ninja"
+          - os: macos-latest
+            compiler: gfortran
+            compiler-version: 15.1.0
             extra-packages: "cmake, ninja"
           - os: windows-latest
+            compiler: gfortran
+            compiler-version: 15.1.0
             extra-packages: "cmake, ninja"
-          - os: macos-latest
-            extra-packages: "cmake, ninja"
-        exclude:
-          - os: macos-latest
-            compiler: flang-new
-          - os: macos-latest
+
+          # ifx
+          - os: ubuntu-latest
             compiler: ifx
-          - os: macos-latest
-            compiler: nvfortran
+            compiler-version: 2025.2.0
+            extra-packages: "cmake, ninja"
           - os: windows-latest
+            compiler: ifx
+            compiler-version: 2025.2.0
+            extra-packages: "cmake, ninja"
+
+          # lfortran
+          - os: ubuntu-latest
+            compiler: lfortran
+            compiler-version: 0.54.0
+            extra-packages: "cmake, ninja"
+          - os: macos-latest
+            compiler: lfortran
+            compiler-version: 0.54.0
+            extra-packages: "cmake, ninja"
+          - os: windows-latest
+            compiler: lfortran
+            compiler-version: 0.54.0
+            extra-packages: "cmake, ninja"
+
+          # nvfortran
+          - os: ubuntu-latest
             compiler: nvfortran
+            compiler-version: 25.5
+            extra-packages: "cmake, ninja"
+
+          # flang-new
+          - os: ubuntu-latest
+            compiler: flang-new
+            compiler-version: 20.1.6
+            extra-packages: "cmake, ninja"
+          - os: windows-latest
+            compiler: flang-new
+            compiler-version: 20.1.6
+            extra-packages: "cmake, ninja"
 
     steps:
       - name: Setup Fortran
-        uses: gha3mi/setup-fortran-conda@latest
+        uses: gha3mi/setup-fortran-conda@dev
         with:
           compiler: ${{ matrix.compiler }}
           platform: ${{ matrix.os }}
@@ -100,7 +173,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Setup and Generate FORD Documentation
-        uses: gha3mi/setup-fortran-conda@latest
+        uses: gha3mi/setup-fortran-conda@dev
         with:
           compiler: gfortran
           generate-doc-ford: true
@@ -115,7 +188,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Setup and Generate Doxygen Documentation
-        uses: gha3mi/setup-fortran-conda@latest
+        uses: gha3mi/setup-fortran-conda@dev
         with:
           compiler: gfortran
           generate-doc-doxygen: true
@@ -132,7 +205,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Generate summary
-        uses: gha3mi/setup-fortran-conda@latest
+        uses: gha3mi/setup-fortran-conda@dev
         with:
           generate-status-fpm: true
 
@@ -143,7 +216,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Generate summary
-        uses: gha3mi/setup-fortran-conda@latest
+        uses: gha3mi/setup-fortran-conda@dev
         with:
           generate-status-cmake: true
 
@@ -156,7 +229,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Update README status
-        uses: gha3mi/setup-fortran-conda@latest
+        uses: gha3mi/setup-fortran-conda@dev
         with:
           update-readme-table: true
           update-readme-token: ${{ secrets.GH_PAT }}   # Update with your GitHub personal access token
@@ -168,7 +241,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Run Fortitude Linter
-        uses: gha3mi/setup-fortran-conda@latest
+        uses: gha3mi/setup-fortran-conda@dev
         with:
           fortitude-check: true
           fortitude-settings: "--output-format github"

@@ -36,8 +36,8 @@ async function setUlimits() {
   endGroup();
 }
 
-export async function setup() {
-  const packageName = 'flang';
+export async function setup(version = '') {
+  const packageName = version ? `flang=${version}` : 'flang';
 
   startGroup('Conda install');
   await _exec('conda', [

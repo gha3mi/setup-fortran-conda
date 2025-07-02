@@ -247,11 +247,27 @@ jobs:
 <!-- STATUS:setup-fortran-conda:START -->
 | Compiler   | macos | ubuntu | windows |
 |------------|----------------------|----------------------|----------------------|
-| `flang-new` | - | fpm ✅  cmake ✅ | fpm ❌  cmake ✅ |
-| `gfortran` | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ |
-| `ifx` | - | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ |
-| `lfortran` | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ |
-| `nvfortran` | - | fpm ✅  cmake ✅ | - |
+| `flang-new` | - | cmake ✅ | cmake ✅ |
+| `gfortran` | cmake ✅ | cmake ✅ | cmake ✅ |
+| `ifx` | - | cmake ✅ | cmake ✅ |
+| `lfortran` | cmake ✅ | cmake ✅ | cmake ✅ |
+| `nvfortran` | - | cmake ✅ | - |
+
+### Tool Versions
+
+| OS      | Compiler   | Version              | Tool     | Version     |
+|---------|------------|----------------------|----------|-------------|
+| ubuntu-latest | gfortran_cmake | GNU Fortran (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0 | cmake    | =cmake version 3.31.6 |
+| ubuntu-latest | ifx_cmake  | GNU Fortran (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0 | cmake    | =cmake version 3.31.6 |
+| ubuntu-latest | flang-new_cmake | GNU Fortran (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0 | cmake    | =cmake version 3.31.6 |
+| macos-latest | gfortran_cmake | GNU Fortran (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0 | cmake    | =cmake version 3.31.6 |
+| windows-latest | flang-new_cmake | GNU Fortran (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0 | cmake    | =cmake version 3.31.6 |
+| windows-latest | gfortran_cmake | GNU Fortran (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0 | cmake    | =cmake version 3.31.6 |
+| ubuntu-latest | lfortran_cmake | GNU Fortran (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0 | cmake    | =cmake version 3.31.6 |
+| windows-latest | lfortran_cmake | GNU Fortran (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0 | cmake    | =cmake version 3.31.6 |
+| windows-latest | ifx_cmake  | GNU Fortran (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0 | cmake    | =cmake version 3.31.6 |
+| ubuntu-latest | nvfortran_cmake | GNU Fortran (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0 | cmake    | =cmake version 3.31.6 |
+| macos-latest | lfortran_cmake | GNU Fortran (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0 | cmake    | =cmake version 3.31.6 |
 <!-- STATUS:setup-fortran-conda:END -->
 
 - [STATUS.md (FPM)](https://github.com/gha3mi/setup-fortran-conda/blob/status-fpm/STATUS.md)

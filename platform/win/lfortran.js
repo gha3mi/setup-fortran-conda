@@ -81,8 +81,9 @@ async function runVcvars64() {
   info('✅ Exported MSVC environment to GITHUB_ENV');
 }
 
-export async function setup() {
-  const packages = ['lfortran', 'llvm'];
+export async function setup(version = '') {
+  const lfortranPkg = version ? `lfortran=${version}` : 'lfortran';
+  const packages = [lfortranPkg, 'llvm'];
 
   startGroup('Conda install (LFortran + LLVM)');
   await _exec('conda', [

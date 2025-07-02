@@ -99,6 +99,11 @@ inputs:
     description: "GitHub token used to create the PR for updating the README table"
     required: false
 
+  update-readme-compiler-table:
+    description: "Update compiler version table in README.md"
+    required: false
+    default: "false"
+
   fortitude-check:
     description: "Run Fortitude check (https://github.com/PlasmaFAIR/fortitude)"
     required: false
@@ -344,4 +349,38 @@ runs:
         branch: update/readme-status-table
         title: "update README.md status table"
         body: "This PR updates the CI status table in the README.md."
+        delete-branch: true
+
+    - name: Checkout repository (for compiler table)
+      if: ${{ inputs.update-readme-compiler-table == 'true' }}
+      uses: actions/checkout@v4.2.2
+      with:
+        persist-credentials: false
+
+    - name: Update compiler version table in README
+      if: ${{ inputs.update-readme-compiler-table == 'true' }}
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.update-readme-token }}
+        REPO: ${{ github.repository }}
+        RUN_ID: ${{ github.run_id }}
+      run: |
+        bash "${{ github.action_path }}/scripts/update-readme-compiler-table.sh"
+
+    - name: Setup Git author
+      if: ${{ inputs.update-readme-compiler-table == 'true' }}
+      shell: bash
+      run: |
+        git config user.name "${{ inputs.update-readme-user-name }}"
+        git config user.email "${{ inputs.update-readme-user-email }}"
+
+    - name: Create Pull Request for compiler versions
+      if: ${{ inputs.update-readme-compiler-table == 'true' }}
+      uses: peter-evans/create-pull-request@v7.0.8
+      with:
+        token: "${{ inputs.update-readme-token }}"
+        commit-message: "Update README.md compiler version table [ci skip]"
+        branch: update/readme-compiler-versions
+        title: "Update compiler versions in README"
+        body: "This PR updates the CI compiler version table in the README.md."
         delete-branch: true

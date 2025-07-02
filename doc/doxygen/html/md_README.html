@@ -186,6 +186,8 @@ Job Breakdown</h2>
 <div class="line">  pull-requests: write</div>
 <div class="line"> </div>
 <div class="line">jobs:</div>
+<div class="line"> </div>
+<div class="line">  # Run FPM tests (debug + release) on all OS/compiler combinations</div>
 <div class="line">  test_fpm:</div>
 <div class="line">    name: ${{ matrix.os }}_${{ matrix.compiler }}_fpm</div>
 <div class="line">    runs-on: ${{ matrix.os }}</div>
@@ -225,6 +227,7 @@ Job Breakdown</h2>
 <div class="line">      - name: fpm test (release)</div>
 <div class="line">        run: fpm test --compiler ${{ matrix.compiler }} --profile release --verbose</div>
 <div class="line"> </div>
+<div class="line">  # Run CMake + Ninja build/tests across OS/compiler matrix</div>
 <div class="line">  test_cmake:</div>
 <div class="line">    name: ${{ matrix.os }}_${{ matrix.compiler }}_cmake</div>
 <div class="line">    runs-on: ${{ matrix.os }}</div>
@@ -270,6 +273,7 @@ Job Breakdown</h2>
 <div class="line">          cmake --build build/release</div>
 <div class="line">          ctest --test-dir build/release --output-on-failure</div>
 <div class="line"> </div>
+<div class="line">  # Build and deploy FORD documentation</div>
 <div class="line">  doc_ford:</div>
 <div class="line">    name: Generate FORD Documentation</div>
 <div class="line">    runs-on: ubuntu-latest</div>
@@ -286,6 +290,7 @@ Job Breakdown</h2>
 <div class="line">          ford-branch: gh-pages-ford</div>
 <div class="line">          ford-target-folder: doc/ford</div>
 <div class="line"> </div>
+<div class="line">  # Build and deploy Doxygen documentation</div>
 <div class="line">  doc_doxygen:</div>
 <div class="line">    name: Generate Doxygen Documentation</div>
 <div class="line">    runs-on: ubuntu-latest</div>
@@ -302,6 +307,7 @@ Job Breakdown</h2>
 <div class="line">          doxygen-branch: gh-pages-doxygen</div>
 <div class="line">          doxygen-target-folder: doc/doxygen</div>
 <div class="line"> </div>
+<div class="line">  # Generate STATUS.md from FPM job results</div>
 <div class="line">  status_fpm:</div>
 <div class="line">    name: Generate STATUS.md</div>
 <div class="line">    if: always()</div>
@@ -313,6 +319,7 @@ Job Breakdown</h2>
 <div class="line">        with:</div>
 <div class="line">          generate-status-fpm: true</div>
 <div class="line"> </div>
+<div class="line">  # Generate STATUS.md from CMake job results</div>
 <div class="line">  status_cmake:</div>
 <div class="line">    name: Generate STATUS.md</div>
 <div class="line">    if: always()</div>
@@ -324,6 +331,7 @@ Job Breakdown</h2>
 <div class="line">        with:</div>
 <div class="line">          generate-status-cmake: true</div>
 <div class="line"> </div>
+<div class="line">  # Inject CI status table into README.md</div>
 <div class="line">  update_readme_table:</div>
 <div class="line">    name: Update README.md status table</div>
 <div class="line">    if: |</div>
@@ -339,6 +347,18 @@ Job Breakdown</h2>
 <div class="line">          update-readme-token: ${{ secrets.GH_PAT }}   # Update with your GitHub personal access token</div>
 <div class="line">          update-readme-user-name: &quot;Your Name&quot; # Update with your name</div>
 <div class="line">          update-readme-user-email: &quot;you@example.com&quot;  # Update with your email</div>
+<div class="line"> </div>
+<div class="line">  # Run Fortran linter with Fortitude</div>
+<div class="line">  linter_fortitude:</div>
+<div class="line">    name: Run Fortitude Linter</div>
+<div class="line">    runs-on: ubuntu-latest</div>
+<div class="line">    steps:</div>
+<div class="line">      - name: Run Fortitude Linter</div>
+<div class="line">        uses: gha3mi/setup-fortran-conda@latest</div>
+<div class="line">        with:</div>
+<div class="line">          platform: ubuntu-latest</div>
+<div class="line">          fortitude-check: true</div>
+<div class="line">          fortitude-settings: &quot;--output-format github&quot;</div>
 </div><!-- fragment --><h1><a class="anchor" id="autotoc_md6"></a>
 ✅ Status</h1>
 <table class="markdownTable">

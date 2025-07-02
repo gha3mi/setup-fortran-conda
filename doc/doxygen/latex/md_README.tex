@@ -101,6 +101,8 @@ modify this example workflow file to your needs, and save it as {\ttfamily .gith
 \DoxyCodeLine{\ \ pull-\/requests:\ write}
 \DoxyCodeLine{}
 \DoxyCodeLine{jobs:}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \#\ Run\ FPM\ tests\ (debug\ +\ release)\ on\ all\ OS/compiler\ combinations}
 \DoxyCodeLine{\ \ test\_fpm:}
 \DoxyCodeLine{\ \ \ \ name:\ \$\{\{\ matrix.os\ \}\}\_\$\{\{\ matrix.compiler\ \}\}\_fpm}
 \DoxyCodeLine{\ \ \ \ runs-\/on:\ \$\{\{\ matrix.os\ \}\}}
@@ -140,6 +142,7 @@ modify this example workflow file to your needs, and save it as {\ttfamily .gith
 \DoxyCodeLine{\ \ \ \ \ \ -\/\ name:\ fpm\ test\ (release)}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ run:\ fpm\ test\ -\/-\/compiler\ \$\{\{\ matrix.compiler\ \}\}\ -\/-\/profile\ release\ -\/-\/verbose}
 \DoxyCodeLine{}
+\DoxyCodeLine{\ \ \#\ Run\ CMake\ +\ Ninja\ build/tests\ across\ OS/compiler\ matrix}
 \DoxyCodeLine{\ \ test\_cmake:}
 \DoxyCodeLine{\ \ \ \ name:\ \$\{\{\ matrix.os\ \}\}\_\$\{\{\ matrix.compiler\ \}\}\_cmake}
 \DoxyCodeLine{\ \ \ \ runs-\/on:\ \$\{\{\ matrix.os\ \}\}}
@@ -185,6 +188,7 @@ modify this example workflow file to your needs, and save it as {\ttfamily .gith
 \DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ cmake\ -\/-\/build\ build/release}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ ctest\ -\/-\/test-\/dir\ build/release\ -\/-\/output-\/on-\/failure}
 \DoxyCodeLine{}
+\DoxyCodeLine{\ \ \#\ Build\ and\ deploy\ FORD\ documentation}
 \DoxyCodeLine{\ \ doc\_ford:}
 \DoxyCodeLine{\ \ \ \ name:\ Generate\ FORD\ Documentation}
 \DoxyCodeLine{\ \ \ \ runs-\/on:\ ubuntu-\/latest}
@@ -201,6 +205,7 @@ modify this example workflow file to your needs, and save it as {\ttfamily .gith
 \DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ ford-\/branch:\ gh-\/pages-\/ford}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ ford-\/target-\/folder:\ doc/ford}
 \DoxyCodeLine{}
+\DoxyCodeLine{\ \ \#\ Build\ and\ deploy\ Doxygen\ documentation}
 \DoxyCodeLine{\ \ doc\_doxygen:}
 \DoxyCodeLine{\ \ \ \ name:\ Generate\ Doxygen\ Documentation}
 \DoxyCodeLine{\ \ \ \ runs-\/on:\ ubuntu-\/latest}
@@ -217,6 +222,7 @@ modify this example workflow file to your needs, and save it as {\ttfamily .gith
 \DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ doxygen-\/branch:\ gh-\/pages-\/doxygen}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ doxygen-\/target-\/folder:\ doc/doxygen}
 \DoxyCodeLine{}
+\DoxyCodeLine{\ \ \#\ Generate\ STATUS.md\ from\ FPM\ job\ results}
 \DoxyCodeLine{\ \ status\_fpm:}
 \DoxyCodeLine{\ \ \ \ name:\ Generate\ STATUS.md}
 \DoxyCodeLine{\ \ \ \ if:\ always()}
@@ -228,6 +234,7 @@ modify this example workflow file to your needs, and save it as {\ttfamily .gith
 \DoxyCodeLine{\ \ \ \ \ \ \ \ with:}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ generate-\/status-\/fpm:\ true}
 \DoxyCodeLine{}
+\DoxyCodeLine{\ \ \#\ Generate\ STATUS.md\ from\ CMake\ job\ results}
 \DoxyCodeLine{\ \ status\_cmake:}
 \DoxyCodeLine{\ \ \ \ name:\ Generate\ STATUS.md}
 \DoxyCodeLine{\ \ \ \ if:\ always()}
@@ -239,6 +246,7 @@ modify this example workflow file to your needs, and save it as {\ttfamily .gith
 \DoxyCodeLine{\ \ \ \ \ \ \ \ with:}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ generate-\/status-\/cmake:\ true}
 \DoxyCodeLine{}
+\DoxyCodeLine{\ \ \#\ Inject\ CI\ status\ table\ into\ README.md}
 \DoxyCodeLine{\ \ update\_readme\_table:}
 \DoxyCodeLine{\ \ \ \ name:\ Update\ README.md\ status\ table}
 \DoxyCodeLine{\ \ \ \ if:\ |}
@@ -254,6 +262,18 @@ modify this example workflow file to your needs, and save it as {\ttfamily .gith
 \DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ update-\/readme-\/token:\ \$\{\{\ secrets.GH\_PAT\ \}\}\ \ \ \#\ Update\ with\ your\ GitHub\ personal\ access\ token}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ update-\/readme-\/user-\/name:\ "{}Your\ Name"{}\ \#\ Update\ with\ your\ name}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ update-\/readme-\/user-\/email:\ "{}you@example.com"{}\ \ \#\ Update\ with\ your\ email}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \#\ Run\ Fortran\ linter\ with\ Fortitude}
+\DoxyCodeLine{\ \ linter\_fortitude:}
+\DoxyCodeLine{\ \ \ \ name:\ Run\ Fortitude\ Linter}
+\DoxyCodeLine{\ \ \ \ runs-\/on:\ ubuntu-\/latest}
+\DoxyCodeLine{\ \ \ \ steps:}
+\DoxyCodeLine{\ \ \ \ \ \ -\/\ name:\ Run\ Fortitude\ Linter}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ uses:\ gha3mi/setup-\/fortran-\/conda@latest}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ with:}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ platform:\ ubuntu-\/latest}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ fortitude-\/check:\ true}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ fortitude-\/settings:\ "{}-\/-\/output-\/format\ github"{}}
 
 \end{DoxyCode}
 \hypertarget{md_README_autotoc_md6}{}\doxysection{\texorpdfstring{✅ Status}{✅ Status}}\label{md_README_autotoc_md6}

@@ -36,8 +36,9 @@ async function setMacOSSDKROOT() {
   }
 }
 
-export async function setup() {
-  const packageName = ['git', 'gfortran'];
+export async function setup(version = '') {
+  const gfortranPkg = version ? `gfortran=${version}` : 'gfortran';
+  const packageName = ['git', gfortranPkg];
 
   startGroup('Conda install');
   await _exec('conda', [

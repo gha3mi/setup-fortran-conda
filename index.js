@@ -1,5 +1,7 @@
-import { getInput, setFailed, summary } from '@actions/core';
+import { setFailed, summary } from '@actions/core';
 import { exec as _exec } from '@actions/exec';
+import fs from 'fs';
+import path from 'path';
 
 async function getVersion(cmd, args = ['--version']) {
   let output = '';
@@ -30,7 +32,7 @@ async function run() {
     // Install extra packages
     const { installExtras } = await import('./extra.js');
     const extras = extrasInput
-      .split(/[\s,]+/) // handles commas, spaces, or newlines
+      .split(/[\s,]+/)
       .map(p => p.trim())
       .filter(Boolean);
     await installExtras('fortran', extras);
@@ -39,17 +41,27 @@ async function run() {
     const { setup } = await import(`./platform/${osKey}/${compiler}.js`);
     await setup();
 
-    // Get versions
+    // Get compiler version
     const compilerVersion = await getVersion(compiler);
-    const fpmVersion = await getVersion('fpm');
 
-    // GitHub Actions job summary
+    // Write GitHub Actions summary
     await summary
       .addTable([
-        ['OS', 'Compiler', 'Version', 'FPM Version'],
-        [platform, compiler, compilerVersion, fpmVersion]
+        ['OS', 'Compiler', 'Version'],
+        [platform, compiler, compilerVersion]
       ])
       .write();
+
+    // Write version-info.json to $RUNNER_TEMP
+    const versionInfo = {
+      platform,
+      compiler,
+      compiler_version: compilerVersion
+    };
+
+    const tmpFile = path.join(process.env.RUNNER_TEMP || '.', 'version-info.json');
+    fs.writeFileSync(tmpFile, JSON.stringify(versionInfo, null, 2));
+    console.log(`::notice file=${tmpFile}::version-info.json written`);
 
   } catch (err) {
     setFailed(err.message);

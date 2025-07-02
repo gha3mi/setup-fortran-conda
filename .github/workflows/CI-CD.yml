@@ -165,6 +165,21 @@ jobs:
           update-readme-user-name: "Seyed Ali Ghasemi" # Update with your name
           update-readme-user-email: "info@gha3mi.com"  # Update with your email
 
+  update_readme_versions:
+    name: Update README.md compiler versions
+    if: |
+      always() &&
+      github.ref != 'refs/heads/update-readme-versions'
+    needs: [test_fpm, test_cmake]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update compiler version table
+        uses: gha3mi/setup-fortran-conda@dev
+        with:
+          update-readme-compiler-table: true
+          update-readme-token: ${{ secrets.GH_PAT }}
+          update-readme-user-name: "Seyed Ali Ghasemi"
+          update-readme-user-email: "info@gha3mi.com"
   linter_fortitude:
     name: Run Fortitude Linter
     runs-on: ubuntu-latest

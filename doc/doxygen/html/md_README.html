@@ -104,7 +104,7 @@ $(function(){initNavTree('md_README.html',''); initResizable(true); });
 <h1><a class="anchor" id="autotoc_md1"></a>
 📋 Workflow Example</h1>
 <h2><a class="anchor" id="autotoc_md2"></a>
-🔐 IMPORTANT NOTE</h2>
+🔐 IMPORTANT NOTES</h2>
 <blockquote class="doxtable">
 <p>⚠️ <b>Use your own name and email!</b> Don’t copy the example values. </p>
 </blockquote>
@@ -117,7 +117,9 @@ $(function(){initNavTree('md_README.html',''); initResizable(true); });
 <div class="fragment"><div class="line">update-readme-token: ${{ secrets.GH_PAT }}</div>
 <div class="line">update-readme-user-name: &quot;Your Name&quot;</div>
 <div class="line">update-readme-user-email: &quot;you@example.com&quot;</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md3"></a>
+</div><!-- fragment --><p>💡 Tip: When integrating CI/CD, testing often requires multiple commits and iterations. To keep your <code>main</code> branch clean, consider using a separate branch (e.g., <code>dev</code>) for development and testing. Once everything is working, you can merge it into main.</p>
+<p>You can include only the jobs you need in your workflow. This example includes all available jobs to demonstrate a comprehensive CI/CD setup.</p>
+<h2><a class="anchor" id="autotoc_md3"></a>
 Overview</h2>
 <p>This example automates Fortran CI/CD:</p>
 <ul>

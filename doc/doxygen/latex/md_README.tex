@@ -5,7 +5,7 @@
 
 
 A Git\+Hub Action that sets up a Fortran development environment using Conda. Inspired by \href{https://degenerateconic.com/conda-plus-fortran.html}{\texttt{ Conda + Fortran}}.\hypertarget{md_README_autotoc_md1}{}\doxysection{\texorpdfstring{📋 Workflow Example}{📋 Workflow Example}}\label{md_README_autotoc_md1}
-\hypertarget{md_README_autotoc_md2}{}\doxysubsection{\texorpdfstring{🔐 IMPORTANT NOTE}{🔐 IMPORTANT NOTE}}\label{md_README_autotoc_md2}
+\hypertarget{md_README_autotoc_md2}{}\doxysubsection{\texorpdfstring{🔐 IMPORTANT NOTES}{🔐 IMPORTANT NOTES}}\label{md_README_autotoc_md2}
 \begin{quote}
 ⚠️ {\bfseries{Use your own name and email!}} Don’t copy the example values. \end{quote}
 
@@ -26,7 +26,11 @@ To enable automatic updates to the CI status table in {\ttfamily README.\+md} vi
 \DoxyCodeLine{update-\/readme-\/user-\/email:\ "{}you@example.com"{}}
 
 \end{DoxyCode}
-\hypertarget{md_README_autotoc_md3}{}\doxysubsection{\texorpdfstring{Overview}{Overview}}\label{md_README_autotoc_md3}
+
+
+💡 Tip\+: When integrating CI/\+CD, testing often requires multiple commits and iterations. To keep your {\ttfamily main} branch clean, consider using a separate branch (e.\+g., {\ttfamily dev}) for development and testing. Once everything is working, you can merge it into main.
+
+You can include only the jobs you need in your workflow. This example includes all available jobs to demonstrate a comprehensive CI/\+CD setup.\hypertarget{md_README_autotoc_md3}{}\doxysubsection{\texorpdfstring{Overview}{Overview}}\label{md_README_autotoc_md3}
 This example automates Fortran CI/\+CD\+:
 
 

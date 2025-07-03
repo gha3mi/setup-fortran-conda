@@ -30,8 +30,8 @@ async function setUlimits() {
   endGroup();
 }
 
-export async function setup() {
-  const packageName = 'lfortran';
+export async function setup(version = '') {
+  const packageName = version ? `lfortran=${version}` : 'lfortran';
 
   startGroup('Conda install');
   await _exec('conda', [

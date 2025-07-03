@@ -10,6 +10,10 @@ inputs:
     description: "Fortran compiler to install (gfortran, ifx, lfortran, flang)"
     required: false
     default: ""
+  compiler-version:
+    description: "compiler version"
+    required: false
+    default: ""
   platform:
     description: "Runner OS platform (ubuntu-latest, windows-latest, macos-latest)"
     required: false
@@ -132,6 +136,7 @@ runs:
         node "${{ github.action_path }}/index.js"
       env:
         INPUT_COMPILER: ${{ inputs.compiler }}
+        INPUT_COMPILER_VERSION: ${{ inputs.compiler-version }}
         INPUT_PLATFORM: ${{ inputs.platform }}
         INPUT_EXTRA_PACKAGES: ${{ inputs.extra-packages }}
 

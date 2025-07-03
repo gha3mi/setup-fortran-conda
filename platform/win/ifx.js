@@ -84,10 +84,11 @@ async function getCondaPrefix(envName) {
 }
 
 // Main setup function
-export async function setup() {
+export async function setup(version = '') {
+  const ifxPkg = version ? `ifx_win-64=${version}` : 'ifx_win-64';
+  const packages = ['intel-fortran-rt', ifxPkg];
+  
   await runVcvars64(); // 🛠 MSVC environment
-
-  const packages = ['intel-fortran-rt', 'ifx_win-64'];
 
   startGroup('Conda install (Intel Fortran)');
   await _exec('conda', [

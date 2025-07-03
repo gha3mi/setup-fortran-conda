@@ -362,27 +362,42 @@ Job Breakdown</h2>
 <div class="line">        with:</div>
 <div class="line">          fortitude-check: true</div>
 <div class="line">          fortitude-settings: &quot;--output-format github&quot;</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md6"></a>
+</div><!-- fragment --> <h2><a class="anchor" id="autotoc_md6"></a>
+Specifying Compiler Versions</h2>
+<p>By default, the above example installs the latest available versions of each compiler. To use a specific version, add a <code>compiler-version</code> entry in your matrix:</p>
+<div class="fragment"><div class="line">matrix:</div>
+<div class="line">  # os: [ubuntu-latest, macos-latest, windows-latest]</div>
+<div class="line">  # compiler: [gfortran, ifx, lfortran, flang-new, nvfortran]</div>
+<div class="line">  include:</div>
+<div class="line">    # gfortran</div>
+<div class="line">    - os: ubuntu-latest</div>
+<div class="line">      compiler: gfortran</div>
+<div class="line">      compiler-version: 15.1.0</div>
+<div class="line">      extra-packages: &quot;cmake, ninja&quot;</div>
+<div class="line">    - os: macos-latest</div>
+<div class="line">      compiler: gfortran</div>
+<div class="line">      compiler-version: 15.1.0</div>
+<div class="line">      extra-packages: &quot;cmake, ninja&quot;</div>
+<div class="line">    - os: windows-latest</div>
+<div class="line">      compiler: gfortran</div>
+<div class="line">      compiler-version: 15.1.0</div>
+<div class="line">      extra-packages: &quot;cmake, ninja&quot;</div>
+</div><!-- fragment --><p> Then, reference <code>compiler-version</code> in the setup step:</p>
+<div class="fragment"><div class="line">- name: Setup Fortran</div>
+<div class="line">  uses: gha3mi/setup-fortran-conda@dev</div>
+<div class="line">  with:</div>
+<div class="line">    compiler: ${{ matrix.compiler }}</div>
+<div class="line">    compiler-version: ${{ matrix.compiler-version }} # must be specified</div>
+<div class="line">    platform: ${{ matrix.os }}</div>
+<div class="line">    extra-packages: ${{ matrix.extra-packages }}</div>
+</div><!-- fragment --><p> If <code>compiler-version</code> is set to an empty string <code>""</code>, the latest version will be installed.</p>
+<h1><a class="anchor" id="autotoc_md7"></a>
 ✅ Status</h1>
-<table class="markdownTable">
-<tr class="markdownTableHead">
-<th class="markdownTableHeadNone">Compiler   </th><th class="markdownTableHeadNone">macos   </th><th class="markdownTableHeadNone">ubuntu   </th><th class="markdownTableHeadNone">windows    </th></tr>
-<tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><code>flang-new</code>   </td><td class="markdownTableBodyNone">-   </td><td class="markdownTableBodyNone">fpm ✅ cmake ✅   </td><td class="markdownTableBodyNone">fpm ❌ cmake ✅    </td></tr>
-<tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone"><code>gfortran</code>   </td><td class="markdownTableBodyNone">fpm ✅ cmake ✅   </td><td class="markdownTableBodyNone">fpm ✅ cmake ✅   </td><td class="markdownTableBodyNone">fpm ✅ cmake ✅    </td></tr>
-<tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><code>ifx</code>   </td><td class="markdownTableBodyNone">-   </td><td class="markdownTableBodyNone">fpm ✅ cmake ✅   </td><td class="markdownTableBodyNone">fpm ✅ cmake ✅    </td></tr>
-<tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone"><code>lfortran</code>   </td><td class="markdownTableBodyNone">fpm ✅ cmake ✅   </td><td class="markdownTableBodyNone">fpm ✅ cmake ✅   </td><td class="markdownTableBodyNone">fpm ✅ cmake ✅    </td></tr>
-<tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><code>nvfortran</code>   </td><td class="markdownTableBodyNone">-   </td><td class="markdownTableBodyNone">fpm ✅ cmake ✅   </td><td class="markdownTableBodyNone">-   </td></tr>
-</table>
 <ul>
 <li><a href="https://github.com/gha3mi/setup-fortran-conda/blob/status-fpm/STATUS.md">STATUS.md (FPM)</a></li>
 <li><a href="https://github.com/gha3mi/setup-fortran-conda/blob/status-cmake/STATUS.md">STATUS.md (CMake)</a></li>
 </ul>
-<h1><a class="anchor" id="autotoc_md7"></a>
+<h1><a class="anchor" id="autotoc_md8"></a>
 🔗 See Also</h1>
 <ul>
 <li><a href="https://github.com/fortran-lang/setup-fortran">fortran-lang/setup-fortran</a></li>

@@ -30,10 +30,11 @@ var NAVTREE =
         [ "🔐 IMPORTANT NOTE", "md_README.html#autotoc_md2", null ],
         [ "Overview", "md_README.html#autotoc_md3", null ],
         [ "README Integration", "md_README.html#autotoc_md4", null ],
-        [ "Job Breakdown", "md_README.html#autotoc_md5", null ]
+        [ "Job Breakdown", "md_README.html#autotoc_md5", null ],
+        [ "Specifying Compiler Versions", "md_README.html#autotoc_md6", null ]
       ] ],
-      [ "✅ Status", "md_README.html#autotoc_md6", null ],
-      [ "🔗 See Also", "md_README.html#autotoc_md7", null ]
+      [ "✅ Status", "md_README.html#autotoc_md7", null ],
+      [ "🔗 See Also", "md_README.html#autotoc_md8", null ]
     ] ]
   ] ]
 ];

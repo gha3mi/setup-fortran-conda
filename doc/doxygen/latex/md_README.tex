@@ -316,6 +316,24 @@ By default, the above example installs the latest available versions of each com
 
 \end{DoxyCode}
  If {\ttfamily compiler-\/version} is set to an empty string {\ttfamily "{}"{}}, the latest version will be installed.\hypertarget{md_README_autotoc_md7}{}\doxysection{\texorpdfstring{✅ Status}{✅ Status}}\label{md_README_autotoc_md7}
+\tabulinesep=1mm
+\begin{longtabu}spread 0pt [c]{*{4}{|X[-1]}|}
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Compiler   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ macos   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ ubuntu   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ windows    }\\\cline{1-4}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Compiler   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ macos   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ ubuntu   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ windows    }\\\cline{1-4}
+\endhead
+{\ttfamily flang-\/new}   &-\/   &fpm ✅ cmake ✅   &fpm ❌ cmake ✅    \\\cline{1-4}
+{\ttfamily gfortran}   &fpm ✅ cmake ✅   &fpm ✅ cmake ✅   &fpm ✅ cmake ✅    \\\cline{1-4}
+{\ttfamily ifx}   &-\/   &fpm ✅ cmake ✅   &fpm ✅ cmake ✅    \\\cline{1-4}
+{\ttfamily lfortran}   &fpm ✅ cmake ✅   &fpm ✅ cmake ✅   &fpm ✅ cmake ✅    \\\cline{1-4}
+{\ttfamily nvfortran}   &-\/   &fpm ✅ cmake ✅   &-\/   \\\cline{1-4}
+\end{longtabu}
+
+
 
 \begin{DoxyItemize}
 \item \href{https://github.com/gha3mi/setup-fortran-conda/blob/status-fpm/STATUS.md}{\texttt{ STATUS.\+md (FPM)}}

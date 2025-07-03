@@ -396,50 +396,41 @@
 <span class="w">          </span><span class="nt">fortitude-settings</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;--output-format</span><span class="nv"> </span><span class="s">github&quot;</span><span class="w"></span>
 </code></pre></div>
 
+<h3>Specifying Compiler Versions</h3>
+<p>By default, the above example installs the latest available versions of each compiler.
+To use a specific version, add a <code>compiler-version</code> entry in your matrix:</p>
+<div class="codehilite"><pre><span></span><code><span class="nv">matrix</span>:
+  # <span class="nv">os</span>: [<span class="nv">ubuntu</span><span class="o">-</span><span class="nv">latest</span>, <span class="nv">macos</span><span class="o">-</span><span class="nv">latest</span>, <span class="nv">windows</span><span class="o">-</span><span class="nv">latest</span>]
+  # <span class="nv">compiler</span>: [<span class="nv">gfortran</span>, <span class="nv">ifx</span>, <span class="nv">lfortran</span>, <span class="nv">flang</span><span class="o">-</span><span class="nv">new</span>, <span class="nv">nvfortran</span>]
+  <span class="k">include</span>:
+    # <span class="nv">gfortran</span>
+    <span class="o">-</span> <span class="nv">os</span>: <span class="nv">ubuntu</span><span class="o">-</span><span class="nv">latest</span>
+      <span class="nv">compiler</span>: <span class="nv">gfortran</span>
+      <span class="nv">compiler</span><span class="o">-</span><span class="nv">version</span>: <span class="mi">15</span>.<span class="mi">1</span>.<span class="mi">0</span>
+      <span class="nv">extra</span><span class="o">-</span><span class="nv">packages</span>: <span class="s2">&quot;</span><span class="s">cmake, ninja</span><span class="s2">&quot;</span>
+    <span class="o">-</span> <span class="nv">os</span>: <span class="nv">macos</span><span class="o">-</span><span class="nv">latest</span>
+      <span class="nv">compiler</span>: <span class="nv">gfortran</span>
+      <span class="nv">compiler</span><span class="o">-</span><span class="nv">version</span>: <span class="mi">15</span>.<span class="mi">1</span>.<span class="mi">0</span>
+      <span class="nv">extra</span><span class="o">-</span><span class="nv">packages</span>: <span class="s2">&quot;</span><span class="s">cmake, ninja</span><span class="s2">&quot;</span>
+    <span class="o">-</span> <span class="nv">os</span>: <span class="nv">windows</span><span class="o">-</span><span class="nv">latest</span>
+      <span class="nv">compiler</span>: <span class="nv">gfortran</span>
+      <span class="nv">compiler</span><span class="o">-</span><span class="nv">version</span>: <span class="mi">15</span>.<span class="mi">1</span>.<span class="mi">0</span>
+      <span class="nv">extra</span><span class="o">-</span><span class="nv">packages</span>: <span class="s2">&quot;</span><span class="s">cmake, ninja</span><span class="s2">&quot;</span>
+</code></pre></div>
+
+<p>Then, reference <code>compiler-version</code> in the setup step:</p>
+<div class="codehilite"><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Setup Fortran</span><span class="w"></span>
+<span class="w">  </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gha3mi/setup-fortran-conda@dev</span><span class="w"></span>
+<span class="w">  </span><span class="nt">with</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">compiler</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ matrix.compiler }}</span><span class="w"></span>
+<span class="w">    </span><span class="nt">compiler-version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ matrix.compiler-version }}</span><span class="w"> </span><span class="c1"># must be specified</span><span class="w"></span>
+<span class="w">    </span><span class="nt">platform</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ matrix.os }}</span><span class="w"></span>
+<span class="w">    </span><span class="nt">extra-packages</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ matrix.extra-packages }}</span><span class="w"></span>
+</code></pre></div>
+
+<p>If <code>compiler-version</code> is set to an empty string <code>""</code>, the latest version will be installed.</p>
 <h2>✅ Status</h2>
 <!-- STATUS:setup-fortran-conda:START -->
-<table>
-<thead>
-<tr>
-<th>Compiler</th>
-<th>macos</th>
-<th>ubuntu</th>
-<th>windows</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>flang-new</code></td>
-<td>-</td>
-<td>fpm ✅  cmake ✅</td>
-<td>fpm ❌  cmake ✅</td>
-</tr>
-<tr>
-<td><code>gfortran</code></td>
-<td>fpm ✅  cmake ✅</td>
-<td>fpm ✅  cmake ✅</td>
-<td>fpm ✅  cmake ✅</td>
-</tr>
-<tr>
-<td><code>ifx</code></td>
-<td>-</td>
-<td>fpm ✅  cmake ✅</td>
-<td>fpm ✅  cmake ✅</td>
-</tr>
-<tr>
-<td><code>lfortran</code></td>
-<td>fpm ✅  cmake ✅</td>
-<td>fpm ✅  cmake ✅</td>
-<td>fpm ✅  cmake ✅</td>
-</tr>
-<tr>
-<td><code>nvfortran</code></td>
-<td>-</td>
-<td>fpm ✅  cmake ✅</td>
-<td>-</td>
-</tr>
-</tbody>
-</table>
 <!-- STATUS:setup-fortran-conda:END -->
 
 <ul>
@@ -524,7 +515,7 @@
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2025-07-03T09:24:17.417403+0000             </p>
+ on 2025-07-03T09:46:43.606223+0000             </p>
           </div>
         </div>
         <br>

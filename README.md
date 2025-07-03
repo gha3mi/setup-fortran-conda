@@ -291,7 +291,7 @@ Then, reference `compiler-version` in the setup step:
 
 ```yaml
 - name: Setup Fortran
-  uses: gha3mi/setup-fortran-conda@dev
+  uses: gha3mi/setup-fortran-conda@latest
   with:
     compiler: ${{ matrix.compiler }}
     compiler-version: ${{ matrix.compiler-version }} # must be specified

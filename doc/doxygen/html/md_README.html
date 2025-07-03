@@ -384,7 +384,7 @@ Specifying Compiler Versions</h2>
 <div class="line">      extra-packages: &quot;cmake, ninja&quot;</div>
 </div><!-- fragment --><p> Then, reference <code>compiler-version</code> in the setup step:</p>
 <div class="fragment"><div class="line">- name: Setup Fortran</div>
-<div class="line">  uses: gha3mi/setup-fortran-conda@dev</div>
+<div class="line">  uses: gha3mi/setup-fortran-conda@latest</div>
 <div class="line">  with:</div>
 <div class="line">    compiler: ${{ matrix.compiler }}</div>
 <div class="line">    compiler-version: ${{ matrix.compiler-version }} # must be specified</div>

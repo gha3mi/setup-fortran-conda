@@ -5,7 +5,7 @@ A GitHub Action that sets up a Fortran development environment using Conda. Insp
 
 ## 📋 Workflow Example
 
-### 🔐 IMPORTANT NOTE
+### 🔐 IMPORTANT NOTES
 
 > ⚠️ **Use your own name and email!** Don’t copy the example values.
 
@@ -20,6 +20,11 @@ update-readme-token: ${{ secrets.GH_PAT }}
 update-readme-user-name: "Your Name"
 update-readme-user-email: "you@example.com"
 ```
+
+💡 Tip: When integrating CI/CD, testing often requires multiple commits and iterations.
+To keep your `main` branch clean, consider using a separate branch (e.g., `dev`) for development and testing. Once everything is working, you can merge it into main.
+
+You can include only the jobs you need in your workflow. This example includes all available jobs to demonstrate a comprehensive CI/CD setup.
 
 ### Overview
 

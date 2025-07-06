@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['important_20notes_0',['🔐 IMPORTANT NOTES',['../md_README.html#autotoc_md4',1,'']]],
-  ['integration_1',['README Integration',['../md_README.html#autotoc_md6',1,'']]]
+  ['with_20conda_0',['Setup Fortran with Conda',['../md_README.html',1,'']]],
+  ['workflow_20example_1',['📋 Workflow Example',['../md_README.html#autotoc_md1',1,'']]]
 ];

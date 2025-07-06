@@ -153,7 +153,7 @@ jobs:
     needs: [update_readme_table]
     steps:
       - name: Run release workflow
-        uses: gha3mi/setup-fortran-conda@main
+        uses: gha3mi/setup-fortran-conda@dev
         with:
           run-release: true
           release-token: ${{ secrets.GH_PAT }}

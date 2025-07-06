@@ -96,6 +96,7 @@ jobs:
           ctest --test-dir build/release --output-on-failure
 
   doc_ford:
+    if: github.event_name == 'push'
     name: Generate FORD Documentation
     runs-on: ubuntu-latest
     steps:
@@ -111,6 +112,7 @@ jobs:
           ford-target-folder: doc/ford
 
   doc_doxygen:
+    if: github.event_name == 'push'
     name: Generate Doxygen Documentation
     runs-on: ubuntu-latest
     steps:
@@ -126,8 +128,8 @@ jobs:
           doxygen-target-folder: doc/doxygen
 
   status_fpm:
+    if: always() && github.event_name == 'push'
     name: Generate STATUS.md
-    if: always()
     needs: test_fpm
     runs-on: ubuntu-latest
     steps:
@@ -137,8 +139,8 @@ jobs:
           generate-status-fpm: true
 
   status_cmake:
+    if: always() && github.event_name == 'push'
     name: Generate STATUS.md
-    if: always()
     needs: test_cmake
     runs-on: ubuntu-latest
     steps:
@@ -148,10 +150,8 @@ jobs:
           generate-status-cmake: true
 
   update_readme_table:
+    if: always() && github.event_name == 'push' && github.ref != 'refs/heads/update-readme-table'
     name: Update README.md status table
-    if: |
-      always() &&
-      github.ref != 'refs/heads/update-readme-table'
     needs: [status_fpm, status_cmake]
     runs-on: ubuntu-latest
     steps:
@@ -172,3 +172,16 @@ jobs:
         with:
           fortitude-check: true
           fortitude-settings: "--output-format github"
+
+  release:
+    if: github.ref_name == 'main' || github.ref_name == 'master'
+    name: Release Workflow
+    runs-on: ubuntu-latest
+    needs: [update_readme_table]
+    steps:
+      - name: Run release workflow
+        uses: gha3mi/setup-fortran-conda@latest
+        with:
+          run-release: true
+          release-token: ${{ secrets.GH_PAT }}
+          release-branch: ${{ github.ref_name }}

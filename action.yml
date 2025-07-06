@@ -115,6 +115,18 @@ inputs:
     required: false
     default: "--output-format github"
 
+  run-release:
+    description: Run release workflow (tagging, changelog, etc.)
+    required: false
+    default: 'false'
+  release-token:
+    description: GitHub token used for creating the release and accessing commits/PRs
+    required: false
+  release-branch:
+    description: Branch to commit/push changes to
+    required: false
+    default: ""
+
 runs:
   using: "composite"
   steps:
@@ -353,3 +365,14 @@ runs:
         title: "update README.md status table"
         body: "This PR updates the CI status table in the README.md."
         delete-branch: true
+
+    - name: Run release workflow
+      if: ${{ inputs.run-release == 'true' }}
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.release-token }}
+        GITHUB_REPOSITORY: ${{ github.repository }}
+        GITHUB_ACTOR: ${{ inputs.release-user-name }}
+        RELEASE_BRANCH: ${{ inputs.release-branch }}
+      run: |
+        node "${{ github.action_path }}/scripts/release.js"

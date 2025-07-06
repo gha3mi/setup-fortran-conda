@@ -1,4 +1,3 @@
-// release.js
 import { existsSync, readFileSync, writeFileSync } from "fs";
 import { execSync } from "child_process";
 import { Octokit } from "@octokit/rest";
@@ -21,13 +20,18 @@ function exec(cmd, options = {}) {
   return execSync(cmd, { stdio: "pipe", encoding: "utf-8", ...options }).trim();
 }
 
-// Clone the repo (shallow=false) and enter it
 function checkoutRepository() {
   const cwd = process.cwd();
   console.log(`Using already checked-out repository: ${cwd}`);
   exec(`git config --global --add safe.directory "${cwd}"`);
+  try {
+    exec(`git fetch origin ${BRANCH}`);
+    exec(`git checkout ${BRANCH}`);
+    exec(`git pull origin ${BRANCH}`);
+  } catch (err) {
+    console.warn(`Warning: failed to checkout ${BRANCH}: ${err.message}`);
+  }
 }
-
 
 function getPreviousTag() {
   try {
@@ -41,7 +45,6 @@ function getPreviousTag() {
 
 function determineNextTag(prevTag) {
   const commits = exec(`git log ${prevTag}..HEAD --pretty=format:"%s"`);
-
   console.log(`Commits since ${prevTag}:\n${commits || "(none)"}`);
   if (!commits) return null;
 
@@ -52,12 +55,9 @@ function determineNextTag(prevTag) {
   const [major, minor, patch] = prevTag.replace(/^v/, "").split(".").map(Number);
   if ([major, minor, patch].some(n => isNaN(n))) return "v1.0.0";
 
-  let nextTag;
-  if (bump === "major") nextTag = `v${major + 1}.0.0`;
-  else if (bump === "minor") nextTag = `v${major}.${minor + 1}.0`;
-  else nextTag = `v${major}.${minor}.${patch + 1}`;
-
-  return nextTag;
+  if (bump === "major") return `v${major + 1}.0.0`;
+  if (bump === "minor") return `v${major}.${minor + 1}.0`;
+  return `v${major}.${minor}.${patch + 1}`;
 }
 
 async function generateChangelog(prevTag, nextTag) {
@@ -130,56 +130,25 @@ async function generateChangelog(prevTag, nextTag) {
   const existing = existsSync("CHANGELOG.md") ? readFileSync("CHANGELOG.md", "utf8") : "";
   writeFileSync("CHANGELOG.md", `${changelogEntry}\n\n${existing}`);
   writeFileSync("VERSION", nextTag.replace(/^v/, ""));
+
+  console.log("Written VERSION:");
+  console.log(readFileSync("VERSION", "utf8"));
+  console.log("Top of new CHANGELOG.md:");
+  console.log(changelogEntry.split("\n").slice(0, 6).join("\n"));
+
   return changelogEntry;
 }
 
-function commitAndPush(file, message) {
-  exec(`git add ${file}`);
+function hasGitDiff() {
   try {
-    exec(`git commit -m "${message}"`);
-    exec(`git push origin ${BRANCH}`);
+    exec("git diff --quiet");
+    return false; // no diff
   } catch {
-    console.log(`No changes in ${file}`);
+    return true; // there is a diff
   }
 }
 
-function wasCommitted(pattern) {
-  try {
-    const message = exec("git log -1 --pretty=%B");
-    return new RegExp(pattern).test(message);
-  } catch {
-    return false;
-  }
-}
-
-function createTag(tag) {
-  try {
-    exec(`git rev-parse ${tag}`);
-    console.log(`Tag already exists: ${tag}`);
-  } catch {
-    exec(`git tag ${tag}`);
-    exec(`git push origin ${tag}`);
-  }
-}
-
-function updateLatestTag(tag) {
-  exec(`git fetch --tags`);
-  exec(`git tag -f latest ${tag}`);
-  exec(`git push origin -f latest`);
-}
-
-async function createGitHubRelease(tag, changelog) {
-  await octokit.repos.createRelease({
-    owner,
-    repo,
-    tag_name: tag,
-    name: tag,
-    body: changelog,
-  });
-}
-
-// --- Main Execution ---
-(async () => {
+async function main() {
   checkoutRepository();
 
   try {
@@ -199,20 +168,31 @@ async function createGitHubRelease(tag, changelog) {
   }
 
   console.log(`Next version tag: ${nextTag}`);
-
   const changelog = await generateChangelog(prevTag, nextTag);
   console.log("Generated changelog.");
 
-  exec("git add CHANGELOG.md VERSION");
-  try {
-    exec(`git commit -m "chore: release ${nextTag}\n\ndocs: update CHANGELOG\nchore: update VERSION"`);
-    exec(`git push origin ${BRANCH}`);
-  } catch {
+  if (hasGitDiff()) {
+    try {
+      exec("git add CHANGELOG.md VERSION");
+      exec(`git commit -m "chore: release ${nextTag}\n\ndocs: update CHANGELOG\nchore: update VERSION"`);
+      const result = exec(`git push origin ${BRANCH}`);
+      console.log("Changes committed and pushed.");
+      console.log("Push result:", result);
+    } catch (err) {
+      console.error("Git push failed (branch may be protected?):", err.message);
+      process.exit(1);
+    }
+  } else {
     console.log("No changes to commit.");
   }
 
-  createTag(nextTag);
-  updateLatestTag(nextTag);
-  await createGitHubRelease(nextTag, changelog);
-  console.log(`GitHub Release created: ${nextTag}`);
-})();
+  // createTag(nextTag);
+  // updateLatestTag(nextTag);
+  // await createGitHubRelease(nextTag, changelog);
+  // console.log(`GitHub Release created: ${nextTag}`);
+}
+
+main().catch(err => {
+  console.error("Release failed:", err);
+  process.exit(1);
+});

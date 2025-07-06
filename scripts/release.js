@@ -203,13 +203,12 @@ async function createGitHubRelease(tag, changelog) {
   const changelog = await generateChangelog(prevTag, nextTag);
   console.log("Generated changelog.");
 
-  commitAndPush("CHANGELOG.md", `docs: update CHANGELOG for ${nextTag}`);
-  commitAndPush("VERSION", `chore: update VERSION to ${nextTag}`);
-
-  const committed = wasCommitted("update CHANGELOG|update VERSION");
-  if (!committed) {
-    console.log("No commit made — aborting release");
-    return;
+  exec("git add CHANGELOG.md VERSION");
+  try {
+    exec(`git commit -m "chore: release ${nextTag}\n\ndocs: update CHANGELOG\nchore: update VERSION"`);
+    exec(`git push origin ${BRANCH}`);
+  } catch {
+    console.log("No changes to commit.");
   }
 
   createTag(nextTag);

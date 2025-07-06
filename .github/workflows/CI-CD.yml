@@ -3,15 +3,25 @@ name: Setup Fortran Conda CI/CD
 on:
   push:
     branches: [main, master, dev]
+    paths-ignore:
+      - 'README.md'
+      - 'CHANGELOG.md'
+      - 'VERSION'
+      - 'LICENSE'
   pull_request:
     branches: [main, master]
-
+    paths-ignore:
+      - 'README.md'
+      - 'CHANGELOG.md'
+      - 'VERSION'
+      - 'LICENSE'
 permissions:
   contents: write
   pull-requests: write
 
 jobs:
   test_fpm:
+    if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
     name: ${{ matrix.os }}_${{ matrix.compiler }}_fpm
     runs-on: ${{ matrix.os }}
     strategy:
@@ -51,6 +61,7 @@ jobs:
         run: fpm test --compiler ${{ matrix.compiler }} --profile release --verbose
 
   test_cmake:
+    if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
     name: ${{ matrix.os }}_${{ matrix.compiler }}_cmake
     runs-on: ${{ matrix.os }}
     strategy:
@@ -96,6 +107,7 @@ jobs:
           ctest --test-dir build/release --output-on-failure
 
   doc_ford:
+    if: ${{ github.event_name == 'push' && !contains(github.event.head_commit.message, '[skip ci]') }}
     name: Generate FORD Documentation
     runs-on: ubuntu-latest
     steps:
@@ -111,6 +123,7 @@ jobs:
           ford-target-folder: doc/ford
 
   doc_doxygen:
+    if: ${{ github.event_name == 'push' && !contains(github.event.head_commit.message, '[skip ci]') }}
     name: Generate Doxygen Documentation
     runs-on: ubuntu-latest
     steps:
@@ -126,8 +139,8 @@ jobs:
           doxygen-target-folder: doc/doxygen
 
   status_fpm:
+    if: ${{ always() && github.event_name == 'push' && !contains(github.event.head_commit.message, '[skip ci]') }}
     name: Generate STATUS.md
-    if: always()
     needs: test_fpm
     runs-on: ubuntu-latest
     steps:
@@ -137,8 +150,8 @@ jobs:
           generate-status-fpm: true
 
   status_cmake:
+    if: ${{ always() && github.event_name == 'push' && !contains(github.event.head_commit.message, '[skip ci]') }}
     name: Generate STATUS.md
-    if: always()
     needs: test_cmake
     runs-on: ubuntu-latest
     steps:
@@ -148,10 +161,8 @@ jobs:
           generate-status-cmake: true
 
   update_readme_table:
+    if: ${{ always() && github.event_name == 'push' && github.ref != 'refs/heads/update-readme-table' && !contains(github.event.head_commit.message, '[skip ci]') }}
     name: Update README.md status table
-    if: |
-      always() &&
-      github.ref != 'refs/heads/update-readme-table'
     needs: [status_fpm, status_cmake]
     runs-on: ubuntu-latest
     steps:
@@ -164,6 +175,7 @@ jobs:
           update-readme-user-email: "info@gha3mi.com"  # Update with your email
 
   linter_fortitude:
+    if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
     name: Run Fortitude Linter
     runs-on: ubuntu-latest
     steps:

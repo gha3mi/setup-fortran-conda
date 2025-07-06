@@ -6,7 +6,7 @@ import path from "path";
 
 const GH_TOKEN = process.env.GH_TOKEN;
 const GITHUB_REPOSITORY = process.env.GITHUB_REPOSITORY;
-const ACTOR = process.env.GITHUB_ACTOR || "github-actions";
+const ACTOR = process.env.GITHUB_ACTOR;
 const BRANCH = process.env.RELEASE_BRANCH || "main";
 
 if (!GH_TOKEN || !GITHUB_REPOSITORY) {

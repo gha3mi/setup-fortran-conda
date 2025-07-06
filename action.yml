@@ -126,6 +126,10 @@ inputs:
     description: Branch to commit/push changes to
     required: false
     default: ""
+  release-user-name:
+    description: "GitHub username to attribute commits/releases to"
+    required: false
+    default: ""
 
 runs:
   using: "composite"

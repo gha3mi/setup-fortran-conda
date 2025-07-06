@@ -185,3 +185,4 @@ jobs:
           run-release: true
           release-token: ${{ secrets.GH_PAT }}
           release-branch: ${{ github.ref_name }}
+          release-user-name: ${{ github.actor }}

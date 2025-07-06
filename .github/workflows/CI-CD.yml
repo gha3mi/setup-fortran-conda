@@ -174,7 +174,7 @@ jobs:
           fortitude-settings: "--output-format github"
 
   release:
-    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    if: github.event_name == 'push' && (github.ref_name == 'main' || github.ref_name == 'master')
     name: Release Workflow
     runs-on: ubuntu-latest
     needs: [update_readme_table]

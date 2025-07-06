@@ -25,6 +25,7 @@
 var NAVTREE =
 [
   [ "My Project", "index.html", [
+    [ "CHANGELOG", "md_CHANGELOG.html", null ],
     [ "Setup Fortran with Conda", "md_README.html", [
       [ "📋 Workflow Example", "md_README.html#autotoc_md1", [
         [ "🔐 IMPORTANT NOTES", "md_README.html#autotoc_md2", null ],

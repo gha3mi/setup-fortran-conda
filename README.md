@@ -310,11 +310,11 @@ If `compiler-version` is set to an empty string `""`, the latest version will be
 <!-- STATUS:setup-fortran-conda:START -->
 | Compiler   | macos | ubuntu | windows |
 |------------|----------------------|----------------------|----------------------|
-| `flang-new` | - | fpm ✅  cmake ✅ | fpm ❌  cmake ✅ |
-| `gfortran` | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ |
-| `ifx` | - | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ |
-| `lfortran` | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ |
-| `nvfortran` | - | fpm ✅  cmake ✅ | - |
+| `flang-new` | - | fpm ❌  cmake ✅ | fpm ❌  cmake ✅ |
+| `gfortran` | mpi_fpm ❌  fpm ❌  cmake ✅ | mpi_fpm ❌  fpm ❌  cmake ✅ | mpi_fpm ❌  fpm ❌  cmake ✅ |
+| `ifx` | - | mpi_fpm ❌  fpm ❌  cmake ✅ | mpi_fpm ❌  fpm ❌  cmake ✅ |
+| `lfortran` | fpm ❌  cmake ✅ | fpm ❌  cmake ✅ | fpm ❌  cmake ✅ |
+| `nvfortran` | - | fpm ❌  cmake ✅ | - |
 <!-- STATUS:setup-fortran-conda:END -->
 
 - [STATUS.md (FPM)](https://github.com/gha3mi/setup-fortran-conda/blob/status-fpm/STATUS.md)

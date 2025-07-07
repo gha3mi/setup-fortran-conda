@@ -20,6 +20,40 @@ permissions:
   pull-requests: write
 
 jobs:
+
+  test_mpi_fpm:
+    if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
+    name: ${{ matrix.os }}_${{ matrix.compiler }}_mpi_fpm
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        compiler: [gfortran, ifx]
+        include:
+          - compiler: gfortran
+            mpi-compiler: mpifort
+            extra-packages: "mpich"
+          - compiler: ifx
+            mpi-compiler: mpiifx
+            extra-packages: ""
+        exclude:
+          - os: macos-latest
+            compiler: ifx
+    steps:
+      - name: Setup Fortran
+        uses: gha3mi/setup-fortran-conda@latest
+        with:
+          compiler: ${{ matrix.compiler }}
+          platform: ${{ matrix.os }}
+          extra-packages: ${{ matrix.extra-packages }}
+
+      - name: fpm test (debug)
+        run: fpm test --target mpi_hello --compiler ${{ matrix.mpi-compiler }} --profile debug --runner "mpirun -np 4" --verbose
+
+      - name: fpm test (release)
+        run: fpm test --target mpi_hello --compiler ${{ matrix.mpi-compiler }} --profile release --runner "mpirun -np 4" --verbose
+
   test_fpm:
     if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
     name: ${{ matrix.os }}_${{ matrix.compiler }}_fpm
@@ -55,10 +89,10 @@ jobs:
           extra-packages: ${{ matrix.extra-packages }}
 
       - name: fpm test (debug)
-        run: fpm test --compiler ${{ matrix.compiler }} --profile debug --verbose
+        run: fpm test --target check --compiler ${{ matrix.compiler }} --profile debug --verbose
 
       - name: fpm test (release)
-        run: fpm test --compiler ${{ matrix.compiler }} --profile release --verbose
+        run: fpm test --target check --compiler ${{ matrix.compiler }} --profile release --verbose
 
   test_cmake:
     if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}

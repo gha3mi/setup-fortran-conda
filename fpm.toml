@@ -31,3 +31,6 @@ search              = true
 print_creation_date = true
 sort                = "permission-alpha"
 display             = ["public", "private", "protected"]
+
+[extra.fortitude.check]
+ignore = ["C003", "S061", "C121", "C001"]

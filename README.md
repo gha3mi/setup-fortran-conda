@@ -305,6 +305,40 @@ Then, reference `compiler-version` in the setup step:
 ```
 If `compiler-version` is set to an empty string `""`, the latest version will be installed.
 
+### MPI Support
+
+MPI-based tests can be executed using fpm with the mpifort. This is currently supported on Linux and macOS runners. The following example job sets up the environment and runs parallel MPI tests:
+
+```yml
+test_mpi_fpm:
+  name: ${{ matrix.os }}_${{ matrix.compiler }}_mpi_fpm
+  runs-on: ${{ matrix.os }}
+  strategy:
+    fail-fast: false
+    matrix:
+      os: [ubuntu-latest, macos-latest]
+      compiler: [mpifort]
+      include:
+        - os: ubuntu-latest
+          extra-packages: ""
+        - os: macos-latest
+          extra-packages: ""
+
+  steps:
+    - name: Setup Fortran
+      uses: gha3mi/setup-fortran-conda@latest
+      with:
+        compiler: ${{ matrix.compiler }}
+        platform: ${{ matrix.os }}
+        extra-packages: ${{ matrix.extra-packages }}
+
+    - name: fpm test (debug)
+      run: fpm test --target mpi_hello --compiler ${{ matrix.compiler }} --profile debug --flag "-cpp -DUSE_MPI" --runner "mpirun -np 4" --verbose
+
+    - name: fpm test (release)
+      run: fpm test --target mpi_hello --compiler ${{ matrix.compiler }} --profile release --flag "-cpp -DUSE_MPI" --runner "mpirun -np 4" --verbose
+```
+
 ## ✅ Status
 
 <!-- STATUS:setup-fortran-conda:START -->

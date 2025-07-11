@@ -99,11 +99,11 @@ $(function(){initNavTree('md_README.html',''); initResizable(true); });
   <div class="headertitle"><div class="title">Setup Fortran with Conda</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a class="anchor" id="autotoc_md0"></a></p>
+<div class="textblock"><p><a class="anchor" id="autotoc_md5"></a></p>
 <p>A GitHub Action that sets up a Fortran development environment using Conda. Inspired by <a href="https://degenerateconic.com/conda-plus-fortran.html">Conda + Fortran</a>.</p>
-<h1><a class="anchor" id="autotoc_md1"></a>
+<h1><a class="anchor" id="autotoc_md6"></a>
 📋 Workflow Example</h1>
-<h2><a class="anchor" id="autotoc_md2"></a>
+<h2><a class="anchor" id="autotoc_md7"></a>
 🔐 IMPORTANT NOTES</h2>
 <blockquote class="doxtable">
 <p>⚠️ <b>Use your own name and email!</b> Don’t copy the example values. </p>
@@ -119,7 +119,7 @@ $(function(){initNavTree('md_README.html',''); initResizable(true); });
 <div class="line">update-readme-user-email: &quot;you@example.com&quot;</div>
 </div><!-- fragment --><p>💡 Tip: When integrating CI/CD, testing often requires multiple commits and iterations. To keep your <code>main</code> branch clean, consider using a separate branch (e.g., <code>dev</code>) for development and testing. Once everything is working, you can merge it into main.</p>
 <p>You can include only the jobs you need in your workflow. This example includes all available jobs to demonstrate a comprehensive CI/CD setup.</p>
-<h2><a class="anchor" id="autotoc_md3"></a>
+<h2><a class="anchor" id="autotoc_md8"></a>
 Overview</h2>
 <p>This example automates Fortran CI/CD:</p>
 <ul>
@@ -152,13 +152,13 @@ Overview</h2>
 </ul>
 </li>
 </ul>
-<h2><a class="anchor" id="autotoc_md4"></a>
+<h2><a class="anchor" id="autotoc_md9"></a>
 README Integration</h2>
 <p>To enable automatic CI status table injection, add the following to your <code>README.md</code>:</p>
 <pre>
 &lt;!-- STATUS:setup-fortran-conda:START --&gt;
 &lt;!-- STATUS:setup-fortran-conda:END --&gt;
-</pre><h2><a class="anchor" id="autotoc_md5"></a>
+</pre><h2><a class="anchor" id="autotoc_md10"></a>
 Job Breakdown</h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -364,7 +364,7 @@ Job Breakdown</h2>
 <div class="line">        with:</div>
 <div class="line">          fortitude-check: true</div>
 <div class="line">          fortitude-settings: &quot;--output-format github&quot;</div>
-</div><!-- fragment --> <h2><a class="anchor" id="autotoc_md6"></a>
+</div><!-- fragment --> <h2><a class="anchor" id="autotoc_md11"></a>
 Specifying Compiler Versions</h2>
 <p>By default, the above example installs the latest available versions of each compiler. To use a specific version, add a <code>compiler-version</code> entry in your matrix:</p>
 <div class="fragment"><div class="line">matrix:</div>
@@ -393,7 +393,7 @@ Specifying Compiler Versions</h2>
 <div class="line">    platform: ${{ matrix.os }}</div>
 <div class="line">    extra-packages: ${{ matrix.extra-packages }}</div>
 </div><!-- fragment --><p> If <code>compiler-version</code> is set to an empty string <code>""</code>, the latest version will be installed.</p>
-<h1><a class="anchor" id="autotoc_md7"></a>
+<h1><a class="anchor" id="autotoc_md12"></a>
 ✅ Status</h1>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -413,7 +413,7 @@ Specifying Compiler Versions</h2>
 <li><a href="https://github.com/gha3mi/setup-fortran-conda/blob/status-fpm/STATUS.md">STATUS.md (FPM)</a></li>
 <li><a href="https://github.com/gha3mi/setup-fortran-conda/blob/status-cmake/STATUS.md">STATUS.md (CMake)</a></li>
 </ul>
-<h1><a class="anchor" id="autotoc_md8"></a>
+<h1><a class="anchor" id="autotoc_md13"></a>
 🔗 See Also</h1>
 <ul>
 <li><a href="https://github.com/fortran-lang/setup-fortran">fortran-lang/setup-fortran</a></li>

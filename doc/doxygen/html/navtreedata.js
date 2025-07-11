@@ -25,16 +25,17 @@
 var NAVTREE =
 [
   [ "My Project", "index.html", [
+    [ "<a href=\"https://github.com/gha3mi/setup-fortran-conda/compare/v0.6.0...v0.7.0\" >v0.7.0</a> - 2025-07-11", "md_CHANGELOG.html", null ],
     [ "Setup Fortran with Conda", "md_README.html", [
-      [ "📋 Workflow Example", "md_README.html#autotoc_md1", [
-        [ "🔐 IMPORTANT NOTES", "md_README.html#autotoc_md2", null ],
-        [ "Overview", "md_README.html#autotoc_md3", null ],
-        [ "README Integration", "md_README.html#autotoc_md4", null ],
-        [ "Job Breakdown", "md_README.html#autotoc_md5", null ],
-        [ "Specifying Compiler Versions", "md_README.html#autotoc_md6", null ]
+      [ "📋 Workflow Example", "md_README.html#autotoc_md6", [
+        [ "🔐 IMPORTANT NOTES", "md_README.html#autotoc_md7", null ],
+        [ "Overview", "md_README.html#autotoc_md8", null ],
+        [ "README Integration", "md_README.html#autotoc_md9", null ],
+        [ "Job Breakdown", "md_README.html#autotoc_md10", null ],
+        [ "Specifying Compiler Versions", "md_README.html#autotoc_md11", null ]
       ] ],
-      [ "✅ Status", "md_README.html#autotoc_md7", null ],
-      [ "🔗 See Also", "md_README.html#autotoc_md8", null ]
+      [ "✅ Status", "md_README.html#autotoc_md12", null ],
+      [ "🔗 See Also", "md_README.html#autotoc_md13", null ]
     ] ]
   ] ]
 ];

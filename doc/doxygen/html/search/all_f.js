@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['🔐_20important_20notes_0',['🔐 IMPORTANT NOTES',['../md_README.html#autotoc_md2',1,'']]]
+  ['others_0',['Others',['../md_CHANGELOG.html#autotoc_md3',1,'']]],
+  ['overview_1',['Overview',['../md_README.html#autotoc_md8',1,'']]]
 ];

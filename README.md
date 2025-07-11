@@ -314,6 +314,7 @@ If `compiler-version` is set to an empty string `""`, the latest version will be
 | `gfortran` | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ |
 | `ifx` | - | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ |
 | `lfortran` | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ |
+| `mpifort` | mpi_fpm ✅ | mpi_fpm ✅ | - |
 | `nvfortran` | - | fpm ✅  cmake ✅ | - |
 <!-- STATUS:setup-fortran-conda:END -->
 

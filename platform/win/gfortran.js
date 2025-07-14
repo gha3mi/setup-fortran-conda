@@ -4,7 +4,7 @@ import {
 } from '@actions/core';
 import { exec as _exec } from '@actions/exec';
 import { sep, join } from 'path';
-import { appendFileSync } from 'fs';
+import { appendFileSync, existsSync, readdirSync } from 'fs';
 import { EOL } from 'os';
 
 async function getCondaPrefix(envName) {
@@ -18,6 +18,38 @@ async function getCondaPrefix(envName) {
     if (p.endsWith(sep + envName) || p.endsWith('/' + envName)) return p;
   }
   throw new Error(`Unable to locate Conda environment "${envName}".`);
+}
+
+function checkLapackAndBlas(libPath) {
+  const candidates = [
+    'liblapack.a', 'liblapack.lib', 'lapack.lib',
+    'liblapack.dll.a',
+    'libblas.a', 'libblas.lib', 'blas.lib',
+    'libblas.dll.a',
+    'libopenblas.a', 'libopenblas.lib', 'libopenblas.dll.a',
+  ];
+
+  startGroup('Check for LAPACK and BLAS libraries');
+  const files = readdirSync(libPath);
+  let found = false;
+
+  for (const name of candidates) {
+    const full = join(libPath, name);
+    if (existsSync(full)) {
+      console.log(`✅ Found: ${name}`);
+      found = true;
+    }
+  }
+
+  if (!found) {
+    console.warn(`⚠️  Could not find any expected LAPACK/BLAS library files in: ${libPath}`);
+    console.log(`Contents of ${libPath}:`);
+    console.log(files.join(EOL));
+
+    // Optionally fail:
+    // throw new Error('LAPACK/BLAS libraries not found.');
+  }
+  endGroup();
 }
 
 export async function setup(version = '') {
@@ -42,6 +74,7 @@ export async function setup(version = '') {
   const libBinPath = join(prefix, 'Library', 'bin');
   const usrBinPath = join(prefix, 'Library', 'usr', 'bin');
   const scriptsPath = join(prefix, 'Scripts');
+  const libPath = join(prefix, 'Library', 'lib');
 
   const systemPaths = [
     'C:\\Windows\\system32',
@@ -63,6 +96,10 @@ export async function setup(version = '') {
   ].join(pathDelimiter);
 
   process.env.PATH = safePath;
+  process.env.LIB = libPath;
   appendFileSync(process.env.GITHUB_ENV, `PATH=${safePath}${EOL}`);
+  appendFileSync(process.env.GITHUB_ENV, `LIB=${libPath}${EOL}`);
   endGroup();
+
+  checkLapackAndBlas(libPath);
 }

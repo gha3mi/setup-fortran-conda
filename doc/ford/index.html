@@ -432,6 +432,37 @@ To use a specific version, add a <code>compiler-version</code> entry in your mat
 </code></pre></div>
 
 <p>If <code>compiler-version</code> is set to an empty string <code>""</code>, the latest version will be installed.</p>
+<h3>MPI Support</h3>
+<p>MPI-based tests can be executed using fpm with the mpifort. This is currently supported on Linux and macOS runners. The following example job sets up the environment and runs parallel MPI tests:</p>
+<div class="codehilite"><pre><span></span><code><span class="nl">test_mpi_fpm</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nl">name</span><span class="p">:</span><span class="w"> </span><span class="err">${{</span><span class="w"> </span><span class="n">matrix</span><span class="p">.</span><span class="n">os</span><span class="w"> </span><span class="err">}}</span><span class="n">_</span><span class="err">${{</span><span class="w"> </span><span class="n">matrix</span><span class="p">.</span><span class="n">compiler</span><span class="w"> </span><span class="err">}}</span><span class="n">_mpi_fpm</span><span class="w"></span>
+<span class="w">  </span><span class="n">runs</span><span class="o">-</span><span class="k">on</span><span class="err">:</span><span class="w"> </span><span class="err">${{</span><span class="w"> </span><span class="n">matrix</span><span class="p">.</span><span class="n">os</span><span class="w"> </span><span class="err">}}</span><span class="w"></span>
+<span class="w">  </span><span class="nl">strategy</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="n">fail</span><span class="o">-</span><span class="nl">fast</span><span class="p">:</span><span class="w"> </span><span class="k">false</span><span class="w"></span>
+<span class="w">    </span><span class="nl">matrix</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nl">os</span><span class="p">:</span><span class="w"> </span><span class="o">[</span><span class="n">ubuntu-latest, macos-latest</span><span class="o">]</span><span class="w"></span>
+<span class="w">      </span><span class="nl">compiler</span><span class="p">:</span><span class="w"> </span><span class="o">[</span><span class="n">mpifort</span><span class="o">]</span><span class="w"></span>
+<span class="w">      </span><span class="k">include</span><span class="err">:</span><span class="w"></span>
+<span class="w">        </span><span class="o">-</span><span class="w"> </span><span class="nl">os</span><span class="p">:</span><span class="w"> </span><span class="n">ubuntu</span><span class="o">-</span><span class="n">latest</span><span class="w"></span>
+<span class="w">          </span><span class="n">extra</span><span class="o">-</span><span class="nl">packages</span><span class="p">:</span><span class="w"> </span><span class="ss">&quot;&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="o">-</span><span class="w"> </span><span class="nl">os</span><span class="p">:</span><span class="w"> </span><span class="n">macos</span><span class="o">-</span><span class="n">latest</span><span class="w"></span>
+<span class="w">          </span><span class="n">extra</span><span class="o">-</span><span class="nl">packages</span><span class="p">:</span><span class="w"> </span><span class="ss">&quot;&quot;</span><span class="w"></span>
+
+<span class="w">  </span><span class="nl">steps</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="o">-</span><span class="w"> </span><span class="nl">name</span><span class="p">:</span><span class="w"> </span><span class="n">Setup</span><span class="w"> </span><span class="k">Fortran</span><span class="w"></span>
+<span class="w">      </span><span class="nl">uses</span><span class="p">:</span><span class="w"> </span><span class="n">gha3mi</span><span class="o">/</span><span class="n">setup</span><span class="o">-</span><span class="k">fortran</span><span class="o">-</span><span class="n">conda</span><span class="nv">@latest</span><span class="w"></span>
+<span class="w">      </span><span class="k">with</span><span class="err">:</span><span class="w"></span>
+<span class="w">        </span><span class="nl">compiler</span><span class="p">:</span><span class="w"> </span><span class="err">${{</span><span class="w"> </span><span class="n">matrix</span><span class="p">.</span><span class="n">compiler</span><span class="w"> </span><span class="err">}}</span><span class="w"></span>
+<span class="w">        </span><span class="nl">platform</span><span class="p">:</span><span class="w"> </span><span class="err">${{</span><span class="w"> </span><span class="n">matrix</span><span class="p">.</span><span class="n">os</span><span class="w"> </span><span class="err">}}</span><span class="w"></span>
+<span class="w">        </span><span class="n">extra</span><span class="o">-</span><span class="nl">packages</span><span class="p">:</span><span class="w"> </span><span class="err">${{</span><span class="w"> </span><span class="n">matrix</span><span class="p">.</span><span class="n">extra</span><span class="o">-</span><span class="n">packages</span><span class="w"> </span><span class="err">}}</span><span class="w"></span>
+
+<span class="w">    </span><span class="o">-</span><span class="w"> </span><span class="nl">name</span><span class="p">:</span><span class="w"> </span><span class="n">fpm</span><span class="w"> </span><span class="n">test</span><span class="w"> </span><span class="p">(</span><span class="n">debug</span><span class="p">)</span><span class="w"></span>
+<span class="w">      </span><span class="nl">run</span><span class="p">:</span><span class="w"> </span><span class="n">fpm</span><span class="w"> </span><span class="n">test</span><span class="w"> </span><span class="o">--</span><span class="n">target</span><span class="w"> </span><span class="n">mpi_hello</span><span class="w"> </span><span class="o">--</span><span class="n">compiler</span><span class="w"> </span><span class="err">${{</span><span class="w"> </span><span class="n">matrix</span><span class="p">.</span><span class="n">compiler</span><span class="w"> </span><span class="err">}}</span><span class="w"> </span><span class="o">--</span><span class="n">profile</span><span class="w"> </span><span class="n">debug</span><span class="w"> </span><span class="o">--</span><span class="n">flag</span><span class="w"> </span><span class="ss">&quot;-cpp -DUSE_MPI&quot;</span><span class="w"> </span><span class="o">--</span><span class="n">runner</span><span class="w"> </span><span class="ss">&quot;mpirun -np 4&quot;</span><span class="w"> </span><span class="o">--</span><span class="n">verbose</span><span class="w"></span>
+
+<span class="w">    </span><span class="o">-</span><span class="w"> </span><span class="nl">name</span><span class="p">:</span><span class="w"> </span><span class="n">fpm</span><span class="w"> </span><span class="n">test</span><span class="w"> </span><span class="p">(</span><span class="k">release</span><span class="p">)</span><span class="w"></span>
+<span class="w">      </span><span class="nl">run</span><span class="p">:</span><span class="w"> </span><span class="n">fpm</span><span class="w"> </span><span class="n">test</span><span class="w"> </span><span class="c1">--target mpi_hello --compiler ${{ matrix.compiler }} --profile release --flag &quot;-cpp -DUSE_MPI&quot; --runner &quot;mpirun -np 4&quot; --verbose</span>
+</code></pre></div>
+
 <h2>✅ Status</h2>
 <!-- STATUS:setup-fortran-conda:START -->
 <table>
@@ -467,6 +498,12 @@ To use a specific version, add a <code>compiler-version</code> entry in your mat
 <td>fpm ✅  cmake ✅</td>
 <td>fpm ✅  cmake ✅</td>
 <td>fpm ✅  cmake ✅</td>
+</tr>
+<tr>
+<td><code>mpifort</code></td>
+<td>mpi_fpm ✅</td>
+<td>mpi_fpm ✅</td>
+<td>-</td>
 </tr>
 <tr>
 <td><code>nvfortran</code></td>
@@ -560,7 +597,7 @@ To use a specific version, add a <code>compiler-version</code> entry in your mat
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2025-07-11T08:49:55.591895+0000             </p>
+ on 2025-07-14T09:38:12.013697+0000             </p>
           </div>
         </div>
         <br>

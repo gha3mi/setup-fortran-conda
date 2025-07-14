@@ -393,7 +393,37 @@ Specifying Compiler Versions</h2>
 <div class="line">    platform: ${{ matrix.os }}</div>
 <div class="line">    extra-packages: ${{ matrix.extra-packages }}</div>
 </div><!-- fragment --><p> If <code>compiler-version</code> is set to an empty string <code>""</code>, the latest version will be installed.</p>
-<h1><a class="anchor" id="autotoc_md12"></a>
+<h2><a class="anchor" id="autotoc_md12"></a>
+MPI Support</h2>
+<p>MPI-based tests can be executed using fpm with the mpifort. This is currently supported on Linux and macOS runners. The following example job sets up the environment and runs parallel MPI tests:</p>
+<div class="fragment"><div class="line">test_mpi_fpm:</div>
+<div class="line">  name: ${{ matrix.os }}_${{ matrix.compiler }}_mpi_fpm</div>
+<div class="line">  runs-on: ${{ matrix.os }}</div>
+<div class="line">  strategy:</div>
+<div class="line">    fail-fast: false</div>
+<div class="line">    matrix:</div>
+<div class="line">      os: [ubuntu-latest, macos-latest]</div>
+<div class="line">      compiler: [mpifort]</div>
+<div class="line">      include:</div>
+<div class="line">        - os: ubuntu-latest</div>
+<div class="line">          extra-packages: &quot;&quot;</div>
+<div class="line">        - os: macos-latest</div>
+<div class="line">          extra-packages: &quot;&quot;</div>
+<div class="line"> </div>
+<div class="line">  steps:</div>
+<div class="line">    - name: Setup Fortran</div>
+<div class="line">      uses: gha3mi/setup-fortran-conda@latest</div>
+<div class="line">      with:</div>
+<div class="line">        compiler: ${{ matrix.compiler }}</div>
+<div class="line">        platform: ${{ matrix.os }}</div>
+<div class="line">        extra-packages: ${{ matrix.extra-packages }}</div>
+<div class="line"> </div>
+<div class="line">    - name: fpm test (debug)</div>
+<div class="line">      run: fpm test --target mpi_hello --compiler ${{ matrix.compiler }} --profile debug --flag &quot;-cpp -DUSE_MPI&quot; --runner &quot;mpirun -np 4&quot; --verbose</div>
+<div class="line"> </div>
+<div class="line">    - name: fpm test (release)</div>
+<div class="line">      run: fpm test --target mpi_hello --compiler ${{ matrix.compiler }} --profile release --flag &quot;-cpp -DUSE_MPI&quot; --runner &quot;mpirun -np 4&quot; --verbose</div>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md13"></a>
 ✅ Status</h1>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -407,13 +437,15 @@ Specifying Compiler Versions</h2>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone"><code>lfortran</code>   </td><td class="markdownTableBodyNone">fpm ✅ cmake ✅   </td><td class="markdownTableBodyNone">fpm ✅ cmake ✅   </td><td class="markdownTableBodyNone">fpm ✅ cmake ✅    </td></tr>
 <tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>mpifort</code>   </td><td class="markdownTableBodyNone">mpi_fpm ✅   </td><td class="markdownTableBodyNone">mpi_fpm ✅   </td><td class="markdownTableBodyNone">-    </td></tr>
+<tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone"><code>nvfortran</code>   </td><td class="markdownTableBodyNone">-   </td><td class="markdownTableBodyNone">fpm ✅ cmake ✅   </td><td class="markdownTableBodyNone">-   </td></tr>
 </table>
 <ul>
 <li><a href="https://github.com/gha3mi/setup-fortran-conda/blob/status-fpm/STATUS.md">STATUS.md (FPM)</a></li>
 <li><a href="https://github.com/gha3mi/setup-fortran-conda/blob/status-cmake/STATUS.md">STATUS.md (CMake)</a></li>
 </ul>
-<h1><a class="anchor" id="autotoc_md13"></a>
+<h1><a class="anchor" id="autotoc_md14"></a>
 🔗 See Also</h1>
 <ul>
 <li><a href="https://github.com/fortran-lang/setup-fortran">fortran-lang/setup-fortran</a></li>

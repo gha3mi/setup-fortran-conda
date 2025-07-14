@@ -32,10 +32,11 @@ var NAVTREE =
         [ "Overview", "md_README.html#autotoc_md8", null ],
         [ "README Integration", "md_README.html#autotoc_md9", null ],
         [ "Job Breakdown", "md_README.html#autotoc_md10", null ],
-        [ "Specifying Compiler Versions", "md_README.html#autotoc_md11", null ]
+        [ "Specifying Compiler Versions", "md_README.html#autotoc_md11", null ],
+        [ "MPI Support", "md_README.html#autotoc_md12", null ]
       ] ],
-      [ "✅ Status", "md_README.html#autotoc_md12", null ],
-      [ "🔗 See Also", "md_README.html#autotoc_md13", null ]
+      [ "✅ Status", "md_README.html#autotoc_md13", null ],
+      [ "🔗 See Also", "md_README.html#autotoc_md14", null ]
     ] ]
   ] ]
 ];

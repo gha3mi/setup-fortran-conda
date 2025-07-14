@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['✅_20status_0',['✅ Status',['../md_README.html#autotoc_md12',1,'']]]
+  ['with_20conda_0',['Setup Fortran with Conda',['../md_README.html',1,'']]],
+  ['workflow_20example_1',['📋 Workflow Example',['../md_README.html#autotoc_md6',1,'']]]
 ];

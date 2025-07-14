@@ -319,7 +319,41 @@ By default, the above example installs the latest available versions of each com
 \DoxyCodeLine{\ \ \ \ extra-\/packages:\ \$\{\{\ matrix.extra-\/packages\ \}\}}
 
 \end{DoxyCode}
- If {\ttfamily compiler-\/version} is set to an empty string {\ttfamily "{}"{}}, the latest version will be installed.\hypertarget{md_README_autotoc_md12}{}\doxysection{\texorpdfstring{✅ Status}{✅ Status}}\label{md_README_autotoc_md12}
+ If {\ttfamily compiler-\/version} is set to an empty string {\ttfamily "{}"{}}, the latest version will be installed.\hypertarget{md_README_autotoc_md12}{}\doxysubsection{\texorpdfstring{MPI Support}{MPI Support}}\label{md_README_autotoc_md12}
+MPI-\/based tests can be executed using fpm with the mpifort. This is currently supported on Linux and mac\+OS runners. The following example job sets up the environment and runs parallel MPI tests\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{test\_mpi\_fpm:}
+\DoxyCodeLine{\ \ name:\ \$\{\{\ matrix.os\ \}\}\_\$\{\{\ matrix.compiler\ \}\}\_mpi\_fpm}
+\DoxyCodeLine{\ \ runs-\/on:\ \$\{\{\ matrix.os\ \}\}}
+\DoxyCodeLine{\ \ strategy:}
+\DoxyCodeLine{\ \ \ \ fail-\/fast:\ false}
+\DoxyCodeLine{\ \ \ \ matrix:}
+\DoxyCodeLine{\ \ \ \ \ \ os:\ [ubuntu-\/latest,\ macos-\/latest]}
+\DoxyCodeLine{\ \ \ \ \ \ compiler:\ [mpifort]}
+\DoxyCodeLine{\ \ \ \ \ \ include:}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ os:\ ubuntu-\/latest}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ extra-\/packages:\ "{}"{}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ os:\ macos-\/latest}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ extra-\/packages:\ "{}"{}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ steps:}
+\DoxyCodeLine{\ \ \ \ -\/\ name:\ Setup\ Fortran}
+\DoxyCodeLine{\ \ \ \ \ \ uses:\ gha3mi/setup-\/fortran-\/conda@latest}
+\DoxyCodeLine{\ \ \ \ \ \ with:}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ compiler:\ \$\{\{\ matrix.compiler\ \}\}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ platform:\ \$\{\{\ matrix.os\ \}\}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ extra-\/packages:\ \$\{\{\ matrix.extra-\/packages\ \}\}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ -\/\ name:\ fpm\ test\ (debug)}
+\DoxyCodeLine{\ \ \ \ \ \ run:\ fpm\ test\ -\/-\/target\ mpi\_hello\ -\/-\/compiler\ \$\{\{\ matrix.compiler\ \}\}\ -\/-\/profile\ debug\ -\/-\/flag\ "{}-\/cpp\ -\/DUSE\_MPI"{}\ -\/-\/runner\ "{}mpirun\ -\/np\ 4"{}\ -\/-\/verbose}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ -\/\ name:\ fpm\ test\ (release)}
+\DoxyCodeLine{\ \ \ \ \ \ run:\ fpm\ test\ -\/-\/target\ mpi\_hello\ -\/-\/compiler\ \$\{\{\ matrix.compiler\ \}\}\ -\/-\/profile\ release\ -\/-\/flag\ "{}-\/cpp\ -\/DUSE\_MPI"{}\ -\/-\/runner\ "{}mpirun\ -\/np\ 4"{}\ -\/-\/verbose}
+
+\end{DoxyCode}
+\hypertarget{md_README_autotoc_md13}{}\doxysection{\texorpdfstring{✅ Status}{✅ Status}}\label{md_README_autotoc_md13}
 \tabulinesep=1mm
 \begin{longtabu}spread 0pt [c]{*{4}{|X[-1]}|}
 \hline
@@ -334,6 +368,7 @@ By default, the above example installs the latest available versions of each com
 {\ttfamily gfortran}   &fpm ✅ cmake ✅   &fpm ✅ cmake ✅   &fpm ✅ cmake ✅    \\\cline{1-4}
 {\ttfamily ifx}   &-\/   &fpm ✅ cmake ✅   &fpm ✅ cmake ✅    \\\cline{1-4}
 {\ttfamily lfortran}   &fpm ✅ cmake ✅   &fpm ✅ cmake ✅   &fpm ✅ cmake ✅    \\\cline{1-4}
+{\ttfamily mpifort}   &mpi\+\_\+fpm ✅   &mpi\+\_\+fpm ✅   &-\/    \\\cline{1-4}
 {\ttfamily nvfortran}   &-\/   &fpm ✅ cmake ✅   &-\/   \\\cline{1-4}
 \end{longtabu}
 
@@ -342,7 +377,7 @@ By default, the above example installs the latest available versions of each com
 \begin{DoxyItemize}
 \item \href{https://github.com/gha3mi/setup-fortran-conda/blob/status-fpm/STATUS.md}{\texttt{ STATUS.\+md (FPM)}}
 \item \href{https://github.com/gha3mi/setup-fortran-conda/blob/status-cmake/STATUS.md}{\texttt{ STATUS.\+md (CMake)}}
-\end{DoxyItemize}\hypertarget{md_README_autotoc_md13}{}\doxysection{\texorpdfstring{🔗 See Also}{🔗 See Also}}\label{md_README_autotoc_md13}
+\end{DoxyItemize}\hypertarget{md_README_autotoc_md14}{}\doxysection{\texorpdfstring{🔗 See Also}{🔗 See Also}}\label{md_README_autotoc_md14}
 
 \begin{DoxyItemize}
 \item \href{https://github.com/fortran-lang/setup-fortran}{\texttt{ fortran-\/lang/setup-\/fortran}}

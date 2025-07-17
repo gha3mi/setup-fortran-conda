@@ -97,8 +97,10 @@ export async function setup(version = '') {
 
   process.env.PATH = safePath;
   process.env.LIB = libPath;
+  process.env.LIBRARY_PATH = libPath;
   appendFileSync(process.env.GITHUB_ENV, `PATH=${safePath}${EOL}`);
   appendFileSync(process.env.GITHUB_ENV, `LIB=${libPath}${EOL}`);
+  appendFileSync(process.env.GITHUB_ENV, `LIBRARY_PATH=${libPath}${EOL}`);
   endGroup();
 
   checkLapackAndBlas(libPath);

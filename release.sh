@@ -336,7 +336,7 @@ if [[ "$LOCAL_ONLY" == false ]]; then
     read -rp "🚀 Create GitHub Release $next_tag? [y/N] " confirm
     confirm="${confirm,,}"
     if [[ "$confirm" == "y" || "$confirm" == "yes" ]]; then
-        gh release create "$next_tag" --title "$next_tag" --notes "$changelog_release"
+        gh release create "$next_tag" --title "$next_tag" --notes-file <(echo -e "$changelog_release")
         echo "✅ GitHub Release $next_tag created."
     else
         echo "⏭️ Skipping GitHub Release."

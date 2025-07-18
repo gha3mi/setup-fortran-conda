@@ -1,3 +1,23 @@
+## [v0.7.1](https://github.com/gha3mi/setup-fortran-conda/compare/v0.7.0...v0.7.1) - 2025-07-18
+
+
+### Fixes
+
+* fix: use --notes-file for gh release create ([00719da](https://github.com/gha3mi/setup-fortran-conda/commit/00719da6157fe5d21c9299b41b4ea2d47cdfe20e)) by [@gha3mi](https://github.com/gha3mi)
+* fix: correct typo in fpm test command for release profile ([c242574](https://github.com/gha3mi/setup-fortran-conda/commit/c24257478a29de545331a1fdfdd4efa4ed287057)) by [@gha3mi](https://github.com/gha3mi)
+
+### Others
+
+* docs: add release automation section to README.md with usage instructions ([f8c7d14](https://github.com/gha3mi/setup-fortran-conda/commit/f8c7d14e6182d21823ea0348ddec94ff379ca2bd)) by [@gha3mi](https://github.com/gha3mi)
+
+
+### Contributors
+- [@gha3mi](https://github.com/gha3mi)
+
+
+
+Full Changelog: [v0.7.0...v0.7.1](https://github.com/gha3mi/setup-fortran-conda/compare/v0.7.0...v0.7.1)
+
 ## [v0.7.0](https://github.com/gha3mi/setup-fortran-conda/compare/v0.6.0...v0.7.0) - 2025-07-11
 
 
@@ -26,5 +46,3 @@
 
 
 Full Changelog: [v0.6.0...v0.7.0](https://github.com/gha3mi/setup-fortran-conda/compare/v0.6.0...v0.7.0)
-
-

@@ -36,7 +36,13 @@ var NAVTREE =
         [ "MPI Support", "md_README.html#autotoc_md12", null ]
       ] ],
       [ "✅ Status", "md_README.html#autotoc_md13", null ],
-      [ "🔗 See Also", "md_README.html#autotoc_md14", null ]
+      [ "🚀 Release Automation", "md_README.html#autotoc_md14", [
+        [ "Features", "md_README.html#autotoc_md15", null ],
+        [ "Requirements", "md_README.html#autotoc_md16", null ],
+        [ "Usage", "md_README.html#autotoc_md17", null ],
+        [ "Recommended Workflow", "md_README.html#autotoc_md18", null ]
+      ] ],
+      [ "🔗 See Also", "md_README.html#autotoc_md19", null ]
     ] ]
   ] ]
 ];

@@ -81,6 +81,23 @@ async function runVcvars64() {
   info('✅ Exported MSVC environment to GITHUB_ENV');
 }
 
+function removeBadLinkersFromPath() {
+  const paths = env.PATH.split(';');
+  const filtered = paths.filter(p =>
+    !/mingw/i.test(p) &&
+    !/strawberry[\\\/]c[\\\/]bin/i.test(p)
+  );
+  env.PATH = filtered.join(';');
+
+  const envFile = process.env.GITHUB_ENV;
+  if (envFile) {
+    appendFileSync(envFile, `PATH=${env.PATH}${EOL}`);
+  }
+
+  info('🧹 Removed conflicting linkers (MinGW, Strawberry Perl) from PATH');
+}
+
+
 export async function setup(version = '') {
   const lfortranPkg = version ? `lfortran=${version}` : 'lfortran';
   const packages = [lfortranPkg, 'llvm'];
@@ -98,8 +115,11 @@ export async function setup(version = '') {
   startGroup('Environment setup');
   const prefix = await getCondaPrefix('fortran');
 
+  info(`🔍 PATH before vcvars:\n${env.PATH.split(';').join('\n')}`);
+
   if (platform === 'win32') {
     await runVcvars64();
+    removeBadLinkersFromPath();
     exportVariable('LFORTRAN_LINKER', 'link');
     info('🔗 Using MSVC linker (link.exe)');
   } else {
@@ -123,5 +143,7 @@ export async function setup(version = '') {
       env.LIB || ''
     ].filter(Boolean).join(';'));
   }
+
   endGroup();
 }
+

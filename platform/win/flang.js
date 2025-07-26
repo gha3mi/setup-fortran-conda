@@ -108,6 +108,10 @@ export async function setup(version = '') {
 
   if (existsSync(binPath)) addPath(binPath);
   if (existsSync(libBinPath)) addPath(libBinPath);
+
+  const envFile = process.env.GITHUB_ENV;
+  appendFileSync(envFile, `CMAKE_C_COMPILER=clang-cl${EOL}`);
+  appendFileSync(envFile, `CMAKE_CXX_COMPILER=clang-cl${EOL}`);
   endGroup();
 
 }

@@ -22,7 +22,7 @@ async function getCondaPrefix(envName) {
 
 export async function setup(version = '') {
   const flangPkg = version ? `flang=${version}` : 'flang';
-  const packageName = [flangPkg, 'binutils'];
+  const packageName = [flangPkg, 'llvm', 'clang', 'clangxx', 'lld'];
 
   startGroup('Conda install');
   await _exec('conda', [

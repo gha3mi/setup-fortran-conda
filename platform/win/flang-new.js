@@ -84,7 +84,7 @@ async function getCondaPrefix(envName) {
 
 export async function setup(version = '') {
   const flangPkg = version ? `flang=${version}` : 'flang';
-  const packageName = [flangPkg, 'llvm', 'clang', 'clangxx', 'lld'];
+  const packageName = [flangPkg, 'llvm', 'clang', 'clangxx', 'clang-tools', 'lld'];
 
   await runVcvars64(); // 🛠 MSVC environment
 

@@ -84,7 +84,7 @@ async function getCondaPrefix(envName) {
 
 export async function setup(version = '') {
   const flangPkg = version ? `flang=${version}` : 'flang';
-  const packageName = [flangPkg, 'llvm', 'clang', 'clangxx', 'clang-tools', 'lld'];
+  const packageName = [flangPkg, 'llvm', 'clang-tools', 'lld'];
 
   await runVcvars64(); // 🛠 MSVC environment
 
@@ -103,8 +103,21 @@ export async function setup(version = '') {
   const prefix = await getCondaPrefix('fortran');
 
   startGroup('Environment setup');
+
   const binPath = join(prefix, 'bin');
   const libBinPath = join(prefix, 'Library', 'bin');
+
+  // Remove Conda clang.exe path
+  const removeClangFromPath = () => {
+    const originalPath = env.PATH?.split(';') ?? [];
+    const filteredPath = originalPath.filter(p =>
+      !p.includes(join(prefix, 'bin')) &&
+      !p.includes(join(prefix, 'Library', 'bin'))
+    );
+    env.PATH = filteredPath.join(';');
+    info('Removed Conda clang.exe from PATH to avoid conflict with clang-cl');
+  };
+  removeClangFromPath();
 
   if (existsSync(binPath)) addPath(binPath);
   if (existsSync(libBinPath)) addPath(libBinPath);
@@ -112,6 +125,10 @@ export async function setup(version = '') {
   const envFile = process.env.GITHUB_ENV;
   appendFileSync(envFile, `CMAKE_C_COMPILER=clang-cl${EOL}`);
   appendFileSync(envFile, `CMAKE_CXX_COMPILER=clang-cl${EOL}`);
+
+  await _exec('where', ['clang-cl']);
+  await _exec('clang-cl', ['--version']);
+
   endGroup();
 
 }

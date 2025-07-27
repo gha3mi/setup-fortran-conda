@@ -82,6 +82,13 @@ async function getCondaPrefix(envName) {
   throw new Error(`Unable to locate Conda environment "${envName}".`);
 }
 
+function exportEnv(key, value) {
+  const envFile = process.env.GITHUB_ENV;
+  if (!envFile) throw new Error('GITHUB_ENV not defined');
+  appendFileSync(envFile, `${key}=${value}${EOL}`);
+}
+
+
 export async function setup(version = '') {
   const flangPkg = version ? `flang=${version}` : 'flang';
   const packageName = [flangPkg, 'llvm', 'clang-tools', 'lld'];
@@ -108,26 +115,45 @@ export async function setup(version = '') {
   const libBinPath = join(prefix, 'Library', 'bin');
 
   // Remove Conda clang.exe path
-  const removeClangFromPath = () => {
-    const originalPath = env.PATH?.split(';') ?? [];
-    const filteredPath = originalPath.filter(p =>
-      !p.includes(join(prefix, 'bin')) &&
-      !p.includes(join(prefix, 'Library', 'bin'))
-    );
-    env.PATH = filteredPath.join(';');
-    info('Removed Conda clang.exe from PATH to avoid conflict with clang-cl');
-  };
-  removeClangFromPath();
+  // const removeClangFromPath = () => {
+  //   const originalPath = env.PATH?.split(';') ?? [];
+  //   const filteredPath = originalPath.filter(p =>
+  //     !p.includes(join(prefix, 'bin')) &&
+  //     !p.includes(join(prefix, 'Library', 'bin'))
+  //   );
+  //   env.PATH = filteredPath.join(';');
+  //   info('Removed Conda clang.exe from PATH to avoid conflict with clang-cl');
+  // };
+  // removeClangFromPath();
 
   if (existsSync(binPath)) addPath(binPath);
   if (existsSync(libBinPath)) addPath(libBinPath);
 
-  const envFile = process.env.GITHUB_ENV;
-  appendFileSync(envFile, `CMAKE_C_COMPILER=clang-cl${EOL}`);
-  appendFileSync(envFile, `CMAKE_CXX_COMPILER=clang-cl${EOL}`);
-
+  await _exec('where', ['flang']);
+  await _exec('flang', ['--version']);
   await _exec('where', ['clang-cl']);
   await _exec('clang-cl', ['--version']);
+
+  exportEnv('FPM_FC', 'flang');
+  exportEnv('FPM_CC', 'clang-cl');
+  exportEnv('FPM_CXX', 'clang-cl');
+  exportEnv('CMAKE_Fortran_COMPILER', 'flang');
+  exportEnv('CMAKE_C_COMPILER', 'clang-cl');
+  exportEnv('CMAKE_CXX_COMPILER', 'clang-cl');
+  exportEnv('FC', 'flang');
+  exportEnv('CC', 'clang-cl');
+  exportEnv('CXX', 'clang-cl');
+
+  // const envFile = process.env.GITHUB_ENV;
+  // appendFileSync(envFile, `CMAKE_Fortran_COMPILER=flang${EOL}`);
+  // appendFileSync(envFile, `CMAKE_C_COMPILER=clang-cl${EOL}`);
+  // appendFileSync(envFile, `CMAKE_CXX_COMPILER=clang-cl${EOL}`);
+  // appendFileSync(envFile, `FC=flang${EOL}`);
+  // appendFileSync(envFile, `CC=clang-cl${EOL}`);
+  // appendFileSync(envFile, `CXX=clang-cl${EOL}`);
+  // appendFileSync(envFile, `FPM_FC=flang${EOL}`);
+  // appendFileSync(envFile, `FPM_CC=clang-cl${EOL}`);
+  // appendFileSync(envFile, `FPM_CXX=clang-cl${EOL}`);
 
   endGroup();
 

@@ -94,6 +94,105 @@
           <h1>test</h1>
           <h1>Setup Fortran with Conda</h1>
 <p>A GitHub Action that sets up a Fortran development environment using Conda. Inspired by <a href="https://degenerateconic.com/conda-plus-fortran.html">Conda + Fortran</a>.</p>
+<h2>Supported Compiler Configurations</h2>
+<p>The selected Fortran compiler is installed along with the corresponding C and C++ compilers, as well as <code>fpm</code>, <code>cmake</code> and <code>ninja</code>. Additional packages can be installed using the <code>extra-packages</code> input.</p>
+<h3>Ubuntu</h3>
+<table>
+<thead>
+<tr>
+<th>Fortran Compiler</th>
+<th>C Compiler</th>
+<th>C++ Compiler</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>gfortran</td>
+<td>gcc</td>
+<td>g++</td>
+</tr>
+<tr>
+<td>ifx</td>
+<td>icx</td>
+<td>icx</td>
+</tr>
+<tr>
+<td>lfortran</td>
+<td>gcc</td>
+<td>g++</td>
+</tr>
+<tr>
+<td>flang, flang-new</td>
+<td>clang</td>
+<td>clang++</td>
+</tr>
+<tr>
+<td>nvfortran</td>
+<td>nvc</td>
+<td>nvc++</td>
+</tr>
+</tbody>
+</table>
+<h3>macOS</h3>
+<table>
+<thead>
+<tr>
+<th>Fortran Compiler</th>
+<th>C Compiler</th>
+<th>C++ Compiler</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>gfortran</td>
+<td>gcc</td>
+<td>g++</td>
+</tr>
+<tr>
+<td>lfortran</td>
+<td>clang</td>
+<td>clang++</td>
+</tr>
+</tbody>
+</table>
+<h3>Windows</h3>
+<table>
+<thead>
+<tr>
+<th>Fortran Compiler</th>
+<th>C Compiler</th>
+<th>C++ Compiler</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>gfortran</td>
+<td>gcc</td>
+<td>g++</td>
+</tr>
+<tr>
+<td>ifx</td>
+<td>icx</td>
+<td>icx</td>
+</tr>
+<tr>
+<td>lfortran</td>
+<td>clang-cl</td>
+<td>clang-cl</td>
+</tr>
+<tr>
+<td>flang, flang-new</td>
+<td>clang-cl</td>
+<td>clang-cl</td>
+</tr>
+</tbody>
+</table>
+<p><strong>The following environment variables are automatically set:</strong></p>
+<ul>
+<li><code>FC</code>, <code>CC</code>, <code>CXX</code></li>
+<li><code>FPM_FC</code>, <code>FPM_CC</code>, <code>FPM_CXX</code></li>
+<li><code>CMAKE_Fortran_COMPILER</code>, <code>CMAKE_C_COMPILER</code>, <code>CMAKE_CXX_COMPILER</code></li>
+</ul>
 <h2>📋 Workflow Example</h2>
 <h3>🔐 IMPORTANT NOTES</h3>
 <blockquote>
@@ -279,11 +378,11 @@ To keep your <code>main</code> branch clean, consider using a separate branch (e
 <span class="w">        </span><span class="nt">compiler</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">gfortran</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">ifx</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">lfortran</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">flang-new</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">nvfortran</span><span class="p p-Indicator">]</span><span class="w"></span>
 <span class="w">        </span><span class="nt">include</span><span class="p">:</span><span class="w"></span>
 <span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span><span class="w"></span>
-<span class="w">            </span><span class="nt">extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;cmake,</span><span class="nv"> </span><span class="s">ninja&quot;</span><span class="w"></span>
+<span class="w">            </span><span class="nt">extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="w"></span>
 <span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">windows-latest</span><span class="w"></span>
-<span class="w">            </span><span class="nt">extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;cmake,</span><span class="nv"> </span><span class="s">ninja&quot;</span><span class="w"></span>
+<span class="w">            </span><span class="nt">extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="w"></span>
 <span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">macos-latest</span><span class="w"></span>
-<span class="w">            </span><span class="nt">extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;cmake,</span><span class="nv"> </span><span class="s">ninja&quot;</span><span class="w"></span>
+<span class="w">            </span><span class="nt">extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="w"></span>
 <span class="w">        </span><span class="nt">exclude</span><span class="p">:</span><span class="w"></span>
 <span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">macos-latest</span><span class="w"></span>
 <span class="w">            </span><span class="nt">compiler</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">flang-new</span><span class="w"></span>
@@ -410,15 +509,15 @@ To use a specific version, add a <code>compiler-version</code> entry in your mat
     <span class="o">-</span> <span class="nv">os</span>: <span class="nv">ubuntu</span><span class="o">-</span><span class="nv">latest</span>
       <span class="nv">compiler</span>: <span class="nv">gfortran</span>
       <span class="nv">compiler</span><span class="o">-</span><span class="nv">version</span>: <span class="mi">15</span>.<span class="mi">1</span>.<span class="mi">0</span>
-      <span class="nv">extra</span><span class="o">-</span><span class="nv">packages</span>: <span class="s2">&quot;</span><span class="s">cmake, ninja</span><span class="s2">&quot;</span>
+      <span class="nv">extra</span><span class="o">-</span><span class="nv">packages</span>: <span class="s2">&quot;&quot;</span>
     <span class="o">-</span> <span class="nv">os</span>: <span class="nv">macos</span><span class="o">-</span><span class="nv">latest</span>
       <span class="nv">compiler</span>: <span class="nv">gfortran</span>
       <span class="nv">compiler</span><span class="o">-</span><span class="nv">version</span>: <span class="mi">15</span>.<span class="mi">1</span>.<span class="mi">0</span>
-      <span class="nv">extra</span><span class="o">-</span><span class="nv">packages</span>: <span class="s2">&quot;</span><span class="s">cmake, ninja</span><span class="s2">&quot;</span>
+      <span class="nv">extra</span><span class="o">-</span><span class="nv">packages</span>: <span class="s2">&quot;&quot;</span>
     <span class="o">-</span> <span class="nv">os</span>: <span class="nv">windows</span><span class="o">-</span><span class="nv">latest</span>
       <span class="nv">compiler</span>: <span class="nv">gfortran</span>
       <span class="nv">compiler</span><span class="o">-</span><span class="nv">version</span>: <span class="mi">15</span>.<span class="mi">1</span>.<span class="mi">0</span>
-      <span class="nv">extra</span><span class="o">-</span><span class="nv">packages</span>: <span class="s2">&quot;</span><span class="s">cmake, ninja</span><span class="s2">&quot;</span>
+      <span class="nv">extra</span><span class="o">-</span><span class="nv">packages</span>: <span class="s2">&quot;&quot;</span>
 </code></pre></div>
 
 <p>Then, reference <code>compiler-version</code> in the setup step:</p>
@@ -624,7 +723,7 @@ To use a specific version, add a <code>compiler-version</code> entry in your mat
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2025-07-18T11:08:54.062663+0000             </p>
+ on 2025-07-27T22:01:43.648742+0000             </p>
           </div>
         </div>
         <br>

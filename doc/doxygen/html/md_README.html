@@ -99,11 +99,60 @@ $(function(){initNavTree('md_README.html',''); initResizable(true); });
   <div class="headertitle"><div class="title">Setup Fortran with Conda</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a class="anchor" id="autotoc_md5"></a></p>
+<div class="textblock"><p><a class="anchor" id="autotoc_md9"></a></p>
 <p>A GitHub Action that sets up a Fortran development environment using Conda. Inspired by <a href="https://degenerateconic.com/conda-plus-fortran.html">Conda + Fortran</a>.</p>
-<h1><a class="anchor" id="autotoc_md6"></a>
+<h1><a class="anchor" id="autotoc_md10"></a>
+Supported Compiler Configurations</h1>
+<p>The selected Fortran compiler is installed along with the corresponding C and C++ compilers, as well as <code>fpm</code>, <code>cmake</code> and <code>ninja</code>. Additional packages can be installed using the <code>extra-packages</code> input.</p>
+<h2><a class="anchor" id="autotoc_md11"></a>
+Ubuntu</h2>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Fortran Compiler   </th><th class="markdownTableHeadNone">C Compiler   </th><th class="markdownTableHeadNone">C++ Compiler    </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">gfortran   </td><td class="markdownTableBodyNone">gcc   </td><td class="markdownTableBodyNone">g++    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">ifx   </td><td class="markdownTableBodyNone">icx   </td><td class="markdownTableBodyNone">icx    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">lfortran   </td><td class="markdownTableBodyNone">gcc   </td><td class="markdownTableBodyNone">g++    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">flang, flang-new   </td><td class="markdownTableBodyNone">clang   </td><td class="markdownTableBodyNone">clang++    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">nvfortran   </td><td class="markdownTableBodyNone">nvc   </td><td class="markdownTableBodyNone">nvc++   </td></tr>
+</table>
+<h2><a class="anchor" id="autotoc_md12"></a>
+macOS</h2>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Fortran Compiler   </th><th class="markdownTableHeadNone">C Compiler   </th><th class="markdownTableHeadNone">C++ Compiler    </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">gfortran   </td><td class="markdownTableBodyNone">gcc   </td><td class="markdownTableBodyNone">g++    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">lfortran   </td><td class="markdownTableBodyNone">clang   </td><td class="markdownTableBodyNone">clang++   </td></tr>
+</table>
+<h2><a class="anchor" id="autotoc_md13"></a>
+Windows</h2>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Fortran Compiler   </th><th class="markdownTableHeadNone">C Compiler   </th><th class="markdownTableHeadNone">C++ Compiler    </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">gfortran   </td><td class="markdownTableBodyNone">gcc   </td><td class="markdownTableBodyNone">g++    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">ifx   </td><td class="markdownTableBodyNone">icx   </td><td class="markdownTableBodyNone">icx    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">lfortran   </td><td class="markdownTableBodyNone">clang-cl   </td><td class="markdownTableBodyNone">clang-cl    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">flang, flang-new   </td><td class="markdownTableBodyNone">clang-cl   </td><td class="markdownTableBodyNone">clang-cl   </td></tr>
+</table>
+<p><b>The following environment variables are automatically set:</b></p>
+<ul>
+<li><code>FC</code>, <code>CC</code>, <code>CXX</code></li>
+<li><code>FPM_FC</code>, <code>FPM_CC</code>, <code>FPM_CXX</code></li>
+<li><code>CMAKE_Fortran_COMPILER</code>, <code>CMAKE_C_COMPILER</code>, <code>CMAKE_CXX_COMPILER</code></li>
+</ul>
+<h1><a class="anchor" id="autotoc_md14"></a>
 📋 Workflow Example</h1>
-<h2><a class="anchor" id="autotoc_md7"></a>
+<h2><a class="anchor" id="autotoc_md15"></a>
 🔐 IMPORTANT NOTES</h2>
 <blockquote class="doxtable">
 <p>⚠️ <b>Use your own name and email!</b> Don’t copy the example values. </p>
@@ -119,7 +168,7 @@ $(function(){initNavTree('md_README.html',''); initResizable(true); });
 <div class="line">update-readme-user-email: &quot;you@example.com&quot;</div>
 </div><!-- fragment --><p>💡 Tip: When integrating CI/CD, testing often requires multiple commits and iterations. To keep your <code>main</code> branch clean, consider using a separate branch (e.g., <code>dev</code>) for development and testing. Once everything is working, you can merge it into main.</p>
 <p>You can include only the jobs you need in your workflow. This example includes all available jobs to demonstrate a comprehensive CI/CD setup.</p>
-<h2><a class="anchor" id="autotoc_md8"></a>
+<h2><a class="anchor" id="autotoc_md16"></a>
 Overview</h2>
 <p>This example automates Fortran CI/CD:</p>
 <ul>
@@ -152,13 +201,13 @@ Overview</h2>
 </ul>
 </li>
 </ul>
-<h2><a class="anchor" id="autotoc_md9"></a>
+<h2><a class="anchor" id="autotoc_md17"></a>
 README Integration</h2>
 <p>To enable automatic CI status table injection, add the following to your <code>README.md</code>:</p>
 <pre>
 &lt;!-- STATUS:setup-fortran-conda:START --&gt;
 &lt;!-- STATUS:setup-fortran-conda:END --&gt;
-</pre><h2><a class="anchor" id="autotoc_md10"></a>
+</pre><h2><a class="anchor" id="autotoc_md18"></a>
 Job Breakdown</h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -246,11 +295,11 @@ Job Breakdown</h2>
 <div class="line">        compiler: [gfortran, ifx, lfortran, flang-new, nvfortran]</div>
 <div class="line">        include:</div>
 <div class="line">          - os: ubuntu-latest</div>
-<div class="line">            extra-packages: &quot;cmake, ninja&quot;</div>
+<div class="line">            extra-packages: &quot;&quot;</div>
 <div class="line">          - os: windows-latest</div>
-<div class="line">            extra-packages: &quot;cmake, ninja&quot;</div>
+<div class="line">            extra-packages: &quot;&quot;</div>
 <div class="line">          - os: macos-latest</div>
-<div class="line">            extra-packages: &quot;cmake, ninja&quot;</div>
+<div class="line">            extra-packages: &quot;&quot;</div>
 <div class="line">        exclude:</div>
 <div class="line">          - os: macos-latest</div>
 <div class="line">            compiler: flang-new</div>
@@ -364,7 +413,7 @@ Job Breakdown</h2>
 <div class="line">        with:</div>
 <div class="line">          fortitude-check: true</div>
 <div class="line">          fortitude-settings: &quot;--output-format github&quot;</div>
-</div><!-- fragment --> <h2><a class="anchor" id="autotoc_md11"></a>
+</div><!-- fragment --> <h2><a class="anchor" id="autotoc_md19"></a>
 Specifying Compiler Versions</h2>
 <p>By default, the above example installs the latest available versions of each compiler. To use a specific version, add a <code>compiler-version</code> entry in your matrix:</p>
 <div class="fragment"><div class="line">matrix:</div>
@@ -375,15 +424,15 @@ Specifying Compiler Versions</h2>
 <div class="line">    - os: ubuntu-latest</div>
 <div class="line">      compiler: gfortran</div>
 <div class="line">      compiler-version: 15.1.0</div>
-<div class="line">      extra-packages: &quot;cmake, ninja&quot;</div>
+<div class="line">      extra-packages: &quot;&quot;</div>
 <div class="line">    - os: macos-latest</div>
 <div class="line">      compiler: gfortran</div>
 <div class="line">      compiler-version: 15.1.0</div>
-<div class="line">      extra-packages: &quot;cmake, ninja&quot;</div>
+<div class="line">      extra-packages: &quot;&quot;</div>
 <div class="line">    - os: windows-latest</div>
 <div class="line">      compiler: gfortran</div>
 <div class="line">      compiler-version: 15.1.0</div>
-<div class="line">      extra-packages: &quot;cmake, ninja&quot;</div>
+<div class="line">      extra-packages: &quot;&quot;</div>
 </div><!-- fragment --><p> Then, reference <code>compiler-version</code> in the setup step:</p>
 <div class="fragment"><div class="line">- name: Setup Fortran</div>
 <div class="line">  uses: gha3mi/setup-fortran-conda@latest</div>
@@ -393,7 +442,7 @@ Specifying Compiler Versions</h2>
 <div class="line">    platform: ${{ matrix.os }}</div>
 <div class="line">    extra-packages: ${{ matrix.extra-packages }}</div>
 </div><!-- fragment --><p> If <code>compiler-version</code> is set to an empty string <code>""</code>, the latest version will be installed.</p>
-<h2><a class="anchor" id="autotoc_md12"></a>
+<h2><a class="anchor" id="autotoc_md20"></a>
 MPI Support</h2>
 <p>MPI-based tests can be executed using fpm with the mpifort. This is currently supported on Linux and macOS runners. The following example job sets up the environment and runs parallel MPI tests:</p>
 <div class="fragment"><div class="line">test_mpi_fpm:</div>
@@ -423,7 +472,7 @@ MPI Support</h2>
 <div class="line"> </div>
 <div class="line">    - name: fpm test (release)</div>
 <div class="line">      run: fpm test --target mpi_hello --compiler ${{ matrix.compiler }} --profile release --flag &quot;-cpp -DUSE_MPI&quot; --runner &quot;mpirun -np 4&quot; --verbose</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md13"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md21"></a>
 ✅ Status</h1>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -445,11 +494,11 @@ MPI Support</h2>
 <li><a href="https://github.com/gha3mi/setup-fortran-conda/blob/status-fpm/STATUS.md">STATUS.md (FPM)</a></li>
 <li><a href="https://github.com/gha3mi/setup-fortran-conda/blob/status-cmake/STATUS.md">STATUS.md (CMake)</a></li>
 </ul>
-<h1><a class="anchor" id="autotoc_md14"></a>
+<h1><a class="anchor" id="autotoc_md22"></a>
 🚀 Release Automation</h1>
 <p>This project includes a Bash script for automating GitHub releases.</p>
 <div class="fragment"><div class="line">curl -L https://raw.githubusercontent.com/gha3mi/setup-fortran-conda/main/release.sh -o release.sh</div>
-</div><!-- fragment --> <h2><a class="anchor" id="autotoc_md15"></a>
+</div><!-- fragment --> <h2><a class="anchor" id="autotoc_md23"></a>
 Features</h2>
 <p>The script automates:</p>
 <ul>
@@ -463,19 +512,19 @@ Features</h2>
 </ul>
 </li>
 </ul>
-<h2><a class="anchor" id="autotoc_md16"></a>
+<h2><a class="anchor" id="autotoc_md24"></a>
 Requirements</h2>
 <ul>
 <li><a href="https://cli.github.com/">GitHub CLI (<code>gh</code>)</a> – must be authenticated (<code>gh auth login</code>)</li>
 <li><a href="https://stedolan.github.io/jq/"><code>jq</code></a></li>
 </ul>
-<h2><a class="anchor" id="autotoc_md17"></a>
+<h2><a class="anchor" id="autotoc_md25"></a>
 Usage</h2>
 <div class="fragment"><div class="line">bash release.sh --help</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md18"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md26"></a>
 Recommended Workflow</h2>
 <p>It’s highly recommended to first run in <code>--dry-run</code> mode to verify the output, then in <code>--local</code> mode to update files and tags locally, and finally without any flags to push changes and publish the GitHub release.</p>
-<h1><a class="anchor" id="autotoc_md19"></a>
+<h1><a class="anchor" id="autotoc_md27"></a>
 🔗 See Also</h1>
 <ul>
 <li><a href="https://github.com/fortran-lang/setup-fortran">fortran-lang/setup-fortran</a></li>

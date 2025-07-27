@@ -2,6 +2,42 @@
 
 A GitHub Action that sets up a Fortran development environment using Conda. Inspired by [Conda + Fortran](https://degenerateconic.com/conda-plus-fortran.html).
 
+## Supported Compiler Configurations
+
+The selected Fortran compiler is installed along with the corresponding C and C++ compilers, as well as `fpm`, `cmake` and `ninja`. Additional packages can be installed using the `extra-packages` input.
+
+### Ubuntu
+
+| Fortran Compiler | C Compiler | C++ Compiler |
+| ---------------- | ---------- | ------------ |
+| gfortran         | gcc        | g++          |
+| ifx              | icx        | icx          |
+| lfortran         | gcc        | g++          |
+| flang, flang-new | clang      | clang++      |
+| nvfortran        | nvc        | nvc++        |
+
+### macOS
+
+| Fortran Compiler | C Compiler | C++ Compiler |
+| ---------------- | ---------- | ------------ |
+| gfortran         | gcc        | g++          |
+| lfortran         | clang      | clang++      |
+
+### Windows
+
+| Fortran Compiler | C Compiler | C++ Compiler |
+| ---------------- | ---------- | ------------ |
+| gfortran         | gcc        | g++          |
+| ifx              | icx        | icx          |
+| lfortran         | clang-cl   | clang-cl     |
+| flang, flang-new | clang-cl   | clang-cl     |
+
+**The following environment variables are automatically set:**
+
+* `FC`, `CC`, `CXX`
+* `FPM_FC`, `FPM_CC`, `FPM_CXX`
+* `CMAKE_Fortran_COMPILER`, `CMAKE_C_COMPILER`, `CMAKE_CXX_COMPILER`
+
 
 ## 📋 Workflow Example
 
@@ -149,11 +185,11 @@ jobs:
         compiler: [gfortran, ifx, lfortran, flang-new, nvfortran]
         include:
           - os: ubuntu-latest
-            extra-packages: "cmake, ninja"
+            extra-packages: ""
           - os: windows-latest
-            extra-packages: "cmake, ninja"
+            extra-packages: ""
           - os: macos-latest
-            extra-packages: "cmake, ninja"
+            extra-packages: ""
         exclude:
           - os: macos-latest
             compiler: flang-new
@@ -282,15 +318,15 @@ matrix:
     - os: ubuntu-latest
       compiler: gfortran
       compiler-version: 15.1.0
-      extra-packages: "cmake, ninja"
+      extra-packages: ""
     - os: macos-latest
       compiler: gfortran
       compiler-version: 15.1.0
-      extra-packages: "cmake, ninja"
+      extra-packages: ""
     - os: windows-latest
       compiler: gfortran
       compiler-version: 15.1.0
-      extra-packages: "cmake, ninja"
+      extra-packages: ""
 ```
 Then, reference `compiler-version` in the setup step:
 

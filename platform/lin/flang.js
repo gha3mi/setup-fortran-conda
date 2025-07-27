@@ -18,7 +18,7 @@ async function getCondaPrefix(envName) {
   let raw = '';
   await _exec('conda', ['env', 'list', '--json'], {
     silent: true,
-    listeners: { stdout: d => (raw += d.toString()) }
+    listeners: { stdout: (d) => (raw += d.toString()) }
   });
 
   const { envs } = JSON.parse(raw);
@@ -47,9 +47,9 @@ export async function setup(version = '') {
     throw new Error('This setup script is only supported on Linux.');
   }
 
-  // Define the Conda packages to install
-  const Pkg = version ? `gfortran=${version}` : 'gfortran';
-  const packages = [Pkg, 'gcc_linux-64', 'gxx', 'binutils'];
+  // Define the set of Conda packages to install
+  const Pkg = version ? `flang=${version}` : 'flang';
+  const packages = [Pkg, 'llvm', 'clangxx', 'clang-tools', 'llvm-openmp', 'lld'];
 
   startGroup('Installing Conda packages');
   try {
@@ -71,37 +71,49 @@ export async function setup(version = '') {
   }
   endGroup();
 
+  // Add Conda bin paths to PATH so tools are usable
   const prefix = await getCondaPrefix('fortran');
   const binPath = join(prefix, 'bin');
+  const libPath = join(prefix, 'lib');
 
   startGroup('Setting up environment paths');
-  if (existsSync(binPath)) {
-    addPath(binPath);
-    info(`Added to PATH: ${binPath}`);
+  const paths = [binPath];
+  for (const p of paths) {
+    if (existsSync(p)) {
+      addPath(p);
+      info(`Added to PATH: ${p}`);
+    }
   }
   endGroup();
 
+  // Set LD_LIBRARY_PATH
+  const ldPath = [libPath, env.LD_LIBRARY_PATH || ''].filter(Boolean).join(':');
+  exportEnv('LD_LIBRARY_PATH', ldPath);
+  info(`Set LD_LIBRARY_PATH → ${ldPath}`);
+
+  // Verify that the compilers are installed and working
   startGroup('Verifying compiler versions');
-  await _exec('which', ['gfortran']);
-  await _exec('gfortran', ['--version']);
-  await _exec('which', ['gcc']);
-  await _exec('gcc', ['--version']);
-  await _exec('which', ['g++']);
-  await _exec('g++', ['--version']);
+  await _exec('which', ['flang']);
+  await _exec('flang', ['--version']);
+  await _exec('which', ['clang']);
+  await _exec('clang', ['--version']);
+  await _exec('which', ['clang++']);
+  await _exec('clang++', ['--version']);
   endGroup();
 
+  // Export compiler-related environment variables
   startGroup('Exporting compiler environment variables');
   const envVars = {
-    FC: 'gfortran',
-    CC: 'gcc',
-    CXX: 'g++',
-    FPM_FC: 'gfortran',
-    FPM_CC: 'gcc',
-    FPM_CXX: 'g++',
-    CMAKE_Fortran_COMPILER: 'gfortran',
-    CMAKE_C_COMPILER: 'gcc',
-    CMAKE_CXX_COMPILER: 'g++',
-    LD_LIBRARY_PATH: [join(prefix, 'lib'), process.env.LD_LIBRARY_PATH || ''].filter(Boolean).join(':')
+    FC: 'flang',
+    CC: 'clang',
+    CXX: 'clang++',
+    FPM_FC: 'flang',
+    FPM_CC: 'clang',
+    FPM_CXX: 'clang++',
+    CMAKE_Fortran_COMPILER: 'flang',
+    CMAKE_C_COMPILER: 'clang',
+    CMAKE_CXX_COMPILER: 'clang++',
+    LD_LIBRARY_PATH: ldPath
   };
 
   for (const [key, value] of Object.entries(envVars)) {
@@ -112,6 +124,7 @@ export async function setup(version = '') {
 
   setLinuxUlimits();
 
+  // Export all environment variables to process.env and GITHUB_ENV
   startGroup('Exporting all environment variables to process.env and GITHUB_ENV');
   for (const [key, value] of Object.entries(env)) {
     if (typeof value === 'string') {

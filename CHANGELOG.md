@@ -1,3 +1,18 @@
+## [v0.8.0](https://github.com/gha3mi/setup-fortran-conda/compare/v0.7.1...v0.8.0) - 2025-07-28
+
+
+### Features
+
+* feat: Install C/C++ with Fortran, set FC/CC/CXX and FPM/CMake vars, and install CMake/Ninja by default (#63) ([c0ced6a](https://github.com/gha3mi/setup-fortran-conda/commit/c0ced6a921b6366e86cf511accb6cdd876b688bc)) by [@gha3mi](https://github.com/gha3mi)
+
+
+### Contributors
+- [@gha3mi](https://github.com/gha3mi)
+
+
+
+Full Changelog: [v0.7.1...v0.8.0](https://github.com/gha3mi/setup-fortran-conda/compare/v0.7.1...v0.8.0)
+
 ## [v0.7.1](https://github.com/gha3mi/setup-fortran-conda/compare/v0.7.0...v0.7.1) - 2025-07-18
 
 

@@ -122,8 +122,14 @@ export async function setup(version = '') {
   }
 
   // Define the set of Conda packages to install
-  const Pkg = version ? `ifx_win-64=${version}` : 'ifx_win-64';
-  const packages = ['intel-fortran-rt', 'dpcpp-cpp-rt', 'dpcpp_win-64', 'intel-sycl-rt', 'llvm-openmp', Pkg];
+  const packages = [
+    version ? `ifx_win-64=${version}` : 'ifx_win-64',
+    version ? `intel-fortran-rt=${version}` : 'intel-fortran-rt',
+    version ? `dpcpp-cpp-rt=${version}` : 'dpcpp-cpp-rt',
+    version ? `dpcpp_win-64=${version}` : 'dpcpp_win-64',
+    version ? `intel-sycl-rt=${version}` : 'intel-sycl-rt',
+    'llvm-openmp'
+  ];
 
   // Prepare MSVC environment
   await runVcvars64();

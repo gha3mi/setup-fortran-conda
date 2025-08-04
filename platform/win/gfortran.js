@@ -37,8 +37,13 @@ export async function setup(version = '') {
   }
 
   // Define the set of Conda packages to install
-  const Pkg = version ? `gfortran=${version}` : 'gfortran';
-  const packages = [Pkg, 'gcc', 'binutils'];
+  const packages = [
+    version ? `gfortran=${version}` : 'gfortran',
+    version ? `gcc=${version}` : 'gcc',
+    version ? `gxx=${version}` : 'gxx',
+    'binutils'
+  ];
+
 
   // Install required compilers and tools via Conda
   startGroup('Installing Conda packages');

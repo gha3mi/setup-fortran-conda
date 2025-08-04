@@ -48,8 +48,14 @@ export async function setup(version = '') {
   }
 
   // Define the set of Conda packages to install
-  const Pkg = version ? `flang=${version}` : 'flang';
-  const packages = [Pkg, 'llvm', 'clang-tools', 'llvm-openmp', 'lld'];
+  const packages = [
+    version ? `flang=${version}` : 'flang',
+    version ? `llvm=${version}` : 'llvm',
+    version ? `clangxx=${version}` : 'clangxx',
+    version ? `clang-tools=${version}` : 'clang-tools',
+    version ? `llvm-openmp=${version}` : 'llvm-openmp',
+    version ? `lld=${version}` : 'lld'
+  ];
 
   startGroup('Installing Conda packages');
   try {

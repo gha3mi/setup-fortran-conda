@@ -63,18 +63,30 @@ export async function setup(version = '') {
     throw new Error('This setup script is only supported on macOS.');
   }
 
-  // Install latest Homebrew GCC
-  startGroup('Installing gcc via Homebrew');
+  // Install Homebrew GCC
+  let gcc = '';
+  let gpp = '';
+  let major = '';
+
+  startGroup('Installing GCC via Homebrew');
   try {
-    await _exec('brew', ['install', 'gcc']);
-    info('Homebrew gcc installed');
+    if (version) {
+      major = version.split('.')[0];
+      await _exec('brew', ['install', `gcc@${major}`]);
+      info(`Homebrew gcc@${major} installed`);
+      gcc = `gcc-${major}`;
+      gpp = `g++-${major}`;
+    } else {
+      await _exec('brew', ['install', 'gcc']);
+      info('Homebrew latest gcc installed');
+      gcc = detectHomebrewGccVersion();       // e.g., "gcc-14"
+      gpp = gcc.replace('gcc', 'g++');        // e.g., "g++-14"
+      major = gcc.split('-')[1];              // extract "14" from "gcc-14"
+    }
   } catch (err) {
     throw new Error(`Homebrew gcc install failed: ${err.message}`);
   }
   endGroup();
-
-  const gcc = detectHomebrewGccVersion();       // e.g., gcc-13
-  const gpp = gcc.replace('gcc', 'g++');         // e.g., g++-13
 
   // Install gfortran via Conda
   const Pkg = version ? `gfortran=${version}` : 'gfortran';

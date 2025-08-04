@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['📋_20workflow_20example_0',['📋 Workflow Example',['../md_README.html#autotoc_md14',1,'']]]
+  ['✅_20status_0',['✅ Status',['../md_README.html#autotoc_md24',1,'']]]
 ];

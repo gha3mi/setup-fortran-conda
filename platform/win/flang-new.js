@@ -122,8 +122,15 @@ export async function setup(version = '') {
   }
 
   // Define the set of Conda packages to install
-  const Pkg = version ? `flang=${version}` : 'flang';
-  const packages = [Pkg, 'llvm', 'clang-tools', 'llvm-openmp', 'lld'];
+  const packages = [
+    version ? `flang=${version}` : 'flang',
+    version ? `llvm=${version}` : 'llvm',
+    version ? `clangxx=${version}` : 'clangxx',
+    version ? `clang-tools=${version}` : 'clang-tools',
+    version ? `llvm-openmp=${version}` : 'llvm-openmp',
+    version ? `lld=${version}` : 'lld'
+  ];
+
 
   // Prepare MSVC environment
   await runVcvars64();
@@ -173,6 +180,8 @@ export async function setup(version = '') {
   await _exec('flang', ['--version']);
   await _exec('where', ['clang-cl']);
   await _exec('clang-cl', ['--version']);
+  await _exec('where', ['clang++']);
+  await _exec('clang++', ['--version']);
   endGroup();
 
   // Export compiler-related environment variables
@@ -180,13 +189,13 @@ export async function setup(version = '') {
   const envVars = {
     FC: 'flang',
     CC: 'clang-cl',
-    CXX: 'clang-cl',
+    CXX: 'clang++',
     FPM_FC: 'flang',
     FPM_CC: 'clang-cl',
-    FPM_CXX: 'clang-cl',
+    FPM_CXX: 'clang++',
     CMAKE_Fortran_COMPILER: 'flang',
     CMAKE_C_COMPILER: 'clang-cl',
-    CMAKE_CXX_COMPILER: 'clang-cl',
+    CMAKE_CXX_COMPILER: 'clang++',
     INCLUDE: [join(prefix, 'Library', 'include'), process.env.INCLUDE || ''].filter(Boolean).join(';'),
   };
 

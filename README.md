@@ -30,7 +30,7 @@ The selected Fortran compiler is installed along with the corresponding C and C+
 | gfortran         | gcc        | g++          |
 | ifx              | icx        | icx          |
 | lfortran         | clang-cl   | clang-cl     |
-| flang, flang-new | clang-cl   | clang-cl     |
+| flang, flang-new | clang-cl   | clang++      |
 
 **The following environment variables are automatically set:**
 

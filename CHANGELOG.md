@@ -1,3 +1,23 @@
+## [v0.8.1](https://github.com/gha3mi/setup-fortran-conda/compare/v0.8.0...v0.8.1) - 2025-08-05
+
+
+### Fixes
+
+* fix: ensure consistent compiler versions for Fortran and C/C++ (#66) ([47f99e8](https://github.com/gha3mi/setup-fortran-conda/commit/47f99e84590c484272c2cc113eb25cecee236d3a)) by [@gha3mi](https://github.com/gha3mi)
+
+### Others
+
+* Update README.md status table [ci skip] (#64) ([39996d9](https://github.com/gha3mi/setup-fortran-conda/commit/39996d9065b16d3e247e5c7b3325e11d7f1a103d)) by [@gha3mi](https://github.com/gha3mi)
+* docs: fix C++ compiler  on Windows (clang-cl -> clang++) ([f197134](https://github.com/gha3mi/setup-fortran-conda/commit/f19713448d61a645b47054c42702e23a7158c8c2)) by [@gha3mi](https://github.com/gha3mi)
+
+
+### Contributors
+- [@gha3mi](https://github.com/gha3mi)
+
+
+
+Full Changelog: [v0.8.0...v0.8.1](https://github.com/gha3mi/setup-fortran-conda/compare/v0.8.0...v0.8.1)
+
 ## [v0.8.0](https://github.com/gha3mi/setup-fortran-conda/compare/v0.7.1...v0.8.0) - 2025-07-28
 
 

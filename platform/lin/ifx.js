@@ -48,8 +48,14 @@ export async function setup(version = '') {
   }
 
   // Define Conda packages
-  const Pkg = version ? `ifx_linux-64=${version}` : 'ifx_linux-64';
-  const packages = ['intel-fortran-rt', 'dpcpp-cpp-rt', 'dpcpp_linux-64', 'intel-sycl-rt', 'llvm-openmp', Pkg];
+  const packages = [
+    version ? `ifx_linux-64=${version}` : 'ifx_linux-64',
+    version ? `intel-fortran-rt=${version}` : 'intel-fortran-rt',
+    version ? `dpcpp-cpp-rt=${version}` : 'dpcpp-cpp-rt',
+    version ? `dpcpp_linux-64=${version}` : 'dpcpp_linux-64',
+    version ? `intel-sycl-rt=${version}` : 'intel-sycl-rt',
+    'llvm-openmp'
+  ];
 
   // Install required compilers and tools via Conda
   startGroup('Installing Conda packages');

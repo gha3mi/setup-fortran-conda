@@ -48,8 +48,12 @@ export async function setup(version = '') {
   }
 
   // Define the Conda packages to install
-  const Pkg = version ? `gfortran=${version}` : 'gfortran';
-  const packages = [Pkg, 'gcc_linux-64', 'gxx', 'binutils'];
+  const packages = [
+    version ? `gfortran=${version}` : 'gfortran',
+    version ? `gcc_linux-64=${version}` : 'gcc_linux-64',
+    version ? `gxx=${version}` : 'gxx',
+    'binutils'
+  ];
 
   startGroup('Installing Conda packages');
   try {

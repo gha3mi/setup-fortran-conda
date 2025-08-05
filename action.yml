@@ -87,6 +87,11 @@ inputs:
     required: false
     default: 'false'
 
+  generate-status-meson:
+    description: 'Generate STATUS.md for test_meson jobs'
+    required: false
+    default: 'false'
+
   generate-status-table:
     description: "Generate and inject CI status table into README.md"
     required: false
@@ -317,6 +322,65 @@ runs:
         folder: status-cmake
         clean: true
         commit-message: "Deploy cmake status"
+
+    - name: Generate STATUS.md for test_meson
+      if: ${{ inputs.generate-status-meson == 'true' }}
+      shell: bash
+      env:
+        GH_TOKEN: ${{ github.token }}
+        REPO: ${{ github.repository }}
+        RUN_ID: ${{ github.run_id }}
+      run: |
+        echo "Generating STATUS.md for test_meson..."
+        badge_line=""
+
+        mapfile -t job_lines < <(
+          curl -s -H "Authorization: token $GH_TOKEN" \
+            https://api.github.com/repos/$REPO/actions/runs/$RUN_ID/jobs \
+            | jq -r '.jobs[] | select((.name | type == "string") and (.name | test(".*_meson$"))) | [.name, .conclusion] | @tsv'
+        )
+
+        for line in "${job_lines[@]}"; do
+          name="${line%%$'\t'*}"
+          conclusion="${line#*$'\t'}"
+
+          os="${name%%_*}"
+          compiler="${name#*_}"
+          key="${os}_${compiler}"
+
+          safe_key="${key//-/'--'}"
+
+          if [[ "$conclusion" == "success" ]]; then
+            color="brightgreen"
+            label="passing"
+          elif [[ "$conclusion" == "failure" ]]; then
+            color="red"
+            label="failing"
+          elif [[ "$conclusion" == "cancelled" ]]; then
+            color="lightgrey"
+            label="cancelled"
+          else
+            color="lightgrey"
+            label="pending"
+          fi
+
+          badge="![${key}](https://img.shields.io/badge/${safe_key}-${label}-${color})"
+          badge_line="$badge_line $badge"
+        done
+
+        echo "$badge_line" > STATUS.md
+        mkdir -p status-meson
+        mv STATUS.md status-meson/STATUS.md
+        cat status-meson/STATUS.md
+
+    - name: Deploy STATUS.md (test_meson)
+      if: ${{ inputs.generate-status-meson == 'true' }}
+      uses: JamesIves/github-pages-deploy-action@v4.7.3
+      with:
+        branch: status-meson
+        folder: status-meson
+        clean: true
+        commit-message: "Deploy meson status"
 
     - name: Generate and Inject CI Matrix into README
       if: ${{ inputs.generate-status-table == 'true' }}

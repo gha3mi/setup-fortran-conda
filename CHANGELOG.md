@@ -1,3 +1,22 @@
+## [v0.9.0](https://github.com/gha3mi/setup-fortran-conda/compare/v0.8.1...v0.9.0) - 2025-08-05
+
+
+### Features
+
+* feat: add support meson [skip ci] (#70) ([798f444](https://github.com/gha3mi/setup-fortran-conda/commit/798f444b701f8c4d7782fed75469d83f5ffda820)) by [@gha3mi](https://github.com/gha3mi)
+
+### Fixes
+
+* fix: mixed Clang frontends on Windows #67 (#68) ([b265963](https://github.com/gha3mi/setup-fortran-conda/commit/b265963c0ed60eec02926f9add9441d2d3ec9db4)) by [@gha3mi](https://github.com/gha3mi)
+
+
+### Contributors
+- [@gha3mi](https://github.com/gha3mi)
+
+
+
+Full Changelog: [v0.8.1...v0.9.0](https://github.com/gha3mi/setup-fortran-conda/compare/v0.8.1...v0.9.0)
+
 ## [v0.8.1](https://github.com/gha3mi/setup-fortran-conda/compare/v0.8.0...v0.8.1) - 2025-08-05
 
 

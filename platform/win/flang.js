@@ -125,7 +125,6 @@ export async function setup(version = '') {
   const packages = [
     version ? `flang=${version}` : 'flang',
     version ? `llvm=${version}` : 'llvm',
-    version ? `clangxx=${version}` : 'clangxx',
     version ? `clang-tools=${version}` : 'clang-tools',
     version ? `llvm-openmp=${version}` : 'llvm-openmp',
     version ? `lld=${version}` : 'lld'
@@ -180,22 +179,19 @@ export async function setup(version = '') {
   await _exec('flang', ['--version']);
   await _exec('where', ['clang-cl']);
   await _exec('clang-cl', ['--version']);
-  await _exec('where', ['clang++']);
-  await _exec('clang++', ['--version']);
-  endGroup();
 
   // Export compiler-related environment variables
   startGroup('Exporting compiler environment variables');
   const envVars = {
     FC: 'flang',
     CC: 'clang-cl',
-    CXX: 'clang++',
+    CXX: 'clang-cl',
     FPM_FC: 'flang',
     FPM_CC: 'clang-cl',
-    FPM_CXX: 'clang++',
+    FPM_CXX: 'clang-cl',
     CMAKE_Fortran_COMPILER: 'flang',
     CMAKE_C_COMPILER: 'clang-cl',
-    CMAKE_CXX_COMPILER: 'clang++',
+    CMAKE_CXX_COMPILER: 'clang-cl',
     INCLUDE: [join(prefix, 'Library', 'include'), process.env.INCLUDE || ''].filter(Boolean).join(';'),
   };
 

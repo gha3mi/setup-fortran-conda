@@ -3,18 +3,20 @@
 README_FILE="README.md"
 TMP_FPM="status_fpm.tmp"
 TMP_CMAKE="status_cmake.tmp"
+TMP_MESON="status_meson.tmp"
 
 # Remote URLs
-# Dynamic remote URLs for any GitHub repo
 REPO="${GITHUB_REPOSITORY:-gha3mi/setup-fortran-conda}"
 RAW_BASE="https://raw.githubusercontent.com/${REPO}"
 
 URL_FPM="${RAW_BASE}/status-fpm/STATUS.md"
 URL_CMAKE="${RAW_BASE}/status-cmake/STATUS.md"
+URL_MESON="${RAW_BASE}/status-meson/STATUS.md"
 
 # Flags for file availability
 HAS_FPM=false
 HAS_CMAKE=false
+HAS_MESON=false
 
 # Try downloading STATUS.md files
 if curl -s --fail "$URL_FPM" -o "$TMP_FPM"; then
@@ -23,6 +25,10 @@ fi
 
 if curl -s --fail "$URL_CMAKE" -o "$TMP_CMAKE"; then
   HAS_CMAKE=true
+fi
+
+if curl -s --fail "$URL_MESON" -o "$TMP_MESON"; then
+  HAS_MESON=true
 fi
 
 # Declare maps and sets
@@ -62,6 +68,7 @@ parse_status_file() {
 # Conditionally parse available files
 $HAS_FPM && parse_status_file "$TMP_FPM"
 $HAS_CMAKE && parse_status_file "$TMP_CMAKE"
+$HAS_MESON && parse_status_file "$TMP_MESON"
 
 # Generate sorted arrays from sets
 IFS=$'\n'
@@ -117,6 +124,6 @@ awk -v start="<!-- STATUS:setup-fortran-conda:START -->" -v end="<!-- STATUS:set
 ' "$README_FILE" > README.new.md
 
 mv README.new.md "$README_FILE"
-rm -f "$TMP_FPM" "$TMP_CMAKE" "$TABLE_FILE"
+rm -f "$TMP_FPM" "$TMP_CMAKE" "$TMP_MESON" "$TABLE_FILE"
 
 echo "README.md updated with CI matrix based on actual badge coverage."

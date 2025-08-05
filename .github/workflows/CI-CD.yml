@@ -135,6 +135,52 @@ jobs:
           cmake --build build/release
           ctest --test-dir build/release --output-on-failure
 
+  test_meson:
+    if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
+    name: ${{ matrix.os }}_${{ matrix.compiler }}_meson
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        compiler: [gfortran, ifx, lfortran, flang-new, nvfortran]
+        include:
+          - os: ubuntu-latest
+            extra-packages: ""
+          - os: windows-latest
+            extra-packages: ""
+          - os: macos-latest
+            extra-packages: ""
+        exclude:
+          - os: macos-latest
+            compiler: flang-new
+          - os: macos-latest
+            compiler: ifx
+          - os: macos-latest
+            compiler: nvfortran
+          - os: windows-latest
+            compiler: nvfortran
+
+    steps:
+      - name: Setup Fortran
+        uses: gha3mi/setup-fortran-conda@latest
+        with:
+          compiler: ${{ matrix.compiler }}
+          platform: ${{ matrix.os }}
+          extra-packages: ${{ matrix.extra-packages }}
+
+      - name: meson test (debug)
+        run: |
+          meson setup --wipe build/meson/debug --buildtype debug --backend=ninja
+          meson compile -C build/meson/debug --verbose
+          meson test -C build/meson/debug --verbose
+
+      - name: meson test (release)
+        run: |
+          meson setup --wipe build/meson/release --buildtype release --backend=ninja
+          meson compile -C build/meson/release --verbose
+          meson test -C build/meson/release --verbose
+
   doc_ford:
     if: ${{ github.event_name == 'push' && !contains(github.event.head_commit.message, '[skip ci]') }}
     name: Generate FORD Documentation
@@ -189,10 +235,21 @@ jobs:
         with:
           generate-status-cmake: true
 
+  status_meson:
+    if: ${{ always() && github.event_name == 'push' && !contains(github.event.head_commit.message, '[skip ci]') }}
+    name: Generate STATUS.md
+    needs: [test_meson]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate summary
+        uses: gha3mi/setup-fortran-conda@latest
+        with:
+          generate-status-meson: true
+
   update_readme_table:
     if: ${{ always() && github.event_name == 'push' && github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, '[skip ci]') }}
     name: Update README.md status table
-    needs: [status_fpm, status_cmake]
+    needs: [status_fpm, status_cmake, status_meson]
     runs-on: ubuntu-latest
     steps:
       - name: Update README status

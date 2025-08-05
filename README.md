@@ -380,9 +380,9 @@ test_mpi_fpm:
 <!-- STATUS:setup-fortran-conda:START -->
 | Compiler   | macos | ubuntu | windows |
 |------------|----------------------|----------------------|----------------------|
-| `flang-new` | - | fpm ✅  cmake ✅ | fpm ❌  cmake ✅ |
-| `gfortran` | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ |
-| `ifx` | - | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ |
+| `flang-new` | - | fpm ✅  cmake ✅  meson ✅ | fpm ❌  cmake ✅ |
+| `gfortran` | fpm ✅  cmake ✅ | fpm ✅  cmake ✅  meson ✅ | fpm ✅  cmake ✅ |
+| `ifx` | - | fpm ✅  cmake ✅  meson ✅ | fpm ✅  cmake ✅ |
 | `lfortran` | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ | fpm ✅  cmake ❌ |
 | `mpifort` | mpi_fpm ✅ | mpi_fpm ✅ | - |
 | `nvfortran` | - | fpm ✅  cmake ✅ | - |

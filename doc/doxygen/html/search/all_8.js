@@ -1,20 +1,4 @@
 var searchData=
 [
-  ['com_20gha3mi_20setup_20fortran_20conda_20compare_20v0_206_200_20v0_207_200_20v0_207_200_20a_202025_2007_2011_0',['&lt;a href=&quot;https://github.com/gha3mi/setup-fortran-conda/compare/v0.6.0...v0.7.0&quot; &gt;v0.7.0&lt;/a&gt; - 2025-07-11',['../md_CHANGELOG.html#autotoc_md11',1,'']]],
-  ['com_20gha3mi_20setup_20fortran_20conda_20compare_20v0_207_200_20v0_207_201_20v0_207_201_20a_202025_2007_2018_1',['&lt;a href=&quot;https://github.com/gha3mi/setup-fortran-conda/compare/v0.7.0...v0.7.1&quot; &gt;v0.7.1&lt;/a&gt; - 2025-07-18',['../md_CHANGELOG.html#autotoc_md7',1,'']]],
-  ['com_20gha3mi_20setup_20fortran_20conda_20compare_20v0_207_201_20v0_208_200_20v0_208_200_20a_202025_2007_2028_2',['&lt;a href=&quot;https://github.com/gha3mi/setup-fortran-conda/compare/v0.7.1...v0.8.0&quot; &gt;v0.8.0&lt;/a&gt; - 2025-07-28',['../md_CHANGELOG.html#autotoc_md4',1,'']]],
-  ['com_20gha3mi_20setup_20fortran_20conda_20compare_20v0_208_200_20v0_208_201_20v0_208_201_20a_202025_2008_2005_3',['&lt;a href=&quot;https://github.com/gha3mi/setup-fortran-conda/compare/v0.8.0...v0.8.1&quot; &gt;v0.8.1&lt;/a&gt; - 2025-08-05',['../md_CHANGELOG.html',1,'']]],
-  ['compare_20v0_206_200_20v0_207_200_20v0_207_200_20a_202025_2007_2011_4',['&lt;a href=&quot;https://github.com/gha3mi/setup-fortran-conda/compare/v0.6.0...v0.7.0&quot; &gt;v0.7.0&lt;/a&gt; - 2025-07-11',['../md_CHANGELOG.html#autotoc_md11',1,'']]],
-  ['compare_20v0_207_200_20v0_207_201_20v0_207_201_20a_202025_2007_2018_5',['&lt;a href=&quot;https://github.com/gha3mi/setup-fortran-conda/compare/v0.7.0...v0.7.1&quot; &gt;v0.7.1&lt;/a&gt; - 2025-07-18',['../md_CHANGELOG.html#autotoc_md7',1,'']]],
-  ['compare_20v0_207_201_20v0_208_200_20v0_208_200_20a_202025_2007_2028_6',['&lt;a href=&quot;https://github.com/gha3mi/setup-fortran-conda/compare/v0.7.1...v0.8.0&quot; &gt;v0.8.0&lt;/a&gt; - 2025-07-28',['../md_CHANGELOG.html#autotoc_md4',1,'']]],
-  ['compare_20v0_208_200_20v0_208_201_20v0_208_201_20a_202025_2008_2005_7',['&lt;a href=&quot;https://github.com/gha3mi/setup-fortran-conda/compare/v0.8.0...v0.8.1&quot; &gt;v0.8.1&lt;/a&gt; - 2025-08-05',['../md_CHANGELOG.html',1,'']]],
-  ['compiler_20configurations_8',['Supported Compiler Configurations',['../md_README.html#autotoc_md17',1,'']]],
-  ['compiler_20versions_9',['Specifying Compiler Versions',['../md_README.html#autotoc_md26',1,'']]],
-  ['conda_10',['Setup Fortran with Conda',['../md_README.html',1,'']]],
-  ['conda_20compare_20v0_206_200_20v0_207_200_20v0_207_200_20a_202025_2007_2011_11',['&lt;a href=&quot;https://github.com/gha3mi/setup-fortran-conda/compare/v0.6.0...v0.7.0&quot; &gt;v0.7.0&lt;/a&gt; - 2025-07-11',['../md_CHANGELOG.html#autotoc_md11',1,'']]],
-  ['conda_20compare_20v0_207_200_20v0_207_201_20v0_207_201_20a_202025_2007_2018_12',['&lt;a href=&quot;https://github.com/gha3mi/setup-fortran-conda/compare/v0.7.0...v0.7.1&quot; &gt;v0.7.1&lt;/a&gt; - 2025-07-18',['../md_CHANGELOG.html#autotoc_md7',1,'']]],
-  ['conda_20compare_20v0_207_201_20v0_208_200_20v0_208_200_20a_202025_2007_2028_13',['&lt;a href=&quot;https://github.com/gha3mi/setup-fortran-conda/compare/v0.7.1...v0.8.0&quot; &gt;v0.8.0&lt;/a&gt; - 2025-07-28',['../md_CHANGELOG.html#autotoc_md4',1,'']]],
-  ['conda_20compare_20v0_208_200_20v0_208_201_20v0_208_201_20a_202025_2008_2005_14',['&lt;a href=&quot;https://github.com/gha3mi/setup-fortran-conda/compare/v0.8.0...v0.8.1&quot; &gt;v0.8.1&lt;/a&gt; - 2025-08-05',['../md_CHANGELOG.html',1,'']]],
-  ['configurations_15',['Supported Compiler Configurations',['../md_README.html#autotoc_md17',1,'']]],
-  ['contributors_16',['Contributors',['../md_CHANGELOG.html#autotoc_md3',1,'Contributors'],['../md_CHANGELOG.html#autotoc_md6',1,'Contributors'],['../md_CHANGELOG.html#autotoc_md10',1,'Contributors'],['../md_CHANGELOG.html#autotoc_md15',1,'Contributors']]]
+  ['breakdown_0',['Job Breakdown',['../md_README.html#autotoc_md29',1,'']]]
 ];

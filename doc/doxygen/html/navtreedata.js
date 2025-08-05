@@ -25,48 +25,53 @@
 var NAVTREE =
 [
   [ "My Project", "index.html", [
-    [ "<a href=\"https://github.com/gha3mi/setup-fortran-conda/compare/v0.8.0...v0.8.1\" >v0.8.1</a> - 2025-08-05", "md_CHANGELOG.html", [
-      [ "v0.8.0 - 2025-07-28", "md_CHANGELOG.html#autotoc_md4", [
-        [ "Fixes", "md_CHANGELOG.html#autotoc_md1", null ],
-        [ "Others", "md_CHANGELOG.html#autotoc_md2", null ],
+    [ "<a href=\"https://github.com/gha3mi/setup-fortran-conda/compare/v0.8.1...v0.9.0\" >v0.9.0</a> - 2025-08-05", "md_CHANGELOG.html", [
+      [ "v0.8.1 - 2025-08-05", "md_CHANGELOG.html#autotoc_md4", [
+        [ "Features", "md_CHANGELOG.html#autotoc_md1", null ],
+        [ "Fixes", "md_CHANGELOG.html#autotoc_md2", null ],
         [ "Contributors", "md_CHANGELOG.html#autotoc_md3", null ],
-        [ "Features", "md_CHANGELOG.html#autotoc_md5", null ],
-        [ "Contributors", "md_CHANGELOG.html#autotoc_md6", null ]
+        [ "Fixes", "md_CHANGELOG.html#autotoc_md5", null ],
+        [ "Others", "md_CHANGELOG.html#autotoc_md6", null ],
+        [ "Contributors", "md_CHANGELOG.html#autotoc_md7", null ]
       ] ],
-      [ "v0.7.1 - 2025-07-18", "md_CHANGELOG.html#autotoc_md7", [
-        [ "Fixes", "md_CHANGELOG.html#autotoc_md8", null ],
-        [ "Others", "md_CHANGELOG.html#autotoc_md9", null ],
+      [ "v0.8.0 - 2025-07-28", "md_CHANGELOG.html#autotoc_md8", [
+        [ "Features", "md_CHANGELOG.html#autotoc_md9", null ],
         [ "Contributors", "md_CHANGELOG.html#autotoc_md10", null ]
       ] ],
-      [ "v0.7.0 - 2025-07-11", "md_CHANGELOG.html#autotoc_md11", [
-        [ "Features", "md_CHANGELOG.html#autotoc_md12", null ],
-        [ "Fixes", "md_CHANGELOG.html#autotoc_md13", null ],
-        [ "Others", "md_CHANGELOG.html#autotoc_md14", null ],
-        [ "Contributors", "md_CHANGELOG.html#autotoc_md15", null ]
+      [ "v0.7.1 - 2025-07-18", "md_CHANGELOG.html#autotoc_md11", [
+        [ "Fixes", "md_CHANGELOG.html#autotoc_md12", null ],
+        [ "Others", "md_CHANGELOG.html#autotoc_md13", null ],
+        [ "Contributors", "md_CHANGELOG.html#autotoc_md14", null ]
+      ] ],
+      [ "v0.7.0 - 2025-07-11", "md_CHANGELOG.html#autotoc_md15", [
+        [ "Features", "md_CHANGELOG.html#autotoc_md16", null ],
+        [ "Fixes", "md_CHANGELOG.html#autotoc_md17", null ],
+        [ "Others", "md_CHANGELOG.html#autotoc_md18", null ],
+        [ "Contributors", "md_CHANGELOG.html#autotoc_md19", null ]
       ] ]
     ] ],
     [ "Setup Fortran with Conda", "md_README.html", [
-      [ "Supported Compiler Configurations", "md_README.html#autotoc_md17", [
-        [ "Ubuntu", "md_README.html#autotoc_md18", null ],
-        [ "macOS", "md_README.html#autotoc_md19", null ],
-        [ "Windows", "md_README.html#autotoc_md20", null ]
+      [ "Supported Compiler Configurations", "md_README.html#autotoc_md21", [
+        [ "Ubuntu", "md_README.html#autotoc_md22", null ],
+        [ "macOS", "md_README.html#autotoc_md23", null ],
+        [ "Windows", "md_README.html#autotoc_md24", null ]
       ] ],
-      [ "📋 Workflow Example", "md_README.html#autotoc_md21", [
-        [ "🔐 IMPORTANT NOTES", "md_README.html#autotoc_md22", null ],
-        [ "Overview", "md_README.html#autotoc_md23", null ],
-        [ "README Integration", "md_README.html#autotoc_md24", null ],
-        [ "Job Breakdown", "md_README.html#autotoc_md25", null ],
-        [ "Specifying Compiler Versions", "md_README.html#autotoc_md26", null ],
-        [ "MPI Support", "md_README.html#autotoc_md27", null ]
+      [ "📋 Workflow Example", "md_README.html#autotoc_md25", [
+        [ "🔐 IMPORTANT NOTES", "md_README.html#autotoc_md26", null ],
+        [ "Overview", "md_README.html#autotoc_md27", null ],
+        [ "README Integration", "md_README.html#autotoc_md28", null ],
+        [ "Job Breakdown", "md_README.html#autotoc_md29", null ],
+        [ "Specifying Compiler Versions", "md_README.html#autotoc_md30", null ],
+        [ "MPI Support", "md_README.html#autotoc_md31", null ]
       ] ],
-      [ "✅ Status", "md_README.html#autotoc_md28", null ],
-      [ "🚀 Release Automation", "md_README.html#autotoc_md29", [
-        [ "Features", "md_README.html#autotoc_md30", null ],
-        [ "Requirements", "md_README.html#autotoc_md31", null ],
-        [ "Usage", "md_README.html#autotoc_md32", null ],
-        [ "Recommended Workflow", "md_README.html#autotoc_md33", null ]
+      [ "✅ Status", "md_README.html#autotoc_md32", null ],
+      [ "🚀 Release Automation", "md_README.html#autotoc_md33", [
+        [ "Features", "md_README.html#autotoc_md34", null ],
+        [ "Requirements", "md_README.html#autotoc_md35", null ],
+        [ "Usage", "md_README.html#autotoc_md36", null ],
+        [ "Recommended Workflow", "md_README.html#autotoc_md37", null ]
       ] ],
-      [ "🔗 See Also", "md_README.html#autotoc_md34", null ]
+      [ "🔗 See Also", "md_README.html#autotoc_md38", null ]
     ] ]
   ] ]
 ];

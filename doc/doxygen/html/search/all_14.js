@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['ubuntu_0',['Ubuntu',['../md_README.html#autotoc_md14',1,'']]],
-  ['usage_1',['Usage',['../md_README.html#autotoc_md28',1,'']]]
+  ['ubuntu_0',['Ubuntu',['../md_README.html#autotoc_md18',1,'']]],
+  ['usage_1',['Usage',['../md_README.html#autotoc_md32',1,'']]]
 ];

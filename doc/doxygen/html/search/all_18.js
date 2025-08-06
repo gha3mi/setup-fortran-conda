@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['✅_20status_0',['✅ Status',['../md_README.html#autotoc_md32',1,'']]]
+  ['✅_20ci_20status_0',['✅ CI Status',['../md_README.html#autotoc_md26',1,'']]]
 ];

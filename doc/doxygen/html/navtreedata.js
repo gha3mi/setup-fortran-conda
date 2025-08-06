@@ -56,22 +56,23 @@ var NAVTREE =
         [ "macOS", "md_README.html#autotoc_md23", null ],
         [ "Windows", "md_README.html#autotoc_md24", null ]
       ] ],
-      [ "📋 Workflow Example", "md_README.html#autotoc_md25", [
-        [ "🔐 IMPORTANT NOTES", "md_README.html#autotoc_md26", null ],
-        [ "Overview", "md_README.html#autotoc_md27", null ],
-        [ "README Integration", "md_README.html#autotoc_md28", null ],
-        [ "Job Breakdown", "md_README.html#autotoc_md29", null ],
-        [ "Specifying Compiler Versions", "md_README.html#autotoc_md30", null ],
-        [ "MPI Support", "md_README.html#autotoc_md31", null ]
+      [ "Simple Usage", "md_README.html#autotoc_md25", null ],
+      [ "✅ CI Status", "md_README.html#autotoc_md26", null ],
+      [ "📋 Workflow Example", "md_README.html#autotoc_md27", [
+        [ "🔐 IMPORTANT NOTES", "md_README.html#autotoc_md28", null ],
+        [ "Overview", "md_README.html#autotoc_md29", null ],
+        [ "README Integration", "md_README.html#autotoc_md30", null ],
+        [ "Job Breakdown", "md_README.html#autotoc_md31", null ],
+        [ "Specifying Compiler Versions", "md_README.html#autotoc_md32", null ],
+        [ "MPI Support", "md_README.html#autotoc_md33", null ]
       ] ],
-      [ "✅ Status", "md_README.html#autotoc_md32", null ],
-      [ "🚀 Release Automation", "md_README.html#autotoc_md33", [
-        [ "Features", "md_README.html#autotoc_md34", null ],
-        [ "Requirements", "md_README.html#autotoc_md35", null ],
-        [ "Usage", "md_README.html#autotoc_md36", null ],
-        [ "Recommended Workflow", "md_README.html#autotoc_md37", null ]
+      [ "🚀 Release Automation", "md_README.html#autotoc_md34", [
+        [ "Features", "md_README.html#autotoc_md35", null ],
+        [ "Requirements", "md_README.html#autotoc_md36", null ],
+        [ "Usage", "md_README.html#autotoc_md37", null ],
+        [ "Recommended Workflow", "md_README.html#autotoc_md38", null ]
       ] ],
-      [ "🔗 See Also", "md_README.html#autotoc_md38", null ]
+      [ "🔗 See Also", "md_README.html#autotoc_md39", null ]
     ] ]
   ] ]
 ];

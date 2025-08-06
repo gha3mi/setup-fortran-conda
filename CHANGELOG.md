@@ -1,3 +1,24 @@
+## [v0.9.1](https://github.com/gha3mi/setup-fortran-conda/compare/v0.9.0...v0.9.1) - 2025-08-06
+
+
+### Others
+
+* chore: add workflow_dispatch trigger to CI/CD configuration ([112f490](https://github.com/gha3mi/setup-fortran-conda/commit/112f4901603504d1a1745d9ac29df7d59a0e18a6)) by [@gha3mi](https://github.com/gha3mi)
+* Update README.md status table [ci skip] (#71) ([12ef19d](https://github.com/gha3mi/setup-fortran-conda/commit/12ef19d52aadaa13bb5ec7353fd8b88604554465)) by [@gha3mi](https://github.com/gha3mi)
+* docs: Update README.md ([6c07320](https://github.com/gha3mi/setup-fortran-conda/commit/6c07320e2a8575d06dee42473f56e6cd1260bff9)) by [@gha3mi](https://github.com/gha3mi)
+* chore: update conditions for jobs and add verbose output for tests ([c5351fb](https://github.com/gha3mi/setup-fortran-conda/commit/c5351fbcd797acfd1ae66e4098fd5607e4276b87)) by [@gha3mi](https://github.com/gha3mi)
+* Update README.md status table [ci skip] (#74) ([2e04c00](https://github.com/gha3mi/setup-fortran-conda/commit/2e04c000de3476acb84914215a51fc2e4e8806da)) by [@gha3mi](https://github.com/gha3mi)
+* chore: add delay to ensure jobs are visible in GitHub API before generating STATUS.md ([81c7432](https://github.com/gha3mi/setup-fortran-conda/commit/81c7432bfeff37e645c83ce00ae8e6b0236eebc2)) by [@gha3mi](https://github.com/gha3mi)
+* Update README.md status table [ci skip] (#75) ([8a0a864](https://github.com/gha3mi/setup-fortran-conda/commit/8a0a864bb3121756e69117ee44cb5248ed1b0743)) by [@gha3mi](https://github.com/gha3mi)
+
+
+### Contributors
+- [@gha3mi](https://github.com/gha3mi)
+
+
+
+Full Changelog: [v0.9.0...v0.9.1](https://github.com/gha3mi/setup-fortran-conda/compare/v0.9.0...v0.9.1)
+
 ## [v0.9.0](https://github.com/gha3mi/setup-fortran-conda/compare/v0.8.1...v0.9.0) - 2025-08-05
 
 

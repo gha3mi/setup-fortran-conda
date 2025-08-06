@@ -4,7 +4,7 @@ A GitHub Action that sets up a Fortran development environment using Conda. Insp
 
 ## Supported Compiler Configurations
 
-The selected Fortran compiler is installed along with the corresponding C and C++ compilers, as well as `fpm`, `cmake` and `ninja`. Additional packages can be installed using the `extra-packages` input.
+The selected Fortran compiler is installed along with the corresponding C and C++ compilers, as well as `fpm`, `cmake`, `ninja` and `meson`. Additional packages can be installed using the `extra-packages` input.
 
 ### Ubuntu
 
@@ -37,6 +37,61 @@ The selected Fortran compiler is installed along with the corresponding C and C+
 * `FC`, `CC`, `CXX`
 * `FPM_FC`, `FPM_CC`, `FPM_CXX`
 * `CMAKE_Fortran_COMPILER`, `CMAKE_C_COMPILER`, `CMAKE_CXX_COMPILER`
+
+## Simple Usage
+
+```yaml
+name: Setup Fortran Conda CI/CD
+
+on: [push]
+permissions:
+  contents: write
+jobs:
+  test_fpm:
+    name: ${{ matrix.os }}_${{ matrix.compiler }}_fpm
+    runs-on: ${{ matrix.os }}
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        compiler: [gfortran, ifx, lfortran, flang-new, nvfortran]
+        exclude:
+          - os: macos-latest
+            compiler: flang-new
+          - os: macos-latest
+            compiler: ifx
+          - os: macos-latest
+            compiler: nvfortran
+          - os: windows-latest
+            compiler: nvfortran
+    steps:
+      - name: Setup Fortran
+        uses: gha3mi/setup-fortran-conda@latest
+        with:
+          compiler: ${{ matrix.compiler }}
+          platform: ${{ matrix.os }}
+
+      - name: fpm test (debug)
+        run: fpm test --compiler ${{ matrix.compiler }} --profile debug
+
+      - name: fpm test (release)
+        run: fpm test --compiler ${{ matrix.compiler }} --profile release
+```
+
+## ✅ CI Status
+
+<!-- STATUS:setup-fortran-conda:START -->
+| Compiler    | macos          | ubuntu                  | windows        |
+| ----------- | -------------- | ----------------------- | -------------- |
+| `flang-new` | -              | fpm ✅  cmake ✅  meson ✅ | fpm ❌  cmake ✅ |
+| `gfortran`  | fpm ✅  cmake ✅ | fpm ✅  cmake ✅  meson ✅ | fpm ✅  cmake ✅ |
+| `ifx`       | -              | fpm ✅  cmake ✅  meson ✅ | fpm ✅  cmake ✅ |
+| `lfortran`  | fpm ✅  cmake ✅ | fpm ✅  cmake ✅          | fpm ✅  cmake ❌ |
+| `mpifort`   | mpi_fpm ✅      | mpi_fpm ✅               | -              |
+| `nvfortran` | -              | fpm ✅  cmake ✅          | -              |
+<!-- STATUS:setup-fortran-conda:END -->
+
+- [STATUS.md (FPM)](https://github.com/gha3mi/setup-fortran-conda/blob/status-fpm/STATUS.md)
+- [STATUS.md (CMake)](https://github.com/gha3mi/setup-fortran-conda/blob/status-cmake/STATUS.md)
+- [STATUS.md (Meson)](https://github.com/gha3mi/setup-fortran-conda/blob/status-meson/STATUS.md)
 
 
 ## 📋 Workflow Example
@@ -78,6 +133,7 @@ This example automates Fortran CI/CD:
 
   * `fpm` test with `debug` and `release` profiles
   * `CMake` with `Ninja` and `CTest`
+  * `Meson` with `Ninja`
  
 * 📄 **Documentation**:
 
@@ -86,14 +142,13 @@ This example automates Fortran CI/CD:
 
 * 📊 **Status Reporting**:
 
-  * Auto-generates `STATUS.md` for `fpm`/`cmake` test results
+  * Auto-generates `STATUS.md` for `fpm`/`cmake`/`meson` test results
   * Injects summary into `README.md`
   * creates PRs to update the status table in `README.md`
 
 * 🧹 **Linting**:
 
   * Runs Fortitude check
-
 
 ### README Integration
 
@@ -110,10 +165,12 @@ To enable automatic CI status table injection, add the following to your `README
 | --------------------- | ---------------------------------------------------------------- |
 | `test_fpm`            | Run `fpm` tests (debug + release) for each OS/compiler           |
 | `test_cmake`          | Run CMake/Ninja builds and tests                                 |
+| `test_meson`          | Run Meson builds and tests                                       |
 | `doc_ford`            | Build and deploy FORD-generated docs                             |
 | `doc_doxygen`         | Build and deploy Doxygen-generated docs                          |
 | `status_fpm`          | Generate `STATUS.md` with fpm test results                       |
 | `status_cmake`        | Generate `STATUS.md` with cmake test results                     |
+| `status_meson`        | Generate `STATUS.md` with meson test results                     |
 | `update_readme_table` | Inject CI summary table into `README.md` and open a pull request |
 | `linter_fortitude`    | Run [Fortitude](https://github.com/PlasmaFAIR/fortitude) linter  |
 
@@ -125,12 +182,9 @@ name: Setup Fortran Conda CI/CD
 on:
   push:
     branches: [main, master, dev]
-  pull_request:
-    branches: [main, master]
 
 permissions:
   contents: write
-  pull-requests: write
 
 jobs:
 
@@ -220,6 +274,52 @@ jobs:
           cmake --build build/release
           ctest --test-dir build/release --output-on-failure
 
+  # Run Meson builds and tests across OS/compiler matrix
+  test_meson:
+    name: ${{ matrix.os }}_${{ matrix.compiler }}_meson
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        compiler: [gfortran, ifx, lfortran, flang-new, nvfortran]
+        include:
+          - os: ubuntu-latest
+            extra-packages: ""
+          - os: windows-latest
+            extra-packages: ""
+          - os: macos-latest
+            extra-packages: ""
+        exclude:
+          - os: macos-latest
+            compiler: flang-new
+          - os: macos-latest
+            compiler: ifx
+          - os: macos-latest
+            compiler: nvfortran
+          - os: windows-latest
+            compiler: nvfortran
+
+    steps:
+      - name: Setup Fortran
+        uses: gha3mi/setup-fortran-conda@latest
+        with:
+          compiler: ${{ matrix.compiler }}
+          platform: ${{ matrix.os }}
+          extra-packages: ${{ matrix.extra-packages }}
+
+      - name: meson test (debug)
+        run: |
+          meson setup --wipe build/meson/debug --buildtype debug --backend=ninja
+          meson compile -C build/meson/debug --verbose
+          meson test -C build/meson/debug --verbose
+
+      - name: meson test (release)
+        run: |
+          meson setup --wipe build/meson/release --buildtype release --backend=ninja
+          meson compile -C build/meson/release --verbose
+          meson test -C build/meson/release --verbose
+
   # Build and deploy FORD documentation
   doc_ford:
     name: Generate FORD Documentation
@@ -276,6 +376,18 @@ jobs:
         with:
           generate-status-cmake: true
 
+  # Generate STATUS.md from Meson job results
+  status_meson:
+    name: Generate STATUS.md
+    if: always()
+    needs: test_meson
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate summary
+        uses: gha3mi/setup-fortran-conda@latest
+        with:
+          generate-status-meson: true
+
   # Inject CI status table into README.md
   update_readme_table:
     name: Update README.md status table
@@ -304,6 +416,7 @@ jobs:
           fortitude-check: true
           fortitude-settings: "--output-format github"
 ```
+
 ### Specifying Compiler Versions
 
 By default, the above example installs the latest available versions of each compiler.
@@ -328,6 +441,7 @@ matrix:
       compiler-version: 15.1.0
       extra-packages: ""
 ```
+
 Then, reference `compiler-version` in the setup step:
 
 ```yaml
@@ -375,22 +489,6 @@ test_mpi_fpm:
       run: fpm test --target mpi_hello --compiler ${{ matrix.compiler }} --profile release --flag "-cpp -DUSE_MPI" --runner "mpirun -np 4" --verbose
 ```
 
-## ✅ Status
-
-<!-- STATUS:setup-fortran-conda:START -->
-| Compiler   | macos | ubuntu | windows |
-|------------|----------------------|----------------------|----------------------|
-| `flang-new` | - | fpm ✅  cmake ✅  meson ✅ | fpm ❌  cmake ✅ |
-| `gfortran` | fpm ✅  cmake ✅ | fpm ✅  cmake ✅  meson ✅ | fpm ✅  cmake ✅ |
-| `ifx` | - | fpm ✅  cmake ✅  meson ✅ | fpm ✅  cmake ✅ |
-| `lfortran` | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ | fpm ✅  cmake ❌ |
-| `mpifort` | mpi_fpm ✅ | mpi_fpm ✅ | - |
-| `nvfortran` | - | fpm ✅  cmake ✅ | - |
-<!-- STATUS:setup-fortran-conda:END -->
-
-- [STATUS.md (FPM)](https://github.com/gha3mi/setup-fortran-conda/blob/status-fpm/STATUS.md)
-- [STATUS.md (CMake)](https://github.com/gha3mi/setup-fortran-conda/blob/status-cmake/STATUS.md)
-
 ## 🚀 Release Automation
 
 This project includes a Bash script for automating GitHub releases.
@@ -423,7 +521,7 @@ bash release.sh --help
 
 ### Recommended Workflow
 
-It’s highly recommended to first run in `--dry-run` mode to verify the output, then in `--local` mode to update files and tags locally, and finally without any flags to push changes and publish the GitHub release.
+It’s highly recommended to first run in `--dry-run` mode to verify the output.
 
 ## 🔗 See Also
 

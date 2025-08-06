@@ -213,6 +213,9 @@ runs:
         REPO: ${{ github.repository }}
         RUN_ID: ${{ github.run_id }}
       run: |
+        echo "Waiting 60s to ensure all jobs are visible in GitHub API..."
+        sleep 60
+
         echo "Generating STATUS.md for test_fpm..."
         badge_line=""
 
@@ -272,6 +275,9 @@ runs:
         REPO: ${{ github.repository }}
         RUN_ID: ${{ github.run_id }}
       run: |
+        echo "Waiting 60s to ensure all jobs are visible in GitHub API..."
+        sleep 60
+
         echo "Generating STATUS.md for test_cmake..."
         badge_line=""
 
@@ -331,6 +337,9 @@ runs:
         REPO: ${{ github.repository }}
         RUN_ID: ${{ github.run_id }}
       run: |
+        echo "Waiting 60s to ensure all jobs are visible in GitHub API..."
+        sleep 60
+
         echo "Generating STATUS.md for test_meson..."
         badge_line=""
 

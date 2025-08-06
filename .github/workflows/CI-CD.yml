@@ -56,9 +56,11 @@ jobs:
           extra-packages: ${{ matrix.extra-packages }}
 
       - name: fpm test (debug)
+        if: always()
         run: fpm test --compiler ${{ matrix.compiler }} --target check --profile debug --verbose
 
       - name: fpm test (release)
+        if: always()
         run: fpm test --compiler ${{ matrix.compiler }} --target check --profile release --verbose
 
   test_mpi_fpm:
@@ -85,9 +87,11 @@ jobs:
           extra-packages: ${{ matrix.extra-packages }}
 
       - name: fpm test (debug)
+        if: always()
         run: fpm test --target mpi_hello --compiler ${{ matrix.compiler }} --profile debug --flag "-cpp -DUSE_MPI" --runner "mpirun -np 4" --verbose
 
       - name: fpm test (release)
+        if: always()
         run: fpm test --target mpi_hello --compiler ${{ matrix.compiler }} --profile release --flag "-cpp -DUSE_MPI" --runner "mpirun -np 4" --verbose
 
   test_cmake:
@@ -125,16 +129,18 @@ jobs:
           extra-packages: ${{ matrix.extra-packages }}
 
       - name: cmake test (debug)
+        if: always()
         run: |
           cmake -S . -B build/debug -DCMAKE_BUILD_TYPE=Debug -DCMAKE_Fortran_COMPILER=${{ matrix.compiler }} -G Ninja
-          cmake --build build/debug
-          ctest --test-dir build/debug --output-on-failure
+          cmake --build build/debug --config Debug --verbose
+          ctest --test-dir build/debug --output-on-failure -VV
 
       - name: cmake test (release)
+        if: always()
         run: |
           cmake -S . -B build/release -DCMAKE_BUILD_TYPE=Release -DCMAKE_Fortran_COMPILER=${{ matrix.compiler }} -G Ninja
-          cmake --build build/release
-          ctest --test-dir build/release --output-on-failure
+          cmake --build build/release --config Release --verbose
+          ctest --test-dir build/release --output-on-failure -VV
 
   test_meson:
     if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
@@ -183,7 +189,7 @@ jobs:
           meson test -C build/meson/release --verbose
 
   doc_ford:
-    if: ${{ github.event_name == 'push' && !contains(github.event.head_commit.message, '[skip ci]') }}
+    if: ${{ (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && !contains(github.event.head_commit.message, '[skip ci]') }}
     name: Generate FORD Documentation
     runs-on: ubuntu-latest
     steps:
@@ -199,7 +205,7 @@ jobs:
           ford-target-folder: doc/ford
 
   doc_doxygen:
-    if: ${{ github.event_name == 'push' && !contains(github.event.head_commit.message, '[skip ci]') }}
+    if: ${{ (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && !contains(github.event.head_commit.message, '[skip ci]') }}
     name: Generate Doxygen Documentation
     runs-on: ubuntu-latest
     steps:
@@ -215,7 +221,7 @@ jobs:
           doxygen-target-folder: doc/doxygen
 
   status_fpm:
-    if: ${{ always() && github.event_name == 'push' && !contains(github.event.head_commit.message, '[skip ci]') }}
+    if: ${{ (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && !contains(github.event.head_commit.message, '[skip ci]') }}
     name: Generate STATUS.md
     needs: [test_fpm, test_mpi_fpm]
     runs-on: ubuntu-latest
@@ -226,7 +232,7 @@ jobs:
           generate-status-fpm: true
 
   status_cmake:
-    if: ${{ always() && github.event_name == 'push' && !contains(github.event.head_commit.message, '[skip ci]') }}
+    if: ${{ (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && !contains(github.event.head_commit.message, '[skip ci]') }}
     name: Generate STATUS.md
     needs: test_cmake
     runs-on: ubuntu-latest
@@ -237,7 +243,7 @@ jobs:
           generate-status-cmake: true
 
   status_meson:
-    if: ${{ always() && github.event_name == 'push' && !contains(github.event.head_commit.message, '[skip ci]') }}
+    if: ${{ (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && !contains(github.event.head_commit.message, '[skip ci]') }}
     name: Generate STATUS.md
     needs: [test_meson]
     runs-on: ubuntu-latest
@@ -248,7 +254,7 @@ jobs:
           generate-status-meson: true
 
   update_readme_table:
-    if: ${{ always() && github.event_name == 'push' && github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, '[skip ci]') }}
+    if: ${{ always() && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, '[skip ci]') }}
     name: Update README.md status table
     needs: [status_fpm, status_cmake, status_meson]
     runs-on: ubuntu-latest

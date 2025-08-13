@@ -12,7 +12,7 @@ The selected Fortran compiler is installed along with the corresponding C and C+
 | ---------------- | ---------- | ------------ |
 | gfortran         | gcc        | g++          |
 | ifx              | icx        | icx          |
-| lfortran         | gcc        | g++          |
+| lfortran         | clang      | clang++      |
 | flang, flang-new | clang      | clang++      |
 | nvfortran        | nvc        | nvc++        |
 
@@ -91,7 +91,7 @@ jobs:
 
 - [STATUS.md (FPM)](https://github.com/gha3mi/setup-fortran-conda/blob/status-fpm/STATUS.md)
 - [STATUS.md (CMake)](https://github.com/gha3mi/setup-fortran-conda/blob/status-cmake/STATUS.md)
-- [STATUS.md (Meson)](https://github.com/gha3mi/setup-fortran-conda/blob/status-meson/STATUS.md)
+<!-- - [STATUS.md (Meson)](https://github.com/gha3mi/setup-fortran-conda/blob/status-meson/STATUS.md) -->
 
 
 ## 📋 Workflow Example

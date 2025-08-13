@@ -1,3 +1,32 @@
+## [v0.10.0](https://github.com/gha3mi/setup-fortran-conda/compare/v0.9.1...v0.10.0) - 2025-08-13
+
+
+### Features
+
+* feat: PR commit inclusion in release script [skip ci] ([be769e9](https://github.com/gha3mi/setup-fortran-conda/commit/be769e91d6be8943f3480946018b329672724ab6)) by [@gha3mi](https://github.com/gha3mi)
+
+### Fixes
+
+* fix: use clang as the C/C++ compiler for LFortran and switch meson status off (#83) ([1f09ad8](https://github.com/gha3mi/setup-fortran-conda/commit/1f09ad8a4a8c3bd9dbdcae8b7ef2ffced5df14d2)) by [@gha3mi](https://github.com/gha3mi)
+
+### Others
+
+* chore(deps): bump actions/checkout from 4.2.2 to 5.0.0 ([#82](https://github.com/gha3mi/setup-fortran-conda/pull/82)) by [@dependabot[bot]](https://github.com/dependabot[bot])
+* chore: update setup action to latest version ([2735bda](https://github.com/gha3mi/setup-fortran-conda/commit/2735bdaa145a949a876090c837440f4e2251744e)) by [@gha3mi](https://github.com/gha3mi)
+* chore: update job dependencies for STATUS.md generation ([44d438b](https://github.com/gha3mi/setup-fortran-conda/commit/44d438b178c4dad4e54a1f0fc9625a1c0c81caf6)) by [@gha3mi](https://github.com/gha3mi)
+* Update README.md status table [ci skip] (#79) ([9c9fe5a](https://github.com/gha3mi/setup-fortran-conda/commit/9c9fe5a144a595f57a8ac9202bb1df67e1ecf3e1)) by [@gha3mi](https://github.com/gha3mi)
+* Update README.md status table [ci skip] (#84) ([997f7cd](https://github.com/gha3mi/setup-fortran-conda/commit/997f7cddf6be4a4f9175b6786a535fc1220248b9)) by [@gha3mi](https://github.com/gha3mi)
+* docs: update README.md [skip ci] ([ab15913](https://github.com/gha3mi/setup-fortran-conda/commit/ab159135cbdeb619143d54d6b1bf0e9df5dc175e)) by [@gha3mi](https://github.com/gha3mi)
+
+
+### Contributors
+- [@dependabot[bot]](https://github.com/dependabot[bot])
+- [@gha3mi](https://github.com/gha3mi)
+
+
+
+Full Changelog: [v0.9.1...v0.10.0](https://github.com/gha3mi/setup-fortran-conda/compare/v0.9.1...v0.10.0)
+
 ## [v0.9.1](https://github.com/gha3mi/setup-fortran-conda/compare/v0.9.0...v0.9.1) - 2025-08-06
 
 

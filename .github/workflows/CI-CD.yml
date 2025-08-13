@@ -217,7 +217,7 @@ jobs:
   status_fpm:
     if: ${{ always() && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && !contains(github.event.head_commit.message, '[skip ci]') }}
     name: Generate STATUS.md
-    needs: [test_fpm, test_mpi_fpm, test_cmake, test_meson]
+    needs: [test_fpm, test_mpi_fpm]
     runs-on: ubuntu-latest
     steps:
       - name: Generate summary
@@ -228,7 +228,7 @@ jobs:
   status_cmake:
     if: ${{ always() && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && !contains(github.event.head_commit.message, '[skip ci]') }}
     name: Generate STATUS.md
-    needs: [test_fpm, test_mpi_fpm, test_cmake, test_meson]
+    needs: [test_cmake]
     runs-on: ubuntu-latest
     steps:
       - name: Generate summary
@@ -239,13 +239,13 @@ jobs:
   status_meson:
     if: ${{ always() && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && !contains(github.event.head_commit.message, '[skip ci]') }}
     name: Generate STATUS.md
-    needs: [test_fpm, test_mpi_fpm, test_cmake, test_meson]
+    needs: [test_meson]
     runs-on: ubuntu-latest
     steps:
       - name: Generate summary
         uses: gha3mi/setup-fortran-conda@latest
         with:
-          generate-status-meson: true
+          generate-status-meson: false
 
   update_readme_table:
     if: ${{ always() && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, '[skip ci]') }}

@@ -49,7 +49,7 @@ export async function setup(version = '') {
 
   // Define the Conda packages to install
   const Pkg = version ? `lfortran=${version}` : 'lfortran';
-  const packages = [Pkg, 'gcc', 'gxx', 'binutils'];
+  const packages = [Pkg, 'llvm', 'clangxx', 'clang-tools', 'llvm-openmp', 'lld'];
 
   startGroup('Installing Conda packages');
   try {
@@ -83,24 +83,24 @@ export async function setup(version = '') {
   startGroup('Verifying compiler versions');
   await _exec('which', ['lfortran']);
   await _exec('lfortran', ['--version']);
-  await _exec('which', ['gcc']);
-  await _exec('gcc', ['--version']);
-  await _exec('which', ['g++']);
-  await _exec('g++', ['--version']);
+  await _exec('which', ['clang']);
+  await _exec('clang', ['--version']);
+  await _exec('which', ['clang++']);
+  await _exec('clang++', ['--version']);
   endGroup();
 
   startGroup('Exporting compiler environment variables');
   const envVars = {
     FC: 'lfortran',
-    CC: 'gcc',
-    CXX: 'g++',
+    CC: 'clang',
+    CXX: 'clang++',
     FPM_FC: 'lfortran',
-    FPM_CC: 'gcc',
-    FPM_CXX: 'g++',
+    FPM_CC: 'clang',
+    FPM_CXX: 'clang++',
     CMAKE_Fortran_COMPILER: 'lfortran',
-    CMAKE_C_COMPILER: 'gcc',
-    CMAKE_CXX_COMPILER: 'g++',
-    LFORTRAN_LINKER: 'gcc',
+    CMAKE_C_COMPILER: 'clang',
+    CMAKE_CXX_COMPILER: 'clang++',
+    LFORTRAN_LINKER: 'clang',
     LD_LIBRARY_PATH: [libPath, process.env.LD_LIBRARY_PATH || ''].filter(Boolean).join(':')
   };
 

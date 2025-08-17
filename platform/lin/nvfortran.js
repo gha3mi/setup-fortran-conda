@@ -42,12 +42,12 @@ function setLinuxUlimits() {
 }
 
 // Main setup function
-export async function setup(version = '25.5') {
+export async function setup(version = '25.7') {
   if (platform !== 'linux') {
     throw new Error('This setup script is only supported on Linux.');
   }
 
-  version = version?.trim() || '25.5';
+  version = version?.trim() || '25.7';
 
   // Install NVIDIA HPC SDK via apt
   startGroup('Installing NVIDIA HPC SDK');

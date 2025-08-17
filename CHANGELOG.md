@@ -1,3 +1,19 @@
+## [v0.10.1](https://github.com/gha3mi/setup-fortran-conda/compare/v0.10.0...v0.10.1) - 2025-08-17
+
+
+### Others
+
+* docs: fix link [skip ci] ([a6c92c3](https://github.com/gha3mi/setup-fortran-conda/commit/a6c92c39fd3869e8ce3216cd480a63d1ecc8c953)) by [@gha3mi](https://github.com/gha3mi)
+* chore: update latest NVIDIA HPC SDK from 25.5 to 25.7 ([e33850d](https://github.com/gha3mi/setup-fortran-conda/commit/e33850d0cfc961baab61f02a760d95823fa19483)) by [@gha3mi](https://github.com/gha3mi)
+
+
+### Contributors
+- [@gha3mi](https://github.com/gha3mi)
+
+
+
+Full Changelog: [v0.10.0...v0.10.1](https://github.com/gha3mi/setup-fortran-conda/compare/v0.10.0...v0.10.1)
+
 ## [v0.10.0](https://github.com/gha3mi/setup-fortran-conda/compare/v0.9.1...v0.10.0) - 2025-08-13
 
 

@@ -81,10 +81,10 @@ jobs:
 <!-- STATUS:setup-fortran-conda:START -->
 | Compiler   | macos | ubuntu | windows |
 |------------|----------------------|----------------------|----------------------|
-| `flang-new` | - | cmake ✅ | fpm ❌  cmake ✅ |
-| `gfortran` | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ |
-| `ifx` | - | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ |
-| `lfortran` | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ | fpm ✅  cmake ❌ |
+| `flang-new` | - | fpm ✅ | fpm ❌  cmake ✅ |
+| `gfortran` | fpm ✅ | fpm ✅ | fpm ✅  cmake ✅ |
+| `ifx` | - | fpm ✅  cmake ✅ | fpm ✅ |
+| `lfortran` | fpm ✅ | fpm ✅  cmake ✅ | fpm ✅ |
 | `mpifort` | mpi_fpm ✅ | mpi_fpm ✅ | - |
 | `nvfortran` | - | fpm ✅  cmake ✅ | - |
 <!-- STATUS:setup-fortran-conda:END -->

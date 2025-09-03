@@ -1,3 +1,18 @@
+## [v0.10.3](https://github.com/gha3mi/setup-fortran-conda/compare/v0.10.2...v0.10.3) - 2025-09-03
+
+
+### Fixes
+
+* fix: set LFORTRAN_LINKER to gcc on macOS (#89) ([071ded9](https://github.com/gha3mi/setup-fortran-conda/commit/071ded9c1655576621216aa3d438a4df7a786120)) by [@gha3mi](https://github.com/gha3mi)
+
+
+### Contributors
+- [@gha3mi](https://github.com/gha3mi)
+
+
+
+Full Changelog: [v0.10.2...v0.10.3](https://github.com/gha3mi/setup-fortran-conda/compare/v0.10.2...v0.10.3)
+
 ## [v0.10.2](https://github.com/gha3mi/setup-fortran-conda/compare/v0.10.1...v0.10.2) - 2025-09-03
 
 

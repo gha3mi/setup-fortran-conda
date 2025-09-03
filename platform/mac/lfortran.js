@@ -128,7 +128,8 @@ export async function setup(version = '') {
     CMAKE_Fortran_COMPILER: 'lfortran',
     CMAKE_C_COMPILER: 'clang',
     CMAKE_CXX_COMPILER: 'clang++',
-    DYLD_LIBRARY_PATH: dyldLibPath
+    DYLD_LIBRARY_PATH: dyldLibPath,
+    LFORTRAN_LINKER: 'clang'
   };
 
   for (const [key, value] of Object.entries(envVars)) {

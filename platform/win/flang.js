@@ -124,6 +124,7 @@ export async function setup(version = '') {
   // Define the set of Conda packages to install
   const packages = [
     version ? `flang=${version}` : 'flang',
+    version ? `flang-rt_win-64=${version}` : 'flang-rt_win-64',
     version ? `llvm=${version}` : 'llvm',
     version ? `clang-tools=${version}` : 'clang-tools',
     version ? `llvm-openmp=${version}` : 'llvm-openmp',
@@ -193,6 +194,7 @@ export async function setup(version = '') {
     CMAKE_C_COMPILER: 'clang-cl',
     CMAKE_CXX_COMPILER: 'clang-cl',
     INCLUDE: [join(prefix, 'Library', 'include'), process.env.INCLUDE || ''].filter(Boolean).join(';'),
+    AR: 'lib.exe'
   };
 
   for (const [key, value] of Object.entries(envVars)) {

@@ -1,3 +1,22 @@
+## [v0.10.4](https://github.com/gha3mi/setup-fortran-conda/compare/v0.10.3...v0.10.4) - 2025-09-03
+
+
+### Fixes
+
+* fix: install flang-rt_win-64 and set AR to lib.exe for flang on Windows (#90) ([b92dc0b](https://github.com/gha3mi/setup-fortran-conda/commit/b92dc0b279828e8175a9894d30c45ceab7320d5c)) by [@gha3mi](https://github.com/gha3mi)
+
+### Others
+
+* Update README.md status table [ci skip] (#87) ([04cb737](https://github.com/gha3mi/setup-fortran-conda/commit/04cb7375ac3d39bdae371ea61d079013a3f42af3)) by [@gha3mi](https://github.com/gha3mi)
+
+
+### Contributors
+- [@gha3mi](https://github.com/gha3mi)
+
+
+
+Full Changelog: [v0.10.3...v0.10.4](https://github.com/gha3mi/setup-fortran-conda/compare/v0.10.3...v0.10.4)
+
 ## [v0.10.3](https://github.com/gha3mi/setup-fortran-conda/compare/v0.10.2...v0.10.3) - 2025-09-03
 
 

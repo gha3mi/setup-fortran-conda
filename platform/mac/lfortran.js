@@ -129,7 +129,7 @@ export async function setup(version = '') {
     CMAKE_C_COMPILER: 'clang',
     CMAKE_CXX_COMPILER: 'clang++',
     DYLD_LIBRARY_PATH: dyldLibPath,
-    LFORTRAN_LINKER: 'clang'
+    LFORTRAN_LINKER: '/Users/runner/miniconda3/envs/fortran/bin/clang'
   };
 
   for (const [key, value] of Object.entries(envVars)) {

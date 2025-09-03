@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.15)
-project(fortran_hello LANGUAGES Fortran)
+project(fortran_hello LANGUAGES Fortran C)
 
 enable_testing()
 

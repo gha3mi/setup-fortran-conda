@@ -1,7 +1,5 @@
 var searchData=
 [
-  ['readme_20integration_0',['README Integration',['../md_README.html#autotoc_md51',1,'']]],
-  ['recommended_20workflow_1',['Recommended Workflow',['../md_README.html#autotoc_md59',1,'']]],
-  ['release_20automation_2',['🚀 Release Automation',['../md_README.html#autotoc_md55',1,'']]],
-  ['requirements_3',['Requirements',['../md_README.html#autotoc_md57',1,'']]]
+  ['others_0',['Others',['../md_CHANGELOG.html#autotoc_md5',1,'Others'],['../md_CHANGELOG.html#autotoc_md14',1,'Others'],['../md_CHANGELOG.html#autotoc_md19',1,'Others'],['../md_CHANGELOG.html#autotoc_md22',1,'Others'],['../md_CHANGELOG.html#autotoc_md30',1,'Others'],['../md_CHANGELOG.html#autotoc_md37',1,'Others'],['../md_CHANGELOG.html#autotoc_md42',1,'Others']]],
+  ['overview_1',['Overview',['../md_README.html#autotoc_md53',1,'']]]
 ];

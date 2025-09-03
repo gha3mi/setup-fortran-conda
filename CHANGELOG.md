@@ -1,3 +1,18 @@
+## [v0.10.5](https://github.com/gha3mi/setup-fortran-conda/compare/v0.10.4...v0.10.5) - 2025-09-04
+
+
+### Fixes
+
+* fix: LFortran + CMake on Win and macOS #69 (#92) ([d2203a8](https://github.com/gha3mi/setup-fortran-conda/commit/d2203a8e6db57a8bd3c2d45f0bf11beb68bb109d)) by [@gha3mi](https://github.com/gha3mi)
+
+
+### Contributors
+- [@gha3mi](https://github.com/gha3mi)
+
+
+
+Full Changelog: [v0.10.4...v0.10.5](https://github.com/gha3mi/setup-fortran-conda/compare/v0.10.4...v0.10.5)
+
 ## [v0.10.4](https://github.com/gha3mi/setup-fortran-conda/compare/v0.10.3...v0.10.4) - 2025-09-03
 
 

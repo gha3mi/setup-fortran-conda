@@ -1,3 +1,18 @@
+## [v0.10.2](https://github.com/gha3mi/setup-fortran-conda/compare/v0.10.1...v0.10.2) - 2025-09-03
+
+
+### Fixes
+
+* fix: install libflang-rt package on Linux (#88) ([a130bbd](https://github.com/gha3mi/setup-fortran-conda/commit/a130bbdc84a75284e22e24b3ca28be7c187e67d4)) by [@gha3mi](https://github.com/gha3mi)
+
+
+### Contributors
+- [@gha3mi](https://github.com/gha3mi)
+
+
+
+Full Changelog: [v0.10.1...v0.10.2](https://github.com/gha3mi/setup-fortran-conda/compare/v0.10.1...v0.10.2)
+
 ## [v0.10.1](https://github.com/gha3mi/setup-fortran-conda/compare/v0.10.0...v0.10.1) - 2025-08-17
 
 

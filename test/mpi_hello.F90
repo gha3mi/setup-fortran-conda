@@ -8,5 +8,7 @@ program mpi_hello
    call mpi_comm_size(mpi_comm_world, size, ierr)
    print *, 'hello from process', rank, 'of', size
    call mpi_finalize(ierr)
+#else
+   print *, 'MPI not enabled'
 #endif
 end program

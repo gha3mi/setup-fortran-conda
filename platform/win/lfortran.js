@@ -143,7 +143,7 @@ export async function setup(version = '') {
 
   // Define the set of Conda packages to install
   const Pkg = version ? `lfortran=${version}` : 'lfortran';
-  const packages = [Pkg, 'llvm'];
+  const packages = [Pkg, 'llvm', 'clang-tools', 'clangxx', 'llvm-openmp', 'lld', 'gcc'];
 
   // Prepare MSVC environment
   await runVcvars64();
@@ -193,24 +193,29 @@ export async function setup(version = '') {
   startGroup('Verifying compiler versions');
   await _exec('where', ['lfortran']);
   await _exec('lfortran', ['--version']);
-  await _exec('where', ['clang-cl']);
-  await _exec('clang-cl', ['--version']);
+  await _exec('where', ['clang']);
+  await _exec('clang', ['--version']);
+  await _exec('where', ['clang++']);
+  await _exec('clang++', ['--version']);
   endGroup();
 
   // Export compiler-related environment variables
   startGroup('Exporting compiler environment variables');
   const envVars = {
     FC: 'lfortran',
-    CC: 'clang-cl',
-    CXX: 'clang-cl',
+    CC: 'clang',
+    CXX: 'clang++',
     FPM_FC: 'lfortran',
-    FPM_CC: 'clang-cl',
-    FPM_CXX: 'clang-cl',
+    FPM_CC: 'clang',
+    FPM_CXX: 'clang++',
     CMAKE_Fortran_COMPILER: 'lfortran',
-    CMAKE_C_COMPILER: 'clang-cl',
-    CMAKE_CXX_COMPILER: 'clang-cl',
+    CMAKE_C_COMPILER: 'clang',
+    CMAKE_CXX_COMPILER: 'clang++',
     INCLUDE: [join(prefix, 'Library', 'include'), process.env.INCLUDE || ''].filter(Boolean).join(';'),
-    LFORTRAN_LINKER: 'link'
+    LFORTRAN_LINKER: 'gcc',
+    CMAKE_AR: 'llvm-ar',
+    CMAKE_RANLIB: 'llvm-ranlib',
+    CMAKE_LINKER: 'lld'
   };
 
   for (const [key, value] of Object.entries(envVars)) {

@@ -129,7 +129,12 @@ export async function setup(version = '') {
     CMAKE_C_COMPILER: 'clang',
     CMAKE_CXX_COMPILER: 'clang++',
     DYLD_LIBRARY_PATH: dyldLibPath,
-    LFORTRAN_LINKER: 'gcc'
+    LFORTRAN_LINKER: 'gcc',
+    CMAKE_AR: 'llvm-ar',
+    CMAKE_RANLIB: 'llvm-ranlib',
+    CMAKE_LINKER: 'lld',
+    CFLAGS: '-fuse-ld=lld',
+    CXXFLAGS: '-fuse-ld=lld',
   };
 
   for (const [key, value] of Object.entries(envVars)) {

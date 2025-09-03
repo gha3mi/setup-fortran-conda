@@ -84,7 +84,7 @@ jobs:
 | `flang-new` | - | fpm ✅  cmake ✅ | fpm ❌  cmake ✅ |
 | `gfortran` | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ |
 | `ifx` | - | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ |
-| `lfortran` | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ | fpm ✅  cmake ❌ |
+| `lfortran` | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ |
 | `mpifort` | mpi_fpm ✅ | mpi_fpm ✅ | - |
 | `nvfortran` | - | fpm ✅  cmake ✅ | - |
 <!-- STATUS:setup-fortran-conda:END -->

@@ -81,12 +81,12 @@ jobs:
 <!-- STATUS:setup-fortran-conda:START -->
 | Compiler   | macos | ubuntu | windows |
 |------------|----------------------|----------------------|----------------------|
-| `flang-new` | - | fpm ✅  cmake ✅ | fpm ❌  cmake ✅ |
-| `gfortran` | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ |
-| `ifx` | - | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ |
-| `lfortran` | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ |
+| `flang-new` | - | fpm ✅  cmake ✅  meson ✅ | fpm ❌  meson ✅ |
+| `gfortran` | fpm ✅  meson ✅ | fpm ✅  cmake ✅  meson ✅ | fpm ✅  cmake ✅  meson ✅ |
+| `ifx` | - | fpm ✅  cmake ✅  meson ✅ | fpm ✅  meson ✅ |
+| `lfortran` | fpm ✅ | fpm ✅  cmake ✅ | fpm ✅ |
 | `mpifort` | mpi_fpm ✅ | mpi_fpm ✅ | - |
-| `nvfortran` | - | fpm ✅  cmake ✅ | - |
+| `nvfortran` | - | fpm ✅  cmake ✅  meson ✅ | - |
 <!-- STATUS:setup-fortran-conda:END -->
 
 - [STATUS.md (FPM)](https://github.com/gha3mi/setup-fortran-conda/blob/status-fpm/STATUS.md)

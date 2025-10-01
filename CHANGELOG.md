@@ -1,3 +1,24 @@
+## [v0.10.6](https://github.com/gha3mi/setup-fortran-conda/compare/v0.10.5...v0.10.6) - 2025-10-01
+
+
+### Fixes
+
+* fix: remove lfortran from meson tests ([83bee89](https://github.com/gha3mi/setup-fortran-conda/commit/83bee8960ac6dae652eadcf795df8ba735e48c7d)) by [@gha3mi](https://github.com/gha3mi)
+* fix: free disk space on Linux for nvfortran install ([a236277](https://github.com/gha3mi/setup-fortran-conda/commit/a236277f4b99e1df3a2de07d44d09f948e762791)) by [@gha3mi](https://github.com/gha3mi)
+
+### Others
+
+* Update README.md status table [ci skip] (#93) ([1e40231](https://github.com/gha3mi/setup-fortran-conda/commit/1e4023197aaeda5bdb82b31910775e02c68f6f80)) by [@gha3mi](https://github.com/gha3mi)
+* chore: bump nvfortran version from 25.7 to 25.9 ([370a117](https://github.com/gha3mi/setup-fortran-conda/commit/370a1177c646564e5218d48e1dc72ba16d70880d)) by [@gha3mi](https://github.com/gha3mi)
+
+
+### Contributors
+- [@gha3mi](https://github.com/gha3mi)
+
+
+
+Full Changelog: [v0.10.5...v0.10.6](https://github.com/gha3mi/setup-fortran-conda/compare/v0.10.5...v0.10.6)
+
 ## [v0.10.5](https://github.com/gha3mi/setup-fortran-conda/compare/v0.10.4...v0.10.5) - 2025-09-04
 
 

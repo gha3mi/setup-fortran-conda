@@ -49,14 +49,14 @@ async function freeUpDiskSpace() {
 }
 
 // Main setup function
-export async function setup(version = '25.7') {
+export async function setup(version = '25.9') {
   if (platform !== 'linux') {
     throw new Error('This setup script is only supported on Linux.');
   }
 
   await freeUpDiskSpace();
 
-  version = version?.trim() || '25.7';
+  version = version?.trim() || '25.9';
 
   // Install NVIDIA HPC SDK via apt
   startGroup('Installing NVIDIA HPC SDK');

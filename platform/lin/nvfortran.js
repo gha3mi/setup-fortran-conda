@@ -41,11 +41,20 @@ function setLinuxUlimits() {
   endGroup();
 }
 
+// Free up disk space
+async function freeUpDiskSpace() {
+  startGroup('Freeing disk space');
+  await _exec('sudo', ['rm', '-rf', '/usr/local/lib/android', '/usr/local/android-sdk', '/usr/share/dotnet']);
+  endGroup();
+}
+
 // Main setup function
 export async function setup(version = '25.7') {
   if (platform !== 'linux') {
     throw new Error('This setup script is only supported on Linux.');
   }
+
+  await freeUpDiskSpace();
 
   version = version?.trim() || '25.7';
 

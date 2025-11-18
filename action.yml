@@ -174,7 +174,7 @@ runs:
 
     - name: Deploy FORD documentation
       if: ${{ inputs.generate-doc-ford == 'true' }}
-      uses: JamesIves/github-pages-deploy-action@v4.7.3
+      uses: JamesIves/github-pages-deploy-action@v4.7.4
       with:
         branch: ${{ inputs.ford-branch }}
         folder: ${{ inputs.ford-output-directory }}
@@ -197,7 +197,7 @@ runs:
 
     - name: Deploy Doxygen documentation
       if: ${{ inputs.generate-doc-doxygen == 'true' }}
-      uses: JamesIves/github-pages-deploy-action@v4.7.3
+      uses: JamesIves/github-pages-deploy-action@v4.7.4
       with:
         branch: ${{ inputs.doxygen-branch }}
         folder: ${{ inputs.doxygen-output-directory }}
@@ -260,7 +260,7 @@ runs:
 
     - name: Deploy STATUS.md (test_fpm)
       if: ${{ inputs.generate-status-fpm == 'true' }}
-      uses: JamesIves/github-pages-deploy-action@v4.7.3
+      uses: JamesIves/github-pages-deploy-action@v4.7.4
       with:
         branch: status-fpm
         folder: status-fpm
@@ -322,7 +322,7 @@ runs:
 
     - name: Deploy STATUS.md (test_cmake)
       if: ${{ inputs.generate-status-cmake == 'true' }}
-      uses: JamesIves/github-pages-deploy-action@v4.7.3
+      uses: JamesIves/github-pages-deploy-action@v4.7.4
       with:
         branch: status-cmake
         folder: status-cmake
@@ -384,7 +384,7 @@ runs:
 
     - name: Deploy STATUS.md (test_meson)
       if: ${{ inputs.generate-status-meson == 'true' }}
-      uses: JamesIves/github-pages-deploy-action@v4.7.3
+      uses: JamesIves/github-pages-deploy-action@v4.7.4
       with:
         branch: status-meson
         folder: status-meson

@@ -1,3 +1,21 @@
+## [v0.10.7](https://github.com/gha3mi/setup-fortran-conda/compare/v0.10.6...v0.10.7) - 2025-11-19
+
+
+### Others
+
+* chore(deps): bump JamesIves/github-pages-deploy-action (#97) ([c0fc2b8](https://github.com/gha3mi/setup-fortran-conda/commit/c0fc2b8ce7bf88601463766c63553a2910dcab57)) by [@dependabot[bot]](https://github.com/dependabot[bot])
+* chore(deps): bump actions/checkout from 5.0.0 to 5.0.1 (#98) ([fc62c52](https://github.com/gha3mi/setup-fortran-conda/commit/fc62c52a38ccc7ad7da67936bc7f8048a5920e89)) by [@dependabot[bot]](https://github.com/dependabot[bot])
+* chore: update FORD installation to use pip ([e4a7e7d](https://github.com/gha3mi/setup-fortran-conda/commit/e4a7e7dfe77d859beceae0b9b646534014c2b27e)) by [@gha3mi](https://github.com/gha3mi)
+
+
+### Contributors
+- [@dependabot[bot]](https://github.com/dependabot[bot])
+- [@gha3mi](https://github.com/gha3mi)
+
+
+
+Full Changelog: [v0.10.6...v0.10.7](https://github.com/gha3mi/setup-fortran-conda/compare/v0.10.6...v0.10.7)
+
 ## [v0.10.6](https://github.com/gha3mi/setup-fortran-conda/compare/v0.10.5...v0.10.6) - 2025-10-01
 
 

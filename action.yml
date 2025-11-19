@@ -166,7 +166,8 @@ runs:
         source "${CONDA}/etc/profile.d/conda.sh"
         conda activate fortran
         echo "::group:: Setting up FORD documentation"
-        conda install -y graphviz ford
+        conda install -y pip graphviz
+        pip install ford
         mkdir -p "${{ inputs.ford-output-directory }}"
         cd "${{ inputs.ford-working-directory }}"
         echo "::endgroup::"

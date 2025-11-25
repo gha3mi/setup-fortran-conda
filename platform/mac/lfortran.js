@@ -61,7 +61,7 @@ export async function setup(version = '') {
 
   // Define the set of Conda packages to install
   const Pkg = version ? `lfortran=${version}` : 'lfortran';
-  const packages = [Pkg, 'llvm', 'clangxx', 'clang-tools', 'llvm-openmp', 'lld', 'git'];
+  const packages = [Pkg, 'llvm', 'clangxx', 'clang-tools', 'llvm-openmp'];
 
   // Install required compilers and tools via Conda
   startGroup('Installing Conda packages');
@@ -129,12 +129,7 @@ export async function setup(version = '') {
     CMAKE_C_COMPILER: 'clang',
     CMAKE_CXX_COMPILER: 'clang++',
     DYLD_LIBRARY_PATH: dyldLibPath,
-    LFORTRAN_LINKER: 'gcc',
-    CMAKE_AR: 'llvm-ar',
-    CMAKE_RANLIB: 'llvm-ranlib',
-    CMAKE_LINKER: 'lld',
-    CFLAGS: '-fuse-ld=lld',
-    CXXFLAGS: '-fuse-ld=lld',
+    LFORTRAN_LINKER: 'clang'
   };
 
   for (const [key, value] of Object.entries(envVars)) {

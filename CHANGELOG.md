@@ -1,3 +1,19 @@
+## [v0.10.8](https://github.com/gha3mi/setup-fortran-conda/compare/v0.10.7...v0.10.8) - 2025-11-25
+
+
+### Others
+
+* chore(deps): bump actions/checkout from 5.0.1 to 6.0.0 (#99) ([2261f5a](https://github.com/gha3mi/setup-fortran-conda/commit/2261f5a9ae2133c7b916130ac71676412b866bc1)) by [@dependabot[bot]](https://github.com/dependabot[bot])
+* chore(deps): bump peter-evans/create-pull-request from 7.0.8 to 7.0.9 (#100) ([9b7119d](https://github.com/gha3mi/setup-fortran-conda/commit/9b7119de887a020ef96b9782b32707434aa6e492)) by [@dependabot[bot]](https://github.com/dependabot[bot])
+
+
+### Contributors
+- [@dependabot[bot]](https://github.com/dependabot[bot])
+
+
+
+Full Changelog: [v0.10.7...v0.10.8](https://github.com/gha3mi/setup-fortran-conda/compare/v0.10.7...v0.10.8)
+
 ## [v0.10.7](https://github.com/gha3mi/setup-fortran-conda/compare/v0.10.6...v0.10.7) - 2025-11-19
 
 

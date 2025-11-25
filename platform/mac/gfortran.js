@@ -63,34 +63,38 @@ export async function setup(version = '') {
     throw new Error('This setup script is only supported on macOS.');
   }
 
-  // Install Homebrew GCC
-  let gcc = '';
-  let gpp = '';
-  let major = '';
+  // // Install Homebrew GCC
+  // let gcc = '';
+  // let gpp = '';
+  // let major = '';
 
-  startGroup('Installing GCC via Homebrew');
-  try {
-    if (version) {
-      major = version.split('.')[0];
-      await _exec('brew', ['install', `gcc@${major}`]);
-      info(`Homebrew gcc@${major} installed`);
-      gcc = `gcc-${major}`;
-      gpp = `g++-${major}`;
-    } else {
-      await _exec('brew', ['install', 'gcc']);
-      info('Homebrew latest gcc installed');
-      gcc = detectHomebrewGccVersion();       // e.g., "gcc-14"
-      gpp = gcc.replace('gcc', 'g++');        // e.g., "g++-14"
-      major = gcc.split('-')[1];              // extract "14" from "gcc-14"
-    }
-  } catch (err) {
-    throw new Error(`Homebrew gcc install failed: ${err.message}`);
-  }
-  endGroup();
+  // startGroup('Installing GCC via Homebrew');
+  // try {
+  //   if (version) {
+  //     major = version.split('.')[0];
+  //     await _exec('brew', ['install', `gcc@${major}`]);
+  //     info(`Homebrew gcc@${major} installed`);
+  //     gcc = `gcc-${major}`;
+  //     gpp = `g++-${major}`;
+  //   } else {
+  //     await _exec('brew', ['install', 'gcc']);
+  //     info('Homebrew latest gcc installed');
+  //     gcc = detectHomebrewGccVersion();       // e.g., "gcc-14"
+  //     gpp = gcc.replace('gcc', 'g++');        // e.g., "g++-14"
+  //     major = gcc.split('-')[1];              // extract "14" from "gcc-14"
+  //   }
+  // } catch (err) {
+  //   throw new Error(`Homebrew gcc install failed: ${err.message}`);
+  // }
+  // endGroup();
 
-  // Install gfortran via Conda
-  const Pkg = version ? `gfortran=${version}` : 'gfortran';
-  const packages = [Pkg, 'binutils'];
+  // Define the Conda packages to install
+  const packages = [
+    version ? `gfortran=${version}` : 'gfortran',
+    version ? `gcc=${version}` : 'gcc',
+    version ? `gxx=${version}` : 'gxx',
+    'binutils'
+  ];
 
   startGroup('Installing Conda packages');
   try {
@@ -138,24 +142,24 @@ export async function setup(version = '') {
   startGroup('Verifying compiler versions');
   await _exec('which', ['gfortran']);
   await _exec('gfortran', ['--version']);
-  await _exec('which', [gcc]);
-  await _exec(gcc, ['--version']);
-  await _exec('which', [gpp]);
-  await _exec(gpp, ['--version']);
+  await _exec('which', ['gcc']);
+  await _exec('gcc', ['--version']);
+  await _exec('which', ['g++']);
+  await _exec('g++', ['--version']);
   endGroup();
 
   // Export compiler-related environment variables
   startGroup('Exporting compiler environment variables');
   const envVars = {
     FC: 'gfortran',
-    CC: gcc,
-    CXX: gpp,
+    CC: 'gcc',
+    CXX: 'g++',
     FPM_FC: 'gfortran',
-    FPM_CC: gcc,
-    FPM_CXX: gpp,
+    FPM_CC: 'gcc',
+    FPM_CXX: 'g++',
     CMAKE_Fortran_COMPILER: 'gfortran',
-    CMAKE_C_COMPILER: gcc,
-    CMAKE_CXX_COMPILER: gpp,
+    CMAKE_C_COMPILER: 'gcc',
+    CMAKE_CXX_COMPILER: 'g++',
     DYLD_LIBRARY_PATH: dyld
   };
 

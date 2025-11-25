@@ -222,7 +222,7 @@ runs:
 
         mapfile -t job_lines < <(
           curl -s -H "Authorization: token $GH_TOKEN" \
-            https://api.github.com/repos/$REPO/actions/runs/$RUN_ID/jobs \
+            https://api.github.com/repos/$REPO/actions/runs/$RUN_ID/jobs?per_page=100 \
             | jq -r '.jobs[] | select((.name | type == "string") and (.name | test(".*_fpm$"))) | [.name, .conclusion] | @tsv'
         )
 
@@ -284,7 +284,7 @@ runs:
 
         mapfile -t job_lines < <(
           curl -s -H "Authorization: token $GH_TOKEN" \
-            https://api.github.com/repos/$REPO/actions/runs/$RUN_ID/jobs \
+            https://api.github.com/repos/$REPO/actions/runs/$RUN_ID/jobs?per_page=100 \
             | jq -r '.jobs[] | select((.name | type == "string") and (.name | test(".*_cmake$"))) | [.name, .conclusion] | @tsv'
         )
 
@@ -346,7 +346,7 @@ runs:
 
         mapfile -t job_lines < <(
           curl -s -H "Authorization: token $GH_TOKEN" \
-            https://api.github.com/repos/$REPO/actions/runs/$RUN_ID/jobs \
+            https://api.github.com/repos/$REPO/actions/runs/$RUN_ID/jobs?per_page=100 \
             | jq -r '.jobs[] | select((.name | type == "string") and (.name | test(".*_meson$"))) | [.name, .conclusion] | @tsv'
         )
 

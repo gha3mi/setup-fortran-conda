@@ -1,3 +1,18 @@
+## [v0.10.9](https://github.com/gha3mi/setup-fortran-conda/compare/v0.10.8...v0.10.9) - 2025-11-25
+
+
+### Fixes
+
+* fix: complete status-table badges (#81) ([3cd802e](https://github.com/gha3mi/setup-fortran-conda/commit/3cd802e87e712b5643715e9b7e2db44951e1a7c8)) by [@gha3mi](https://github.com/gha3mi)
+
+
+### Contributors
+- [@gha3mi](https://github.com/gha3mi)
+
+
+
+Full Changelog: [v0.10.8...v0.10.9](https://github.com/gha3mi/setup-fortran-conda/compare/v0.10.8...v0.10.9)
+
 ## [v0.10.8](https://github.com/gha3mi/setup-fortran-conda/compare/v0.10.7...v0.10.8) - 2025-11-25
 
 

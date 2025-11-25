@@ -25,98 +25,102 @@
 var NAVTREE =
 [
   [ "My Project", "index.html", [
-    [ "<a href=\"https://github.com/gha3mi/setup-fortran-conda/compare/v0.10.7...v0.10.8\" >v0.10.8</a> - 2025-11-25", "md_CHANGELOG.html", [
-      [ "v0.10.7 - 2025-11-19", "md_CHANGELOG.html#autotoc_md3", [
-        [ "Others", "md_CHANGELOG.html#autotoc_md1", null ],
+    [ "<a href=\"https://github.com/gha3mi/setup-fortran-conda/compare/v0.10.8...v0.10.9\" >v0.10.9</a> - 2025-11-25", "md_CHANGELOG.html", [
+      [ "v0.10.8 - 2025-11-25", "md_CHANGELOG.html#autotoc_md3", [
+        [ "Fixes", "md_CHANGELOG.html#autotoc_md1", null ],
         [ "Contributors", "md_CHANGELOG.html#autotoc_md2", null ],
         [ "Others", "md_CHANGELOG.html#autotoc_md4", null ],
         [ "Contributors", "md_CHANGELOG.html#autotoc_md5", null ]
       ] ],
-      [ "v0.10.6 - 2025-10-01", "md_CHANGELOG.html#autotoc_md6", [
-        [ "Fixes", "md_CHANGELOG.html#autotoc_md7", null ],
-        [ "Others", "md_CHANGELOG.html#autotoc_md8", null ],
-        [ "Contributors", "md_CHANGELOG.html#autotoc_md9", null ]
+      [ "v0.10.7 - 2025-11-19", "md_CHANGELOG.html#autotoc_md6", [
+        [ "Others", "md_CHANGELOG.html#autotoc_md7", null ],
+        [ "Contributors", "md_CHANGELOG.html#autotoc_md8", null ]
       ] ],
-      [ "v0.10.5 - 2025-09-04", "md_CHANGELOG.html#autotoc_md10", [
-        [ "Fixes", "md_CHANGELOG.html#autotoc_md11", null ],
+      [ "v0.10.6 - 2025-10-01", "md_CHANGELOG.html#autotoc_md9", [
+        [ "Fixes", "md_CHANGELOG.html#autotoc_md10", null ],
+        [ "Others", "md_CHANGELOG.html#autotoc_md11", null ],
         [ "Contributors", "md_CHANGELOG.html#autotoc_md12", null ]
       ] ],
-      [ "v0.10.4 - 2025-09-03", "md_CHANGELOG.html#autotoc_md13", [
+      [ "v0.10.5 - 2025-09-04", "md_CHANGELOG.html#autotoc_md13", [
         [ "Fixes", "md_CHANGELOG.html#autotoc_md14", null ],
-        [ "Others", "md_CHANGELOG.html#autotoc_md15", null ],
-        [ "Contributors", "md_CHANGELOG.html#autotoc_md16", null ]
+        [ "Contributors", "md_CHANGELOG.html#autotoc_md15", null ]
       ] ],
-      [ "v0.10.3 - 2025-09-03", "md_CHANGELOG.html#autotoc_md17", [
-        [ "Fixes", "md_CHANGELOG.html#autotoc_md18", null ],
+      [ "v0.10.4 - 2025-09-03", "md_CHANGELOG.html#autotoc_md16", [
+        [ "Fixes", "md_CHANGELOG.html#autotoc_md17", null ],
+        [ "Others", "md_CHANGELOG.html#autotoc_md18", null ],
         [ "Contributors", "md_CHANGELOG.html#autotoc_md19", null ]
       ] ],
-      [ "v0.10.2 - 2025-09-03", "md_CHANGELOG.html#autotoc_md20", [
+      [ "v0.10.3 - 2025-09-03", "md_CHANGELOG.html#autotoc_md20", [
         [ "Fixes", "md_CHANGELOG.html#autotoc_md21", null ],
         [ "Contributors", "md_CHANGELOG.html#autotoc_md22", null ]
       ] ],
-      [ "v0.10.1 - 2025-08-17", "md_CHANGELOG.html#autotoc_md23", [
-        [ "Others", "md_CHANGELOG.html#autotoc_md24", null ],
+      [ "v0.10.2 - 2025-09-03", "md_CHANGELOG.html#autotoc_md23", [
+        [ "Fixes", "md_CHANGELOG.html#autotoc_md24", null ],
         [ "Contributors", "md_CHANGELOG.html#autotoc_md25", null ]
       ] ],
-      [ "v0.10.0 - 2025-08-13", "md_CHANGELOG.html#autotoc_md26", [
-        [ "Features", "md_CHANGELOG.html#autotoc_md27", null ],
-        [ "Fixes", "md_CHANGELOG.html#autotoc_md28", null ],
-        [ "Others", "md_CHANGELOG.html#autotoc_md29", null ],
-        [ "Contributors", "md_CHANGELOG.html#autotoc_md30", null ]
+      [ "v0.10.1 - 2025-08-17", "md_CHANGELOG.html#autotoc_md26", [
+        [ "Others", "md_CHANGELOG.html#autotoc_md27", null ],
+        [ "Contributors", "md_CHANGELOG.html#autotoc_md28", null ]
       ] ],
-      [ "v0.9.1 - 2025-08-06", "md_CHANGELOG.html#autotoc_md31", [
+      [ "v0.10.0 - 2025-08-13", "md_CHANGELOG.html#autotoc_md29", [
+        [ "Features", "md_CHANGELOG.html#autotoc_md30", null ],
+        [ "Fixes", "md_CHANGELOG.html#autotoc_md31", null ],
         [ "Others", "md_CHANGELOG.html#autotoc_md32", null ],
         [ "Contributors", "md_CHANGELOG.html#autotoc_md33", null ]
       ] ],
-      [ "v0.9.0 - 2025-08-05", "md_CHANGELOG.html#autotoc_md34", [
-        [ "Features", "md_CHANGELOG.html#autotoc_md35", null ],
-        [ "Fixes", "md_CHANGELOG.html#autotoc_md36", null ],
-        [ "Contributors", "md_CHANGELOG.html#autotoc_md37", null ]
+      [ "v0.9.1 - 2025-08-06", "md_CHANGELOG.html#autotoc_md34", [
+        [ "Others", "md_CHANGELOG.html#autotoc_md35", null ],
+        [ "Contributors", "md_CHANGELOG.html#autotoc_md36", null ]
       ] ],
-      [ "v0.8.1 - 2025-08-05", "md_CHANGELOG.html#autotoc_md38", [
+      [ "v0.9.0 - 2025-08-05", "md_CHANGELOG.html#autotoc_md37", [
+        [ "Features", "md_CHANGELOG.html#autotoc_md38", null ],
         [ "Fixes", "md_CHANGELOG.html#autotoc_md39", null ],
-        [ "Others", "md_CHANGELOG.html#autotoc_md40", null ],
-        [ "Contributors", "md_CHANGELOG.html#autotoc_md41", null ]
+        [ "Contributors", "md_CHANGELOG.html#autotoc_md40", null ]
       ] ],
-      [ "v0.8.0 - 2025-07-28", "md_CHANGELOG.html#autotoc_md42", [
-        [ "Features", "md_CHANGELOG.html#autotoc_md43", null ],
+      [ "v0.8.1 - 2025-08-05", "md_CHANGELOG.html#autotoc_md41", [
+        [ "Fixes", "md_CHANGELOG.html#autotoc_md42", null ],
+        [ "Others", "md_CHANGELOG.html#autotoc_md43", null ],
         [ "Contributors", "md_CHANGELOG.html#autotoc_md44", null ]
       ] ],
-      [ "v0.7.1 - 2025-07-18", "md_CHANGELOG.html#autotoc_md45", [
-        [ "Fixes", "md_CHANGELOG.html#autotoc_md46", null ],
-        [ "Others", "md_CHANGELOG.html#autotoc_md47", null ],
-        [ "Contributors", "md_CHANGELOG.html#autotoc_md48", null ]
+      [ "v0.8.0 - 2025-07-28", "md_CHANGELOG.html#autotoc_md45", [
+        [ "Features", "md_CHANGELOG.html#autotoc_md46", null ],
+        [ "Contributors", "md_CHANGELOG.html#autotoc_md47", null ]
       ] ],
-      [ "v0.7.0 - 2025-07-11", "md_CHANGELOG.html#autotoc_md49", [
-        [ "Features", "md_CHANGELOG.html#autotoc_md50", null ],
-        [ "Fixes", "md_CHANGELOG.html#autotoc_md51", null ],
-        [ "Others", "md_CHANGELOG.html#autotoc_md52", null ],
-        [ "Contributors", "md_CHANGELOG.html#autotoc_md53", null ]
+      [ "v0.7.1 - 2025-07-18", "md_CHANGELOG.html#autotoc_md48", [
+        [ "Fixes", "md_CHANGELOG.html#autotoc_md49", null ],
+        [ "Others", "md_CHANGELOG.html#autotoc_md50", null ],
+        [ "Contributors", "md_CHANGELOG.html#autotoc_md51", null ]
+      ] ],
+      [ "v0.7.0 - 2025-07-11", "md_CHANGELOG.html#autotoc_md52", [
+        [ "Features", "md_CHANGELOG.html#autotoc_md53", null ],
+        [ "Fixes", "md_CHANGELOG.html#autotoc_md54", null ],
+        [ "Others", "md_CHANGELOG.html#autotoc_md55", null ],
+        [ "Contributors", "md_CHANGELOG.html#autotoc_md56", null ]
       ] ]
     ] ],
     [ "Setup Fortran with Conda", "md_README.html", [
-      [ "Supported Compiler Configurations", "md_README.html#autotoc_md55", [
-        [ "Ubuntu", "md_README.html#autotoc_md56", null ],
-        [ "macOS", "md_README.html#autotoc_md57", null ],
-        [ "Windows", "md_README.html#autotoc_md58", null ]
+      [ "Supported Compiler Configurations", "md_README.html#autotoc_md58", [
+        [ "Ubuntu", "md_README.html#autotoc_md59", null ],
+        [ "macOS", "md_README.html#autotoc_md60", null ],
+        [ "Windows", "md_README.html#autotoc_md61", null ]
       ] ],
-      [ "Simple Usage", "md_README.html#autotoc_md59", null ],
-      [ "✅ CI Status", "md_README.html#autotoc_md60", null ],
-      [ "📋 Workflow Example", "md_README.html#autotoc_md61", [
-        [ "🔐 IMPORTANT NOTES", "md_README.html#autotoc_md62", null ],
-        [ "Overview", "md_README.html#autotoc_md63", null ],
-        [ "README Integration", "md_README.html#autotoc_md64", null ],
-        [ "Job Breakdown", "md_README.html#autotoc_md65", null ],
-        [ "Specifying Compiler Versions", "md_README.html#autotoc_md66", null ],
-        [ "MPI Support", "md_README.html#autotoc_md67", null ]
+      [ "Simple Usage", "md_README.html#autotoc_md62", null ],
+      [ "✅ CI Status", "md_README.html#autotoc_md63", null ],
+      [ "📋 Workflow Example", "md_README.html#autotoc_md64", [
+        [ "🔐 IMPORTANT NOTES", "md_README.html#autotoc_md65", null ],
+        [ "Overview", "md_README.html#autotoc_md66", null ],
+        [ "README Integration", "md_README.html#autotoc_md67", null ],
+        [ "Job Breakdown", "md_README.html#autotoc_md68", null ],
+        [ "Specifying Compiler Versions", "md_README.html#autotoc_md69", null ],
+        [ "MPI Support", "md_README.html#autotoc_md70", null ]
       ] ],
-      [ "🚀 Release Automation", "md_README.html#autotoc_md68", [
-        [ "Features", "md_README.html#autotoc_md69", null ],
-        [ "Requirements", "md_README.html#autotoc_md70", null ],
-        [ "Usage", "md_README.html#autotoc_md71", null ],
-        [ "Recommended Workflow", "md_README.html#autotoc_md72", null ]
+      [ "🚀 Release Automation", "md_README.html#autotoc_md71", [
+        [ "Features", "md_README.html#autotoc_md72", null ],
+        [ "Requirements", "md_README.html#autotoc_md73", null ],
+        [ "Usage", "md_README.html#autotoc_md74", null ],
+        [ "Recommended Workflow", "md_README.html#autotoc_md75", null ]
       ] ],
-      [ "🔗 See Also", "md_README.html#autotoc_md73", null ]
+      [ "🔗 See Also", "md_README.html#autotoc_md76", null ]
     ] ]
   ] ]
 ];

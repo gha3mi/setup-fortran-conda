@@ -1,1 +1,1 @@
- ![ubuntu-latest_mpifort_mpi_fpm](https://img.shields.io/badge/ubuntu--latest_mpifort_mpi_fpm-passing-brightgreen) ![macos-latest_mpifort_mpi_fpm](https://img.shields.io/badge/macos--latest_mpifort_mpi_fpm-passing-brightgreen)
+ ![macos-latest_mpifort_mpi_fpm](https://img.shields.io/badge/macos--latest_mpifort_mpi_fpm-failing-red) ![ubuntu-latest_mpifort_mpi_fpm](https://img.shields.io/badge/ubuntu--latest_mpifort_mpi_fpm-passing-brightgreen)

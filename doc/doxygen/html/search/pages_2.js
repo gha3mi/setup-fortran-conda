@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['9_20v0_2010_2010_20v0_2010_2010_20a_202025_2011_2025_0',['&lt;a href=&quot;https://github.com/gha3mi/setup-fortran-conda/compare/v0.10.9...v0.10.10&quot; &gt;v0.10.10&lt;/a&gt; - 2025-11-25',['../md_CHANGELOG.html',1,'']]]
+  ['2025_2012_2003_0',['&lt;a href=&quot;https://github.com/gha3mi/setup-fortran-conda/compare/v0.10.10...v0.10.11&quot; &gt;v0.10.11&lt;/a&gt; - 2025-12-03',['../md_CHANGELOG.html',1,'']]]
 ];

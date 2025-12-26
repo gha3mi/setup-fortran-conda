@@ -112,6 +112,12 @@ export async function setup(version = '') {
   }
   endGroup();
 
+  // Conda environment information
+  startGroup('Conda environment information');
+  await _exec('conda', ['info']);
+  await _exec('conda', ['list', '--name', 'fortran']);
+  endGroup();
+
   // Add Conda bin path to PATH
   const prefix = await getCondaPrefix('fortran');
   const binPath = join(prefix, 'bin');

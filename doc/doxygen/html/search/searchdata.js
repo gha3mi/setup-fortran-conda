@@ -1,7 +1,7 @@
 var indexSectionsWithContent =
 {
   0: "0123456789abcefghijmnorsuvw✅📋🔐🔗🚀",
-  1: "12acfghsvw"
+  1: "012acfghsvw"
 };
 
 var indexSectionNames =

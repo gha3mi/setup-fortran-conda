@@ -3,18 +3,10 @@ name: Setup Fortran Conda CI/CD
 on:
   push:
     branches: [main, master, dev]
-    paths-ignore:
-      - 'README.md'
-      - 'CHANGELOG.md'
-      - 'VERSION'
-      - 'LICENSE'
+    paths-ignore: ['README.md','CHANGELOG.md','VERSION','LICENSE']
   pull_request:
     branches: [main, master]
-    paths-ignore:
-      - 'README.md'
-      - 'CHANGELOG.md'
-      - 'VERSION'
-      - 'LICENSE'
+    paths-ignore: ['README.md','CHANGELOG.md','VERSION','LICENSE']
   workflow_dispatch:
 permissions:
   contents: write
@@ -38,14 +30,10 @@ jobs:
           - os: macos-latest
             extra-packages: ""
         exclude:
-          - os: macos-latest
-            compiler: flang-new
-          - os: macos-latest
-            compiler: ifx
-          - os: macos-latest
-            compiler: nvfortran
-          - os: windows-latest
-            compiler: nvfortran
+          - {os: macos-latest,   compiler: flang-new}
+          - {os: macos-latest,   compiler: ifx}
+          - {os: macos-latest,   compiler: nvfortran}
+          - {os: windows-latest, compiler: nvfortran}
 
     steps:
       - name: Setup Fortran
@@ -107,14 +95,10 @@ jobs:
           - os: macos-latest
             extra-packages: ""
         exclude:
-          - os: macos-latest
-            compiler: flang-new
-          - os: macos-latest
-            compiler: ifx
-          - os: macos-latest
-            compiler: nvfortran
-          - os: windows-latest
-            compiler: nvfortran
+          - {os: macos-latest,   compiler: flang-new}
+          - {os: macos-latest,   compiler: ifx}
+          - {os: macos-latest,   compiler: nvfortran}
+          - {os: windows-latest, compiler: nvfortran}
 
     steps:
       - name: Setup Fortran
@@ -153,14 +137,10 @@ jobs:
           - os: macos-latest
             extra-packages: ""
         exclude:
-          - os: macos-latest
-            compiler: flang-new
-          - os: macos-latest
-            compiler: ifx
-          - os: macos-latest
-            compiler: nvfortran
-          - os: windows-latest
-            compiler: nvfortran
+          - {os: macos-latest,   compiler: flang-new}
+          - {os: macos-latest,   compiler: ifx}
+          - {os: macos-latest,   compiler: nvfortran}
+          - {os: windows-latest, compiler: nvfortran}
 
     steps:
       - name: Setup Fortran

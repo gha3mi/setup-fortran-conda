@@ -54,14 +54,10 @@ jobs:
         os: [ubuntu-latest, macos-latest, windows-latest]
         compiler: [gfortran, ifx, lfortran, flang-new, nvfortran]
         exclude:
-          - os: macos-latest
-            compiler: flang-new
-          - os: macos-latest
-            compiler: ifx
-          - os: macos-latest
-            compiler: nvfortran
-          - os: windows-latest
-            compiler: nvfortran
+          - {os: macos-latest,   compiler: flang-new}
+          - {os: macos-latest,   compiler: ifx}
+          - {os: macos-latest,   compiler: nvfortran}
+          - {os: windows-latest, compiler: nvfortran}
     steps:
       - name: Setup Fortran
         uses: gha3mi/setup-fortran-conda@latest
@@ -91,7 +87,7 @@ jobs:
 
 - [STATUS.md (FPM)](https://github.com/gha3mi/setup-fortran-conda/blob/status-fpm/STATUS.md)
 - [STATUS.md (CMake)](https://github.com/gha3mi/setup-fortran-conda/blob/status-cmake/STATUS.md)
-<!-- - [STATUS.md (Meson)](https://github.com/gha3mi/setup-fortran-conda/blob/status-meson/STATUS.md) -->
+- [STATUS.md (Meson)](https://github.com/gha3mi/setup-fortran-conda/blob/status-meson/STATUS.md)
 
 
 ## 📋 Workflow Example
@@ -205,14 +201,10 @@ jobs:
           - os: macos-latest
             extra-packages: ""
         exclude:
-          - os: macos-latest
-            compiler: flang-new
-          - os: macos-latest
-            compiler: ifx
-          - os: macos-latest
-            compiler: nvfortran
-          - os: windows-latest
-            compiler: nvfortran
+          - {os: macos-latest,   compiler: flang-new}
+          - {os: macos-latest,   compiler: ifx}
+          - {os: macos-latest,   compiler: nvfortran}
+          - {os: windows-latest, compiler: nvfortran}
 
     steps:
       - name: Setup Fortran
@@ -245,14 +237,10 @@ jobs:
           - os: macos-latest
             extra-packages: ""
         exclude:
-          - os: macos-latest
-            compiler: flang-new
-          - os: macos-latest
-            compiler: ifx
-          - os: macos-latest
-            compiler: nvfortran
-          - os: windows-latest
-            compiler: nvfortran
+          - {os: macos-latest,   compiler: flang-new}
+          - {os: macos-latest,   compiler: ifx}
+          - {os: macos-latest,   compiler: nvfortran}
+          - {os: windows-latest, compiler: nvfortran}
 
     steps:
       - name: Setup Fortran
@@ -291,14 +279,10 @@ jobs:
           - os: macos-latest
             extra-packages: ""
         exclude:
-          - os: macos-latest
-            compiler: flang-new
-          - os: macos-latest
-            compiler: ifx
-          - os: macos-latest
-            compiler: nvfortran
-          - os: windows-latest
-            compiler: nvfortran
+          - {os: macos-latest,   compiler: flang-new}
+          - {os: macos-latest,   compiler: ifx}
+          - {os: macos-latest,   compiler: nvfortran}
+          - {os: windows-latest, compiler: nvfortran}
 
     steps:
       - name: Setup Fortran

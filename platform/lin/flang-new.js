@@ -49,7 +49,7 @@ export async function setup(version = '') {
 
   // Define the set of Conda packages to install
   const packages = [
-    version ? `flang=${version}` : 'flang',
+    version ? `flang_linux-64=${version}` : 'flang_linux-64',
     version ? `libflang-rt=${version}` : 'libflang-rt',
     version ? `llvm=${version}` : 'llvm',
     version ? `clangxx=${version}` : 'clangxx',

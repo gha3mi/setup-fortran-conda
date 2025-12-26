@@ -1,3 +1,18 @@
+## [v0.11.0](https://github.com/gha3mi/setup-fortran-conda/compare/v0.10.13...v0.11.0) - 2025-12-26
+
+
+### Fixes
+
+* fix: use flang_linux-64 on Linux (fixes #117) ([#118](https://github.com/gha3mi/setup-fortran-conda/pull/118)) by [@gha3mi](https://github.com/gha3mi)
+
+
+### Contributors
+- [@gha3mi](https://github.com/gha3mi)
+
+
+
+Full Changelog: [v0.10.13...v0.11.0](https://github.com/gha3mi/setup-fortran-conda/compare/v0.10.13...v0.11.0)
+
 ## [v0.10.13](https://github.com/gha3mi/setup-fortran-conda/compare/v0.10.12...v0.10.13) - 2025-12-12
 
 

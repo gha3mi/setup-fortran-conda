@@ -1,3 +1,22 @@
+## [v0.11.1](https://github.com/gha3mi/setup-fortran-conda/compare/v0.11.0...v0.11.1) - 2026-01-25
+
+
+### Others
+
+* chore(deps): bump actions/checkout from 6.0.1 to 6.0.2 ([#123](https://github.com/gha3mi/setup-fortran-conda/pull/123)) by [@dependabot[bot]](https://github.com/dependabot[bot])
+* chore(deps): bump peter-evans/create-pull-request from 8.0.0 to 8.1.0 ([#122](https://github.com/gha3mi/setup-fortran-conda/pull/122)) by [@dependabot[bot]](https://github.com/dependabot[bot])
+* chore(deps): bump conda-incubator/setup-miniconda from 3.2.0 to 3.3.0 ([#121](https://github.com/gha3mi/setup-fortran-conda/pull/121)) by [@dependabot[bot]](https://github.com/dependabot[bot])
+* chore(deps): bump JamesIves/github-pages-deploy-action from 4.7.6 to 4.8.0 ([#120](https://github.com/gha3mi/setup-fortran-conda/pull/120)) by [@dependabot[bot]](https://github.com/dependabot[bot])
+* chore(deps): bump @actions/core from 2.0.1 to 2.0.2 ([#119](https://github.com/gha3mi/setup-fortran-conda/pull/119)) by [@dependabot[bot]](https://github.com/dependabot[bot])
+
+
+### Contributors
+- [@dependabot[bot]](https://github.com/dependabot[bot])
+
+
+
+Full Changelog: [v0.11.0...v0.11.1](https://github.com/gha3mi/setup-fortran-conda/compare/v0.11.0...v0.11.1)
+
 ## [v0.11.0](https://github.com/gha3mi/setup-fortran-conda/compare/v0.10.13...v0.11.0) - 2025-12-26
 
 

@@ -1,3 +1,19 @@
+## [v0.11.2](https://github.com/gha3mi/setup-fortran-conda/compare/v0.11.1...v0.11.2) - 2026-01-25
+
+
+### Others
+
+* chore: update cmake configuration ([#127](https://github.com/gha3mi/setup-fortran-conda/pull/127)) by [@gha3mi](https://github.com/gha3mi)
+* chore: remove lfortran debug flags from cmake ([#126](https://github.com/gha3mi/setup-fortran-conda/pull/126)) by [@gha3mi](https://github.com/gha3mi)
+
+
+### Contributors
+- [@gha3mi](https://github.com/gha3mi)
+
+
+
+Full Changelog: [v0.11.1...v0.11.2](https://github.com/gha3mi/setup-fortran-conda/compare/v0.11.1...v0.11.2)
+
 ## [v0.11.1](https://github.com/gha3mi/setup-fortran-conda/compare/v0.11.0...v0.11.1) - 2026-01-25
 
 

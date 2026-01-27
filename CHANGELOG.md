@@ -1,3 +1,18 @@
+## [v0.11.3](https://github.com/gha3mi/setup-fortran-conda/compare/v0.11.2...v0.11.3) - 2026-01-27
+
+
+### Fixes
+
+* fix: dyld: Symbol not found: _libiconv on macOS ([#128](https://github.com/gha3mi/setup-fortran-conda/pull/128)) by [@gha3mi](https://github.com/gha3mi)
+
+
+### Contributors
+- [@gha3mi](https://github.com/gha3mi)
+
+
+
+Full Changelog: [v0.11.2...v0.11.3](https://github.com/gha3mi/setup-fortran-conda/compare/v0.11.2...v0.11.3)
+
 ## [v0.11.2](https://github.com/gha3mi/setup-fortran-conda/compare/v0.11.1...v0.11.2) - 2026-01-25
 
 

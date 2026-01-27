@@ -133,11 +133,6 @@ export async function setup(version = '') {
   }
   endGroup();
 
-  // Add DYLD_LIBRARY_PATH
-  const dyld = ['/usr/lib', libPath, env.DYLD_LIBRARY_PATH || ''].filter(Boolean).join(':');
-  exportEnv('DYLD_LIBRARY_PATH', dyld);
-  info(`Set DYLD_LIBRARY_PATH → ${dyld}`);
-
   await setMacOSSDKROOT();
 
   // Verify compiler versions
@@ -161,8 +156,7 @@ export async function setup(version = '') {
     FPM_CXX: gpp,
     CMAKE_Fortran_COMPILER: 'gfortran',
     CMAKE_C_COMPILER: gcc,
-    CMAKE_CXX_COMPILER: gpp,
-    DYLD_LIBRARY_PATH: dyld
+    CMAKE_CXX_COMPILER: gpp
   };
 
   for (const [key, value] of Object.entries(envVars)) {

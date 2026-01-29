@@ -1,3 +1,20 @@
+## [v0.11.5](https://github.com/gha3mi/setup-fortran-conda/compare/v0.11.4...v0.11.5) - 2026-01-29
+
+
+### Others
+
+* chore: set generate-status-meson to true in CI-CD.yml ([ed7d8f7](https://github.com/gha3mi/setup-fortran-conda/commit/ed7d8f777b8dc479eccdbcbeecbb9f4f6019fabf)) by [@gha3mi](https://github.com/gha3mi)
+* docs: fix typo ([ac6d1c9](https://github.com/gha3mi/setup-fortran-conda/commit/ac6d1c97681938dd6997cfb612901c30e146bd49)) by [@gha3mi](https://github.com/gha3mi)
+* chore: update default nvfortran version to 26.1 ([f63a9e9](https://github.com/gha3mi/setup-fortran-conda/commit/f63a9e92e6d309f7360f0e575b90f9b19635253e)) by [@gha3mi](https://github.com/gha3mi)
+
+
+### Contributors
+- [@gha3mi](https://github.com/gha3mi)
+
+
+
+Full Changelog: [v0.11.4...v0.11.5](https://github.com/gha3mi/setup-fortran-conda/compare/v0.11.4...v0.11.5)
+
 ## [v0.11.4](https://github.com/gha3mi/setup-fortran-conda/compare/v0.11.3...v0.11.4) - 2026-01-29
 
 

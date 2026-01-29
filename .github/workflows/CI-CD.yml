@@ -2,12 +2,15 @@ name: Setup Fortran Conda CI/CD
 
 on:
   push:
-    branches: [main, master, dev]
+    branches: [main, dev]
     paths-ignore: ['README.md','CHANGELOG.md','VERSION','LICENSE']
   pull_request:
-    branches: [main, master]
+    branches: [main]
     paths-ignore: ['README.md','CHANGELOG.md','VERSION','LICENSE']
   workflow_dispatch:
+  schedule:
+    - cron: "0 3 * * MON,WED,FRI,SUN"
+
 permissions:
   contents: write
   pull-requests: write
@@ -20,27 +23,26 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-        compiler: [gfortran, ifx, lfortran, flang-new, nvfortran]
         include:
-          - os: ubuntu-latest
-            extra-packages: ""
-          - os: windows-latest
-            extra-packages: ""
-          - os: macos-latest
-            extra-packages: ""
-        exclude:
-          - {os: macos-latest,   compiler: flang-new}
-          - {os: macos-latest,   compiler: ifx}
-          - {os: macos-latest,   compiler: nvfortran}
-          - {os: windows-latest, compiler: nvfortran}
+        - {os: ubuntu-latest,  compiler: gfortran,  compiler-version: "", extra-packages: ""}
+        - {os: ubuntu-latest,  compiler: ifx,       compiler-version: "", extra-packages: ""}
+        - {os: ubuntu-latest,  compiler: flang-new, compiler-version: "", extra-packages: ""}
+        - {os: ubuntu-latest,  compiler: nvfortran, compiler-version: "", extra-packages: ""}
+        - {os: ubuntu-latest,  compiler: lfortran,  compiler-version: "", extra-packages: ""}
+        - {os: windows-latest, compiler: gfortran,  compiler-version: "", extra-packages: ""}
+        - {os: windows-latest, compiler: ifx,       compiler-version: "", extra-packages: ""}
+        - {os: windows-latest, compiler: flang-new, compiler-version: "", extra-packages: ""}
+        - {os: windows-latest, compiler: lfortran,  compiler-version: "", extra-packages: ""}
+        - {os: macos-latest,   compiler: gfortran,  compiler-version: "", extra-packages: ""}
+        - {os: macos-latest,   compiler: lfortran,  compiler-version: "", extra-packages: ""}
 
     steps:
       - name: Setup Fortran
         uses: gha3mi/setup-fortran-conda@latest
         with:
-          compiler: ${{ matrix.compiler }}
           platform: ${{ matrix.os }}
+          compiler: ${{ matrix.compiler }}
+          compiler-version: ${{ matrix.compiler-version }}
           extra-packages: ${{ matrix.extra-packages }}
 
       - name: fpm test (debug)
@@ -56,20 +58,17 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest]
-        compiler: [mpifort]
         include:
-          - os: ubuntu-latest
-            extra-packages: ""
-          - os: macos-latest
-            extra-packages: ""
+        - {os: ubuntu-latest, compiler: mpifort, compiler-version: "", extra-packages: ""}
+        - {os: macos-latest,  compiler: mpifort, compiler-version: "", extra-packages: ""}
 
     steps:
       - name: Setup Fortran
         uses: gha3mi/setup-fortran-conda@latest
         with:
-          compiler: ${{ matrix.compiler }}
           platform: ${{ matrix.os }}
+          compiler: ${{ matrix.compiler }}
+          compiler-version: ${{ matrix.compiler-version }}
           extra-packages: ${{ matrix.extra-packages }}
 
       - name: fpm test (debug)
@@ -85,27 +84,26 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-        compiler: [gfortran, ifx, lfortran, flang-new, nvfortran]
         include:
-          - os: ubuntu-latest
-            extra-packages: ""
-          - os: windows-latest
-            extra-packages: ""
-          - os: macos-latest
-            extra-packages: ""
-        exclude:
-          - {os: macos-latest,   compiler: flang-new}
-          - {os: macos-latest,   compiler: ifx}
-          - {os: macos-latest,   compiler: nvfortran}
-          - {os: windows-latest, compiler: nvfortran}
+        - {os: ubuntu-latest,  compiler: gfortran,  compiler-version: "", extra-packages: ""}
+        - {os: ubuntu-latest,  compiler: ifx,       compiler-version: "", extra-packages: ""}
+        - {os: ubuntu-latest,  compiler: flang-new, compiler-version: "", extra-packages: ""}
+        - {os: ubuntu-latest,  compiler: nvfortran, compiler-version: "", extra-packages: ""}
+        - {os: ubuntu-latest,  compiler: lfortran,  compiler-version: "", extra-packages: ""}
+        - {os: windows-latest, compiler: gfortran,  compiler-version: "", extra-packages: ""}
+        - {os: windows-latest, compiler: ifx,       compiler-version: "", extra-packages: ""}
+        - {os: windows-latest, compiler: flang-new, compiler-version: "", extra-packages: ""}
+        - {os: windows-latest, compiler: lfortran,  compiler-version: "", extra-packages: ""}
+        - {os: macos-latest,   compiler: gfortran,  compiler-version: "", extra-packages: ""}
+        - {os: macos-latest,   compiler: lfortran,  compiler-version: "", extra-packages: ""}
 
     steps:
       - name: Setup Fortran
         uses: gha3mi/setup-fortran-conda@latest
         with:
-          compiler: ${{ matrix.compiler }}
           platform: ${{ matrix.os }}
+          compiler: ${{ matrix.compiler }}
+          compiler-version: ${{ matrix.compiler-version }}
           extra-packages: ${{ matrix.extra-packages }}
 
       - name: cmake test (debug)
@@ -127,27 +125,23 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-        compiler: [gfortran, ifx, flang-new, nvfortran] # meson doesn't support lfortran
         include:
-          - os: ubuntu-latest
-            extra-packages: ""
-          - os: windows-latest
-            extra-packages: ""
-          - os: macos-latest
-            extra-packages: ""
-        exclude:
-          - {os: macos-latest,   compiler: flang-new}
-          - {os: macos-latest,   compiler: ifx}
-          - {os: macos-latest,   compiler: nvfortran}
-          - {os: windows-latest, compiler: nvfortran}
+        - {os: ubuntu-latest,  compiler: gfortran,  compiler-version: "", extra-packages: ""}
+        - {os: ubuntu-latest,  compiler: ifx,       compiler-version: "", extra-packages: ""}
+        - {os: ubuntu-latest,  compiler: flang-new, compiler-version: "", extra-packages: ""}
+        - {os: ubuntu-latest,  compiler: nvfortran, compiler-version: "", extra-packages: ""}
+        - {os: windows-latest, compiler: gfortran,  compiler-version: "", extra-packages: ""}
+        - {os: windows-latest, compiler: ifx,       compiler-version: "", extra-packages: ""}
+        - {os: windows-latest, compiler: flang-new, compiler-version: "", extra-packages: ""}
+        - {os: macos-latest,   compiler: gfortran,  compiler-version: "", extra-packages: ""}
 
     steps:
       - name: Setup Fortran
         uses: gha3mi/setup-fortran-conda@latest
         with:
-          compiler: ${{ matrix.compiler }}
           platform: ${{ matrix.os }}
+          compiler: ${{ matrix.compiler }}
+          compiler-version: ${{ matrix.compiler-version }}
           extra-packages: ${{ matrix.extra-packages }}
 
       - name: meson test (debug)
@@ -163,7 +157,7 @@ jobs:
           meson test -C build/meson/release --verbose
 
   doc_ford:
-    if: ${{ (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && !contains(github.event.head_commit.message, '[skip ci]') }}
+    if: ${{ (github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule') && !contains(github.event.head_commit.message, '[skip ci]') }}
     name: Generate FORD Documentation
     runs-on: ubuntu-latest
     steps:
@@ -179,7 +173,7 @@ jobs:
           ford-target-folder: doc/ford
 
   doc_doxygen:
-    if: ${{ (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && !contains(github.event.head_commit.message, '[skip ci]') }}
+    if: ${{ (github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule') && !contains(github.event.head_commit.message, '[skip ci]') }}
     name: Generate Doxygen Documentation
     runs-on: ubuntu-latest
     steps:
@@ -195,7 +189,7 @@ jobs:
           doxygen-target-folder: doc/doxygen
 
   status_fpm:
-    if: ${{ always() && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && !contains(github.event.head_commit.message, '[skip ci]') }}
+    if: ${{ always() && (github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule') && !contains(github.event.head_commit.message, '[skip ci]') }}
     name: Generate STATUS.md
     needs: [test_fpm, test_mpi_fpm]
     runs-on: ubuntu-latest
@@ -206,7 +200,7 @@ jobs:
           generate-status-fpm: true
 
   status_cmake:
-    if: ${{ always() && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && !contains(github.event.head_commit.message, '[skip ci]') }}
+    if: ${{ always() && (github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule') && !contains(github.event.head_commit.message, '[skip ci]') }}
     name: Generate STATUS.md
     needs: [test_cmake]
     runs-on: ubuntu-latest
@@ -217,7 +211,7 @@ jobs:
           generate-status-cmake: true
 
   status_meson:
-    if: ${{ always() && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && !contains(github.event.head_commit.message, '[skip ci]') }}
+    if: ${{ always() && (github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule') && !contains(github.event.head_commit.message, '[skip ci]') }}
     name: Generate STATUS.md
     needs: [test_meson]
     runs-on: ubuntu-latest
@@ -228,7 +222,7 @@ jobs:
           generate-status-meson: false
 
   update_readme_table:
-    if: ${{ always() && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, '[skip ci]') }}
+    if: ${{ always() && (github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule') && github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, '[skip ci]') }}
     name: Update README.md status table
     needs: [status_fpm, status_cmake, status_meson]
     runs-on: ubuntu-latest

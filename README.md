@@ -51,19 +51,27 @@ jobs:
     name: ${{ matrix.os }}_${{ matrix.compiler }}_fpm
     runs-on: ${{ matrix.os }}
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-        compiler: [gfortran, ifx, lfortran, flang-new, nvfortran]
-        exclude:
-          - {os: macos-latest,   compiler: flang-new}
-          - {os: macos-latest,   compiler: ifx}
-          - {os: macos-latest,   compiler: nvfortran}
-          - {os: windows-latest, compiler: nvfortran}
+        include:
+        - {os: ubuntu-latest,  compiler: gfortran,  compiler-version: "", extra-packages: ""}
+        - {os: ubuntu-latest,  compiler: ifx,       compiler-version: "", extra-packages: ""}
+        - {os: ubuntu-latest,  compiler: flang-new, compiler-version: "", extra-packages: ""}
+        - {os: ubuntu-latest,  compiler: nvfortran, compiler-version: "", extra-packages: ""}
+        - {os: ubuntu-latest,  compiler: lfortran,  compiler-version: "", extra-packages: ""}
+        - {os: windows-latest, compiler: gfortran,  compiler-version: "", extra-packages: ""}
+        - {os: windows-latest, compiler: ifx,       compiler-version: "", extra-packages: ""}
+        - {os: windows-latest, compiler: flang-new, compiler-version: "", extra-packages: ""}
+        - {os: windows-latest, compiler: lfortran,  compiler-version: "", extra-packages: ""}
+        - {os: macos-latest,   compiler: gfortran,  compiler-version: "", extra-packages: ""}
+        - {os: macos-latest,   compiler: lfortran,  compiler-version: "", extra-packages: ""}
+
     steps:
       - name: Setup Fortran
         uses: gha3mi/setup-fortran-conda@latest
         with:
-          compiler: ${{ matrix.compiler }}
           platform: ${{ matrix.os }}
+          compiler: ${{ matrix.compiler }}
+          compiler-version: ${{ matrix.compiler-version }}
+          extra-packages: ${{ matrix.extra-packages }}
 
       - name: fpm test (debug)
         run: fpm test --compiler ${{ matrix.compiler }} --profile debug
@@ -88,7 +96,6 @@ jobs:
 - [STATUS.md (FPM)](https://github.com/gha3mi/setup-fortran-conda/blob/status-fpm/STATUS.md)
 - [STATUS.md (CMake)](https://github.com/gha3mi/setup-fortran-conda/blob/status-cmake/STATUS.md)
 - [STATUS.md (Meson)](https://github.com/gha3mi/setup-fortran-conda/blob/status-meson/STATUS.md)
-
 
 ## 📋 Workflow Example
 
@@ -191,27 +198,26 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-        compiler: [gfortran, ifx, lfortran, flang-new, nvfortran]
         include:
-          - os: ubuntu-latest
-            extra-packages: ""
-          - os: windows-latest
-            extra-packages: ""
-          - os: macos-latest
-            extra-packages: ""
-        exclude:
-          - {os: macos-latest,   compiler: flang-new}
-          - {os: macos-latest,   compiler: ifx}
-          - {os: macos-latest,   compiler: nvfortran}
-          - {os: windows-latest, compiler: nvfortran}
+        - {os: ubuntu-latest,  compiler: gfortran,  compiler-version: "", extra-packages: ""}
+        - {os: ubuntu-latest,  compiler: ifx,       compiler-version: "", extra-packages: ""}
+        - {os: ubuntu-latest,  compiler: flang-new, compiler-version: "", extra-packages: ""}
+        - {os: ubuntu-latest,  compiler: nvfortran, compiler-version: "", extra-packages: ""}
+        - {os: ubuntu-latest,  compiler: lfortran,  compiler-version: "", extra-packages: ""}
+        - {os: windows-latest, compiler: gfortran,  compiler-version: "", extra-packages: ""}
+        - {os: windows-latest, compiler: ifx,       compiler-version: "", extra-packages: ""}
+        - {os: windows-latest, compiler: flang-new, compiler-version: "", extra-packages: ""}
+        - {os: windows-latest, compiler: lfortran,  compiler-version: "", extra-packages: ""}
+        - {os: macos-latest,   compiler: gfortran,  compiler-version: "", extra-packages: ""}
+        - {os: macos-latest,   compiler: lfortran,  compiler-version: "", extra-packages: ""}
 
     steps:
       - name: Setup Fortran
         uses: gha3mi/setup-fortran-conda@latest
         with:
-          compiler: ${{ matrix.compiler }}
           platform: ${{ matrix.os }}
+          compiler: ${{ matrix.compiler }}
+          compiler-version: ${{ matrix.compiler-version }}
           extra-packages: ${{ matrix.extra-packages }}
 
       - name: fpm test (debug)
@@ -227,27 +233,26 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-        compiler: [gfortran, ifx, lfortran, flang-new, nvfortran]
         include:
-          - os: ubuntu-latest
-            extra-packages: ""
-          - os: windows-latest
-            extra-packages: ""
-          - os: macos-latest
-            extra-packages: ""
-        exclude:
-          - {os: macos-latest,   compiler: flang-new}
-          - {os: macos-latest,   compiler: ifx}
-          - {os: macos-latest,   compiler: nvfortran}
-          - {os: windows-latest, compiler: nvfortran}
+        - {os: ubuntu-latest,  compiler: gfortran,  compiler-version: "", extra-packages: ""}
+        - {os: ubuntu-latest,  compiler: ifx,       compiler-version: "", extra-packages: ""}
+        - {os: ubuntu-latest,  compiler: flang-new, compiler-version: "", extra-packages: ""}
+        - {os: ubuntu-latest,  compiler: nvfortran, compiler-version: "", extra-packages: ""}
+        - {os: ubuntu-latest,  compiler: lfortran,  compiler-version: "", extra-packages: ""}
+        - {os: windows-latest, compiler: gfortran,  compiler-version: "", extra-packages: ""}
+        - {os: windows-latest, compiler: ifx,       compiler-version: "", extra-packages: ""}
+        - {os: windows-latest, compiler: flang-new, compiler-version: "", extra-packages: ""}
+        - {os: windows-latest, compiler: lfortran,  compiler-version: "", extra-packages: ""}
+        - {os: macos-latest,   compiler: gfortran,  compiler-version: "", extra-packages: ""}
+        - {os: macos-latest,   compiler: lfortran,  compiler-version: "", extra-packages: ""}
 
     steps:
       - name: Setup Fortran
         uses: gha3mi/setup-fortran-conda@latest
         with:
-          compiler: ${{ matrix.compiler }}
           platform: ${{ matrix.os }}
+          compiler: ${{ matrix.compiler }}
+          compiler-version: ${{ matrix.compiler-version }}
           extra-packages: ${{ matrix.extra-packages }}
 
       - name: cmake test (debug)
@@ -269,27 +274,23 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-        compiler: [gfortran, ifx, lfortran, flang-new, nvfortran]
         include:
-          - os: ubuntu-latest
-            extra-packages: ""
-          - os: windows-latest
-            extra-packages: ""
-          - os: macos-latest
-            extra-packages: ""
-        exclude:
-          - {os: macos-latest,   compiler: flang-new}
-          - {os: macos-latest,   compiler: ifx}
-          - {os: macos-latest,   compiler: nvfortran}
-          - {os: windows-latest, compiler: nvfortran}
+        - {os: ubuntu-latest,  compiler: gfortran,  compiler-version: "", extra-packages: ""}
+        - {os: ubuntu-latest,  compiler: ifx,       compiler-version: "", extra-packages: ""}
+        - {os: ubuntu-latest,  compiler: flang-new, compiler-version: "", extra-packages: ""}
+        - {os: ubuntu-latest,  compiler: nvfortran, compiler-version: "", extra-packages: ""}
+        - {os: windows-latest, compiler: gfortran,  compiler-version: "", extra-packages: ""}
+        - {os: windows-latest, compiler: ifx,       compiler-version: "", extra-packages: ""}
+        - {os: windows-latest, compiler: flang-new, compiler-version: "", extra-packages: ""}
+        - {os: macos-latest,   compiler: gfortran,  compiler-version: "", extra-packages: ""}
 
     steps:
       - name: Setup Fortran
         uses: gha3mi/setup-fortran-conda@latest
         with:
-          compiler: ${{ matrix.compiler }}
           platform: ${{ matrix.os }}
+          compiler: ${{ matrix.compiler }}
+          compiler-version: ${{ matrix.compiler-version }}
           extra-packages: ${{ matrix.extra-packages }}
 
       - name: meson test (debug)
@@ -378,7 +379,7 @@ jobs:
     if: |
       always() &&
       github.ref != 'refs/heads/update-readme-table'
-    needs: [status_fpm, status_cmake]
+    needs: [status_fpm, status_cmake, status_meson]
     runs-on: ubuntu-latest
     steps:
       - name: Update README status
@@ -401,42 +402,6 @@ jobs:
           fortitude-settings: "--output-format github"
 ```
 
-### Specifying Compiler Versions
-
-By default, the above example installs the latest available versions of each compiler.
-To use a specific version, add a `compiler-version` entry in your matrix:
-
-```yml
-matrix:
-  # os: [ubuntu-latest, macos-latest, windows-latest]
-  # compiler: [gfortran, ifx, lfortran, flang-new, nvfortran]
-  include:
-    # gfortran
-    - os: ubuntu-latest
-      compiler: gfortran
-      compiler-version: 15.1.0
-      extra-packages: ""
-    - os: macos-latest
-      compiler: gfortran
-      compiler-version: 15.1.0
-      extra-packages: ""
-    - os: windows-latest
-      compiler: gfortran
-      compiler-version: 15.1.0
-      extra-packages: ""
-```
-
-Then, reference `compiler-version` in the setup step:
-
-```yaml
-- name: Setup Fortran
-  uses: gha3mi/setup-fortran-conda@latest
-  with:
-    compiler: ${{ matrix.compiler }}
-    compiler-version: ${{ matrix.compiler-version }} # must be specified
-    platform: ${{ matrix.os }}
-    extra-packages: ${{ matrix.extra-packages }}
-```
 If `compiler-version` is set to an empty string `""`, the latest version will be installed.
 
 ### MPI Support
@@ -450,20 +415,17 @@ test_mpi_fpm:
   strategy:
     fail-fast: false
     matrix:
-      os: [ubuntu-latest, macos-latest]
-      compiler: [mpifort]
       include:
-        - os: ubuntu-latest
-          extra-packages: ""
-        - os: macos-latest
-          extra-packages: ""
+      - {os: ubuntu-latest, compiler: mpifort, compiler-version: "", extra-packages: ""}
+      - {os: macos-latest,  compiler: mpifort, compiler-version: "", extra-packages: ""}
 
   steps:
     - name: Setup Fortran
       uses: gha3mi/setup-fortran-conda@latest
       with:
-        compiler: ${{ matrix.compiler }}
         platform: ${{ matrix.os }}
+        compiler: ${{ matrix.compiler }}
+        compiler-version: ${{ matrix.compiler-version }}
         extra-packages: ${{ matrix.extra-packages }}
 
     - name: fpm test (debug)

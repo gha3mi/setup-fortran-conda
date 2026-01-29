@@ -219,7 +219,7 @@ jobs:
       - name: Generate summary
         uses: gha3mi/setup-fortran-conda@latest
         with:
-          generate-status-meson: false
+          generate-status-meson: true
 
   update_readme_table:
     if: ${{ always() && (github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule') && github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, '[skip ci]') }}

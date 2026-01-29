@@ -1,3 +1,21 @@
+## [v0.11.4](https://github.com/gha3mi/setup-fortran-conda/compare/v0.11.3...v0.11.4) - 2026-01-29
+
+
+### Others
+
+* chore: update CI-CD.yml ([#133](https://github.com/gha3mi/setup-fortran-conda/pull/133)) by [@gha3mi](https://github.com/gha3mi)
+* chore(deps): bump @actions/core from 2.0.2 to 3.0.0 ([#132](https://github.com/gha3mi/setup-fortran-conda/pull/132)) by [@dependabot[bot]](https://github.com/dependabot[bot])
+* chore(deps): bump @actions/exec from 2.0.0 to 3.0.0 ([#131](https://github.com/gha3mi/setup-fortran-conda/pull/131)) by [@dependabot[bot]](https://github.com/dependabot[bot])
+
+
+### Contributors
+- [@dependabot[bot]](https://github.com/dependabot[bot])
+- [@gha3mi](https://github.com/gha3mi)
+
+
+
+Full Changelog: [v0.11.3...v0.11.4](https://github.com/gha3mi/setup-fortran-conda/compare/v0.11.3...v0.11.4)
+
 ## [v0.11.3](https://github.com/gha3mi/setup-fortran-conda/compare/v0.11.2...v0.11.3) - 2026-01-27
 
 

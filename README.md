@@ -83,14 +83,15 @@ jobs:
 ## ✅ CI Status
 
 <!-- STATUS:setup-fortran-conda:START -->
-| Compiler   | macos | ubuntu | windows |
-|------------|----------------------|----------------------|----------------------|
-| `flang-new` | - | fpm ✅  cmake ✅  meson ✅ | fpm ❌  cmake ✅  meson ✅ |
-| `gfortran` | fpm ✅  cmake ✅  meson ✅ | fpm ✅  cmake ✅  meson ✅ | fpm ✅  cmake ✅  meson ✅ |
-| `ifx` | - | fpm ✅  cmake ✅  meson ✅ | fpm ✅  cmake ✅  meson ✅ |
-| `lfortran` | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ |
-| `mpifort` | mpi_fpm ✅ | mpi_fpm ✅ | - |
-| `nvfortran` | - | fpm ✅  cmake ✅  meson ✅ | - |
+| Compiler   | version | macos | ubuntu | windows |
+|------------|---------|----------------------|----------------------|----------------------|
+| `flang-new` | unknown | - | vunknown ✅  vunknown ✅  vunknown ✅ | vunknown ❌  vunknown ✅  vunknown ✅ |
+| `gfortran` | unknown | vunknown ✅  vunknown ✅  vunknown ✅ | vunknown ✅  vunknown ✅  vunknown ✅ | vunknown ✅  vunknown ✅  vunknown ✅ |
+| `ifx` | unknown | - | vunknown ✅  vunknown ✅  vunknown ✅ | vunknown ✅  vunknown ✅  vunknown ✅ |
+| `lfortran` | unknown | vunknown ✅  vunknown ✅ | vunknown ✅  vunknown ✅ | vunknown ✅  vunknown ✅ |
+| `mpifort` | unknown | vunknown ✅ | vunknown ✅ | - |
+| `nvfortran` | unknown | - | vunknown ✅  vunknown ✅  vunknown ✅ | - |
+Last updated: 2026-01-30
 <!-- STATUS:setup-fortran-conda:END -->
 
 - [STATUS.md (FPM)](https://github.com/gha3mi/setup-fortran-conda/blob/status-fpm/STATUS.md)

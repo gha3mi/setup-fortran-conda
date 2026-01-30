@@ -7,7 +7,7 @@ branding:
 
 inputs:
   compiler:
-    description: "Fortran compiler to install (gfortran, ifx, lfortran, flang)"
+    description: "Fortran compiler to install (gfortran, ifx, lfortran, flang, flang-new, nvfortran, mpifort)"
     required: false
     default: ""
   compiler-version:
@@ -145,6 +145,34 @@ runs:
         INPUT_PLATFORM: ${{ inputs.platform }}
         INPUT_EXTRA_PACKAGES: ${{ inputs.extra-packages }}
 
+    - name: Emit compiler version marker
+      if: ${{ inputs.compiler != '' && inputs.platform != '' }}
+      shell: bash
+      run: |
+        compiler="${{ inputs.compiler }}"
+        case "$compiler" in
+          flang-new|flang) compiler_bin="flang" ;;
+          mpifort) compiler_bin="mpifort" ;;
+          *) compiler_bin="$compiler" ;;
+        esac
+
+        version="$($compiler_bin --version 2>&1 | head -n 1 | tr -d '\r')"
+
+        # Fallbacks for mpifort wrappers (Linux/macOS)
+        if [[ -z "$version" && "$compiler" == "mpifort" ]]; then
+          compiler_bin="$(mpifort -show 2>/dev/null | awk '{print $1}')"
+          if [[ -n "$compiler_bin" ]]; then
+            version="$($compiler_bin --version 2>&1 | head -n 1 | tr -d '\r')"
+          else
+            compiler_bin="$(mpifort --showme 2>/dev/null | awk '{print $1}')"
+            if [[ -n "$compiler_bin" ]]; then
+              version="$($compiler_bin --version 2>&1 | head -n 1 | tr -d '\r')"
+            fi
+          fi
+        fi
+
+        echo "COMPILER_VERSION=${compiler}|${version:-Unknown}"
+
     - name: Install and Run Fortitude Linter
       if: ${{ inputs.fortitude-check == 'true' }}
       shell: bash
@@ -220,21 +248,42 @@ runs:
         echo "Generating STATUS.md for test_fpm..."
         badge_line=""
 
+        short_version() {
+          local v="$1"
+          local sv
+          sv="$(printf "%s" "$v" | grep -Eo '[0-9]+(\.[0-9]+){1,3}' | head -n 1)"
+          [[ -z "$sv" ]] && sv="$(printf "%s" "$v" | awk '{print $1}')"
+          echo "${sv:-unknown}"
+        }
+
+        get_version_for_job() {
+          local job_id="$1"
+          local zipfile line payload version
+          zipfile="$(mktemp)"
+          curl -sSL -H "Authorization: token $GH_TOKEN" \
+            "https://api.github.com/repos/${REPO}/actions/jobs/${job_id}/logs" \
+            -o "$zipfile"
+          line="$(unzip -p "$zipfile" 2>/dev/null | grep -m1 'COMPILER_VERSION=')"
+          rm -f "$zipfile"
+          payload="${line#*COMPILER_VERSION=}"
+          version="${payload#*|}"
+          short_version "$version"
+        }
+
         mapfile -t job_lines < <(
           curl -s -H "Authorization: token $GH_TOKEN" \
-            https://api.github.com/repos/$REPO/actions/runs/$RUN_ID/jobs?per_page=100 \
-            | jq -r '.jobs[] | select((.name | type == "string") and (.name | test(".*_fpm$"))) | [.name, .conclusion] | @tsv'
+            "https://api.github.com/repos/$REPO/actions/runs/$RUN_ID/jobs?per_page=100" \
+            | jq -r '.jobs[] | select((.name | type == "string") and (.name | test(".*_fpm$"))) | [.id, .name, .conclusion] | @tsv'
         )
 
         for line in "${job_lines[@]}"; do
-          name="${line%%$'\t'*}"
-          conclusion="${line#*$'\t'}"
+          IFS=$'\t' read -r job_id name conclusion <<< "$line"
+          IFS='_' read -r os compiler jobtype <<< "$name"
 
-          os="${name%%_*}"
-          compiler="${name#*_}"
           key="${os}_${compiler}"
-
-          safe_key="${key//-/'--'}"
+          ver="$(get_version_for_job "$job_id")"
+          key_with_ver="${key}_v${ver}"
+          safe_key="${key_with_ver//-/'--'}"
 
           if [[ "$conclusion" == "success" ]]; then
             color="brightgreen"
@@ -250,7 +299,7 @@ runs:
             label="pending"
           fi
 
-          badge="![${key}](https://img.shields.io/badge/${safe_key}-${label}-${color})"
+          badge="![${key_with_ver}](https://img.shields.io/badge/${safe_key}-${label}-${color})"
           badge_line="$badge_line $badge"
         done
 
@@ -282,21 +331,42 @@ runs:
         echo "Generating STATUS.md for test_cmake..."
         badge_line=""
 
+        short_version() {
+          local v="$1"
+          local sv
+          sv="$(printf "%s" "$v" | grep -Eo '[0-9]+(\.[0-9]+){1,3}' | head -n 1)"
+          [[ -z "$sv" ]] && sv="$(printf "%s" "$v" | awk '{print $1}')"
+          echo "${sv:-unknown}"
+        }
+
+        get_version_for_job() {
+          local job_id="$1"
+          local zipfile line payload version
+          zipfile="$(mktemp)"
+          curl -sSL -H "Authorization: token $GH_TOKEN" \
+            "https://api.github.com/repos/${REPO}/actions/jobs/${job_id}/logs" \
+            -o "$zipfile"
+          line="$(unzip -p "$zipfile" 2>/dev/null | grep -m1 'COMPILER_VERSION=')"
+          rm -f "$zipfile"
+          payload="${line#*COMPILER_VERSION=}"
+          version="${payload#*|}"
+          short_version "$version"
+        }
+
         mapfile -t job_lines < <(
           curl -s -H "Authorization: token $GH_TOKEN" \
-            https://api.github.com/repos/$REPO/actions/runs/$RUN_ID/jobs?per_page=100 \
-            | jq -r '.jobs[] | select((.name | type == "string") and (.name | test(".*_cmake$"))) | [.name, .conclusion] | @tsv'
+            "https://api.github.com/repos/$REPO/actions/runs/$RUN_ID/jobs?per_page=100" \
+            | jq -r '.jobs[] | select((.name | type == "string") and (.name | test(".*_cmake$"))) | [.id, .name, .conclusion] | @tsv'
         )
 
         for line in "${job_lines[@]}"; do
-          name="${line%%$'\t'*}"
-          conclusion="${line#*$'\t'}"
+          IFS=$'\t' read -r job_id name conclusion <<< "$line"
+          IFS='_' read -r os compiler jobtype <<< "$name"
 
-          os="${name%%_*}"
-          compiler="${name#*_}"
           key="${os}_${compiler}"
-
-          safe_key="${key//-/'--'}"
+          ver="$(get_version_for_job "$job_id")"
+          key_with_ver="${key}_v${ver}"
+          safe_key="${key_with_ver//-/'--'}"
 
           if [[ "$conclusion" == "success" ]]; then
             color="brightgreen"
@@ -312,7 +382,7 @@ runs:
             label="pending"
           fi
 
-          badge="![${key}](https://img.shields.io/badge/${safe_key}-${label}-${color})"
+          badge="![${key_with_ver}](https://img.shields.io/badge/${safe_key}-${label}-${color})"
           badge_line="$badge_line $badge"
         done
 
@@ -344,21 +414,42 @@ runs:
         echo "Generating STATUS.md for test_meson..."
         badge_line=""
 
+        short_version() {
+          local v="$1"
+          local sv
+          sv="$(printf "%s" "$v" | grep -Eo '[0-9]+(\.[0-9]+){1,3}' | head -n 1)"
+          [[ -z "$sv" ]] && sv="$(printf "%s" "$v" | awk '{print $1}')"
+          echo "${sv:-unknown}"
+        }
+
+        get_version_for_job() {
+          local job_id="$1"
+          local zipfile line payload version
+          zipfile="$(mktemp)"
+          curl -sSL -H "Authorization: token $GH_TOKEN" \
+            "https://api.github.com/repos/${REPO}/actions/jobs/${job_id}/logs" \
+            -o "$zipfile"
+          line="$(unzip -p "$zipfile" 2>/dev/null | grep -m1 'COMPILER_VERSION=')"
+          rm -f "$zipfile"
+          payload="${line#*COMPILER_VERSION=}"
+          version="${payload#*|}"
+          short_version "$version"
+        }
+
         mapfile -t job_lines < <(
           curl -s -H "Authorization: token $GH_TOKEN" \
-            https://api.github.com/repos/$REPO/actions/runs/$RUN_ID/jobs?per_page=100 \
-            | jq -r '.jobs[] | select((.name | type == "string") and (.name | test(".*_meson$"))) | [.name, .conclusion] | @tsv'
+            "https://api.github.com/repos/$REPO/actions/runs/$RUN_ID/jobs?per_page=100" \
+            | jq -r '.jobs[] | select((.name | type == "string") and (.name | test(".*_meson$"))) | [.id, .name, .conclusion] | @tsv'
         )
 
         for line in "${job_lines[@]}"; do
-          name="${line%%$'\t'*}"
-          conclusion="${line#*$'\t'}"
+          IFS=$'\t' read -r job_id name conclusion <<< "$line"
+          IFS='_' read -r os compiler jobtype <<< "$name"
 
-          os="${name%%_*}"
-          compiler="${name#*_}"
           key="${os}_${compiler}"
-
-          safe_key="${key//-/'--'}"
+          ver="$(get_version_for_job "$job_id")"
+          key_with_ver="${key}_v${ver}"
+          safe_key="${key_with_ver//-/'--'}"
 
           if [[ "$conclusion" == "success" ]]; then
             color="brightgreen"
@@ -374,7 +465,7 @@ runs:
             label="pending"
           fi
 
-          badge="![${key}](https://img.shields.io/badge/${safe_key}-${label}-${color})"
+          badge="![${key_with_ver}](https://img.shields.io/badge/${safe_key}-${label}-${color})"
           badge_line="$badge_line $badge"
         done
 
@@ -395,6 +486,10 @@ runs:
     - name: Generate and Inject CI Matrix into README
       if: ${{ inputs.generate-status-table == 'true' }}
       shell: bash
+      env:
+        GH_TOKEN: ${{ github.token }}
+        REPO: ${{ github.repository }}
+        RUN_ID: ${{ github.run_id }}
       run: |
         bash "${{ github.action_path }}/scripts/update-readme-status.sh"
 
@@ -407,6 +502,10 @@ runs:
     - name: Generate status table in README
       if: ${{ inputs.update-readme-table == 'true' }}
       shell: bash
+      env:
+        GH_TOKEN: ${{ github.token }}
+        REPO: ${{ github.repository }}
+        RUN_ID: ${{ github.run_id }}
       run: |
         bash "${{ github.action_path }}/scripts/update-readme-status.sh"
 

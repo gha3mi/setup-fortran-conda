@@ -1,0 +1,785 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta name="description" content="Documentation for test">
+    <meta name="author" content="Seyed Ali Ghasemi" >
+    <link rel="icon" href="./favicon.png">
+
+    <title> test </title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <!-- Font Awesome -->
+    <link href="./css/fontawesome.min.css" rel="stylesheet">
+    <link href="./css/brands.min.css" rel="stylesheet">
+    <link href="./css/regular.min.css" rel="stylesheet">
+    <link href="./css/solid.min.css" rel="stylesheet">
+    <link href="./css/v4-font-face.min.css" rel="stylesheet">
+    <link href="./css/v4-shims.min.css" rel="stylesheet">
+    <!-- MathJax -->
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        TeX: { equationNumbers: { autoNumber: "AMS" } }
+      });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async
+            integrity="sha256-DViIOMYdwlM/axqoGDPeUyf0urLoHMN4QACBKyB58Uw=" crossorigin="anonymous"></script>
+    <!-- Other scripts and stylesheets -->
+    <link href="./css/local.css" rel="stylesheet">
+    <link href="./css/pygments.css" rel="stylesheet">
+    <script src="./js/svg-pan-zoom.min.js"></script>
+  </head>
+
+  <body>
+
+    <!-- Fixed navbar -->
+    <div class="container-fluid mb-sm-4 mb-xl-2">
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+          <a class="navbar-brand" href="./index.html">test </a>
+          <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar"
+                  aria-expanded="false" aria-controls="navbar" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon">
+          </button>
+
+          <div id="navbar" class="navbar-collapse collapse">
+            <ul class="navbar-nav">
+                  <li class="nav-item">
+                    <a class="nav-link" href="./lists/files.html">Source Files</a>
+                  </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="./lists/modules.html">Modules</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="./lists/procedures.html">Procedures</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="./lists/programs.html">Programs</a>
+                </li>
+            </ul>
+              <div class="d-flex align-items-end flex-grow-1">
+                <form action="./search.html" role="search" class="ms-auto">
+                  <input type="text" class="form-control" aria-label="Search" placeholder="Search" name="q" id="tipue_search_input" autocomplete="off" required>
+                </form>
+              </div>
+          </div><!--/.nav-collapse -->
+        </div>
+      </nav>
+    </div>
+
+    <div class="container">
+  <!-- Main component for a primary marketing message or call to action -->
+    <div class="p-5 mb-4 bg-light border rounded-3" id="jumbotron">
+      
+        <p> Find us on&hellip;</p>
+      <p>
+        <a class="btn btn-lg btn-primary" href="https://github.com/gha3mi/setup-fortran-conda" role="button">GitHub</a>
+        
+        
+        
+        
+      </p>
+    </div>
+
+      <div class="row" id='text'>
+        <div class=col-md-8>
+          <h1>test</h1>
+          <h1>Setup Fortran with Conda</h1>
+<p>A GitHub Action that sets up a Fortran development environment using Conda. Inspired by <a href="https://degenerateconic.com/conda-plus-fortran.html">Conda + Fortran</a>.</p>
+<h2>Supported Compiler Configurations</h2>
+<p>The selected Fortran compiler is installed along with the corresponding C and C++ compilers, as well as <code>fpm</code>, <code>cmake</code>, <code>ninja</code> and <code>meson</code>. Additional packages can be installed using the <code>extra-packages</code> input.</p>
+<h3>Ubuntu</h3>
+<table>
+<thead>
+<tr>
+<th>Fortran Compiler</th>
+<th>C Compiler</th>
+<th>C++ Compiler</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>gfortran</td>
+<td>gcc</td>
+<td>g++</td>
+</tr>
+<tr>
+<td>ifx</td>
+<td>icx</td>
+<td>icx</td>
+</tr>
+<tr>
+<td>lfortran</td>
+<td>clang</td>
+<td>clang++</td>
+</tr>
+<tr>
+<td>flang, flang-new</td>
+<td>clang</td>
+<td>clang++</td>
+</tr>
+<tr>
+<td>nvfortran</td>
+<td>nvc</td>
+<td>nvc++</td>
+</tr>
+</tbody>
+</table>
+<h3>macOS</h3>
+<table>
+<thead>
+<tr>
+<th>Fortran Compiler</th>
+<th>C Compiler</th>
+<th>C++ Compiler</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>gfortran</td>
+<td>gcc</td>
+<td>g++</td>
+</tr>
+<tr>
+<td>lfortran</td>
+<td>clang</td>
+<td>clang++</td>
+</tr>
+</tbody>
+</table>
+<h3>Windows</h3>
+<table>
+<thead>
+<tr>
+<th>Fortran Compiler</th>
+<th>C Compiler</th>
+<th>C++ Compiler</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>gfortran</td>
+<td>gcc</td>
+<td>g++</td>
+</tr>
+<tr>
+<td>ifx</td>
+<td>icx</td>
+<td>icx</td>
+</tr>
+<tr>
+<td>lfortran</td>
+<td>clang</td>
+<td>clang++</td>
+</tr>
+<tr>
+<td>flang, flang-new</td>
+<td>clang-cl</td>
+<td>clang-cl</td>
+</tr>
+</tbody>
+</table>
+<p><strong>The following environment variables are automatically set:</strong></p>
+<ul>
+<li><code>FC</code>, <code>CC</code>, <code>CXX</code></li>
+<li><code>FPM_FC</code>, <code>FPM_CC</code>, <code>FPM_CXX</code></li>
+<li><code>CMAKE_Fortran_COMPILER</code>, <code>CMAKE_C_COMPILER</code>, <code>CMAKE_CXX_COMPILER</code></li>
+</ul>
+<h2>Simple Usage</h2>
+<div class="codehilite"><pre><span></span><code><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Setup Fortran Conda CI/CD</span>
+
+<span class="nt">on</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">push</span><span class="p p-Indicator">]</span>
+<span class="nt">permissions</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">contents</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span>
+<span class="nt">jobs</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">test_fpm</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ matrix.os }}_${{ matrix.compiler }}_fpm</span>
+<span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ matrix.os }}</span>
+<span class="w">      </span><span class="l l-Scalar l-Scalar-Plain">matrix</span><span class="p p-Indicator">:</span>
+<span class="w">        </span><span class="nt">include</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">ubuntu-latest</span><span class="p p-Indicator">,</span><span class="nt">  compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">gfortran</span><span class="p p-Indicator">,</span><span class="nt">  compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">}</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">ubuntu-latest</span><span class="p p-Indicator">,</span><span class="nt">  compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">ifx</span><span class="p p-Indicator">,</span><span class="nt">       compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">}</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">ubuntu-latest</span><span class="p p-Indicator">,</span><span class="nt">  compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">flang-new</span><span class="p p-Indicator">,</span><span class="nt"> compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">}</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">ubuntu-latest</span><span class="p p-Indicator">,</span><span class="nt">  compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">nvfortran</span><span class="p p-Indicator">,</span><span class="nt"> compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">}</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">ubuntu-latest</span><span class="p p-Indicator">,</span><span class="nt">  compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">lfortran</span><span class="p p-Indicator">,</span><span class="nt">  compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">}</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">windows-latest</span><span class="p p-Indicator">,</span><span class="nt"> compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">gfortran</span><span class="p p-Indicator">,</span><span class="nt">  compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">}</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">windows-latest</span><span class="p p-Indicator">,</span><span class="nt"> compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">ifx</span><span class="p p-Indicator">,</span><span class="nt">       compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">}</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">windows-latest</span><span class="p p-Indicator">,</span><span class="nt"> compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">flang-new</span><span class="p p-Indicator">,</span><span class="nt"> compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">}</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">windows-latest</span><span class="p p-Indicator">,</span><span class="nt"> compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">lfortran</span><span class="p p-Indicator">,</span><span class="nt">  compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">}</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">macos-latest</span><span class="p p-Indicator">,</span><span class="nt">   compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">gfortran</span><span class="p p-Indicator">,</span><span class="nt">  compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">}</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">macos-latest</span><span class="p p-Indicator">,</span><span class="nt">   compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">lfortran</span><span class="p p-Indicator">,</span><span class="nt">  compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">}</span>
+
+<span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Setup Fortran</span>
+<span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gha3mi/setup-fortran-conda@latest</span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">platform</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ matrix.os }}</span>
+<span class="w">          </span><span class="nt">compiler</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ matrix.compiler }}</span>
+<span class="w">          </span><span class="nt">compiler-version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ matrix.compiler-version }}</span>
+<span class="w">          </span><span class="nt">extra-packages</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ matrix.extra-packages }}</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fpm test (debug)</span>
+<span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fpm test --compiler ${{ matrix.compiler }} --profile debug</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fpm test (release)</span>
+<span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fpm test --compiler ${{ matrix.compiler }} --profile release</span>
+</code></pre></div>
+
+<h2>✅ CI Status</h2>
+<!-- STATUS:setup-fortran-conda:START -->
+<table>
+<thead>
+<tr>
+<th>Compiler</th>
+<th>macos</th>
+<th>ubuntu</th>
+<th>windows</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>flang-new</code></td>
+<td>-</td>
+<td>fpm ✅  cmake ✅  meson ✅</td>
+<td>fpm ❌  cmake ✅  meson ✅</td>
+</tr>
+<tr>
+<td><code>gfortran</code></td>
+<td>fpm ✅  cmake ✅  meson ✅</td>
+<td>fpm ✅  cmake ✅  meson ✅</td>
+<td>fpm ✅  cmake ✅  meson ✅</td>
+</tr>
+<tr>
+<td><code>ifx</code></td>
+<td>-</td>
+<td>fpm ✅  cmake ✅  meson ✅</td>
+<td>fpm ✅  cmake ✅  meson ✅</td>
+</tr>
+<tr>
+<td><code>lfortran</code></td>
+<td>fpm ✅  cmake ✅</td>
+<td>fpm ✅  cmake ✅</td>
+<td>fpm ✅  cmake ✅</td>
+</tr>
+<tr>
+<td><code>mpifort</code></td>
+<td>mpi_fpm ✅</td>
+<td>mpi_fpm ✅</td>
+<td>-</td>
+</tr>
+<tr>
+<td><code>nvfortran</code></td>
+<td>-</td>
+<td>fpm ✅  cmake ✅  meson ✅</td>
+<td>-</td>
+</tr>
+</tbody>
+</table>
+<!-- STATUS:setup-fortran-conda:END -->
+
+<ul>
+<li><a href="https://github.com/gha3mi/setup-fortran-conda/blob/status-fpm/STATUS.md">STATUS.md (FPM)</a></li>
+<li><a href="https://github.com/gha3mi/setup-fortran-conda/blob/status-cmake/STATUS.md">STATUS.md (CMake)</a></li>
+<li><a href="https://github.com/gha3mi/setup-fortran-conda/blob/status-meson/STATUS.md">STATUS.md (Meson)</a></li>
+</ul>
+<h2>📋 Workflow Example</h2>
+<h3>🔐 IMPORTANT NOTES</h3>
+<blockquote>
+<p>⚠️ <strong>Use your own name and email!</strong> Don’t copy the example values.</p>
+</blockquote>
+<p>To enable automatic updates to the CI status table in <code>README.md</code> via the <code>update_readme_table</code> job:</p>
+<ol>
+<li>Create a GitHub <strong>Personal Access Token (PAT)</strong> with <code>repo</code> scope.</li>
+<li>Add it to your repo secrets, e.g. <code>GH_PAT</code>.</li>
+<li>Configure these inputs:</li>
+</ol>
+<div class="codehilite"><pre><span></span><code><span class="nt">update-readme-token</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.GH_PAT }}</span>
+<span class="nt">update-readme-user-name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Your</span><span class="nv"> </span><span class="s">Name&quot;</span>
+<span class="nt">update-readme-user-email</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;you@example.com&quot;</span>
+</code></pre></div>
+
+<p>💡 Tip: When integrating CI/CD, testing often requires multiple commits and iterations.
+To keep your <code>main</code> branch clean, consider using a separate branch (e.g., <code>dev</code>) for development and testing. Once everything is working, you can merge it into main.</p>
+<p>You can include only the jobs you need in your workflow. This example includes all available jobs to demonstrate a comprehensive CI/CD setup.</p>
+<h3>Overview</h3>
+<p>This example automates Fortran CI/CD:</p>
+<ul>
+<li>
+<p>📦 <strong>Fortran compiler setup</strong>:</p>
+</li>
+<li>
+<p>Supports: <code>gfortran</code>, <code>ifx</code>, <code>lfortran</code>, <code>flang-new</code>, <code>nvfortran</code></p>
+</li>
+<li>
+<p>🖥️ <strong>Cross-platform testing</strong>:</p>
+</li>
+<li>
+<p>Ubuntu, Windows, macOS GitHub runners</p>
+</li>
+<li>
+<p>🧪 <strong>Testing</strong>:</p>
+</li>
+<li>
+<p><code>fpm</code> test with <code>debug</code> and <code>release</code> profiles</p>
+</li>
+<li><code>CMake</code> with <code>Ninja</code> and <code>CTest</code></li>
+<li>
+<p><code>Meson</code> with <code>Ninja</code></p>
+</li>
+<li>
+<p>📄 <strong>Documentation</strong>:</p>
+</li>
+<li>
+<p><a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a> </p>
+</li>
+<li>
+<p><a href="https://www.doxygen.nl">Doxygen</a></p>
+</li>
+<li>
+<p>📊 <strong>Status Reporting</strong>:</p>
+</li>
+<li>
+<p>Auto-generates <code>STATUS.md</code> for <code>fpm</code>/<code>cmake</code>/<code>meson</code> test results</p>
+</li>
+<li>Injects summary into <code>README.md</code></li>
+<li>
+<p>creates PRs to update the status table in <code>README.md</code></p>
+</li>
+<li>
+<p>🧹 <strong>Linting</strong>:</p>
+</li>
+<li>
+<p>Runs Fortitude check</p>
+</li>
+</ul>
+<h3>README Integration</h3>
+<p>To enable automatic CI status table injection, add the following to your <code>README.md</code>:</p>
+<pre>
+&lt;!-- STATUS:setup-fortran-conda:START --&gt;
+&lt;!-- STATUS:setup-fortran-conda:END --&gt;
+</pre>
+
+<h3>Job Breakdown</h3>
+<table>
+<thead>
+<tr>
+<th>Job Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>test_fpm</code></td>
+<td>Run <code>fpm</code> tests (debug + release) for each OS/compiler</td>
+</tr>
+<tr>
+<td><code>test_cmake</code></td>
+<td>Run CMake/Ninja builds and tests</td>
+</tr>
+<tr>
+<td><code>test_meson</code></td>
+<td>Run Meson builds and tests</td>
+</tr>
+<tr>
+<td><code>doc_ford</code></td>
+<td>Build and deploy FORD-generated docs</td>
+</tr>
+<tr>
+<td><code>doc_doxygen</code></td>
+<td>Build and deploy Doxygen-generated docs</td>
+</tr>
+<tr>
+<td><code>status_fpm</code></td>
+<td>Generate <code>STATUS.md</code> with fpm test results</td>
+</tr>
+<tr>
+<td><code>status_cmake</code></td>
+<td>Generate <code>STATUS.md</code> with cmake test results</td>
+</tr>
+<tr>
+<td><code>status_meson</code></td>
+<td>Generate <code>STATUS.md</code> with meson test results</td>
+</tr>
+<tr>
+<td><code>update_readme_table</code></td>
+<td>Inject CI summary table into <code>README.md</code> and open a pull request</td>
+</tr>
+<tr>
+<td><code>linter_fortitude</code></td>
+<td>Run <a href="https://github.com/PlasmaFAIR/fortitude">Fortitude</a> linter</td>
+</tr>
+</tbody>
+</table>
+<p>modify this example workflow file to your needs, and save it as <code>.github/workflows/CI-CD.yml</code> in your repository:</p>
+<div class="codehilite"><pre><span></span><code><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Setup Fortran Conda CI/CD</span>
+
+<span class="nt">on</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">push</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">branches</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">main</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">master</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">dev</span><span class="p p-Indicator">]</span>
+
+<span class="nt">permissions</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">contents</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span>
+
+<span class="nt">jobs</span><span class="p">:</span>
+
+<span class="w">  </span><span class="c1"># Run FPM tests (debug + release) on all OS/compiler combinations</span>
+<span class="w">  </span><span class="nt">test_fpm</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ matrix.os }}_${{ matrix.compiler }}_fpm</span>
+<span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ matrix.os }}</span>
+<span class="w">    </span><span class="nt">strategy</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">fail-fast</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="w">      </span><span class="nt">matrix</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">include</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">ubuntu-latest</span><span class="p p-Indicator">,</span><span class="nt">  compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">gfortran</span><span class="p p-Indicator">,</span><span class="nt">  compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">}</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">ubuntu-latest</span><span class="p p-Indicator">,</span><span class="nt">  compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">ifx</span><span class="p p-Indicator">,</span><span class="nt">       compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">}</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">ubuntu-latest</span><span class="p p-Indicator">,</span><span class="nt">  compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">flang-new</span><span class="p p-Indicator">,</span><span class="nt"> compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">}</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">ubuntu-latest</span><span class="p p-Indicator">,</span><span class="nt">  compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">nvfortran</span><span class="p p-Indicator">,</span><span class="nt"> compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">}</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">ubuntu-latest</span><span class="p p-Indicator">,</span><span class="nt">  compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">lfortran</span><span class="p p-Indicator">,</span><span class="nt">  compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">}</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">windows-latest</span><span class="p p-Indicator">,</span><span class="nt"> compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">gfortran</span><span class="p p-Indicator">,</span><span class="nt">  compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">}</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">windows-latest</span><span class="p p-Indicator">,</span><span class="nt"> compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">ifx</span><span class="p p-Indicator">,</span><span class="nt">       compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">}</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">windows-latest</span><span class="p p-Indicator">,</span><span class="nt"> compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">flang-new</span><span class="p p-Indicator">,</span><span class="nt"> compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">}</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">windows-latest</span><span class="p p-Indicator">,</span><span class="nt"> compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">lfortran</span><span class="p p-Indicator">,</span><span class="nt">  compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">}</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">macos-latest</span><span class="p p-Indicator">,</span><span class="nt">   compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">gfortran</span><span class="p p-Indicator">,</span><span class="nt">  compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">}</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">macos-latest</span><span class="p p-Indicator">,</span><span class="nt">   compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">lfortran</span><span class="p p-Indicator">,</span><span class="nt">  compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">}</span>
+
+<span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Setup Fortran</span>
+<span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gha3mi/setup-fortran-conda@latest</span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">platform</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ matrix.os }}</span>
+<span class="w">          </span><span class="nt">compiler</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ matrix.compiler }}</span>
+<span class="w">          </span><span class="nt">compiler-version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ matrix.compiler-version }}</span>
+<span class="w">          </span><span class="nt">extra-packages</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ matrix.extra-packages }}</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fpm test (debug)</span>
+<span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fpm test --compiler ${{ matrix.compiler }} --profile debug --verbose</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fpm test (release)</span>
+<span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fpm test --compiler ${{ matrix.compiler }} --profile release --verbose</span>
+
+<span class="w">  </span><span class="c1"># Run CMake + Ninja build/tests across OS/compiler matrix</span>
+<span class="w">  </span><span class="nt">test_cmake</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ matrix.os }}_${{ matrix.compiler }}_cmake</span>
+<span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ matrix.os }}</span>
+<span class="w">    </span><span class="nt">strategy</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">fail-fast</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="w">      </span><span class="nt">matrix</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">include</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">ubuntu-latest</span><span class="p p-Indicator">,</span><span class="nt">  compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">gfortran</span><span class="p p-Indicator">,</span><span class="nt">  compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">}</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">ubuntu-latest</span><span class="p p-Indicator">,</span><span class="nt">  compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">ifx</span><span class="p p-Indicator">,</span><span class="nt">       compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">}</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">ubuntu-latest</span><span class="p p-Indicator">,</span><span class="nt">  compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">flang-new</span><span class="p p-Indicator">,</span><span class="nt"> compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">}</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">ubuntu-latest</span><span class="p p-Indicator">,</span><span class="nt">  compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">nvfortran</span><span class="p p-Indicator">,</span><span class="nt"> compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">}</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">ubuntu-latest</span><span class="p p-Indicator">,</span><span class="nt">  compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">lfortran</span><span class="p p-Indicator">,</span><span class="nt">  compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">}</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">windows-latest</span><span class="p p-Indicator">,</span><span class="nt"> compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">gfortran</span><span class="p p-Indicator">,</span><span class="nt">  compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">}</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">windows-latest</span><span class="p p-Indicator">,</span><span class="nt"> compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">ifx</span><span class="p p-Indicator">,</span><span class="nt">       compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">}</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">windows-latest</span><span class="p p-Indicator">,</span><span class="nt"> compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">flang-new</span><span class="p p-Indicator">,</span><span class="nt"> compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">}</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">windows-latest</span><span class="p p-Indicator">,</span><span class="nt"> compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">lfortran</span><span class="p p-Indicator">,</span><span class="nt">  compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">}</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">macos-latest</span><span class="p p-Indicator">,</span><span class="nt">   compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">gfortran</span><span class="p p-Indicator">,</span><span class="nt">  compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">}</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">macos-latest</span><span class="p p-Indicator">,</span><span class="nt">   compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">lfortran</span><span class="p p-Indicator">,</span><span class="nt">  compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">}</span>
+
+<span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Setup Fortran</span>
+<span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gha3mi/setup-fortran-conda@latest</span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">platform</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ matrix.os }}</span>
+<span class="w">          </span><span class="nt">compiler</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ matrix.compiler }}</span>
+<span class="w">          </span><span class="nt">compiler-version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ matrix.compiler-version }}</span>
+<span class="w">          </span><span class="nt">extra-packages</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ matrix.extra-packages }}</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cmake test (debug)</span>
+<span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">          </span><span class="no">cmake -S . -B build/debug -DCMAKE_BUILD_TYPE=Debug -DCMAKE_Fortran_COMPILER=${{ matrix.compiler }} -G Ninja</span>
+<span class="w">          </span><span class="no">cmake --build build/debug</span>
+<span class="w">          </span><span class="no">ctest --test-dir build/debug --output-on-failure</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cmake test (release)</span>
+<span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">          </span><span class="no">cmake -S . -B build/release -DCMAKE_BUILD_TYPE=Release -DCMAKE_Fortran_COMPILER=${{ matrix.compiler }} -G Ninja</span>
+<span class="w">          </span><span class="no">cmake --build build/release</span>
+<span class="w">          </span><span class="no">ctest --test-dir build/release --output-on-failure</span>
+
+<span class="w">  </span><span class="c1"># Run Meson builds and tests across OS/compiler matrix</span>
+<span class="w">  </span><span class="nt">test_meson</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ matrix.os }}_${{ matrix.compiler }}_meson</span>
+<span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ matrix.os }}</span>
+<span class="w">    </span><span class="nt">strategy</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">fail-fast</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="w">      </span><span class="nt">matrix</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">include</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">ubuntu-latest</span><span class="p p-Indicator">,</span><span class="nt">  compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">gfortran</span><span class="p p-Indicator">,</span><span class="nt">  compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">}</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">ubuntu-latest</span><span class="p p-Indicator">,</span><span class="nt">  compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">ifx</span><span class="p p-Indicator">,</span><span class="nt">       compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">}</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">ubuntu-latest</span><span class="p p-Indicator">,</span><span class="nt">  compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">flang-new</span><span class="p p-Indicator">,</span><span class="nt"> compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">}</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">ubuntu-latest</span><span class="p p-Indicator">,</span><span class="nt">  compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">nvfortran</span><span class="p p-Indicator">,</span><span class="nt"> compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">}</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">windows-latest</span><span class="p p-Indicator">,</span><span class="nt"> compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">gfortran</span><span class="p p-Indicator">,</span><span class="nt">  compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">}</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">windows-latest</span><span class="p p-Indicator">,</span><span class="nt"> compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">ifx</span><span class="p p-Indicator">,</span><span class="nt">       compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">}</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">windows-latest</span><span class="p p-Indicator">,</span><span class="nt"> compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">flang-new</span><span class="p p-Indicator">,</span><span class="nt"> compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">}</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">macos-latest</span><span class="p p-Indicator">,</span><span class="nt">   compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">gfortran</span><span class="p p-Indicator">,</span><span class="nt">  compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">}</span>
+
+<span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Setup Fortran</span>
+<span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gha3mi/setup-fortran-conda@latest</span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">platform</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ matrix.os }}</span>
+<span class="w">          </span><span class="nt">compiler</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ matrix.compiler }}</span>
+<span class="w">          </span><span class="nt">compiler-version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ matrix.compiler-version }}</span>
+<span class="w">          </span><span class="nt">extra-packages</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ matrix.extra-packages }}</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">meson test (debug)</span>
+<span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">          </span><span class="no">meson setup --wipe build/meson/debug --buildtype debug --backend=ninja</span>
+<span class="w">          </span><span class="no">meson compile -C build/meson/debug --verbose</span>
+<span class="w">          </span><span class="no">meson test -C build/meson/debug --verbose</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">meson test (release)</span>
+<span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">          </span><span class="no">meson setup --wipe build/meson/release --buildtype release --backend=ninja</span>
+<span class="w">          </span><span class="no">meson compile -C build/meson/release --verbose</span>
+<span class="w">          </span><span class="no">meson test -C build/meson/release --verbose</span>
+
+<span class="w">  </span><span class="c1"># Build and deploy FORD documentation</span>
+<span class="w">  </span><span class="nt">doc_ford</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Generate FORD Documentation</span>
+<span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
+<span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Setup and Generate FORD Documentation</span>
+<span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gha3mi/setup-fortran-conda@latest</span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">compiler</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gfortran</span>
+<span class="w">          </span><span class="nt">generate-doc-ford</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">          </span><span class="nt">ford-working-directory</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">.</span>
+<span class="w">          </span><span class="nt">ford-config</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">README.md</span>
+<span class="w">          </span><span class="nt">ford-output-directory</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">doc/ford</span>
+<span class="w">          </span><span class="nt">ford-branch</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gh-pages-ford</span>
+<span class="w">          </span><span class="nt">ford-target-folder</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">doc/ford</span>
+
+<span class="w">  </span><span class="c1"># Build and deploy Doxygen documentation</span>
+<span class="w">  </span><span class="nt">doc_doxygen</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Generate Doxygen Documentation</span>
+<span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
+<span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Setup and Generate Doxygen Documentation</span>
+<span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gha3mi/setup-fortran-conda@latest</span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">compiler</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gfortran</span>
+<span class="w">          </span><span class="nt">generate-doc-doxygen</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">          </span><span class="nt">doxygen-working-directory</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">.</span>
+<span class="w">          </span><span class="nt">doxygen-config</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Doxyfile</span>
+<span class="w">          </span><span class="nt">doxygen-output-directory</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">doc/doxygen</span>
+<span class="w">          </span><span class="nt">doxygen-branch</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gh-pages-doxygen</span>
+<span class="w">          </span><span class="nt">doxygen-target-folder</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">doc/doxygen</span>
+
+<span class="w">  </span><span class="c1"># Generate STATUS.md from FPM job results</span>
+<span class="w">  </span><span class="nt">status_fpm</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Generate STATUS.md</span>
+<span class="w">    </span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">always()</span>
+<span class="w">    </span><span class="nt">needs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">test_fpm</span>
+<span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
+<span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Generate summary</span>
+<span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gha3mi/setup-fortran-conda@latest</span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">generate-status-fpm</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+
+<span class="w">  </span><span class="c1"># Generate STATUS.md from CMake job results</span>
+<span class="w">  </span><span class="nt">status_cmake</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Generate STATUS.md</span>
+<span class="w">    </span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">always()</span>
+<span class="w">    </span><span class="nt">needs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">test_cmake</span>
+<span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
+<span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Generate summary</span>
+<span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gha3mi/setup-fortran-conda@latest</span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">generate-status-cmake</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+
+<span class="w">  </span><span class="c1"># Generate STATUS.md from Meson job results</span>
+<span class="w">  </span><span class="nt">status_meson</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Generate STATUS.md</span>
+<span class="w">    </span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">always()</span>
+<span class="w">    </span><span class="nt">needs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">test_meson</span>
+<span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
+<span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Generate summary</span>
+<span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gha3mi/setup-fortran-conda@latest</span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">generate-status-meson</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+
+<span class="w">  </span><span class="c1"># Inject CI status table into README.md</span>
+<span class="w">  </span><span class="nt">update_readme_table</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Update README.md status table</span>
+<span class="w">    </span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">      </span><span class="no">always() &amp;&amp;</span>
+<span class="w">      </span><span class="no">github.ref != &#39;refs/heads/update-readme-table&#39;</span>
+<span class="w">    </span><span class="nt">needs</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">status_fpm</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">status_cmake</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">status_meson</span><span class="p p-Indicator">]</span>
+<span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
+<span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Update README status</span>
+<span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gha3mi/setup-fortran-conda@latest</span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">update-readme-table</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">          </span><span class="nt">update-readme-token</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.GH_PAT }}</span><span class="w">   </span><span class="c1"># Update with your GitHub personal access token</span>
+<span class="w">          </span><span class="nt">update-readme-user-name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Your</span><span class="nv"> </span><span class="s">Name&quot;</span><span class="w"> </span><span class="c1"># Update with your name</span>
+<span class="w">          </span><span class="nt">update-readme-user-email</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;you@example.com&quot;</span><span class="w">  </span><span class="c1"># Update with your email</span>
+
+<span class="w">  </span><span class="c1"># Run Fortran linter with Fortitude</span>
+<span class="w">  </span><span class="nt">linter_fortitude</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Run Fortitude Linter</span>
+<span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
+<span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Run Fortitude Linter</span>
+<span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gha3mi/setup-fortran-conda@latest</span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">fortitude-check</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">          </span><span class="nt">fortitude-settings</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;--output-format</span><span class="nv"> </span><span class="s">github&quot;</span>
+</code></pre></div>
+
+<p>If <code>compiler-version</code> is set to an empty string <code>""</code>, the latest version will be installed.</p>
+<h3>MPI Support</h3>
+<p>MPI-based tests can be executed using fpm with the mpifort. This is currently supported on Linux and macOS runners. The following example job sets up the environment and runs parallel MPI tests:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">test_mpi_fpm</span><span class="o">:</span>
+<span class="w">  </span><span class="n">name</span><span class="o">:</span><span class="w"> </span><span class="n">$</span><span class="o">{{</span><span class="w"> </span><span class="n">matrix</span><span class="o">.</span><span class="na">os</span><span class="w"> </span><span class="o">}}</span><span class="n">_$</span><span class="o">{{</span><span class="w"> </span><span class="n">matrix</span><span class="o">.</span><span class="na">compiler</span><span class="w"> </span><span class="o">}}</span><span class="n">_mpi_fpm</span>
+<span class="w">  </span><span class="n">runs</span><span class="o">-</span><span class="n">on</span><span class="o">:</span><span class="w"> </span><span class="n">$</span><span class="o">{{</span><span class="w"> </span><span class="n">matrix</span><span class="o">.</span><span class="na">os</span><span class="w"> </span><span class="o">}}</span>
+<span class="w">  </span><span class="n">strategy</span><span class="o">:</span>
+<span class="w">    </span><span class="n">fail</span><span class="o">-</span><span class="n">fast</span><span class="o">:</span><span class="w"> </span><span class="kc">false</span>
+<span class="w">    </span><span class="n">matrix</span><span class="o">:</span>
+<span class="w">      </span><span class="k">include</span><span class="o">:</span>
+<span class="w">      </span><span class="o">-</span><span class="w"> </span><span class="o">{</span><span class="n">os</span><span class="o">:</span><span class="w"> </span><span class="n">ubuntu</span><span class="o">-</span><span class="n">latest</span><span class="o">,</span><span class="w"> </span><span class="n">compiler</span><span class="o">:</span><span class="w"> </span><span class="n">mpifort</span><span class="o">,</span><span class="w"> </span><span class="n">compiler</span><span class="o">-</span><span class="n">version</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="o">,</span><span class="w"> </span><span class="n">extra</span><span class="o">-</span><span class="n">packages</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="o">}</span>
+<span class="w">      </span><span class="o">-</span><span class="w"> </span><span class="o">{</span><span class="n">os</span><span class="o">:</span><span class="w"> </span><span class="n">macos</span><span class="o">-</span><span class="n">latest</span><span class="o">,</span><span class="w">  </span><span class="n">compiler</span><span class="o">:</span><span class="w"> </span><span class="n">mpifort</span><span class="o">,</span><span class="w"> </span><span class="n">compiler</span><span class="o">-</span><span class="n">version</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="o">,</span><span class="w"> </span><span class="n">extra</span><span class="o">-</span><span class="n">packages</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="o">}</span>
+
+<span class="w">  </span><span class="n">steps</span><span class="o">:</span>
+<span class="w">    </span><span class="o">-</span><span class="w"> </span><span class="n">name</span><span class="o">:</span><span class="w"> </span><span class="n">Setup</span><span class="w"> </span><span class="n">Fortran</span>
+<span class="w">      </span><span class="n">uses</span><span class="o">:</span><span class="w"> </span><span class="n">gha3mi</span><span class="o">/</span><span class="n">setup</span><span class="o">-</span><span class="n">fortran</span><span class="o">-</span><span class="n">conda</span><span class="err">@</span><span class="n">latest</span>
+<span class="w">      </span><span class="k">with</span><span class="o">:</span>
+<span class="w">        </span><span class="n">platform</span><span class="o">:</span><span class="w"> </span><span class="n">$</span><span class="o">{{</span><span class="w"> </span><span class="n">matrix</span><span class="o">.</span><span class="na">os</span><span class="w"> </span><span class="o">}}</span>
+<span class="w">        </span><span class="n">compiler</span><span class="o">:</span><span class="w"> </span><span class="n">$</span><span class="o">{{</span><span class="w"> </span><span class="n">matrix</span><span class="o">.</span><span class="na">compiler</span><span class="w"> </span><span class="o">}}</span>
+<span class="w">        </span><span class="n">compiler</span><span class="o">-</span><span class="n">version</span><span class="o">:</span><span class="w"> </span><span class="n">$</span><span class="o">{{</span><span class="w"> </span><span class="n">matrix</span><span class="o">.</span><span class="na">compiler</span><span class="o">-</span><span class="n">version</span><span class="w"> </span><span class="o">}}</span>
+<span class="w">        </span><span class="n">extra</span><span class="o">-</span><span class="n">packages</span><span class="o">:</span><span class="w"> </span><span class="n">$</span><span class="o">{{</span><span class="w"> </span><span class="n">matrix</span><span class="o">.</span><span class="na">extra</span><span class="o">-</span><span class="n">packages</span><span class="w"> </span><span class="o">}}</span>
+
+<span class="w">    </span><span class="o">-</span><span class="w"> </span><span class="n">name</span><span class="o">:</span><span class="w"> </span><span class="n">fpm</span><span class="w"> </span><span class="n">test</span><span class="w"> </span><span class="o">(</span><span class="n">debug</span><span class="o">)</span>
+<span class="w">      </span><span class="n">run</span><span class="o">:</span><span class="w"> </span><span class="n">fpm</span><span class="w"> </span><span class="n">test</span><span class="w"> </span><span class="o">--</span><span class="n">target</span><span class="w"> </span><span class="n">mpi_hello</span><span class="w"> </span><span class="o">--</span><span class="n">compiler</span><span class="w"> </span><span class="n">$</span><span class="o">{{</span><span class="w"> </span><span class="n">matrix</span><span class="o">.</span><span class="na">compiler</span><span class="w"> </span><span class="o">}}</span><span class="w"> </span><span class="o">--</span><span class="n">profile</span><span class="w"> </span><span class="n">debug</span><span class="w"> </span><span class="o">--</span><span class="n">flag</span><span class="w"> </span><span class="s2">&quot;-cpp -DUSE_MPI&quot;</span><span class="w"> </span><span class="o">--</span><span class="n">runner</span><span class="w"> </span><span class="s2">&quot;mpirun -np 4&quot;</span><span class="w"> </span><span class="o">--</span><span class="n">verbose</span>
+
+<span class="w">    </span><span class="o">-</span><span class="w"> </span><span class="n">name</span><span class="o">:</span><span class="w"> </span><span class="n">fpm</span><span class="w"> </span><span class="n">test</span><span class="w"> </span><span class="o">(</span><span class="n">release</span><span class="o">)</span>
+<span class="w">      </span><span class="n">run</span><span class="o">:</span><span class="w"> </span><span class="n">fpm</span><span class="w"> </span><span class="n">test</span><span class="w"> </span><span class="o">--</span><span class="n">target</span><span class="w"> </span><span class="n">mpi_hello</span><span class="w"> </span><span class="o">--</span><span class="n">compiler</span><span class="w"> </span><span class="n">$</span><span class="o">{{</span><span class="w"> </span><span class="n">matrix</span><span class="o">.</span><span class="na">compiler</span><span class="w"> </span><span class="o">}}</span><span class="w"> </span><span class="o">--</span><span class="n">profile</span><span class="w"> </span><span class="n">release</span><span class="w"> </span><span class="o">--</span><span class="n">flag</span><span class="w"> </span><span class="s2">&quot;-cpp -DUSE_MPI&quot;</span><span class="w"> </span><span class="o">--</span><span class="n">runner</span><span class="w"> </span><span class="s2">&quot;mpirun -np 4&quot;</span><span class="w"> </span><span class="o">--</span><span class="n">verbose</span>
+</code></pre></div>
+
+<h2>🚀 Release Automation</h2>
+<p>This project includes a Bash script for automating GitHub releases.</p>
+<div class="codehilite"><pre><span></span><code>curl -L https://raw.githubusercontent.com/gha3mi/setup-fortran-conda/main/release.sh -o release.sh
+</code></pre></div>
+
+<h3>Features</h3>
+<p>The script automates:</p>
+<ul>
+<li>✅ <strong>Semantic versioning</strong>: Calculates the next version (<code>major</code>, <code>minor</code>, or <code>patch</code>) based on PR titles and commit messages.</li>
+<li>📝 <strong>CHANGELOG generation</strong>: Compiles a categorized <code>CHANGELOG.md</code> using PR data and commits since the last release.</li>
+<li>🔖 <strong>Git tagging</strong>: Tags the new version (e.g., <code>v1.2.3</code>) and updates the floating <code>latest</code> tag.</li>
+<li>📤 <strong>GitHub Release</strong>: Publishes a release with autogenerated notes.</li>
+<li>💻 <strong>Modes</strong>:</li>
+<li><code>--dry-run</code>: Simulates the release steps with no side effects.</li>
+<li><code>--local</code>: Updates files and tags locally, but skips pushing or publishing the release.</li>
+</ul>
+<h3>Requirements</h3>
+<ul>
+<li><a href="https://cli.github.com/">GitHub CLI (<code>gh</code>)</a> – must be authenticated (<code>gh auth login</code>)</li>
+<li><a href="https://stedolan.github.io/jq/"><code>jq</code></a></li>
+</ul>
+<h3>Usage</h3>
+<div class="codehilite"><pre><span></span><code>bash<span class="w"> </span>release.sh<span class="w"> </span>--help
+</code></pre></div>
+
+<h3>Recommended Workflow</h3>
+<p>It’s highly recommended to first run in <code>--dry-run</code> mode to verify the output.</p>
+<h2>🔗 See Also</h2>
+<ul>
+<li><a href="https://github.com/fortran-lang/setup-fortran">fortran-lang/setup-fortran</a></li>
+<li><a href="https://degenerateconic.com/conda-plus-fortran.html">https://degenerateconic.com/conda-plus-fortran.html</a></li>
+<li><a href="https://fortran-lang.discourse.group/t/github-action-setup-fortran-with-conda/9869/">Fortran Discourse: GitHub Action: Setup Fortran with Conda</a></li>
+<li><a href="https://fortran-lang.discourse.group/t/very-simple-ci-workflow-for-fortran-apps-using-conda/9867">Fortran Discourse: Simple CI with Conda</a></li>
+</ul>
+        </div>
+          <div class="col-md-4">
+            <div class="card card-body bg-light">
+              <h2 class="card-title">Developer Info</h2>
+              <h4 class="card-text">Seyed Ali Ghasemi</h4>
+              <p class="card-text"></p>
+                <div class="text-center"><div class="btn-group" role="group">
+                      <a class="btn btn-lg btn-primary" href="mailto:info@gha3mi.com"><i class="fa fa-envelope fa-lg"></i></a>
+                    
+                    <a class="btn btn-lg btn-primary" href="https://github.com/gha3mi"><i class="fa fa-github fa-lg"></i></a>
+                    
+                    
+                    
+                    
+                    
+                    
+                </div></div>
+            </div>
+          </div>
+      </div>
+        <div class="row">
+          <hr>
+          <div class="col-xs-6 col-sm-4">
+            <div>
+              <h3>Source Files</h3>
+              <ul><li><a href='sourcefile/check.f90.html'>check.f90</a></li><li><a href='sourcefile/main.f90.html'>main.f90</a></li><li><a href='sourcefile/mpi_hello.f90.html'>mpi_hello.F90</a></li></ul>
+            </div>
+            <div>
+              <ul>
+                <li><a href="./lists/files.html"><em>All source files&hellip;</em></a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-xs-6 col-sm-4">
+            <div>
+              <h3>Modules</h3>
+              <ul><li><a href='module/main.html'>main</a></li></ul>
+            </div>
+            <div>
+              <ul>
+                <li><a href="./lists/modules.html"><em>All modules&hellip;</em></a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-xs-6 col-sm-4">
+            <div>
+              <h3>Procedures</h3>
+              <ul><li><a href='proc/say_hello.html'>say_hello</a></li></ul>
+            </div>
+            <div>
+              <ul>
+                <li><a href="./lists/procedures.html"><em>All procedures&hellip;</em></a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      <hr>
+    </div> <!-- /container -->
+    <footer>
+      <div class="container">
+        <div class="row justify-content-between">
+          <div class="col">
+            <p>
+              test
+ was developed by Seyed Ali Ghasemi<br>              &copy; 2026 
+</p>
+          </div>
+          <div class="col">
+            <p class="text-end">
+              Documentation generated by
+              <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
+ on 2026-01-30T18:14:45.032754+0000             </p>
+          </div>
+        </div>
+        <br>
+      </div> <!-- /container -->
+    </footer>
+  </body>
+</html>

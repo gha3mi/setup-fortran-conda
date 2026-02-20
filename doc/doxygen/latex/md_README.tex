@@ -75,17 +75,17 @@ flang, flang-\/new   &clang-\/cl   &clang-\/cl   \\\cline{1-3}
 \DoxyCodeLine{\ \ \ \ runs-\/on:\ \$\{\{\ matrix.os\ \}\}}
 \DoxyCodeLine{\ \ \ \ \ \ matrix:}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ include:}
-\DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ ubuntu-\/latest,\ \ compiler:\ gfortran,\ \ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{}\}}
-\DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ ubuntu-\/latest,\ \ compiler:\ ifx,\ \ \ \ \ \ \ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{}\}}
-\DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ ubuntu-\/latest,\ \ compiler:\ flang-\/new,\ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{}\}}
-\DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ ubuntu-\/latest,\ \ compiler:\ nvfortran,\ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{}\}}
-\DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ ubuntu-\/latest,\ \ compiler:\ lfortran,\ \ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{}\}}
-\DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ windows-\/latest,\ compiler:\ gfortran,\ \ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{}\}}
-\DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ windows-\/latest,\ compiler:\ ifx,\ \ \ \ \ \ \ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{}\}}
-\DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ windows-\/latest,\ compiler:\ flang-\/new,\ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{}\}}
-\DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ windows-\/latest,\ compiler:\ lfortran,\ \ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{}\}}
-\DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ macos-\/latest,\ \ \ compiler:\ gfortran,\ \ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{}\}}
-\DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ macos-\/latest,\ \ \ compiler:\ lfortran,\ \ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{}\}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ ubuntu-\/latest,\ \ compiler:\ gfortran,\ \ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{},\ fpm-\/version:\ "{}0.13.0"{}\}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ ubuntu-\/latest,\ \ compiler:\ ifx,\ \ \ \ \ \ \ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{},\ fpm-\/version:\ "{}0.13.0"{}\}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ ubuntu-\/latest,\ \ compiler:\ flang-\/new,\ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{},\ fpm-\/version:\ "{}0.13.0"{}\}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ ubuntu-\/latest,\ \ compiler:\ nvfortran,\ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{},\ fpm-\/version:\ "{}0.13.0"{}\}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ ubuntu-\/latest,\ \ compiler:\ lfortran,\ \ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{},\ fpm-\/version:\ "{}0.12.0"{}\}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ windows-\/latest,\ compiler:\ gfortran,\ \ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{},\ fpm-\/version:\ "{}0.13.0"{}\}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ windows-\/latest,\ compiler:\ ifx,\ \ \ \ \ \ \ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{},\ fpm-\/version:\ "{}0.12.0"{}\}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ windows-\/latest,\ compiler:\ flang-\/new,\ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{},\ fpm-\/version:\ "{}0.13.0"{}\}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ windows-\/latest,\ compiler:\ lfortran,\ \ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{},\ fpm-\/version:\ "{}0.12.0"{}\}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ macos-\/latest,\ \ \ compiler:\ gfortran,\ \ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{},\ fpm-\/version:\ "{}0.13.0"{}\}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ macos-\/latest,\ \ \ compiler:\ lfortran,\ \ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{},\ fpm-\/version:\ "{}0.12.0"{}\}}
 \DoxyCodeLine{}
 \DoxyCodeLine{\ \ \ \ steps:}
 \DoxyCodeLine{\ \ \ \ \ \ -\/\ name:\ Setup\ Fortran}
@@ -95,6 +95,7 @@ flang, flang-\/new   &clang-\/cl   &clang-\/cl   \\\cline{1-3}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ compiler:\ \$\{\{\ matrix.compiler\ \}\}}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ compiler-\/version:\ \$\{\{\ matrix.compiler-\/version\ \}\}}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ extra-\/packages:\ \$\{\{\ matrix.extra-\/packages\ \}\}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ fpm-\/version:\ \$\{\{\ matrix.fpm-\/version\ \}\}}
 \DoxyCodeLine{}
 \DoxyCodeLine{\ \ \ \ \ \ -\/\ name:\ fpm\ test\ (debug)}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ run:\ fpm\ test\ -\/-\/compiler\ \$\{\{\ matrix.compiler\ \}\}\ -\/-\/profile\ debug}
@@ -243,17 +244,17 @@ modify this example workflow file to your needs, and save it as {\ttfamily .gith
 \DoxyCodeLine{\ \ \ \ \ \ fail-\/fast:\ false}
 \DoxyCodeLine{\ \ \ \ \ \ matrix:}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ include:}
-\DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ ubuntu-\/latest,\ \ compiler:\ gfortran,\ \ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{}\}}
-\DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ ubuntu-\/latest,\ \ compiler:\ ifx,\ \ \ \ \ \ \ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{}\}}
-\DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ ubuntu-\/latest,\ \ compiler:\ flang-\/new,\ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{}\}}
-\DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ ubuntu-\/latest,\ \ compiler:\ nvfortran,\ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{}\}}
-\DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ ubuntu-\/latest,\ \ compiler:\ lfortran,\ \ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{}\}}
-\DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ windows-\/latest,\ compiler:\ gfortran,\ \ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{}\}}
-\DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ windows-\/latest,\ compiler:\ ifx,\ \ \ \ \ \ \ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{}\}}
-\DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ windows-\/latest,\ compiler:\ flang-\/new,\ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{}\}}
-\DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ windows-\/latest,\ compiler:\ lfortran,\ \ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{}\}}
-\DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ macos-\/latest,\ \ \ compiler:\ gfortran,\ \ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{}\}}
-\DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ macos-\/latest,\ \ \ compiler:\ lfortran,\ \ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{}\}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ ubuntu-\/latest,\ \ compiler:\ gfortran,\ \ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{},\ fpm-\/version:\ "{}0.13.0"{}\}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ ubuntu-\/latest,\ \ compiler:\ ifx,\ \ \ \ \ \ \ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{},\ fpm-\/version:\ "{}0.13.0"{}\}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ ubuntu-\/latest,\ \ compiler:\ flang-\/new,\ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{},\ fpm-\/version:\ "{}0.13.0"{}\}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ ubuntu-\/latest,\ \ compiler:\ nvfortran,\ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{},\ fpm-\/version:\ "{}0.13.0"{}\}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ ubuntu-\/latest,\ \ compiler:\ lfortran,\ \ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{},\ fpm-\/version:\ "{}0.12.0"{}\}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ windows-\/latest,\ compiler:\ gfortran,\ \ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{},\ fpm-\/version:\ "{}0.13.0"{}\}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ windows-\/latest,\ compiler:\ ifx,\ \ \ \ \ \ \ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{},\ fpm-\/version:\ "{}0.12.0"{}\}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ windows-\/latest,\ compiler:\ flang-\/new,\ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{},\ fpm-\/version:\ "{}0.13.0"{}\}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ windows-\/latest,\ compiler:\ lfortran,\ \ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{},\ fpm-\/version:\ "{}0.12.0"{}\}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ macos-\/latest,\ \ \ compiler:\ gfortran,\ \ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{},\ fpm-\/version:\ "{}0.13.0"{}\}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ macos-\/latest,\ \ \ compiler:\ lfortran,\ \ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{},\ fpm-\/version:\ "{}0.12.0"{}\}}
 \DoxyCodeLine{}
 \DoxyCodeLine{\ \ \ \ steps:}
 \DoxyCodeLine{\ \ \ \ \ \ -\/\ name:\ Setup\ Fortran}

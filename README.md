@@ -84,14 +84,18 @@ jobs:
 ## ✅ CI Status
 
 <!-- STATUS:setup-fortran-conda:START -->
-| Compiler   | macos | ubuntu | windows |
-|------------|----------------------|----------------------|----------------------|
-| `flang-new` | - | fpm ✅  cmake ✅  meson ✅ | fpm ❌  cmake ✅  meson ✅ |
-| `gfortran` | fpm ✅  cmake ✅  meson ✅ | fpm ✅  cmake ✅  meson ✅ | fpm ✅  cmake ✅  meson ✅ |
-| `ifx` | - | fpm ✅  cmake ✅  meson ✅ | fpm ✅  cmake ✅  meson ✅ |
-| `lfortran` | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ |
-| `mpifort` | mpi_fpm ✅ | mpi_fpm ✅ | - |
-| `nvfortran` | - | fpm ✅  cmake ✅  meson ✅ | - |
+| compiler | version | macos | ubuntu | windows |
+|---------:|:--------|:------|:-------|:--------|
+| `flang-new` | 21.1.8 | – | – | – |
+| `gfortran` | 14.3.0 | fpm ✅ | fpm ✅  cmake ✅ | – |
+| `gfortran` | 15.2.0 | – | – | – |
+| `ifx` | 2025.3.2 | – | – | – |
+| `lfortran` | 0.54.0 | – | – | – |
+| `lfortran` | 0.60.0 | – | – | – |
+| `mpifort` | 5.0.0 | – | – | – |
+| `nvfortran` | 25.7 | – | cmake ✅ | – |
+
+Last updated: 2026-02-21
 <!-- STATUS:setup-fortran-conda:END -->
 
 - [STATUS.md (FPM)](https://github.com/gha3mi/setup-fortran-conda/blob/status-fpm/STATUS.md)

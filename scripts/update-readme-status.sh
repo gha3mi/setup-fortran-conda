@@ -4,26 +4,12 @@ set -euo pipefail
 README_FILE="README.md"
 JOBS_FILE="${JOBS_FILE:-.ci/jobs.json}"
 VERSIONS_FILE="${VERSIONS_FILE:-.ci/versions.json}"
-VERSIONS_DIR="${VERSIONS_DIR:-${RUNNER_TEMP:-/tmp}/sfc_ci/sfc_versions}"
 
-LAST_UPDATED="$(date -u +%F)"
-if [[ -f "$VERSIONS_FILE" ]]; then
-  vdate="$(jq -r '.generated_at // empty' "$VERSIONS_FILE" 2>/dev/null || true)"
-  [[ -n "$vdate" && "$vdate" != "null" ]] && LAST_UPDATED="$vdate"
-fi
+START_MARK="<!-- STATUS:setup-fortran-conda:START -->"
+END_MARK="<!-- STATUS:setup-fortran-conda:END -->"
 
 OS_KEYS=("macos-latest" "ubuntu-latest" "windows-latest")
-
-rank() {
-  case "$1" in
-    success) echo 1 ;;
-    pending|""|null) echo 2 ;;
-    cancelled) echo 3 ;;
-    failure) echo 4 ;;
-    skipped) echo 0 ;;
-    *) echo 2 ;;
-  esac
-}
+TOOLS=("fpm" "cmake" "meson" "mpi_fpm")
 
 icon() {
   case "$1" in
@@ -35,38 +21,58 @@ icon() {
   esac
 }
 
-declare -A best_status
+rank() {
+  case "$1" in
+    failure) echo 5 ;;
+    cancelled) echo 4 ;;
+    pending|""|null) echo 3 ;;
+    success) echo 2 ;;
+    skipped) echo 1 ;;
+    *) echo 3 ;;
+  esac
+}
 
-declare -A idx_to_version
+parse_job_name() {
+  local name="$1"
+  local tool=""
+  if [[ "$name" =~ _mpi_fpm$ ]]; then
+    tool="mpi_fpm"
+    name="${name%_mpi_fpm}"
+  else
+    tool="${name##*_}"
+    name="${name%_*}"
+  fi
 
+  local os="${name%%_*}"
+  local rest="${name#*_}"
+  local compiler="${rest%%_*}"
+  local req="${rest#*_}"
 
-if [[ -d "$VERSIONS_DIR" ]]; then
-  while IFS= read -r d; do
-    base="$(basename "$d")"
+  compiler="${compiler//--/-}"
+  printf "%s\t%s\t%s\t%s\n" "$os" "$compiler" "$req" "$tool"
+}
 
-    if [[ "$base" =~ ^sfc-(macOS|Linux|Windows)-([^-]+)-([^-]+)-i([0-9]+)- ]]; then
-      runner_os="${BASH_REMATCH[1]}"
-      compiler="${BASH_REMATCH[2]}"
-      version="${BASH_REMATCH[3]}"
-      idx="i${BASH_REMATCH[4]}"
+if [[ ! -f "$README_FILE" ]]; then echo "ERROR: $README_FILE not found" >&2; exit 2; fi
+if [[ ! -f "$JOBS_FILE" ]]; then echo "ERROR: JOBS_FILE not found: $JOBS_FILE" >&2; exit 2; fi
+if [[ ! -f "$VERSIONS_FILE" ]]; then echo "ERROR: VERSIONS_FILE not found: $VERSIONS_FILE" >&2; exit 2; fi
 
-      os_key=""
-      case "$runner_os" in
-        Linux) os_key="ubuntu-latest" ;;
-        Windows) os_key="windows-latest" ;;
-        macOS) os_key="macos-latest" ;;
-      esac
+LAST_UPDATED="$(date -u +%F)"
+vdate="$(jq -r '.generated_at // empty' "$VERSIONS_FILE" 2>/dev/null || true)"
+[[ -n "$vdate" && "$vdate" != "null" ]] && LAST_UPDATED="$vdate"
 
-      compiler="${compiler//--/-}"
+declare -A status_by_req
+while IFS=$'\t' read -r name conclusion; do
+  parsed="$(parse_job_name "$name" 2>/dev/null || true)"
+  [[ -n "$parsed" ]] || continue
 
-      if [[ -n "$os_key" && -n "$compiler" && -n "$version" && -n "$idx" ]]; then
-        idx_to_version["${os_key},${compiler},${idx}"]="$version"
-      fi
-    fi
-  done < <(find "$VERSIONS_DIR" -mindepth 1 -maxdepth 3 -type d 2>/dev/null || true)
-fi
+  os="$(echo "$parsed" | cut -f1)"
+  compiler="$(echo "$parsed" | cut -f2)"
+  req="$(echo "$parsed" | cut -f3)"
+  tool="$(echo "$parsed" | cut -f4)"
 
-mapfile -t job_lines < <(
+  [[ -n "${conclusion:-}" && "$conclusion" != "null" ]] || conclusion="pending"
+  status_by_req["$os|$compiler|$tool|$req"]="$conclusion"
+done < <(
   jq -r '
     .jobs[]
     | select(.name | test("_(fpm|cmake|meson|mpi_fpm)$"))
@@ -75,36 +81,38 @@ mapfile -t job_lines < <(
   ' "$JOBS_FILE"
 )
 
-for line in "${job_lines[@]}"; do
-  name="${line%%$'\t'*}"
-  status="${line#*$'\t'}"
-
-  IFS='_' read -r os compiler idx jobtype <<< "$name"
+declare -A cell_status
+while IFS=$'\t' read -r os compiler tool req cver; do
+  [[ -n "$os" && -n "$compiler" && -n "$tool" && -n "$cver" && "$cver" != "Unknown" ]] || continue
   compiler="${compiler//--/-}"
 
-  [[ "$idx" =~ ^i[0-9]+$ ]] || continue
+  st="${status_by_req["$os|$compiler|$tool|$req"]:-pending}"
 
-  key="${os},${compiler},${idx},${jobtype}"
-  prev="${best_status[$key]:-}"
-
-  if [[ -z "$prev" ]]; then
-    best_status[$key]="$status"
-  else
-    if (( $(rank "$status") > $(rank "$prev") )); then
-      best_status[$key]="$status"
-    fi
+  key="$os|$compiler|$tool|$cver"
+  prev="${cell_status[$key]:-}"
+  if [[ -z "$prev" || $(rank "$st") -gt $(rank "$prev") ]]; then
+    cell_status[$key]="$st"
   fi
-done
+done < <(
+  jq -r '
+    .entries[]?
+    | [
+        (.os // ""),
+        (.compiler // ""),
+        (.tool // ""),
+        (.requested_compiler_version // ""),
+        (.compiler_version // .version // "")
+      ]
+    | @tsv
+  ' "$VERSIONS_FILE"
+)
 
-declare -a comp_ver_rows
-if [[ -f "$VERSIONS_FILE" ]]; then
-  mapfile -t comp_ver_rows < <(
-    jq -r '.rows[]? | [.compiler, .version] | @tsv' "$VERSIONS_FILE" 2>/dev/null || true
-  )
-fi
+mapfile -t compver_rows < <(
+  jq -r '.rows[]? | [.compiler, .compiler_version] | @tsv' "$VERSIONS_FILE"
+)
 
-if [[ ${#comp_ver_rows[@]} -eq 0 ]]; then
-  echo "ERROR: No versions found in $VERSIONS_FILE (rows[]). Cannot build version-only table." >&2
+if [[ ${#compver_rows[@]} -eq 0 ]]; then
+  echo "ERROR: No rows found in $VERSIONS_FILE (.rows[] empty)." >&2
   exit 2
 fi
 
@@ -112,37 +120,18 @@ build_cell() {
   local os="$1"
   local compiler="$2"
   local version="$3"
+
   local parts=()
-  local t st worst ic
-  local idx resolved key
+  local tool st
 
-  for t in fpm cmake meson mpi_fpm; do
-    worst=""
+  for tool in "${TOOLS[@]}"; do
+    st="${cell_status["$os|$compiler|$tool|$version"]:-}"
+    [[ -n "$st" ]] || continue
 
-    for k in "${!idx_to_version[@]}"; do
-      IFS=',' read -r kos kcomp kidx <<< "$k"
-      [[ "$kos" == "$os" && "$kcomp" == "$compiler" ]] || continue
+    label="$tool"
+    [[ "$tool" == "mpi_fpm" ]] && label="mpi"
 
-      resolved="${idx_to_version[$k]}"
-      [[ "$resolved" == "$version" ]] || continue
-
-      key="${os},${compiler},${kidx},${t}"
-      st="${best_status[$key]:-}"
-      [[ -n "$st" ]] || continue
-
-      if [[ -z "$worst" ]]; then
-        worst="$st"
-      else
-        if (( $(rank "$st") > $(rank "$worst") )); then
-          worst="$st"
-        fi
-      fi
-    done
-
-    if [[ -n "$worst" ]]; then
-      ic="$(icon "$worst")"
-      parts+=("${t} ${ic}")
-    fi
+    parts+=("${label} $(icon "$st")")
   done
 
   if [[ ${#parts[@]} -eq 0 ]]; then
@@ -158,21 +147,19 @@ build_cell() {
 
 TABLE_FILE="status.matrix.table"
 {
-  echo "| compiler   | version | macos | ubuntu | windows |"
-  echo "|------------|---------|-------|--------|---------|"
+  echo "| compiler | version | macos | ubuntu | windows |"
+  echo "|---------:|:--------|:------|:-------|:--------|"
 
-  IFS=$'\n' sorted_rows=($(printf "%s\n" "${comp_ver_rows[@]}" | sort))
+  IFS=$'\n' sorted=($(printf "%s\n" "${compver_rows[@]}" | sort))
   unset IFS
 
-  for row in "${sorted_rows[@]}"; do
+  for row in "${sorted[@]}"; do
     compiler="${row%%$'\t'*}"
     version="${row#*$'\t'}"
 
     printf "| \`%s\` | %s " "$compiler" "$version"
-
     for os in "${OS_KEYS[@]}"; do
-      cell="$(build_cell "$os" "$compiler" "$version")"
-      printf "| %s " "$cell"
+      printf "| %s " "$(build_cell "$os" "$compiler" "$version")"
     done
     echo "|"
   done
@@ -181,16 +168,12 @@ TABLE_FILE="status.matrix.table"
   echo "Last updated: ${LAST_UPDATED}"
 } > "$TABLE_FILE"
 
-awk -v start="<!-- STATUS:setup-fortran-conda:START -->" \
-    -v end="<!-- STATUS:setup-fortran-conda:END -->" \
-    -v table_file="$TABLE_FILE" '
+awk -v start="$START_MARK" -v end="$END_MARK" -v table_file="$TABLE_FILE" '
   BEGIN { inject = 0 }
   $0 ~ start { print; system("cat " table_file); inject = 1; next }
-  $0 ~ end { inject = 0 }
-  !inject
+  $0 ~ end { inject = 0; print; next }
+  !inject { print }
 ' "$README_FILE" > README.new.md
 
 mv README.new.md "$README_FILE"
 rm -f "$TABLE_FILE"
-
-echo "README.md updated with CI matrix table."

@@ -2,8 +2,8 @@ name: Setup Fortran with Conda
 description: Installs Fortran compilers and extra packages using Conda. Optionally builds and deploys FORD and/or Doxygen docs.
 author: Seyed Ali Ghasemi
 branding:
-  icon: 'check'
-  color: 'purple'
+  icon: check
+  color: purple
 
 inputs:
   compiler:
@@ -52,7 +52,7 @@ inputs:
     required: false
     default: "doc/ford"
   ford-target-folder:
-    description: "Target folder in repo for deployed FORD docs (used only if branch is main or master)"
+    description: "Target folder in repo for deployed FORD docs"
     required: false
     default: "doc/ford"
 
@@ -77,46 +77,42 @@ inputs:
     required: false
     default: "doc/doxygen"
   doxygen-target-folder:
-    description: "Target folder in repo for deployed Doxygen docs (used only if branch is main or master)"
+    description: "Target folder in repo for deployed Doxygen docs"
     required: false
     default: "doc/doxygen"
 
   generate-status-fpm:
-    description: 'Generate STATUS.md for test_fpm jobs'
+    description: "Generate STATUS.md for fpm jobs"
     required: false
-    default: 'false'
-
+    default: "false"
   generate-status-cmake:
-    description: 'Generate STATUS.md for test_cmake jobs'
+    description: "Generate STATUS.md for cmake jobs"
     required: false
-    default: 'false'
-
+    default: "false"
   generate-status-meson:
-    description: 'Generate STATUS.md for test_meson jobs'
-    required: false
-    default: 'false'
-
-  generate-status-table:
-    description: "Generate and inject CI status table into README.md"
+    description: "Generate STATUS.md for meson jobs"
     required: false
     default: "false"
 
   update-readme-table:
-    description: "Whether to auto-update the status table in README.md and commit it"
+    description: "Auto-update the status table in README.md and open a PR"
     required: false
     default: "false"
   update-readme-user-name:
     description: "Git user.name for README.md update commit"
     required: false
+    default: ""
   update-readme-user-email:
     description: "Git user.email for README.md update commit"
     required: false
+    default: ""
   update-readme-token:
-    description: "GitHub token used to create the PR for updating the README table"
+    description: "Token used by create-pull-request"
     required: false
+    default: ""
 
   fortitude-check:
-    description: "Run Fortitude check (https://github.com/PlasmaFAIR/fortitude)"
+    description: "Run Fortitude check"
     required: false
     default: "false"
   fortitude-settings:
@@ -125,94 +121,83 @@ inputs:
     default: "--output-format github"
 
 runs:
-  using: "composite"
+  using: composite
   steps:
     - name: Checkout repository
-      if: ${{ inputs.checkout-repo == 'true' || inputs.generate-doc-ford == 'true' || inputs.generate-doc-doxygen == 'true' }}
-      uses: actions/checkout@v6.0.2
+      if: ${{ inputs.checkout-repo == 'true'
+        || inputs.generate-doc-ford == 'true'
+        || inputs.generate-doc-doxygen == 'true'
+        || inputs.generate-status-fpm == 'true'
+        || inputs.generate-status-cmake == 'true'
+        || inputs.generate-status-meson == 'true'
+        || inputs.update-readme-table == 'true' }}
+      uses: actions/checkout@v4
 
     - name: Decide whether Conda is needed
       shell: bash
       run: |
+        set -euo pipefail
         need_conda="false"
-
-        # Compiler setup implies Conda (your index.js expects it)
-        if [[ -n "${{ inputs.compiler }}" && -n "${{ inputs.platform }}" ]]; then
-          need_conda="true"
-        fi
-
-        # Docs need Conda (you conda install / pip install)
-        if [[ "${{ inputs.generate-doc-ford }}" == "true" || "${{ inputs.generate-doc-doxygen }}" == "true" ]]; then
-          need_conda="true"
-        fi
-
-        # Fortitude step currently uses conda activation
-        if [[ "${{ inputs.fortitude-check }}" == "true" ]]; then
-          need_conda="true"
-        fi
-
+        if [[ -n "${{ inputs.compiler }}" && -n "${{ inputs.platform }}" ]]; then need_conda="true"; fi
+        if [[ "${{ inputs.generate-doc-ford }}" == "true" || "${{ inputs.generate-doc-doxygen }}" == "true" ]]; then need_conda="true"; fi
+        if [[ "${{ inputs.fortitude-check }}" == "true" ]]; then need_conda="true"; fi
         echo "NEED_CONDA=$need_conda" >> "$GITHUB_ENV"
-        echo "NEED_CONDA=$need_conda"
 
     - name: Setup Miniconda
       if: ${{ env.NEED_CONDA == 'true' }}
       uses: conda-incubator/setup-miniconda@v3.3.0
       with:
-        auto-update-conda: true
+        auto-update-conda: false
         activate-environment: fortran
         channels: conda-forge, defaults
 
-    - name: Run Fortran compiler setup script
+    - name: Run compiler setup
       id: sfc_setup
       if: ${{ inputs.compiler != '' && inputs.platform != '' && env.NEED_CONDA == 'true' }}
       shell: bash
-      run: |
-        node "${{ github.action_path }}/index.js"
       env:
         INPUT_COMPILER: ${{ inputs.compiler }}
         INPUT_COMPILER_VERSION: ${{ inputs.compiler-version }}
         INPUT_PLATFORM: ${{ inputs.platform }}
         INPUT_EXTRA_PACKAGES: ${{ inputs.extra-packages }}
         INPUT_FPM_VERSION: ${{ inputs.fpm-version }}
+      run: |
+        set -euo pipefail
+        node "${{ github.action_path }}/index.js"
 
-    - name: Upload compiler version artifact
+    - name: Upload version JSON artifact
       if: ${{ inputs.compiler != '' && inputs.platform != '' && env.NEED_CONDA == 'true' }}
       uses: actions/upload-artifact@v4
       with:
-        name: sfc-${{ runner.os }}-${{ inputs.compiler }}-${{ steps.sfc_setup.outputs.version }}-i${{ strategy.job-index }}-${{ github.job }}
+        name: sfc-${{ github.job }}-${{ runner.os }}-${{ inputs.compiler }}-${{ steps.sfc_setup.outputs.version || 'unknown' }}-${{ github.run_id }}
         path: ${{ runner.temp }}/sfc_versions/*.json
         if-no-files-found: ignore
         retention-days: 7
 
-    - name: Install and Run Fortitude Linter
+    - name: Fortitude
       if: ${{ inputs.fortitude-check == 'true' && env.NEED_CONDA == 'true' }}
       shell: bash
       run: |
-        source "${CONDA}/etc/profile.d/conda.sh"
+        set -euo pipefail
+        eval "$(conda shell.bash hook)"
         conda activate fortran
-
-        echo "::group:: Installing Fortitude"
         pip install fortitude-lint
-        echo "::endgroup::"
-
-        echo "Running Fortitude with settings: ${{ inputs.fortitude-settings }}"
         fortitude check ${{ inputs.fortitude-settings }}
 
-    - name: Build FORD documentation
+    - name: Build FORD docs
       if: ${{ inputs.generate-doc-ford == 'true' && env.NEED_CONDA == 'true' }}
       shell: bash
       run: |
-        source "${CONDA}/etc/profile.d/conda.sh"
+        set -euo pipefail
+        eval "$(conda shell.bash hook)"
         conda activate fortran
-        echo "::group:: Setting up FORD documentation"
         conda install -y pip graphviz
         pip install ford
         mkdir -p "${{ inputs.ford-output-directory }}"
         cd "${{ inputs.ford-working-directory }}"
-        echo "::endgroup::"
         ford "${{ inputs.ford-config }}"
 
-    - name: Deploy FORD documentation
+    - name: Deploy FORD docs
       if: ${{ inputs.generate-doc-ford == 'true' }}
       uses: JamesIves/github-pages-deploy-action@v4.8.0
       with:
@@ -220,22 +205,21 @@ runs:
         folder: ${{ inputs.ford-output-directory }}
         target-folder: ${{ inputs.ford-target-folder }}
         clean: ${{ !contains('main master', inputs.ford-branch) }}
-        commit-message: "Deploy FORD docs"
+        commit-message: Deploy FORD docs
 
-    - name: Build Doxygen documentation
+    - name: Build Doxygen docs
       if: ${{ inputs.generate-doc-doxygen == 'true' && env.NEED_CONDA == 'true' }}
       shell: bash
       run: |
-        source "${CONDA}/etc/profile.d/conda.sh"
+        set -euo pipefail
+        eval "$(conda shell.bash hook)"
         conda activate fortran
-        echo "::group:: Setting up Doxygen documentation"
         conda install -y graphviz doxygen
         mkdir -p "${{ inputs.doxygen-output-directory }}"
         cd "${{ inputs.doxygen-working-directory }}"
-        echo "::endgroup::"
         doxygen "${{ inputs.doxygen-config }}"
 
-    - name: Deploy Doxygen documentation
+    - name: Deploy Doxygen docs
       if: ${{ inputs.generate-doc-doxygen == 'true' }}
       uses: JamesIves/github-pages-deploy-action@v4.8.0
       with:
@@ -243,10 +227,96 @@ runs:
         folder: ${{ inputs.doxygen-output-directory }}
         target-folder: ${{ inputs.doxygen-target-folder }}
         clean: ${{ !contains('main master', inputs.doxygen-branch) }}
-        commit-message: "Deploy Doxygen docs"
+        commit-message: Deploy Doxygen docs
 
-    - name: Download SFC version artifacts (for badges)
+    - name: Download version artifacts (STATUS.md)
       if: ${{ inputs.generate-status-fpm == 'true' || inputs.generate-status-cmake == 'true' || inputs.generate-status-meson == 'true' }}
+      uses: actions/download-artifact@v4
+      with:
+        pattern: sfc-*
+        path: ${{ runner.temp }}/sfc_status/sfc_versions
+
+    - name: Generate STATUS.md (fpm)
+      if: ${{ inputs.generate-status-fpm == 'true' }}
+      shell: bash
+      env:
+        GH_TOKEN: ${{ github.token }}
+        REPO: ${{ github.repository }}
+        RUN_ID: ${{ github.run_id }}
+        VERSIONS_DIR: ${{ runner.temp }}/sfc_status/sfc_versions
+      run: |
+        set -euo pipefail
+        bash "${{ github.action_path }}/scripts/generate-status-md.sh" fpm
+
+    - name: Deploy STATUS.md (fpm)
+      if: ${{ inputs.generate-status-fpm == 'true' }}
+      uses: JamesIves/github-pages-deploy-action@v4.8.0
+      with:
+        branch: status-fpm
+        folder: status-fpm
+        clean: true
+        commit-message: Deploy fpm status
+
+    - name: Generate STATUS.md (cmake)
+      if: ${{ inputs.generate-status-cmake == 'true' }}
+      shell: bash
+      env:
+        GH_TOKEN: ${{ github.token }}
+        REPO: ${{ github.repository }}
+        RUN_ID: ${{ github.run_id }}
+        VERSIONS_DIR: ${{ runner.temp }}/sfc_status/sfc_versions
+      run: |
+        set -euo pipefail
+        bash "${{ github.action_path }}/scripts/generate-status-md.sh" cmake
+
+    - name: Deploy STATUS.md (cmake)
+      if: ${{ inputs.generate-status-cmake == 'true' }}
+      uses: JamesIves/github-pages-deploy-action@v4.8.0
+      with:
+        branch: status-cmake
+        folder: status-cmake
+        clean: true
+        commit-message: Deploy cmake status
+
+    - name: Generate STATUS.md (meson)
+      if: ${{ inputs.generate-status-meson == 'true' }}
+      shell: bash
+      env:
+        GH_TOKEN: ${{ github.token }}
+        REPO: ${{ github.repository }}
+        RUN_ID: ${{ github.run_id }}
+        VERSIONS_DIR: ${{ runner.temp }}/sfc_status/sfc_versions
+      run: |
+        set -euo pipefail
+        bash "${{ github.action_path }}/scripts/generate-status-md.sh" meson
+
+    - name: Deploy STATUS.md (meson)
+      if: ${{ inputs.generate-status-meson == 'true' }}
+      uses: JamesIves/github-pages-deploy-action@v4.8.0
+      with:
+        branch: status-meson
+        folder: status-meson
+        clean: true
+        commit-message: Deploy meson status
+
+    - name: Download version artifacts (README update)
+      if: ${{ inputs.update-readme-table == 'true' }}
+      uses: actions/download-artifact@v4
+      with:
+        pattern: sfc-*
+        path: ${{ runner.temp }}/sfc_ci/sfc_versions
+
+    - name: Aggregate versions
+      if: ${{ inputs.update-readme-table == 'true' }}
+      shell: bash
+      run: |
+        set -euo pipefail
+        node "${{ github.action_path }}/scripts/aggregate-versions.js" \
+          "${{ runner.temp }}/sfc_ci/sfc_versions" \
+          "${{ runner.temp }}/sfc_ci/versions.json"
+
+    - name: Fetch job results
+      if: ${{ inputs.update-readme-table == 'true' }}
       shell: bash
       env:
         GH_TOKEN: ${{ github.token }}
@@ -254,147 +324,34 @@ runs:
         RUN_ID: ${{ github.run_id }}
       run: |
         set -euo pipefail
-        out="${RUNNER_TEMP}/sfc_status/sfc_versions"
-        mkdir -p "$out"
-        mkdir -p "${RUNNER_TEMP}/sfc_status"
-
-        curl -fsSL -H "Authorization: token $GH_TOKEN" \
-          "https://api.github.com/repos/$REPO/actions/runs/$RUN_ID/artifacts?per_page=200" \
-          > "${RUNNER_TEMP}/sfc_status/artifacts.json"
-
-        jq -r '.artifacts[] | select(.name | startswith("sfc-")) | [.archive_download_url, .name] | @tsv' \
-          "${RUNNER_TEMP}/sfc_status/artifacts.json" \
-        | while IFS=$'\t' read -r url name; do
-            echo "Downloading artifact: $name"
-            zip="${out}/${name}.zip"
-            curl -fsSL -H "Authorization: token $GH_TOKEN" "$url" -o "$zip"
-            mkdir -p "${out}/${name}"
-            unzip -q "$zip" -d "${out}/${name}"
-          done
-
-    - name: Generate STATUS.md for test_fpm
-      if: ${{ inputs.generate-status-fpm == 'true' }}
-      shell: bash
-      env:
-        GH_TOKEN: ${{ github.token }}
-        REPO: ${{ github.repository }}
-        RUN_ID: ${{ github.run_id }}
-        VERSIONS_DIR: ${{ runner.temp }}/sfc_status/sfc_versions
-      run: |
-        bash "${{ github.action_path }}/scripts/generate-status-md.sh" fpm
-
-    - name: Deploy STATUS.md (test_fpm)
-      if: ${{ inputs.generate-status-fpm == 'true' }}
-      uses: JamesIves/github-pages-deploy-action@v4.8.0
-      with:
-        branch: status-fpm
-        folder: status-fpm
-        clean: true
-        commit-message: "Deploy fpm status"
-
-    - name: Generate STATUS.md for test_cmake
-      if: ${{ inputs.generate-status-cmake == 'true' }}
-      shell: bash
-      env:
-        GH_TOKEN: ${{ github.token }}
-        REPO: ${{ github.repository }}
-        RUN_ID: ${{ github.run_id }}
-        VERSIONS_DIR: ${{ runner.temp }}/sfc_status/sfc_versions
-      run: |
-        bash "${{ github.action_path }}/scripts/generate-status-md.sh" cmake
-
-    - name: Deploy STATUS.md (test_cmake)
-      if: ${{ inputs.generate-status-cmake == 'true' }}
-      uses: JamesIves/github-pages-deploy-action@v4.8.0
-      with:
-        branch: status-cmake
-        folder: status-cmake
-        clean: true
-        commit-message: "Deploy cmake status"
-
-    - name: Generate STATUS.md for test_meson
-      if: ${{ inputs.generate-status-meson == 'true' }}
-      shell: bash
-      env:
-        GH_TOKEN: ${{ github.token }}
-        REPO: ${{ github.repository }}
-        RUN_ID: ${{ github.run_id }}
-        VERSIONS_DIR: ${{ runner.temp }}/sfc_status/sfc_versions
-      run: |
-        bash "${{ github.action_path }}/scripts/generate-status-md.sh" meson
-
-    - name: Deploy STATUS.md (test_meson)
-      if: ${{ inputs.generate-status-meson == 'true' }}
-      uses: JamesIves/github-pages-deploy-action@v4.8.0
-      with:
-        branch: status-meson
-        folder: status-meson
-        clean: true
-        commit-message: "Deploy meson status"
-
-    - name: Generate and Inject CI Matrix into README
-      if: ${{ inputs.generate-status-table == 'true' }}
-      shell: bash
-      run: |
-        bash "${{ github.action_path }}/scripts/update-readme-status.sh"
-
-    - name: Checkout repository (for README update)
-      if: ${{ inputs.update-readme-table == 'true' }}
-      uses: actions/checkout@v6.0.2
-      with:
-        persist-credentials: false
-
-    - name: Download version artifacts
-      if: ${{ inputs.update-readme-table == 'true' }}
-      uses: actions/download-artifact@v4
-      with:
-        pattern: sfc-*
-        path: ${{ runner.temp }}/sfc_ci/sfc_versions
-
-    - name: Aggregate compiler versions
-      if: ${{ inputs.update-readme-table == 'true' }}
-      shell: bash
-      run: |
-        node "${{ github.action_path }}/scripts/aggregate-versions.js" \
-          "${{ runner.temp }}/sfc_ci/sfc_versions" \
-          "${{ runner.temp }}/sfc_ci/versions.json"
-        cat "${{ runner.temp }}/sfc_ci/versions.json"
-
-    - name: Fetch workflow job results
-      if: ${{ inputs.update-readme-table == 'true' }}
-      shell: bash
-      env:
-        GH_TOKEN: ${{ github.token }}
-        REPO: ${{ github.repository }}
-        RUN_ID: ${{ github.run_id }}
-      run: |
         mkdir -p "${{ runner.temp }}/sfc_ci"
-        curl -s -H "Authorization: token $GH_TOKEN" \
+        curl -fsSL -H "Authorization: token $GH_TOKEN" \
           "https://api.github.com/repos/$REPO/actions/runs/$RUN_ID/jobs?per_page=200" \
           > "${{ runner.temp }}/sfc_ci/jobs.json"
-        jq '.jobs | length' "${{ runner.temp }}/sfc_ci/jobs.json"
 
-    - name: Generate status table in README
+    - name: Update README table
       if: ${{ inputs.update-readme-table == 'true' }}
       shell: bash
       env:
         JOBS_FILE: ${{ runner.temp }}/sfc_ci/jobs.json
         VERSIONS_FILE: ${{ runner.temp }}/sfc_ci/versions.json
       run: |
+        set -euo pipefail
         bash "${{ github.action_path }}/scripts/update-readme-status.sh"
 
     - name: Setup Git author
       if: ${{ inputs.update-readme-table == 'true' }}
       shell: bash
       run: |
+        set -euo pipefail
         git config user.name "${{ inputs.update-readme-user-name }}"
         git config user.email "${{ inputs.update-readme-user-email }}"
 
-    - name: Create Pull Request for README table
+    - name: Create PR
       if: ${{ inputs.update-readme-table == 'true' }}
       uses: peter-evans/create-pull-request@v8.1.0
       with:
-        token: "${{ inputs.update-readme-token }}"
+        token: ${{ inputs.update-readme-token }}
         commit-message: "Update README.md status table [ci skip]"
         branch: update/readme-status-table
         title: "update README.md status table"

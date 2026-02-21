@@ -4,6 +4,7 @@ set -euo pipefail
 README_FILE="README.md"
 JOBS_FILE="${JOBS_FILE:-.ci/jobs.json}"
 VERSIONS_FILE="${VERSIONS_FILE:-.ci/versions.json}"
+VERSIONS_DIR="${VERSIONS_DIR:-${RUNNER_TEMP:-/tmp}/sfc_ci/sfc_versions}"
 
 LAST_UPDATED="$(date -u +%F)"
 if [[ -f "$VERSIONS_FILE" ]]; then
@@ -12,11 +13,6 @@ if [[ -f "$VERSIONS_FILE" ]]; then
 fi
 
 OS_KEYS=("macos-latest" "ubuntu-latest" "windows-latest")
-declare -A os_display=(
-  ["ubuntu-latest"]="ubuntu"
-  ["macos-latest"]="macos"
-  ["windows-latest"]="windows"
-)
 
 rank() {
   case "$1" in
@@ -41,6 +37,35 @@ icon() {
 
 declare -A best_status
 
+declare -A idx_to_version
+
+
+if [[ -d "$VERSIONS_DIR" ]]; then
+  while IFS= read -r d; do
+    base="$(basename "$d")"
+
+    if [[ "$base" =~ ^sfc-(macOS|Linux|Windows)-([^-]+)-([^-]+)-i([0-9]+)- ]]; then
+      runner_os="${BASH_REMATCH[1]}"
+      compiler="${BASH_REMATCH[2]}"
+      version="${BASH_REMATCH[3]}"
+      idx="i${BASH_REMATCH[4]}"
+
+      os_key=""
+      case "$runner_os" in
+        Linux) os_key="ubuntu-latest" ;;
+        Windows) os_key="windows-latest" ;;
+        macOS) os_key="macos-latest" ;;
+      esac
+
+      compiler="${compiler//--/-}"
+
+      if [[ -n "$os_key" && -n "$compiler" && -n "$version" && -n "$idx" ]]; then
+        idx_to_version["${os_key},${compiler},${idx}"]="$version"
+      fi
+    fi
+  done < <(find "$VERSIONS_DIR" -mindepth 1 -maxdepth 3 -type d 2>/dev/null || true)
+fi
+
 mapfile -t job_lines < <(
   jq -r '
     .jobs[]
@@ -54,10 +79,12 @@ for line in "${job_lines[@]}"; do
   name="${line%%$'\t'*}"
   status="${line#*$'\t'}"
 
-  IFS='_' read -r os compiler jobtype <<< "$name"
+  IFS='_' read -r os compiler idx jobtype <<< "$name"
   compiler="${compiler//--/-}"
 
-  key="${os},${compiler},${jobtype}"
+  [[ "$idx" =~ ^i[0-9]+$ ]] || continue
+
+  key="${os},${compiler},${idx},${jobtype}"
   prev="${best_status[$key]:-}"
 
   if [[ -z "$prev" ]]; then
@@ -77,25 +104,43 @@ if [[ -f "$VERSIONS_FILE" ]]; then
 fi
 
 if [[ ${#comp_ver_rows[@]} -eq 0 ]]; then
-  mapfile -t compilers < <(
-    jq -r '.jobs[] | select(.name | test("_(fpm|cmake|meson|mpi_fpm)$")) | .name' "$JOBS_FILE" \
-      | awk -F'_' '{print $2}' | sed 's/--/-/g' | sort -u
-  )
-  for c in "${compilers[@]}"; do
-    comp_ver_rows+=("${c}"$'\t'"Unknown")
-  done
+  echo "ERROR: No versions found in $VERSIONS_FILE (rows[]). Cannot build version-only table." >&2
+  exit 2
 fi
 
 build_cell() {
   local os="$1"
   local compiler="$2"
+  local version="$3"
   local parts=()
-  local t st ic
+  local t st worst ic
+  local idx resolved key
 
   for t in fpm cmake meson mpi_fpm; do
-    st="${best_status[${os},${compiler},${t}]:-}"
-    if [[ -n "$st" ]]; then
-      ic="$(icon "$st")"
+    worst=""
+
+    for k in "${!idx_to_version[@]}"; do
+      IFS=',' read -r kos kcomp kidx <<< "$k"
+      [[ "$kos" == "$os" && "$kcomp" == "$compiler" ]] || continue
+
+      resolved="${idx_to_version[$k]}"
+      [[ "$resolved" == "$version" ]] || continue
+
+      key="${os},${compiler},${kidx},${t}"
+      st="${best_status[$key]:-}"
+      [[ -n "$st" ]] || continue
+
+      if [[ -z "$worst" ]]; then
+        worst="$st"
+      else
+        if (( $(rank "$st") > $(rank "$worst") )); then
+          worst="$st"
+        fi
+      fi
+    done
+
+    if [[ -n "$worst" ]]; then
+      ic="$(icon "$worst")"
       parts+=("${t} ${ic}")
     fi
   done
@@ -105,7 +150,7 @@ build_cell() {
   else
     local out=""
     for p in "${parts[@]}"; do
-      if [[ -z "$out" ]]; then out="$p"; else out="$out  $p"; fi
+      [[ -z "$out" ]] && out="$p" || out="$out  $p"
     done
     echo "$out"
   fi
@@ -126,7 +171,7 @@ TABLE_FILE="status.matrix.table"
     printf "| \`%s\` | %s " "$compiler" "$version"
 
     for os in "${OS_KEYS[@]}"; do
-      cell="$(build_cell "$os" "$compiler")"
+      cell="$(build_cell "$os" "$compiler" "$version")"
       printf "| %s " "$cell"
     done
     echo "|"

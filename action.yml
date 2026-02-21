@@ -179,7 +179,7 @@ runs:
       if: ${{ inputs.compiler != '' && inputs.platform != '' && env.NEED_CONDA == 'true' }}
       uses: actions/upload-artifact@v4
       with:
-        name: sfc-${{ runner.os }}-${{ inputs.compiler }}-${{ steps.sfc_setup.outputs.version }}-${{ github.job }}
+        name: sfc-${{ runner.os }}-${{ inputs.compiler }}-${{ steps.sfc_setup.outputs.version }}-i${{ strategy.job-index }}-${{ github.job }}
         path: ${{ runner.temp }}/sfc_versions/*.json
         if-no-files-found: ignore
         retention-days: 7
@@ -245,6 +245,33 @@ runs:
         clean: ${{ !contains('main master', inputs.doxygen-branch) }}
         commit-message: "Deploy Doxygen docs"
 
+    - name: Download SFC version artifacts (for badges)
+      if: ${{ inputs.generate-status-fpm == 'true' || inputs.generate-status-cmake == 'true' || inputs.generate-status-meson == 'true' }}
+      shell: bash
+      env:
+        GH_TOKEN: ${{ github.token }}
+        REPO: ${{ github.repository }}
+        RUN_ID: ${{ github.run_id }}
+      run: |
+        set -euo pipefail
+        out="${RUNNER_TEMP}/sfc_status/sfc_versions"
+        mkdir -p "$out"
+        mkdir -p "${RUNNER_TEMP}/sfc_status"
+
+        curl -fsSL -H "Authorization: token $GH_TOKEN" \
+          "https://api.github.com/repos/$REPO/actions/runs/$RUN_ID/artifacts?per_page=200" \
+          > "${RUNNER_TEMP}/sfc_status/artifacts.json"
+
+        jq -r '.artifacts[] | select(.name | startswith("sfc-")) | [.archive_download_url, .name] | @tsv' \
+          "${RUNNER_TEMP}/sfc_status/artifacts.json" \
+        | while IFS=$'\t' read -r url name; do
+            echo "Downloading artifact: $name"
+            zip="${out}/${name}.zip"
+            curl -fsSL -H "Authorization: token $GH_TOKEN" "$url" -o "$zip"
+            mkdir -p "${out}/${name}"
+            unzip -q "$zip" -d "${out}/${name}"
+          done
+
     - name: Generate STATUS.md for test_fpm
       if: ${{ inputs.generate-status-fpm == 'true' }}
       shell: bash
@@ -252,6 +279,7 @@ runs:
         GH_TOKEN: ${{ github.token }}
         REPO: ${{ github.repository }}
         RUN_ID: ${{ github.run_id }}
+        VERSIONS_DIR: ${{ runner.temp }}/sfc_status/sfc_versions
       run: |
         bash "${{ github.action_path }}/scripts/generate-status-md.sh" fpm
 
@@ -271,6 +299,7 @@ runs:
         GH_TOKEN: ${{ github.token }}
         REPO: ${{ github.repository }}
         RUN_ID: ${{ github.run_id }}
+        VERSIONS_DIR: ${{ runner.temp }}/sfc_status/sfc_versions
       run: |
         bash "${{ github.action_path }}/scripts/generate-status-md.sh" cmake
 
@@ -290,6 +319,7 @@ runs:
         GH_TOKEN: ${{ github.token }}
         REPO: ${{ github.repository }}
         RUN_ID: ${{ github.run_id }}
+        VERSIONS_DIR: ${{ runner.temp }}/sfc_status/sfc_versions
       run: |
         bash "${{ github.action_path }}/scripts/generate-status-md.sh" meson
 
@@ -320,7 +350,6 @@ runs:
       with:
         pattern: sfc-*
         path: ${{ runner.temp }}/sfc_ci/sfc_versions
-        merge-multiple: true
 
     - name: Aggregate compiler versions
       if: ${{ inputs.update-readme-table == 'true' }}

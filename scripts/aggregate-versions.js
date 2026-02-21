@@ -3,8 +3,25 @@ import path from 'path';
 
 function readAllJson(dir) {
   if (!fs.existsSync(dir)) return [];
-  const files = fs.readdirSync(dir).filter(f => f.endsWith('.json'));
-  return files.map(f => JSON.parse(fs.readFileSync(path.join(dir, f), 'utf8')));
+
+  const out = [];
+  const stack = [dir];
+
+  while (stack.length) {
+    const cur = stack.pop();
+    const entries = fs.readdirSync(cur, { withFileTypes: true });
+
+    for (const e of entries) {
+      const p = path.join(cur, e.name);
+      if (e.isDirectory()) {
+        stack.push(p);
+      } else if (e.isFile() && e.name.endsWith('.json')) {
+        out.push(JSON.parse(fs.readFileSync(p, 'utf8')));
+      }
+    }
+  }
+
+  return out;
 }
 
 function parseV(v) {

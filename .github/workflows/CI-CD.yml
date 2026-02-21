@@ -225,7 +225,7 @@ jobs:
   update_readme_table:
     if: ${{ always() && (github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule') && github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, '[skip ci]') }}
     name: Update README.md status table
-    needs: [status_fpm, status_cmake, status_meson]
+    needs: [test_fpm, test_mpi_fpm, test_cmake, test_meson]
     runs-on: ubuntu-latest
     steps:
       - name: Update README status

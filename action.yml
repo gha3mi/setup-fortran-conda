@@ -150,6 +150,14 @@ runs:
         INPUT_EXTRA_PACKAGES: ${{ inputs.extra-packages }}
         INPUT_FPM_VERSION: ${{ inputs.fpm-version }}
 
+    - name: Upload compiler version artifact
+      if: ${{ inputs.compiler != '' && inputs.platform != '' && env.NEED_CONDA == 'true' }}
+      uses: actions/upload-artifact@v4
+      with:
+        name: sfc-versions-${{ inputs.platform }}-${{ inputs.compiler }}-${{ github.job }}
+        path: ${{ runner.temp }}/sfc_versions/*.json
+        if-no-files-found: ignore
+        retention-days: 7
 
     - name: Install and Run Fortitude Linter
       if: ${{ inputs.fortitude-check == 'true' }}
@@ -401,9 +409,43 @@ runs:
       with:
         persist-credentials: false
 
+    - name: Download version artifacts
+      if: ${{ inputs.update-readme-table == 'true' }}
+      uses: actions/download-artifact@v4
+      with:
+        pattern: sfc-versions-*
+        path: ${{ runner.temp }}/sfc_ci/sfc_versions
+        merge-multiple: true
+
+    - name: Aggregate compiler versions
+      if: ${{ inputs.update-readme-table == 'true' }}
+      shell: bash
+      run: |
+        node "${{ github.action_path }}/scripts/aggregate-versions.js" \
+          "${{ runner.temp }}/sfc_ci/sfc_versions" \
+          "${{ runner.temp }}/sfc_ci/versions.json"
+        cat "${{ runner.temp }}/sfc_ci/versions.json"
+
+    - name: Fetch workflow job results
+      if: ${{ inputs.update-readme-table == 'true' }}
+      shell: bash
+      env:
+        GH_TOKEN: ${{ github.token }}
+        REPO: ${{ github.repository }}
+        RUN_ID: ${{ github.run_id }}
+      run: |
+        mkdir -p "${{ runner.temp }}/sfc_ci"
+        curl -s -H "Authorization: token $GH_TOKEN" \
+          "https://api.github.com/repos/$REPO/actions/runs/$RUN_ID/jobs?per_page=200" \
+          > "${{ runner.temp }}/sfc_ci/jobs.json"
+        jq '.jobs | length' "${{ runner.temp }}/sfc_ci/jobs.json"
+
     - name: Generate status table in README
       if: ${{ inputs.update-readme-table == 'true' }}
       shell: bash
+      env:
+        JOBS_FILE: ${{ runner.temp }}/sfc_ci/jobs.json
+        VERSIONS_FILE: ${{ runner.temp }}/sfc_ci/versions.json
       run: |
         bash "${{ github.action_path }}/scripts/update-readme-status.sh"
 

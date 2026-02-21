@@ -22,6 +22,10 @@ inputs:
     description: "List of additional Conda packages (e.g., cmake ninja)"
     required: false
     default: ""
+  fpm-version:
+    description: "Optional fpm version. Empty means latest."
+    required: false
+    default: ""
   checkout-repo:
     description: "Whether to checkout the repository before setup"
     required: false
@@ -144,6 +148,8 @@ runs:
         INPUT_COMPILER_VERSION: ${{ inputs.compiler-version }}
         INPUT_PLATFORM: ${{ inputs.platform }}
         INPUT_EXTRA_PACKAGES: ${{ inputs.extra-packages }}
+        INPUT_FPM_VERSION: ${{ inputs.fpm-version }}
+
 
     - name: Install and Run Fortitude Linter
       if: ${{ inputs.fortitude-check == 'true' }}

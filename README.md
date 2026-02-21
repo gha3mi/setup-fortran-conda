@@ -52,17 +52,17 @@ jobs:
     runs-on: ${{ matrix.os }}
       matrix:
         include:
-        - {os: ubuntu-latest,  compiler: gfortran,  compiler-version: "", extra-packages: ""}
-        - {os: ubuntu-latest,  compiler: ifx,       compiler-version: "", extra-packages: ""}
-        - {os: ubuntu-latest,  compiler: flang-new, compiler-version: "", extra-packages: ""}
-        - {os: ubuntu-latest,  compiler: nvfortran, compiler-version: "", extra-packages: ""}
-        - {os: ubuntu-latest,  compiler: lfortran,  compiler-version: "", extra-packages: ""}
-        - {os: windows-latest, compiler: gfortran,  compiler-version: "", extra-packages: ""}
-        - {os: windows-latest, compiler: ifx,       compiler-version: "", extra-packages: ""}
-        - {os: windows-latest, compiler: flang-new, compiler-version: "", extra-packages: ""}
-        - {os: windows-latest, compiler: lfortran,  compiler-version: "", extra-packages: ""}
-        - {os: macos-latest,   compiler: gfortran,  compiler-version: "", extra-packages: ""}
-        - {os: macos-latest,   compiler: lfortran,  compiler-version: "", extra-packages: ""}
+        - {os: ubuntu-latest,  compiler: gfortran,  compiler-version: "", extra-packages: "", fpm-version: "0.13.0"}
+        - {os: ubuntu-latest,  compiler: ifx,       compiler-version: "", extra-packages: "", fpm-version: "0.13.0"}
+        - {os: ubuntu-latest,  compiler: flang-new, compiler-version: "", extra-packages: "", fpm-version: "0.13.0"}
+        - {os: ubuntu-latest,  compiler: nvfortran, compiler-version: "", extra-packages: "", fpm-version: "0.13.0"}
+        - {os: ubuntu-latest,  compiler: lfortran,  compiler-version: "", extra-packages: "", fpm-version: "0.12.0"}
+        - {os: windows-latest, compiler: gfortran,  compiler-version: "", extra-packages: "", fpm-version: "0.13.0"}
+        - {os: windows-latest, compiler: ifx,       compiler-version: "", extra-packages: "", fpm-version: "0.12.0"}
+        - {os: windows-latest, compiler: flang-new, compiler-version: "", extra-packages: "", fpm-version: "0.13.0"}
+        - {os: windows-latest, compiler: lfortran,  compiler-version: "", extra-packages: "", fpm-version: "0.12.0"}
+        - {os: macos-latest,   compiler: gfortran,  compiler-version: "", extra-packages: "", fpm-version: "0.13.0"}
+        - {os: macos-latest,   compiler: lfortran,  compiler-version: "", extra-packages: "", fpm-version: "0.12.0"}
 
     steps:
       - name: Setup Fortran
@@ -72,6 +72,7 @@ jobs:
           compiler: ${{ matrix.compiler }}
           compiler-version: ${{ matrix.compiler-version }}
           extra-packages: ${{ matrix.extra-packages }}
+          fpm-version: ${{ matrix.fpm-version }}
 
       - name: fpm test (debug)
         run: fpm test --compiler ${{ matrix.compiler }} --profile debug
@@ -199,17 +200,17 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - {os: ubuntu-latest,  compiler: gfortran,  compiler-version: "", extra-packages: ""}
-        - {os: ubuntu-latest,  compiler: ifx,       compiler-version: "", extra-packages: ""}
-        - {os: ubuntu-latest,  compiler: flang-new, compiler-version: "", extra-packages: ""}
-        - {os: ubuntu-latest,  compiler: nvfortran, compiler-version: "", extra-packages: ""}
-        - {os: ubuntu-latest,  compiler: lfortran,  compiler-version: "", extra-packages: ""}
-        - {os: windows-latest, compiler: gfortran,  compiler-version: "", extra-packages: ""}
-        - {os: windows-latest, compiler: ifx,       compiler-version: "", extra-packages: ""}
-        - {os: windows-latest, compiler: flang-new, compiler-version: "", extra-packages: ""}
-        - {os: windows-latest, compiler: lfortran,  compiler-version: "", extra-packages: ""}
-        - {os: macos-latest,   compiler: gfortran,  compiler-version: "", extra-packages: ""}
-        - {os: macos-latest,   compiler: lfortran,  compiler-version: "", extra-packages: ""}
+        - {os: ubuntu-latest,  compiler: gfortran,  compiler-version: "", extra-packages: "", fpm-version: "0.13.0"}
+        - {os: ubuntu-latest,  compiler: ifx,       compiler-version: "", extra-packages: "", fpm-version: "0.13.0"}
+        - {os: ubuntu-latest,  compiler: flang-new, compiler-version: "", extra-packages: "", fpm-version: "0.13.0"}
+        - {os: ubuntu-latest,  compiler: nvfortran, compiler-version: "", extra-packages: "", fpm-version: "0.13.0"}
+        - {os: ubuntu-latest,  compiler: lfortran,  compiler-version: "", extra-packages: "", fpm-version: "0.12.0"}
+        - {os: windows-latest, compiler: gfortran,  compiler-version: "", extra-packages: "", fpm-version: "0.13.0"}
+        - {os: windows-latest, compiler: ifx,       compiler-version: "", extra-packages: "", fpm-version: "0.12.0"}
+        - {os: windows-latest, compiler: flang-new, compiler-version: "", extra-packages: "", fpm-version: "0.13.0"}
+        - {os: windows-latest, compiler: lfortran,  compiler-version: "", extra-packages: "", fpm-version: "0.12.0"}
+        - {os: macos-latest,   compiler: gfortran,  compiler-version: "", extra-packages: "", fpm-version: "0.13.0"}
+        - {os: macos-latest,   compiler: lfortran,  compiler-version: "", extra-packages: "", fpm-version: "0.12.0"}
 
     steps:
       - name: Setup Fortran

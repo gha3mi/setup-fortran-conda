@@ -21,6 +21,7 @@ async function run() {
     const version = process.env.INPUT_COMPILER_VERSION || '';
     const platform = (process.env.INPUT_PLATFORM || '').toLowerCase();
     const extrasInput = process.env.INPUT_EXTRA_PACKAGES || '';
+    const fpmVersion = process.env.INPUT_FPM_VERSION || '';
 
     const osKey = platform.includes('ubuntu') ? 'lin'
       : platform.includes('windows') ? 'win'
@@ -34,7 +35,7 @@ async function run() {
       .split(/[\s,]+/)
       .map(p => p.trim())
       .filter(Boolean);
-    await installExtras('fortran', extras);
+    await installExtras('fortran', extras, fpmVersion);
 
     // Install compiler
     const { setup } = await import(`./platform/${osKey}/${compiler}.js`);

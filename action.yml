@@ -131,7 +131,31 @@ runs:
       if: ${{ inputs.checkout-repo == 'true' || inputs.generate-doc-ford == 'true' || inputs.generate-doc-doxygen == 'true' }}
       uses: actions/checkout@v6.0.2
 
+    - name: Decide whether Conda is needed
+      shell: bash
+      run: |
+        need_conda="false"
+
+        # Compiler setup implies Conda (your index.js expects it)
+        if [[ -n "${{ inputs.compiler }}" && -n "${{ inputs.platform }}" ]]; then
+          need_conda="true"
+        fi
+
+        # Docs need Conda (you conda install / pip install)
+        if [[ "${{ inputs.generate-doc-ford }}" == "true" || "${{ inputs.generate-doc-doxygen }}" == "true" ]]; then
+          need_conda="true"
+        fi
+
+        # Fortitude step currently uses conda activation
+        if [[ "${{ inputs.fortitude-check }}" == "true" ]]; then
+          need_conda="true"
+        fi
+
+        echo "NEED_CONDA=$need_conda" >> "$GITHUB_ENV"
+        echo "NEED_CONDA=$need_conda"
+
     - name: Setup Miniconda
+      if: ${{ env.NEED_CONDA == 'true' }}
       uses: conda-incubator/setup-miniconda@v3.3.0
       with:
         auto-update-conda: true
@@ -139,7 +163,7 @@ runs:
         channels: conda-forge, defaults
 
     - name: Run Fortran compiler setup script
-      if: ${{ inputs.compiler != '' && inputs.platform != '' }}
+      if: ${{ inputs.compiler != '' && inputs.platform != '' && env.NEED_CONDA == 'true' }}
       shell: bash
       run: |
         node "${{ github.action_path }}/index.js"
@@ -160,7 +184,7 @@ runs:
         retention-days: 7
 
     - name: Install and Run Fortitude Linter
-      if: ${{ inputs.fortitude-check == 'true' }}
+      if: ${{ inputs.fortitude-check == 'true' && env.NEED_CONDA == 'true' }}
       shell: bash
       run: |
         source "${CONDA}/etc/profile.d/conda.sh"
@@ -174,7 +198,7 @@ runs:
         fortitude check ${{ inputs.fortitude-settings }}
 
     - name: Build FORD documentation
-      if: ${{ inputs.generate-doc-ford == 'true' }}
+      if: ${{ inputs.generate-doc-ford == 'true' && env.NEED_CONDA == 'true' }}
       shell: bash
       run: |
         source "${CONDA}/etc/profile.d/conda.sh"
@@ -198,7 +222,7 @@ runs:
         commit-message: "Deploy FORD docs"
 
     - name: Build Doxygen documentation
-      if: ${{ inputs.generate-doc-doxygen == 'true' }}
+      if: ${{ inputs.generate-doc-doxygen == 'true' && env.NEED_CONDA == 'true' }}
       shell: bash
       run: |
         source "${CONDA}/etc/profile.d/conda.sh"

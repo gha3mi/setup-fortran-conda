@@ -146,7 +146,7 @@ async function run() {
 
     const outFile = path.join(
       outDir,
-      `${safe(platform)}__${safe(compiler)}__${safe(job)}.json`
+      `${safe(platform)}__${safe(compiler)}__${safe(version)}__${safe(job)}.json`
     );
     fs.writeFileSync(outFile, JSON.stringify(payload, null, 2), 'utf8');
     console.log(`SFC_VERSION_FILE ${outFile}`);

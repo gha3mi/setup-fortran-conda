@@ -13,9 +13,16 @@ function parseV(v) {
   return [Number(m[1]), Number(m[2]), Number(m[3] || 0)];
 }
 
-function cmp(a, b) {
+function cmpSemver(a, b) {
+  const pa = parseV(a);
+  const pb = parseV(b);
+
+  if (!pa && !pb) return String(a).localeCompare(String(b));
+  if (!pa) return 1;
+  if (!pb) return -1;
+
   for (let i = 0; i < 3; i++) {
-    if (a[i] !== b[i]) return a[i] - b[i];
+    if (pa[i] !== pb[i]) return pb[i] - pa[i];
   }
   return 0;
 }
@@ -28,29 +35,29 @@ if (!inDir || !outFile) {
   process.exit(2);
 }
 
-const rows = readAllJson(inDir);
+const rowsIn = readAllJson(inDir);
 
-const best = {};
-for (const r of rows) {
-  const c = r?.compiler;
-  const v = r?.version;
-  if (!c || !v || v === 'Unknown') continue;
+const seen = new Map();
 
-  const pv = parseV(v);
-  if (!best[c]) {
-    best[c] = { v, pv };
-    continue;
-  }
-  if (pv && best[c].pv && cmp(pv, best[c].pv) > 0) {
-    best[c] = { v, pv };
-  }
+for (const r of rowsIn) {
+  const compiler = String(r?.compiler || '').trim();
+  const version = String(r?.version || '').trim();
+
+  if (!compiler || !version || version === 'Unknown') continue;
+
+  const key = `${compiler}::${version}`;
+  if (!seen.has(key)) seen.set(key, { compiler, version });
 }
+
+const rows = Array.from(seen.values()).sort((a, b) => {
+  const c = a.compiler.localeCompare(b.compiler);
+  if (c !== 0) return c;
+  return cmpSemver(a.version, b.version);
+});
 
 const out = {
   generated_at: new Date().toISOString().slice(0, 10),
-  'fortran-compilers': Object.fromEntries(
-    Object.entries(best).map(([k, o]) => [k, o.v])
-  ),
+  rows,
 };
 
 fs.mkdirSync(path.dirname(outFile), { recursive: true });

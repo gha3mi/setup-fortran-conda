@@ -55,10 +55,7 @@ export async function setup(version = '') {
       'fortran',
       ...packages,
       '-c',
-      'conda-forge',
-      '--update-all',
-      '--all',
-      '--force-reinstall'
+      'conda-forge'
     ]);
     info('Conda packages installed');
   } catch (err) {

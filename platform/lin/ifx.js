@@ -67,10 +67,7 @@ export async function setup(version = '') {
       'fortran',
       ...packages,
       '-c', 'https://software.repos.intel.com/python/conda/',
-      '-c', 'conda-forge',
-      '--update-all',
-      '--all',
-      '--force-reinstall'
+      '-c', 'conda-forge'
     ]);
     info('Conda packages installed');
   } catch (err) {

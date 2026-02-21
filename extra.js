@@ -13,10 +13,7 @@ export async function installExtras(env = 'fortran', extras = []) {
     env,
     '-c',
     'conda-forge',
-    ...pkgs,
-    '--update-all',
-    '--all',
-    '--force-reinstall'
+    ...pkgs
   ]);
   endGroup();
 

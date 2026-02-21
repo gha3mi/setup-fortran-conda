@@ -1,8 +1,10 @@
 import fs from 'fs';
 import path from 'path';
 
-import { setFailed, summary } from '@actions/core';
+import { setFailed, summary, setOutput } from '@actions/core';
 import { exec as _exec } from '@actions/exec';
+
+const UNKNOWN = 'Unknown';
 
 function safe(s) {
   return String(s || '').replace(/[^a-zA-Z0-9_.-]+/g, '_');
@@ -18,9 +20,9 @@ async function getVersion(cmd, args = ['--version']) {
         },
       },
     });
-    return output.split('\n')[0].trim();
+    return output.split('\n')[0].trim() || UNKNOWN;
   } catch {
-    return 'Unknown';
+    return UNKNOWN;
   }
 }
 
@@ -39,9 +41,9 @@ async function condaPkgVersion(envName, pkgName) {
     const hit = list.find(
       p => String(p.name).toLowerCase() === String(pkgName).toLowerCase()
     );
-    return hit?.version || 'Unknown';
+    return hit?.version || UNKNOWN;
   } catch {
-    return 'Unknown';
+    return UNKNOWN;
   }
 }
 
@@ -49,27 +51,17 @@ function compilerCondaPkg(compiler, osKey) {
   switch (compiler) {
     case 'gfortran':
       return 'gfortran';
-
     case 'ifx':
       return osKey === 'win' ? 'ifx_win-64' : 'ifx_linux-64';
-
     case 'lfortran':
       return 'lfortran';
-
     case 'flang-new':
     case 'flang':
-      return osKey === 'lin'
-        ? 'flang_linux-64'
-        : osKey === 'win'
-          ? 'flang'
-          : 'flang';
-
+      return osKey === 'lin' ? 'flang_linux-64' : 'flang';
     case 'mpifort':
       return 'mpich';
-
     case 'nvfortran':
       return null;
-
     default:
       return null;
   }
@@ -77,7 +69,14 @@ function compilerCondaPkg(compiler, osKey) {
 
 function extractSemver(text) {
   const m = String(text).match(/([0-9]+\.[0-9]+(?:\.[0-9]+)?)/);
-  return m ? m[1] : 'Unknown';
+  return m ? m[1] : UNKNOWN;
+}
+
+function pickNvfortranMarker(versionLine, requestedVersion) {
+  const v = extractSemver(versionLine);
+  if (v !== UNKNOWN) return v;
+  const r = String(requestedVersion || '').trim();
+  return r || UNKNOWN;
 }
 
 async function run() {
@@ -99,35 +98,34 @@ async function run() {
     if (!osKey) throw new Error(`Unsupported platform: ${platform}`);
     if (!compiler) throw new Error('INPUT_COMPILER is empty');
 
-    // Install extra packages
     const { installExtras } = await import('./extra.js');
     const extras = extrasInput
       .split(/[\s,]+/)
       .map(p => p.trim())
       .filter(Boolean);
+
     await installExtras('fortran', extras, fpmVersion);
 
-    // Install compiler
     const { setup } = await import(`./platform/${osKey}/${compiler}.js`);
     await setup(requestedVersion);
 
     const compilerVersionLine = await getVersion(compiler);
 
-    let markerVersion = 'Unknown';
+    let version = UNKNOWN;
     const condaPkg = compilerCondaPkg(compiler, osKey);
 
     if (condaPkg) {
-      markerVersion = await condaPkgVersion('fortran', condaPkg);
+      version = await condaPkgVersion('fortran', condaPkg);
     } else if (compiler === 'nvfortran') {
-      const defaultNv = '26.1';
-      markerVersion = requestedVersion && requestedVersion.trim()
-        ? requestedVersion.trim()
-        : defaultNv;
+      version = pickNvfortranMarker(compilerVersionLine, requestedVersion);
     } else {
-      markerVersion = extractSemver(compilerVersionLine);
+      version = extractSemver(compilerVersionLine);
     }
 
-    console.log(`SFC_VERSION compiler=${compiler} os=${platform} version=${markerVersion}`);
+    const versionShort = safe(version);
+    setOutput('version', versionShort);
+
+    console.log(`SFC_VERSION compiler=${compiler} os=${platform} version=${version}`);
 
     const job = process.env.GITHUB_JOB || 'job';
     const outDir = process.env.RUNNER_TEMP
@@ -139,7 +137,7 @@ async function run() {
     const payload = {
       compiler,
       platform,
-      version: markerVersion,
+      version,
       version_line: compilerVersionLine,
       run_id: process.env.GITHUB_RUN_ID || '',
       job,
@@ -153,11 +151,10 @@ async function run() {
     fs.writeFileSync(outFile, JSON.stringify(payload, null, 2), 'utf8');
     console.log(`SFC_VERSION_FILE ${outFile}`);
 
-    // Write GitHub Actions summary
     await summary
       .addTable([
         ['OS', 'Compiler', 'Version', 'Version (short)'],
-        [platform, compiler, compilerVersionLine, markerVersion],
+        [platform, compiler, compilerVersionLine, versionShort],
       ])
       .write();
   } catch (err) {

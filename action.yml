@@ -163,6 +163,7 @@ runs:
         channels: conda-forge, defaults
 
     - name: Run Fortran compiler setup script
+      id: sfc_setup
       if: ${{ inputs.compiler != '' && inputs.platform != '' && env.NEED_CONDA == 'true' }}
       shell: bash
       run: |
@@ -178,7 +179,7 @@ runs:
       if: ${{ inputs.compiler != '' && inputs.platform != '' && env.NEED_CONDA == 'true' }}
       uses: actions/upload-artifact@v4
       with:
-        name: sfc-versions-${{ inputs.platform }}-${{ inputs.compiler }}-${{ github.job }}
+        name: sfc-${{ runner.os }}-${{ inputs.compiler }}-${{ steps.sfc_setup.outputs.version }}-${{ github.job }}
         path: ${{ runner.temp }}/sfc_versions/*.json
         if-no-files-found: ignore
         retention-days: 7
@@ -437,7 +438,7 @@ runs:
       if: ${{ inputs.update-readme-table == 'true' }}
       uses: actions/download-artifact@v4
       with:
-        pattern: sfc-versions-*
+        pattern: sfc-*
         path: ${{ runner.temp }}/sfc_ci/sfc_versions
         merge-multiple: true
 

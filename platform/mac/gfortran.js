@@ -72,12 +72,12 @@ export async function setup(version = '') {
   try {
     if (version) {
       major = version.split('.')[0];
-      await _exec('brew', ['install', `gcc@${major}`]);
+      await _exec('brew', ['install', `gcc@${major}`], { silent: true });
       info(`Homebrew gcc@${major} installed`);
       gcc = `gcc-${major}`;
       gpp = `g++-${major}`;
     } else {
-      await _exec('brew', ['install', 'gcc']);
+      await _exec('brew', ['install', 'gcc'], { silent: true });
       info('Homebrew latest gcc installed');
       gcc = detectHomebrewGccVersion();       // e.g., "gcc-14"
       gpp = gcc.replace('gcc', 'g++');        // e.g., "g++-14"

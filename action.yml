@@ -132,6 +132,13 @@ runs:
       uses: actions/checkout@v6.0.2
 
     - name: Setup Miniconda
+      if: >-
+        ${{
+          inputs.compiler != '' ||
+          inputs.generate-doc-ford == 'true' ||
+          inputs.generate-doc-doxygen == 'true' ||
+          inputs.fortitude-check == 'true'
+        }}
       uses: conda-incubator/setup-miniconda@v3.3.0
       with:
         auto-update-conda: true

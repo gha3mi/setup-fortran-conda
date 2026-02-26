@@ -83,14 +83,23 @@ jobs:
 ## ✅ CI Status
 
 <!-- STATUS:setup-fortran-conda:START -->
-| Compiler   | macos | ubuntu | windows |
-|------------|----------------------|----------------------|----------------------|
-| `flang-new` | - | fpm ✅  cmake ✅  meson ✅ | fpm ✅  cmake ✅  meson ✅ |
-| `gfortran` | fpm ✅  cmake ✅  meson ✅ | fpm ✅  cmake ✅  meson ✅ | fpm ✅  cmake ✅  meson ✅ |
-| `ifx` | - | fpm ✅  cmake ✅  meson ✅ | fpm ✅  cmake ✅  meson ✅ |
-| `lfortran` | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ | fpm ✅  cmake ✅ |
-| `mpifort` | mpi_fpm ✅ | mpi_fpm ✅ | - |
-| `nvfortran` | - | fpm ✅  cmake ✅  meson ✅ | - |
+
+| OS | Compiler | Version | fpm | cmake | meson |
+| --- | --- | ---: | :---: | :---: | :---: |
+| ubuntu 24.04 | `flang-new` | 21.1.8 | 0.13.0 ✅ | 4.2.3 ✅ | 1.10.1 ✅ |
+| ubuntu 24.04 | `gfortran` | 15.2.0 | 0.13.0 ✅ | 4.2.3 ✅ | 1.10.1 ✅ |
+| ubuntu 24.04 | `ifx` | 2025.3.2 | 0.13.0 ✅ | 4.2.3 ✅ | 1.10.1 ✅ |
+| ubuntu 24.04 | `lfortran` | 0.60.0 | 0.12.0 ✅ | 4.2.3 ✅ | — |
+| ubuntu 24.04 | `mpifort` | Not found | Not found ✅ | — | — |
+| ubuntu 24.04 | `nvfortran` | 26.1 | 0.13.0 ✅ | 4.2.3 ✅ | 1.10.1 ✅ |
+| macos 15 | `gfortran` | 15.2.0 | 0.13.0 ✅ | 4.2.3 ✅ | 1.10.1 ✅ |
+| macos 15 | `lfortran` | 0.60.0 | 0.12.0 ✅ | 4.2.3 ✅ | — |
+| macos 15 | `mpifort` | Not found | Not found ✅ | — | — |
+| windows 2025 | `flang-new` | 21.1.8 | 0.13.0 ✅ | 4.2.3 ✅ | 1.10.1 ✅ |
+| windows 2025 | `gfortran` | 15.2.0 | — | 4.2.3 ✅ | 1.10.1 ✅ |
+| windows 2025 | `ifx` | 2025.3.2 | 0.12.0 ✅ | 4.2.3 ✅ | 1.10.1 ✅ |
+| windows 2025 | `lfortran` | 0.54.0 | 0.12.0 ✅ | 4.2.3 ✅ | — |
+
 <!-- STATUS:setup-fortran-conda:END -->
 
 - [STATUS.md (FPM)](https://github.com/gha3mi/setup-fortran-conda/blob/status-fpm/STATUS.md)

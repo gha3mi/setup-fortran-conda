@@ -377,7 +377,7 @@ jobs:
     if: |
       always() &&
       github.ref != 'refs/heads/update-readme-table'
-    needs: [status_fpm, status_cmake, status_meson]
+    needs: [test_fpm, test_cmake, test_meson]
     runs-on: ubuntu-latest
     steps:
       - name: Update README status

@@ -88,8 +88,10 @@ async function detectToolVersion(tool) {
     const { stdout, stderr, exitCode } = await execCapture(cmd, args);
     const combined = `${stdout}\n${stderr}`.trim();
     const line = firstLine(stdout) || firstLine(stderr);
+
     if (exitCode !== 0 && isNotFoundMessage(combined || line)) return 'Not found';
     if (exitCode !== 0 && !line) return 'Unknown';
+
     const ver = pickFirstVersionLike(combined) || pickFirstVersionLike(line);
     return ver || line || 'Unknown';
   };
@@ -99,6 +101,49 @@ async function detectToolVersion(tool) {
   if (tool === 'meson') return await run('meson', ['--version']);
 
   return null;
+}
+
+async function detectOSInfo() {
+  const runnerOs = process.env.RUNNER_OS || '';
+
+  if (runnerOs === 'Linux') {
+    const { stdout } = await execCapture('bash', [
+      '-c',
+      'source /etc/os-release 2>/dev/null && echo "${ID:-linux}|${VERSION_ID:-}" || echo "linux|"',
+    ]);
+    const line = firstLine(stdout);
+    const [idRaw, verRaw] = String(line || 'linux|').split('|');
+    const id = (idRaw || 'linux').trim();
+    const version = (verRaw || '').trim();
+    const family = id === 'ubuntu' ? 'ubuntu' : id;
+    const label = version ? `${family} ${version}` : family;
+    return { family, version, label };
+  }
+
+  if (runnerOs === 'macOS') {
+    const v = await execCapture('sw_vers', ['-productVersion']);
+    const version = firstLine(v.stdout) || '';
+    const family = 'macos';
+    const label = version ? `macos ${version}` : 'macos';
+    return { family, version, label };
+  }
+
+  if (runnerOs === 'Windows') {
+    const { stdout } = await execCapture('powershell', [
+      '-NoProfile',
+      '-Command',
+      '$os=(Get-CimInstance Win32_OperatingSystem); "$($os.Caption)|$($os.Version)"',
+    ]);
+    const line = firstLine(stdout);
+    const [caption, ver] = String(line || 'Windows|').split('|');
+    const family = 'windows';
+    const version = (ver || '').trim();
+    const shortCaption = (caption || 'Windows').replace(/^Microsoft\s+/i, '').trim();
+    const label = version ? `${shortCaption} ${version}` : shortCaption;
+    return { family, version, label };
+  }
+
+  return { family: (runnerOs || 'unknown').toLowerCase(), version: '', label: runnerOs || 'unknown' };
 }
 
 function ghRequestJson(url, token) {
@@ -186,6 +231,8 @@ async function run() {
   const token = process.env.GITHUB_TOKEN || process.env.GH_TOKEN || '';
   let jobInfo = null;
 
+  const osInfo = await detectOSInfo();
+
   const metaBase = {
     schema_version: 1,
     repo: process.env.GITHUB_REPOSITORY || '',
@@ -196,6 +243,9 @@ async function run() {
       os: process.env.RUNNER_OS || '',
       arch: process.env.RUNNER_ARCH || '',
       name: process.env.RUNNER_NAME || '',
+      os_family: osInfo.family,
+      os_version: osInfo.version,
+      os_label: osInfo.label,
     },
     compiler: {
       requested: compiler,
@@ -257,8 +307,15 @@ async function run() {
 
     await summary
       .addTable([
-        ['OS', 'Compiler', 'Version'],
-        [platformInput, compiler, metaBase.compiler.actual_version],
+        ['OS', 'OS Version', 'Compiler', 'Version', 'Tool', 'Tool Version'],
+        [
+          metaBase.runner.os_family || metaBase.runner.os,
+          metaBase.runner.os_version || metaBase.runner.os_label,
+          compiler,
+          metaBase.compiler.actual_version,
+          metaBase.tool || '-',
+          metaBase.tool ? (metaBase.tools?.[metaBase.tool]?.version || 'Unknown') : '-',
+        ],
       ])
       .write();
   } catch (err) {

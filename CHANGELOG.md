@@ -1,3 +1,27 @@
+## [v0.13.0](https://github.com/gha3mi/setup-fortran-conda/compare/v0.12.0...v0.13.0) - 2026-02-27
+
+
+### Features
+
+* feat: new README table ([740ce90](https://github.com/gha3mi/setup-fortran-conda/commit/740ce900ff0c7fca07ade8e4a6163f39908a4caf)) by [@gha3mi](https://github.com/gha3mi)
+* feat: compact README status table and add OS version ([c6c2cbb](https://github.com/gha3mi/setup-fortran-conda/commit/c6c2cbba8ac5fcbc492b0fcefefad4204e873b56)) by [@gha3mi](https://github.com/gha3mi)
+
+### Fixes
+
+* fix: update dependencies for README status table update job ([b1076e3](https://github.com/gha3mi/setup-fortran-conda/commit/b1076e338e92880baa4a0a7beee2402e68338888)) by [@gha3mi](https://github.com/gha3mi)
+
+### Others
+
+* update README.md status table ([#144](https://github.com/gha3mi/setup-fortran-conda/pull/144)) by [@gha3mi](https://github.com/gha3mi)
+
+
+### Contributors
+- [@gha3mi](https://github.com/gha3mi)
+
+
+
+Full Changelog: [v0.12.0...v0.13.0](https://github.com/gha3mi/setup-fortran-conda/compare/v0.12.0...v0.13.0)
+
 ## [v0.12.0](https://github.com/gha3mi/setup-fortran-conda/compare/v0.11.5...v0.12.0) - 2026-02-26
 
 

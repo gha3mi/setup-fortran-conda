@@ -146,6 +146,7 @@ runs:
         channels: conda-forge, defaults
 
     - name: Run Fortran compiler setup script
+      id: setup_fortran
       if: ${{ inputs.compiler != '' }}
       shell: bash
       run: |
@@ -153,9 +154,26 @@ runs:
       env:
         INPUT_COMPILER: ${{ inputs.compiler }}
         INPUT_COMPILER_VERSION: ${{ inputs.compiler-version }}
-        INPUT_PLATFORM: ${{ runner.os }}
+        INPUT_PLATFORM: ${{ inputs.platform != '' && inputs.platform || runner.os }}
         INPUT_EXTRA_PACKAGES: ${{ inputs.extra-packages }}
         INPUT_FPM_VERSION: ${{ inputs.fpm-version }}
+        GITHUB_TOKEN: ${{ github.token }}
+
+    - name: Upload setup-fortran-conda metadata
+      if: >-
+        ${{
+          always() &&
+          inputs.compiler != '' &&
+          inputs.fortitude-check != 'true' &&
+          inputs.generate-doc-ford != 'true' &&
+          inputs.generate-doc-doxygen != 'true' &&
+          inputs.generate-status-table != 'true' &&
+          inputs.update-readme-table != 'true'
+        }}
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ steps.setup_fortran.outputs.metadata-artifact-name }}
+        path: ${{ steps.setup_fortran.outputs.metadata-path }}
 
     - name: Install and Run Fortitude Linter
       if: ${{ inputs.fortitude-check == 'true' }}
@@ -275,23 +293,37 @@ runs:
         clean: true
         commit-message: "Deploy meson status"
 
-    - name: Generate and Inject CI Matrix into README
-      if: ${{ inputs.generate-status-table == 'true' }}
-      shell: bash
-      run: |
-        bash "${{ github.action_path }}/scripts/update-readme-status.sh"
-
     - name: Checkout repository (for README update)
       if: ${{ inputs.update-readme-table == 'true' }}
       uses: actions/checkout@v6.0.2
       with:
         persist-credentials: false
 
+    - name: Download setup-fortran-conda metadata artifacts
+      if: ${{ inputs.generate-status-table == 'true' || inputs.update-readme-table == 'true' }}
+      uses: actions/download-artifact@v4
+      with:
+        pattern: setup-fortran-conda-meta-*
+        path: ${{ runner.temp }}/setup-fortran-conda-meta
+        merge-multiple: true
+
+    - name: Generate and Inject CI Matrix into README (metadata-based)
+      if: ${{ inputs.generate-status-table == 'true' }}
+      shell: bash
+      run: node "${{ github.action_path }}/scripts/update-readme-matrix-table.js"
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+        SETUP_FORTRAN_CONDA_META_DIR: ${{ runner.temp }}/setup-fortran-conda-meta
+        README_FILE: README.md
+
     - name: Generate status table in README
       if: ${{ inputs.update-readme-table == 'true' }}
       shell: bash
-      run: |
-        bash "${{ github.action_path }}/scripts/update-readme-status.sh"
+      run: node "${{ github.action_path }}/scripts/update-readme-matrix-table.js"
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+        SETUP_FORTRAN_CONDA_META_DIR: ${{ runner.temp }}/setup-fortran-conda-meta
+        README_FILE: README.md
 
     - name: Setup Git author
       if: ${{ inputs.update-readme-table == 'true' }}

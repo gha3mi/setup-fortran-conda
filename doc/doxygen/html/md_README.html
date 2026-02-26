@@ -99,12 +99,12 @@ $(function(){initNavTree('md_README.html',''); initResizable(true); });
   <div class="headertitle"><div class="title">Setup Fortran with Conda</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a class="anchor" id="autotoc_md88"></a></p>
+<div class="textblock"><p><a class="anchor" id="autotoc_md93"></a></p>
 <p>A GitHub Action that sets up a Fortran development environment using Conda. Inspired by <a href="https://degenerateconic.com/conda-plus-fortran.html">Conda + Fortran</a>.</p>
-<h1><a class="anchor" id="autotoc_md89"></a>
+<h1><a class="anchor" id="autotoc_md94"></a>
 Supported Compiler Configurations</h1>
 <p>The selected Fortran compiler is installed along with the corresponding C and C++ compilers, as well as <code>fpm</code>, <code>cmake</code>, <code>ninja</code> and <code>meson</code>. Additional packages can be installed using the <code>extra-packages</code> input.</p>
-<h2><a class="anchor" id="autotoc_md90"></a>
+<h2><a class="anchor" id="autotoc_md95"></a>
 Ubuntu</h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -120,7 +120,7 @@ Ubuntu</h2>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone">nvfortran   </td><td class="markdownTableBodyNone">nvc   </td><td class="markdownTableBodyNone">nvc++   </td></tr>
 </table>
-<h2><a class="anchor" id="autotoc_md91"></a>
+<h2><a class="anchor" id="autotoc_md96"></a>
 macOS</h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -130,7 +130,7 @@ macOS</h2>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone">lfortran   </td><td class="markdownTableBodyNone">clang   </td><td class="markdownTableBodyNone">clang++   </td></tr>
 </table>
-<h2><a class="anchor" id="autotoc_md92"></a>
+<h2><a class="anchor" id="autotoc_md97"></a>
 Windows</h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -150,7 +150,7 @@ Windows</h2>
 <li><code>FPM_FC</code>, <code>FPM_CC</code>, <code>FPM_CXX</code></li>
 <li><code>CMAKE_Fortran_COMPILER</code>, <code>CMAKE_C_COMPILER</code>, <code>CMAKE_CXX_COMPILER</code></li>
 </ul>
-<h1><a class="anchor" id="autotoc_md93"></a>
+<h1><a class="anchor" id="autotoc_md98"></a>
 Simple Usage</h1>
 <div class="fragment"><div class="line">name: Setup Fortran Conda CI/CD</div>
 <div class="line"> </div>
@@ -189,7 +189,7 @@ Simple Usage</h1>
 <div class="line"> </div>
 <div class="line">      - name: fpm test (release)</div>
 <div class="line">        run: fpm test --compiler ${{ matrix.compiler }} --profile release</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md94"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md99"></a>
 ✅ CI Status</h1>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -212,9 +212,9 @@ Simple Usage</h1>
 <li><a href="https://github.com/gha3mi/setup-fortran-conda/blob/status-cmake/STATUS.md">STATUS.md (CMake)</a></li>
 <li><a href="https://github.com/gha3mi/setup-fortran-conda/blob/status-meson/STATUS.md">STATUS.md (Meson)</a></li>
 </ul>
-<h1><a class="anchor" id="autotoc_md95"></a>
+<h1><a class="anchor" id="autotoc_md100"></a>
 📋 Workflow Example</h1>
-<h2><a class="anchor" id="autotoc_md96"></a>
+<h2><a class="anchor" id="autotoc_md101"></a>
 🔐 IMPORTANT NOTES</h2>
 <blockquote class="doxtable">
 <p>⚠️ <b>Use your own name and email!</b> Don’t copy the example values. </p>
@@ -230,7 +230,7 @@ Simple Usage</h1>
 <div class="line">update-readme-user-email: &quot;you@example.com&quot;</div>
 </div><!-- fragment --><p>💡 Tip: When integrating CI/CD, testing often requires multiple commits and iterations. To keep your <code>main</code> branch clean, consider using a separate branch (e.g., <code>dev</code>) for development and testing. Once everything is working, you can merge it into main.</p>
 <p>You can include only the jobs you need in your workflow. This example includes all available jobs to demonstrate a comprehensive CI/CD setup.</p>
-<h2><a class="anchor" id="autotoc_md97"></a>
+<h2><a class="anchor" id="autotoc_md102"></a>
 Overview</h2>
 <p>This example automates Fortran CI/CD:</p>
 <ul>
@@ -264,13 +264,13 @@ Overview</h2>
 </ul>
 </li>
 </ul>
-<h2><a class="anchor" id="autotoc_md98"></a>
+<h2><a class="anchor" id="autotoc_md103"></a>
 README Integration</h2>
 <p>To enable automatic CI status table injection, add the following to your <code>README.md</code>:</p>
 <pre>
 &lt;!-- STATUS:setup-fortran-conda:START --&gt;
 &lt;!-- STATUS:setup-fortran-conda:END --&gt;
-</pre><h2><a class="anchor" id="autotoc_md99"></a>
+</pre><h2><a class="anchor" id="autotoc_md104"></a>
 Job Breakdown</h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -516,7 +516,7 @@ Job Breakdown</h2>
 <div class="line">          fortitude-check: true</div>
 <div class="line">          fortitude-settings: &quot;--output-format github&quot;</div>
 </div><!-- fragment --><p>If <code>compiler-version</code> is set to an empty string <code>""</code>, the latest version will be installed.</p>
-<h2><a class="anchor" id="autotoc_md100"></a>
+<h2><a class="anchor" id="autotoc_md105"></a>
 MPI Support</h2>
 <p>MPI-based tests can be executed using fpm with the mpifort. This is currently supported on Linux and macOS runners. The following example job sets up the environment and runs parallel MPI tests:</p>
 <div class="fragment"><div class="line">test_mpi_fpm:</div>
@@ -542,11 +542,11 @@ MPI Support</h2>
 <div class="line"> </div>
 <div class="line">    - name: fpm test (release)</div>
 <div class="line">      run: fpm test --target mpi_hello --compiler ${{ matrix.compiler }} --profile release --flag &quot;-cpp -DUSE_MPI&quot; --runner &quot;mpirun -np 4&quot; --verbose</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md101"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md106"></a>
 🚀 Release Automation</h1>
 <p>This project includes a Bash script for automating GitHub releases.</p>
 <div class="fragment"><div class="line">curl -L https://raw.githubusercontent.com/gha3mi/setup-fortran-conda/main/release.sh -o release.sh</div>
-</div><!-- fragment --> <h2><a class="anchor" id="autotoc_md102"></a>
+</div><!-- fragment --> <h2><a class="anchor" id="autotoc_md107"></a>
 Features</h2>
 <p>The script automates:</p>
 <ul>
@@ -560,19 +560,19 @@ Features</h2>
 </ul>
 </li>
 </ul>
-<h2><a class="anchor" id="autotoc_md103"></a>
+<h2><a class="anchor" id="autotoc_md108"></a>
 Requirements</h2>
 <ul>
 <li><a href="https://cli.github.com/">GitHub CLI (<code>gh</code>)</a> – must be authenticated (<code>gh auth login</code>)</li>
 <li><a href="https://stedolan.github.io/jq/"><code>jq</code></a></li>
 </ul>
-<h2><a class="anchor" id="autotoc_md104"></a>
+<h2><a class="anchor" id="autotoc_md109"></a>
 Usage</h2>
 <div class="fragment"><div class="line">bash release.sh --help</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md105"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md110"></a>
 Recommended Workflow</h2>
 <p>It’s highly recommended to first run in <code>--dry-run</code> mode to verify the output.</p>
-<h1><a class="anchor" id="autotoc_md106"></a>
+<h1><a class="anchor" id="autotoc_md111"></a>
 🔗 See Also</h1>
 <ul>
 <li><a href="https://github.com/fortran-lang/setup-fortran">fortran-lang/setup-fortran</a></li>

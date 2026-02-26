@@ -1,3 +1,31 @@
+## [v0.12.0](https://github.com/gha3mi/setup-fortran-conda/compare/v0.11.5...v0.12.0) - 2026-02-26
+
+
+### Features
+
+* feat: add optional fpm version input ([918857d](https://github.com/gha3mi/setup-fortran-conda/commit/918857d3dcb364aae00aa70631b88108303bfe84)) by [@gha3mi](https://github.com/gha3mi)
+* feat: add optional fpm version input ([5121296](https://github.com/gha3mi/setup-fortran-conda/commit/512129693b50c80cded641a2385377cdb6f03ebb)) by [@gha3mi](https://github.com/gha3mi)
+
+### Fixes
+
+* fix: avoid miniconda setup when not needed ([d823a9c](https://github.com/gha3mi/setup-fortran-conda/commit/d823a9cea9f9de614eb412a28ed2eb07c4620bd5)) by [@gha3mi](https://github.com/gha3mi)
+* fix: remove unnecessary wait time in job runs ([9597e6c](https://github.com/gha3mi/setup-fortran-conda/commit/9597e6c66dabd543e8b68e4277dc68e6055520b3)) by [@gha3mi](https://github.com/gha3mi)
+* fix: suppress output during Homebrew GCC installation ([46e93d3](https://github.com/gha3mi/setup-fortran-conda/commit/46e93d3b3fae4eac0b2da7b8e9261f63cbe07340)) by [@gha3mi](https://github.com/gha3mi)
+
+### Others
+
+* refactor: remove platform input ([73bd6e7](https://github.com/gha3mi/setup-fortran-conda/commit/73bd6e764480ba17961c85a1fa4d4ec32d059795)) by [@gha3mi](https://github.com/gha3mi)
+* refactor: move STATUS.md generation to separate scripts ([3665c72](https://github.com/gha3mi/setup-fortran-conda/commit/3665c72c30002cbf364d90eb71cb3d388ee08eb6)) by [@gha3mi](https://github.com/gha3mi)
+* revert back to latest [skip ci] ([36e233b](https://github.com/gha3mi/setup-fortran-conda/commit/36e233b4997d1d99abd4bef943474e3b7e2a61c0)) by [@gha3mi](https://github.com/gha3mi)
+
+
+### Contributors
+- [@gha3mi](https://github.com/gha3mi)
+
+
+
+Full Changelog: [v0.11.5...v0.12.0](https://github.com/gha3mi/setup-fortran-conda/compare/v0.11.5...v0.12.0)
+
 ## [v0.11.5](https://github.com/gha3mi/setup-fortran-conda/compare/v0.11.4...v0.11.5) - 2026-01-29
 
 

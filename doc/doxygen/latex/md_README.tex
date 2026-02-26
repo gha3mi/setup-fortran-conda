@@ -421,7 +421,7 @@ modify this example workflow file to your needs, and save it as {\ttfamily .gith
 \DoxyCodeLine{\ \ \ \ if:\ |}
 \DoxyCodeLine{\ \ \ \ \ \ always()\ \&\&}
 \DoxyCodeLine{\ \ \ \ \ \ github.ref\ !=\ 'refs/heads/update-\/readme-\/table'}
-\DoxyCodeLine{\ \ \ \ needs:\ [status\_fpm,\ status\_cmake,\ status\_meson]}
+\DoxyCodeLine{\ \ \ \ needs:\ [test\_fpm,\ test\_cmake,\ test\_meson]}
 \DoxyCodeLine{\ \ \ \ runs-\/on:\ ubuntu-\/latest}
 \DoxyCodeLine{\ \ \ \ steps:}
 \DoxyCodeLine{\ \ \ \ \ \ -\/\ name:\ Update\ README\ status}

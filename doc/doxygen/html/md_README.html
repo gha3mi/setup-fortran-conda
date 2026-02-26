@@ -494,7 +494,7 @@ Job Breakdown</h2>
 <div class="line">    if: |</div>
 <div class="line">      always() &amp;&amp;</div>
 <div class="line">      github.ref != &#39;refs/heads/update-readme-table&#39;</div>
-<div class="line">    needs: [status_fpm, status_cmake, status_meson]</div>
+<div class="line">    needs: [test_fpm, test_cmake, test_meson]</div>
 <div class="line">    runs-on: ubuntu-latest</div>
 <div class="line">    steps:</div>
 <div class="line">      - name: Update README status</div>

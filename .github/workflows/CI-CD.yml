@@ -40,7 +40,6 @@ jobs:
       - name: Setup Fortran
         uses: gha3mi/setup-fortran-conda@dev
         with:
-          platform: ${{ matrix.os }}
           compiler: ${{ matrix.compiler }}
           compiler-version: ${{ matrix.compiler-version }}
           extra-packages: ${{ matrix.extra-packages }}
@@ -67,7 +66,6 @@ jobs:
       - name: Setup Fortran
         uses: gha3mi/setup-fortran-conda@dev
         with:
-          platform: ${{ matrix.os }}
           compiler: ${{ matrix.compiler }}
           compiler-version: ${{ matrix.compiler-version }}
           extra-packages: ${{ matrix.extra-packages }}
@@ -102,7 +100,6 @@ jobs:
       - name: Setup Fortran
         uses: gha3mi/setup-fortran-conda@dev
         with:
-          platform: ${{ matrix.os }}
           compiler: ${{ matrix.compiler }}
           compiler-version: ${{ matrix.compiler-version }}
           extra-packages: ${{ matrix.extra-packages }}
@@ -140,7 +137,6 @@ jobs:
       - name: Setup Fortran
         uses: gha3mi/setup-fortran-conda@dev
         with:
-          platform: ${{ matrix.os }}
           compiler: ${{ matrix.compiler }}
           compiler-version: ${{ matrix.compiler-version }}
           extra-packages: ${{ matrix.extra-packages }}

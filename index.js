@@ -23,7 +23,7 @@ async function run() {
     const extrasInput = process.env.INPUT_EXTRA_PACKAGES || '';
     const fpmVersion = process.env.INPUT_FPM_VERSION || '';
 
-    const osKey = platform.includes('ubuntu') ? 'lin'
+    const osKey = platform.includes('ubuntu') || platform.includes('linux') ? 'lin'
       : platform.includes('windows') ? 'win'
         : platform.includes('macos') ? 'mac'
           : undefined;

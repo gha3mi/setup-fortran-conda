@@ -146,14 +146,14 @@ runs:
         channels: conda-forge, defaults
 
     - name: Run Fortran compiler setup script
-      if: ${{ inputs.compiler != '' && inputs.platform != '' }}
+      if: ${{ inputs.compiler != '' }}
       shell: bash
       run: |
         node "${{ github.action_path }}/index.js"
       env:
         INPUT_COMPILER: ${{ inputs.compiler }}
         INPUT_COMPILER_VERSION: ${{ inputs.compiler-version }}
-        INPUT_PLATFORM: ${{ inputs.platform }}
+        INPUT_PLATFORM: ${{ runner.os }}
         INPUT_EXTRA_PACKAGES: ${{ inputs.extra-packages }}
         INPUT_FPM_VERSION: ${{ inputs.fpm-version }}
 

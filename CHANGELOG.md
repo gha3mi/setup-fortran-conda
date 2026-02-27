@@ -1,3 +1,21 @@
+## [v0.13.1](https://github.com/gha3mi/setup-fortran-conda/compare/v0.13.0...v0.13.1) - 2026-02-27
+
+
+### Others
+
+* chore(deps): bump actions/upload-artifact from 4 to 7 ([#148](https://github.com/gha3mi/setup-fortran-conda/pull/148)) by [@dependabot[bot]](https://github.com/dependabot[bot])
+* chore(deps): bump actions/download-artifact from 4 to 8 ([#147](https://github.com/gha3mi/setup-fortran-conda/pull/147)) by [@dependabot[bot]](https://github.com/dependabot[bot])
+* update README.md status table ([#146](https://github.com/gha3mi/setup-fortran-conda/pull/146)) by [@gha3mi](https://github.com/gha3mi)
+
+
+### Contributors
+- [@dependabot[bot]](https://github.com/dependabot[bot])
+- [@gha3mi](https://github.com/gha3mi)
+
+
+
+Full Changelog: [v0.13.0...v0.13.1](https://github.com/gha3mi/setup-fortran-conda/compare/v0.13.0...v0.13.1)
+
 ## [v0.13.0](https://github.com/gha3mi/setup-fortran-conda/compare/v0.12.0...v0.13.0) - 2026-02-27
 
 

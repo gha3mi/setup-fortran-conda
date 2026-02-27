@@ -193,19 +193,33 @@ Simple Usage</h1>
 ✅ CI Status</h1>
 <table class="markdownTable">
 <tr class="markdownTableHead">
-<th class="markdownTableHeadNone">Compiler   </th><th class="markdownTableHeadNone">macos   </th><th class="markdownTableHeadNone">ubuntu   </th><th class="markdownTableHeadNone">windows    </th></tr>
+<th class="markdownTableHeadNone">OS   </th><th class="markdownTableHeadNone">Compiler   </th><th class="markdownTableHeadRight">Version   </th><th class="markdownTableHeadCenter">fpm   </th><th class="markdownTableHeadCenter">cmake   </th><th class="markdownTableHeadCenter">meson    </th></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><code>flang-new</code>   </td><td class="markdownTableBodyNone">-   </td><td class="markdownTableBodyNone">fpm ✅ cmake ✅ meson ✅   </td><td class="markdownTableBodyNone">fpm ✅ cmake ✅ meson ✅    </td></tr>
+<td class="markdownTableBodyNone">ubuntu 24.04   </td><td class="markdownTableBodyNone"><code>flang-new</code>   </td><td class="markdownTableBodyRight">21.1.8   </td><td class="markdownTableBodyCenter">0.13.0 ✅   </td><td class="markdownTableBodyCenter">4.2.3 ✅   </td><td class="markdownTableBodyCenter">1.10.1 ✅    </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone"><code>gfortran</code>   </td><td class="markdownTableBodyNone">fpm ✅ cmake ✅ meson ✅   </td><td class="markdownTableBodyNone">fpm ✅ cmake ✅ meson ✅   </td><td class="markdownTableBodyNone">fpm ✅ cmake ✅ meson ✅    </td></tr>
+<td class="markdownTableBodyNone">ubuntu 24.04   </td><td class="markdownTableBodyNone"><code>gfortran</code>   </td><td class="markdownTableBodyRight">15.2.0   </td><td class="markdownTableBodyCenter">0.13.0 ✅   </td><td class="markdownTableBodyCenter">4.2.3 ✅   </td><td class="markdownTableBodyCenter">1.10.1 ✅    </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><code>ifx</code>   </td><td class="markdownTableBodyNone">-   </td><td class="markdownTableBodyNone">fpm ✅ cmake ✅ meson ✅   </td><td class="markdownTableBodyNone">fpm ✅ cmake ✅ meson ✅    </td></tr>
+<td class="markdownTableBodyNone">ubuntu 24.04   </td><td class="markdownTableBodyNone"><code>ifx</code>   </td><td class="markdownTableBodyRight">2025.3.2   </td><td class="markdownTableBodyCenter">0.13.0 ✅   </td><td class="markdownTableBodyCenter">4.2.3 ✅   </td><td class="markdownTableBodyCenter">1.10.1 ✅    </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone"><code>lfortran</code>   </td><td class="markdownTableBodyNone">fpm ✅ cmake ✅   </td><td class="markdownTableBodyNone">fpm ✅ cmake ✅   </td><td class="markdownTableBodyNone">fpm ✅ cmake ✅    </td></tr>
+<td class="markdownTableBodyNone">ubuntu 24.04   </td><td class="markdownTableBodyNone"><code>lfortran</code>   </td><td class="markdownTableBodyRight">0.60.0   </td><td class="markdownTableBodyCenter">0.12.0 ✅   </td><td class="markdownTableBodyCenter">4.2.3 ✅   </td><td class="markdownTableBodyCenter">—    </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><code>mpifort</code>   </td><td class="markdownTableBodyNone">mpi_fpm ✅   </td><td class="markdownTableBodyNone">mpi_fpm ✅   </td><td class="markdownTableBodyNone">-    </td></tr>
+<td class="markdownTableBodyNone">ubuntu 24.04   </td><td class="markdownTableBodyNone"><code>mpifort</code>   </td><td class="markdownTableBodyRight">Not found   </td><td class="markdownTableBodyCenter">Not found ✅   </td><td class="markdownTableBodyCenter">—   </td><td class="markdownTableBodyCenter">—    </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone"><code>nvfortran</code>   </td><td class="markdownTableBodyNone">-   </td><td class="markdownTableBodyNone">fpm ✅ cmake ✅ meson ✅   </td><td class="markdownTableBodyNone">-   </td></tr>
+<td class="markdownTableBodyNone">ubuntu 24.04   </td><td class="markdownTableBodyNone"><code>nvfortran</code>   </td><td class="markdownTableBodyRight">26.1   </td><td class="markdownTableBodyCenter">0.13.0 ✅   </td><td class="markdownTableBodyCenter">4.2.3 ✅   </td><td class="markdownTableBodyCenter">1.10.1 ✅    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">macos 15   </td><td class="markdownTableBodyNone"><code>gfortran</code>   </td><td class="markdownTableBodyRight">15.2.0   </td><td class="markdownTableBodyCenter">0.13.0 ✅   </td><td class="markdownTableBodyCenter">4.2.3 ✅   </td><td class="markdownTableBodyCenter">1.10.1 ✅    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">macos 15   </td><td class="markdownTableBodyNone"><code>lfortran</code>   </td><td class="markdownTableBodyRight">0.60.0   </td><td class="markdownTableBodyCenter">0.12.0 ✅   </td><td class="markdownTableBodyCenter">4.2.3 ✅   </td><td class="markdownTableBodyCenter">—    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">macos 15   </td><td class="markdownTableBodyNone"><code>mpifort</code>   </td><td class="markdownTableBodyRight">Not found   </td><td class="markdownTableBodyCenter">Not found ✅   </td><td class="markdownTableBodyCenter">—   </td><td class="markdownTableBodyCenter">—    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">windows 2025   </td><td class="markdownTableBodyNone"><code>flang-new</code>   </td><td class="markdownTableBodyRight">21.1.8   </td><td class="markdownTableBodyCenter">0.13.0 ✅   </td><td class="markdownTableBodyCenter">4.2.3 ✅   </td><td class="markdownTableBodyCenter">1.10.1 ✅    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">windows 2025   </td><td class="markdownTableBodyNone"><code>gfortran</code>   </td><td class="markdownTableBodyRight">15.2.0   </td><td class="markdownTableBodyCenter">0.13.0 ✅   </td><td class="markdownTableBodyCenter">4.2.3 ✅   </td><td class="markdownTableBodyCenter">1.10.1 ✅    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">windows 2025   </td><td class="markdownTableBodyNone"><code>ifx</code>   </td><td class="markdownTableBodyRight">2025.3.2   </td><td class="markdownTableBodyCenter">0.12.0 ✅   </td><td class="markdownTableBodyCenter">4.2.3 ✅   </td><td class="markdownTableBodyCenter">1.10.1 ✅    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">windows 2025   </td><td class="markdownTableBodyNone"><code>lfortran</code>   </td><td class="markdownTableBodyRight">0.54.0   </td><td class="markdownTableBodyCenter">0.12.0 ✅   </td><td class="markdownTableBodyCenter">4.2.3 ✅   </td><td class="markdownTableBodyCenter">—   </td></tr>
 </table>
 <ul>
 <li><a href="https://github.com/gha3mi/setup-fortran-conda/blob/status-fpm/STATUS.md">STATUS.md (FPM)</a></li>

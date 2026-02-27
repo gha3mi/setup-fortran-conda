@@ -105,21 +105,28 @@ flang, flang-\/new   &clang-\/cl   &clang-\/cl   \\\cline{1-3}
 \end{DoxyCode}
 \hypertarget{md_README_autotoc_md104}{}\doxysection{\texorpdfstring{✅ CI Status}{✅ CI Status}}\label{md_README_autotoc_md104}
 \tabulinesep=1mm
-\begin{longtabu}spread 0pt [c]{*{4}{|X[-1]}|}
+\begin{longtabu}spread 0pt [c]{*{6}{|X[-1]}|}
 \hline
-\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Compiler   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ macos   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ ubuntu   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ windows    }\\\cline{1-4}
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ OS   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Compiler   }&\PBS\raggedleft \cellcolor{\tableheadbgcolor}\textbf{ Version   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ fpm   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ cmake   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ meson    }\\\cline{1-6}
 \endfirsthead
 \hline
 \endfoot
 \hline
-\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Compiler   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ macos   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ ubuntu   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ windows    }\\\cline{1-4}
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ OS   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Compiler   }&\PBS\raggedleft \cellcolor{\tableheadbgcolor}\textbf{ Version   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ fpm   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ cmake   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ meson    }\\\cline{1-6}
 \endhead
-{\ttfamily flang-\/new}   &-\/   &fpm ✅ cmake ✅ meson ✅   &fpm ✅ cmake ✅ meson ✅    \\\cline{1-4}
-{\ttfamily gfortran}   &fpm ✅ cmake ✅ meson ✅   &fpm ✅ cmake ✅ meson ✅   &fpm ✅ cmake ✅ meson ✅    \\\cline{1-4}
-{\ttfamily ifx}   &-\/   &fpm ✅ cmake ✅ meson ✅   &fpm ✅ cmake ✅ meson ✅    \\\cline{1-4}
-{\ttfamily lfortran}   &fpm ✅ cmake ✅   &fpm ✅ cmake ✅   &fpm ✅ cmake ✅    \\\cline{1-4}
-{\ttfamily mpifort}   &mpi\+\_\+fpm ✅   &mpi\+\_\+fpm ✅   &-\/    \\\cline{1-4}
-{\ttfamily nvfortran}   &-\/   &fpm ✅ cmake ✅ meson ✅   &-\/   \\\cline{1-4}
+ubuntu 24.\+04   &{\ttfamily flang-\/new}   &\PBS\raggedleft 21.\+1.\+8   &\PBS\centering 0.\+13.\+0 ✅   &\PBS\centering 4.\+2.\+3 ✅   &\PBS\centering 1.\+10.\+1 ✅    \\\cline{1-6}
+ubuntu 24.\+04   &{\ttfamily gfortran}   &\PBS\raggedleft 15.\+2.\+0   &\PBS\centering 0.\+13.\+0 ✅   &\PBS\centering 4.\+2.\+3 ✅   &\PBS\centering 1.\+10.\+1 ✅    \\\cline{1-6}
+ubuntu 24.\+04   &{\ttfamily ifx}   &\PBS\raggedleft 2025.\+3.\+2   &\PBS\centering 0.\+13.\+0 ✅   &\PBS\centering 4.\+2.\+3 ✅   &\PBS\centering 1.\+10.\+1 ✅    \\\cline{1-6}
+ubuntu 24.\+04   &{\ttfamily lfortran}   &\PBS\raggedleft 0.\+60.\+0   &\PBS\centering 0.\+12.\+0 ✅   &\PBS\centering 4.\+2.\+3 ✅   &\PBS\centering —    \\\cline{1-6}
+ubuntu 24.\+04   &{\ttfamily mpifort}   &\PBS\raggedleft Not found   &\PBS\centering Not found ✅   &\PBS\centering —   &\PBS\centering —    \\\cline{1-6}
+ubuntu 24.\+04   &{\ttfamily nvfortran}   &\PBS\raggedleft 26.\+1   &\PBS\centering 0.\+13.\+0 ✅   &\PBS\centering 4.\+2.\+3 ✅   &\PBS\centering 1.\+10.\+1 ✅    \\\cline{1-6}
+macos 15   &{\ttfamily gfortran}   &\PBS\raggedleft 15.\+2.\+0   &\PBS\centering 0.\+13.\+0 ✅   &\PBS\centering 4.\+2.\+3 ✅   &\PBS\centering 1.\+10.\+1 ✅    \\\cline{1-6}
+macos 15   &{\ttfamily lfortran}   &\PBS\raggedleft 0.\+60.\+0   &\PBS\centering 0.\+12.\+0 ✅   &\PBS\centering 4.\+2.\+3 ✅   &\PBS\centering —    \\\cline{1-6}
+macos 15   &{\ttfamily mpifort}   &\PBS\raggedleft Not found   &\PBS\centering Not found ✅   &\PBS\centering —   &\PBS\centering —    \\\cline{1-6}
+windows 2025   &{\ttfamily flang-\/new}   &\PBS\raggedleft 21.\+1.\+8   &\PBS\centering 0.\+13.\+0 ✅   &\PBS\centering 4.\+2.\+3 ✅   &\PBS\centering 1.\+10.\+1 ✅    \\\cline{1-6}
+windows 2025   &{\ttfamily gfortran}   &\PBS\raggedleft 15.\+2.\+0   &\PBS\centering 0.\+13.\+0 ✅   &\PBS\centering 4.\+2.\+3 ✅   &\PBS\centering 1.\+10.\+1 ✅    \\\cline{1-6}
+windows 2025   &{\ttfamily ifx}   &\PBS\raggedleft 2025.\+3.\+2   &\PBS\centering 0.\+12.\+0 ✅   &\PBS\centering 4.\+2.\+3 ✅   &\PBS\centering 1.\+10.\+1 ✅    \\\cline{1-6}
+windows 2025   &{\ttfamily lfortran}   &\PBS\raggedleft 0.\+54.\+0   &\PBS\centering 0.\+12.\+0 ✅   &\PBS\centering 4.\+2.\+3 ✅   &\PBS\centering —   \\\cline{1-6}
 \end{longtabu}
 
 

@@ -1,11 +1,11 @@
 \chapter{Setup Fortran with Conda}
 \hypertarget{md_README}{}\label{md_README}\index{Setup Fortran with Conda@{Setup Fortran with Conda}}
-\label{md_README_autotoc_md98}%
-\Hypertarget{md_README_autotoc_md98}%
+\label{md_README_autotoc_md101}%
+\Hypertarget{md_README_autotoc_md101}%
 
 
-A Git\+Hub Action that sets up a Fortran development environment using Conda. Inspired by \href{https://degenerateconic.com/conda-plus-fortran.html}{\texttt{ Conda + Fortran}}.\hypertarget{md_README_autotoc_md99}{}\doxysection{\texorpdfstring{Supported Compiler Configurations}{Supported Compiler Configurations}}\label{md_README_autotoc_md99}
-The selected Fortran compiler is installed along with the corresponding C and C++ compilers, as well as {\ttfamily fpm}, {\ttfamily cmake}, {\ttfamily ninja} and {\ttfamily meson}. Additional packages can be installed using the {\ttfamily extra-\/packages} input.\hypertarget{md_README_autotoc_md100}{}\doxysubsection{\texorpdfstring{Ubuntu}{Ubuntu}}\label{md_README_autotoc_md100}
+A Git\+Hub Action that sets up a Fortran development environment using Conda. Inspired by \href{https://degenerateconic.com/conda-plus-fortran.html}{\texttt{ Conda + Fortran}}.\hypertarget{md_README_autotoc_md102}{}\doxysection{\texorpdfstring{Supported Compiler Configurations}{Supported Compiler Configurations}}\label{md_README_autotoc_md102}
+The selected Fortran compiler is installed along with the corresponding C and C++ compilers, as well as {\ttfamily fpm}, {\ttfamily cmake}, {\ttfamily ninja} and {\ttfamily meson}. Additional packages can be installed using the {\ttfamily extra-\/packages} input.\hypertarget{md_README_autotoc_md103}{}\doxysubsection{\texorpdfstring{Ubuntu}{Ubuntu}}\label{md_README_autotoc_md103}
 \tabulinesep=1mm
 \begin{longtabu}spread 0pt [c]{*{3}{|X[-1]}|}
 \hline
@@ -22,7 +22,7 @@ lfortran   &clang   &clang++    \\\cline{1-3}
 flang, flang-\/new   &clang   &clang++    \\\cline{1-3}
 nvfortran   &nvc   &nvc++   \\\cline{1-3}
 \end{longtabu}
-\hypertarget{md_README_autotoc_md101}{}\doxysubsection{\texorpdfstring{mac\+OS}{mac\+OS}}\label{md_README_autotoc_md101}
+\hypertarget{md_README_autotoc_md104}{}\doxysubsection{\texorpdfstring{mac\+OS}{mac\+OS}}\label{md_README_autotoc_md104}
 \tabulinesep=1mm
 \begin{longtabu}spread 0pt [c]{*{3}{|X[-1]}|}
 \hline
@@ -36,7 +36,7 @@ nvfortran   &nvc   &nvc++   \\\cline{1-3}
 gfortran   &gcc   &g++    \\\cline{1-3}
 lfortran   &clang   &clang++   \\\cline{1-3}
 \end{longtabu}
-\hypertarget{md_README_autotoc_md102}{}\doxysubsection{\texorpdfstring{Windows}{Windows}}\label{md_README_autotoc_md102}
+\hypertarget{md_README_autotoc_md105}{}\doxysubsection{\texorpdfstring{Windows}{Windows}}\label{md_README_autotoc_md105}
 \tabulinesep=1mm
 \begin{longtabu}spread 0pt [c]{*{3}{|X[-1]}|}
 \hline
@@ -61,7 +61,7 @@ flang, flang-\/new   &clang-\/cl   &clang-\/cl   \\\cline{1-3}
 \item {\ttfamily FC}, {\ttfamily CC}, {\ttfamily CXX}
 \item {\ttfamily FPM\+\_\+\+FC}, {\ttfamily FPM\+\_\+\+CC}, {\ttfamily FPM\+\_\+\+CXX}
 \item {\ttfamily CMAKE\+\_\+\+Fortran\+\_\+\+COMPILER}, {\ttfamily CMAKE\+\_\+\+C\+\_\+\+COMPILER}, {\ttfamily CMAKE\+\_\+\+CXX\+\_\+\+COMPILER}
-\end{DoxyItemize}\hypertarget{md_README_autotoc_md103}{}\doxysection{\texorpdfstring{Simple Usage}{Simple Usage}}\label{md_README_autotoc_md103}
+\end{DoxyItemize}\hypertarget{md_README_autotoc_md106}{}\doxysection{\texorpdfstring{Simple Usage}{Simple Usage}}\label{md_README_autotoc_md106}
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{name:\ Setup\ Fortran\ Conda\ CI/CD}
@@ -103,7 +103,7 @@ flang, flang-\/new   &clang-\/cl   &clang-\/cl   \\\cline{1-3}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ run:\ fpm\ test\ -\/-\/compiler\ \$\{\{\ matrix.compiler\ \}\}\ -\/-\/profile\ release}
 
 \end{DoxyCode}
-\hypertarget{md_README_autotoc_md104}{}\doxysection{\texorpdfstring{✅ CI Status}{✅ CI Status}}\label{md_README_autotoc_md104}
+\hypertarget{md_README_autotoc_md107}{}\doxysection{\texorpdfstring{✅ CI Status}{✅ CI Status}}\label{md_README_autotoc_md107}
 \tabulinesep=1mm
 \begin{longtabu}spread 0pt [c]{*{6}{|X[-1]}|}
 \hline
@@ -135,8 +135,8 @@ windows 2025   &{\ttfamily lfortran}   &\PBS\raggedleft 0.\+54.\+0   &\PBS\cente
 \item \href{https://github.com/gha3mi/setup-fortran-conda/blob/status-fpm/STATUS.md}{\texttt{ STATUS.\+md (FPM)}}
 \item \href{https://github.com/gha3mi/setup-fortran-conda/blob/status-cmake/STATUS.md}{\texttt{ STATUS.\+md (CMake)}}
 \item \href{https://github.com/gha3mi/setup-fortran-conda/blob/status-meson/STATUS.md}{\texttt{ STATUS.\+md (Meson)}}
-\end{DoxyItemize}\hypertarget{md_README_autotoc_md105}{}\doxysection{\texorpdfstring{📋 Workflow Example}{📋 Workflow Example}}\label{md_README_autotoc_md105}
-\hypertarget{md_README_autotoc_md106}{}\doxysubsection{\texorpdfstring{🔐 IMPORTANT NOTES}{🔐 IMPORTANT NOTES}}\label{md_README_autotoc_md106}
+\end{DoxyItemize}\hypertarget{md_README_autotoc_md108}{}\doxysection{\texorpdfstring{📋 Workflow Example}{📋 Workflow Example}}\label{md_README_autotoc_md108}
+\hypertarget{md_README_autotoc_md109}{}\doxysubsection{\texorpdfstring{🔐 IMPORTANT NOTES}{🔐 IMPORTANT NOTES}}\label{md_README_autotoc_md109}
 \begin{quote}
 ⚠️ {\bfseries{Use your own name and email!}} Don’t copy the example values. \end{quote}
 
@@ -161,7 +161,7 @@ To enable automatic updates to the CI status table in {\ttfamily README.\+md} vi
 
 💡 Tip\+: When integrating CI/\+CD, testing often requires multiple commits and iterations. To keep your {\ttfamily main} branch clean, consider using a separate branch (e.\+g., {\ttfamily dev}) for development and testing. Once everything is working, you can merge it into main.
 
-You can include only the jobs you need in your workflow. This example includes all available jobs to demonstrate a comprehensive CI/\+CD setup.\hypertarget{md_README_autotoc_md107}{}\doxysubsection{\texorpdfstring{Overview}{Overview}}\label{md_README_autotoc_md107}
+You can include only the jobs you need in your workflow. This example includes all available jobs to demonstrate a comprehensive CI/\+CD setup.\hypertarget{md_README_autotoc_md110}{}\doxysubsection{\texorpdfstring{Overview}{Overview}}\label{md_README_autotoc_md110}
 This example automates Fortran CI/\+CD\+:
 
 
@@ -195,7 +195,7 @@ This example automates Fortran CI/\+CD\+:
 \begin{DoxyItemize}
 \item Runs Fortitude check
 \end{DoxyItemize}
-\end{DoxyItemize}\hypertarget{md_README_autotoc_md108}{}\doxysubsection{\texorpdfstring{README Integration}{README Integration}}\label{md_README_autotoc_md108}
+\end{DoxyItemize}\hypertarget{md_README_autotoc_md111}{}\doxysubsection{\texorpdfstring{README Integration}{README Integration}}\label{md_README_autotoc_md111}
 To enable automatic CI status table injection, add the following to your {\ttfamily README.\+md}\+:
 
 
@@ -203,7 +203,7 @@ To enable automatic CI status table injection, add the following to your {\ttfam
 <!-\/-\/ STATUS:setup-\/fortran-\/conda:START -\/-\/>
 <!-\/-\/ STATUS:setup-\/fortran-\/conda:END -\/-\/>
 \end{DoxyPre}
-\hypertarget{md_README_autotoc_md109}{}\doxysubsection{\texorpdfstring{Job Breakdown}{Job Breakdown}}\label{md_README_autotoc_md109}
+\hypertarget{md_README_autotoc_md112}{}\doxysubsection{\texorpdfstring{Job Breakdown}{Job Breakdown}}\label{md_README_autotoc_md112}
 \tabulinesep=1mm
 \begin{longtabu}spread 0pt [c]{*{2}{|X[-1]}|}
 \hline
@@ -453,7 +453,7 @@ modify this example workflow file to your needs, and save it as {\ttfamily .gith
 \end{DoxyCode}
 
 
-If {\ttfamily compiler-\/version} is set to an empty string {\ttfamily "{}"{}}, the latest version will be installed.\hypertarget{md_README_autotoc_md110}{}\doxysubsection{\texorpdfstring{MPI Support}{MPI Support}}\label{md_README_autotoc_md110}
+If {\ttfamily compiler-\/version} is set to an empty string {\ttfamily "{}"{}}, the latest version will be installed.\hypertarget{md_README_autotoc_md113}{}\doxysubsection{\texorpdfstring{MPI Support}{MPI Support}}\label{md_README_autotoc_md113}
 MPI-\/based tests can be executed using fpm with the mpifort. This is currently supported on Linux and mac\+OS runners. The following example job sets up the environment and runs parallel MPI tests\+:
 
 
@@ -483,7 +483,7 @@ MPI-\/based tests can be executed using fpm with the mpifort. This is currently 
 \DoxyCodeLine{\ \ \ \ \ \ run:\ fpm\ test\ -\/-\/target\ mpi\_hello\ -\/-\/compiler\ \$\{\{\ matrix.compiler\ \}\}\ -\/-\/profile\ release\ -\/-\/flag\ "{}-\/cpp\ -\/DUSE\_MPI"{}\ -\/-\/runner\ "{}mpirun\ -\/np\ 4"{}\ -\/-\/verbose}
 
 \end{DoxyCode}
-\hypertarget{md_README_autotoc_md111}{}\doxysection{\texorpdfstring{🚀 Release Automation}{🚀 Release Automation}}\label{md_README_autotoc_md111}
+\hypertarget{md_README_autotoc_md114}{}\doxysection{\texorpdfstring{🚀 Release Automation}{🚀 Release Automation}}\label{md_README_autotoc_md114}
 This project includes a Bash script for automating Git\+Hub releases.
 
 
@@ -491,7 +491,7 @@ This project includes a Bash script for automating Git\+Hub releases.
 \DoxyCodeLine{curl\ -\/L\ https://raw.githubusercontent.com/gha3mi/setup-\/fortran-\/conda/main/release.sh\ -\/o\ release.sh}
 
 \end{DoxyCode}
- \hypertarget{md_README_autotoc_md112}{}\doxysubsection{\texorpdfstring{Features}{Features}}\label{md_README_autotoc_md112}
+ \hypertarget{md_README_autotoc_md115}{}\doxysubsection{\texorpdfstring{Features}{Features}}\label{md_README_autotoc_md115}
 The script automates\+:
 
 
@@ -505,19 +505,19 @@ The script automates\+:
 \item {\ttfamily -\/-\/dry-\/run}\+: Simulates the release steps with no side effects.
 \item {\ttfamily -\/-\/local}\+: Updates files and tags locally, but skips pushing or publishing the release.
 \end{DoxyItemize}
-\end{DoxyItemize}\hypertarget{md_README_autotoc_md113}{}\doxysubsection{\texorpdfstring{Requirements}{Requirements}}\label{md_README_autotoc_md113}
+\end{DoxyItemize}\hypertarget{md_README_autotoc_md116}{}\doxysubsection{\texorpdfstring{Requirements}{Requirements}}\label{md_README_autotoc_md116}
 
 \begin{DoxyItemize}
 \item \href{https://cli.github.com/}{\texttt{ Git\+Hub CLI ({\ttfamily gh})}} – must be authenticated ({\ttfamily gh auth login})
 \item \href{https://stedolan.github.io/jq/}{\texttt{ {\ttfamily jq}}}
-\end{DoxyItemize}\hypertarget{md_README_autotoc_md114}{}\doxysubsection{\texorpdfstring{Usage}{Usage}}\label{md_README_autotoc_md114}
+\end{DoxyItemize}\hypertarget{md_README_autotoc_md117}{}\doxysubsection{\texorpdfstring{Usage}{Usage}}\label{md_README_autotoc_md117}
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{bash\ release.sh\ -\/-\/help}
 
 \end{DoxyCode}
-\hypertarget{md_README_autotoc_md115}{}\doxysubsection{\texorpdfstring{Recommended Workflow}{Recommended Workflow}}\label{md_README_autotoc_md115}
-It’s highly recommended to first run in {\ttfamily -\/-\/dry-\/run} mode to verify the output.\hypertarget{md_README_autotoc_md116}{}\doxysection{\texorpdfstring{🔗 See Also}{🔗 See Also}}\label{md_README_autotoc_md116}
+\hypertarget{md_README_autotoc_md118}{}\doxysubsection{\texorpdfstring{Recommended Workflow}{Recommended Workflow}}\label{md_README_autotoc_md118}
+It’s highly recommended to first run in {\ttfamily -\/-\/dry-\/run} mode to verify the output.\hypertarget{md_README_autotoc_md119}{}\doxysection{\texorpdfstring{🔗 See Also}{🔗 See Also}}\label{md_README_autotoc_md119}
 
 \begin{DoxyItemize}
 \item \href{https://github.com/fortran-lang/setup-fortran}{\texttt{ fortran-\/lang/setup-\/fortran}}

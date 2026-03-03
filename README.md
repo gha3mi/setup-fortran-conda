@@ -95,7 +95,7 @@ jobs:
 | macos 15 | `gfortran` | 15.2.0 | 0.13.0 ✅ | 4.2.3 ✅ | 1.10.1 ✅ |
 | macos 15 | `lfortran` | 0.60.0 | 0.12.0 ✅ | 4.2.3 ✅ | — |
 | macos 15 | `mpifort` | Not found | Not found ✅ | — | — |
-| windows 2025 | `flang-new` | 21.1.8 | 0.13.0 ✅ | 4.2.3 ✅ | 1.10.1 ✅ |
+| windows 2025 | `flang-new` | 22.1.0 | 0.13.0 ✅ | 4.2.3 ✅ | 1.10.1 ✅ |
 | windows 2025 | `gfortran` | 15.2.0 | 0.13.0 ✅ | 4.2.3 ✅ | 1.10.1 ✅ |
 | windows 2025 | `ifx` | 2025.3.2 | 0.12.0 ✅ | 4.2.3 ✅ | 1.10.1 ✅ |
 | windows 2025 | `lfortran` | 0.54.0 | 0.12.0 ✅ | 4.2.3 ✅ | — |

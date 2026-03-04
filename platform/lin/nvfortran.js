@@ -48,15 +48,28 @@ async function freeUpDiskSpace() {
   endGroup();
 }
 
+async function getLatestNVHPC() {
+  let out = '';
+  await _exec('bash', [
+    '-c',
+    "curl -Ls https://developer.nvidia.com/hpc-sdk-downloads | grep -oE 'hpc-sdk/[0-9]+\\.[0-9]+' | cut -d/ -f2 | sort -V | tail -1"
+  ], {
+    silent: true,
+    listeners: { stdout: d => (out += d.toString()) }
+  });
+
+  return out.trim();
+}
+
 // Main setup function
-export async function setup(version = '26.1') {
+export async function setup(version) {
   if (platform !== 'linux') {
     throw new Error('This setup script is only supported on Linux.');
   }
 
   await freeUpDiskSpace();
 
-  version = version?.trim() || '26.1';
+  version = version?.trim() || await getLatestNVHPC();
 
   // Install NVIDIA HPC SDK via apt
   startGroup('Installing NVIDIA HPC SDK');

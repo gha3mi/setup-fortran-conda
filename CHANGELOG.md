@@ -1,3 +1,23 @@
+## [v0.14.0](https://github.com/gha3mi/setup-fortran-conda/compare/v0.13.1...v0.14.0) - 2026-03-04
+
+
+### Features
+
+* feat: auto-detect latest NVIDIA HPC SDK version (#151) ([87599c4e](https://github.com/gha3mi/setup-fortran-conda/commit/87599c4ec9c6700a08e32eb3ee50ecbcfd8e7ac9)) by [@gha3mi](https://github.com/gha3mi)
+
+### Others
+
+* update README.md status table ([#150](https://github.com/gha3mi/setup-fortran-conda/pull/150)) by [@gha3mi](https://github.com/gha3mi)
+* update README.md status table ([#149](https://github.com/gha3mi/setup-fortran-conda/pull/149)) by [@gha3mi](https://github.com/gha3mi)
+
+
+### Contributors
+- [@gha3mi](https://github.com/gha3mi)
+
+
+
+Full Changelog: [v0.13.1...v0.14.0](https://github.com/gha3mi/setup-fortran-conda/compare/v0.13.1...v0.14.0)
+
 ## [v0.13.1](https://github.com/gha3mi/setup-fortran-conda/compare/v0.13.0...v0.13.1) - 2026-02-27
 
 

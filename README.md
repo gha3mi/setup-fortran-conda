@@ -89,11 +89,11 @@ jobs:
 | ubuntu 24.04 | `flang-new` | 22.1.0 | 0.13.0 ✅ | 4.2.3 ✅ | 1.10.1 ✅ |
 | ubuntu 24.04 | `gfortran` | 15.2.0 | 0.13.0 ✅ | 4.2.3 ✅ | 1.10.1 ✅ |
 | ubuntu 24.04 | `ifx` | 2025.3.2 | 0.13.0 ✅ | 4.2.3 ✅ | 1.10.1 ✅ |
-| ubuntu 24.04 | `lfortran` | 0.60.0 | 0.12.0 ✅ | 4.2.3 ✅ | — |
+| ubuntu 24.04 | `lfortran` | 0.61.0 | 0.12.0 ✅ | 4.2.3 ✅ | — |
 | ubuntu 24.04 | `mpifort` | Not found | Not found ✅ | — | — |
 | ubuntu 24.04 | `nvfortran` | 26.1 | 0.13.0 ✅ | 4.2.3 ✅ | 1.10.1 ✅ |
 | macos 15 | `gfortran` | 15.2.0 | 0.13.0 ✅ | 4.2.3 ✅ | 1.10.1 ✅ |
-| macos 15 | `lfortran` | 0.60.0 | 0.12.0 ✅ | 4.2.3 ✅ | — |
+| macos 15 | `lfortran` | 0.61.0 | 0.12.0 ✅ | 4.2.3 ✅ | — |
 | macos 15 | `mpifort` | Not found | Not found ✅ | — | — |
 | windows 2025 | `flang-new` | 22.1.0 | 0.13.0 ✅ | 4.2.3 ✅ | 1.10.1 ✅ |
 | windows 2025 | `gfortran` | 15.2.0 | 0.13.0 ✅ | 4.2.3 ✅ | 1.10.1 ✅ |

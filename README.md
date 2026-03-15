@@ -4,7 +4,7 @@ A GitHub Action that sets up a Fortran development environment using Conda. Insp
 
 ## Supported Compiler Configurations
 
-The selected Fortran compiler is installed along with the corresponding C and C++ compilers, as well as `fpm`, `cmake`, `ninja` and `meson`. Additional packages can be installed using the `extra-packages` input.
+The selected Fortran compiler is installed along with the corresponding C and C++ compilers, as well as `fpm`, `cmake`, `ninja`, `pkg-config` and `meson`. Additional packages can be installed using the `extra-packages` input.
 
 ### Ubuntu
 

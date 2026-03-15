@@ -1,3 +1,22 @@
+## [v0.15.0](https://github.com/gha3mi/setup-fortran-conda/compare/v0.14.0...v0.15.0) - 2026-03-15
+
+
+### Features
+
+* feat: add pkg-config to extra packages list ([243cf1a6](https://github.com/gha3mi/setup-fortran-conda/commit/243cf1a6a5917f155dc4c863c4070d41b9211765)) by [@gha3mi](https://github.com/gha3mi)
+
+### Others
+
+* Update README.md status table [ci skip] (#153) ([e4aea3c9](https://github.com/gha3mi/setup-fortran-conda/commit/e4aea3c9b1884b387d025c5c3c5ea4a1c702fecd)) by [@gha3mi](https://github.com/gha3mi)
+
+
+### Contributors
+- [@gha3mi](https://github.com/gha3mi)
+
+
+
+Full Changelog: [v0.14.0...v0.15.0](https://github.com/gha3mi/setup-fortran-conda/compare/v0.14.0...v0.15.0)
+
 ## [v0.14.0](https://github.com/gha3mi/setup-fortran-conda/compare/v0.13.1...v0.14.0) - 2026-03-04
 
 

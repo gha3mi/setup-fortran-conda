@@ -86,19 +86,19 @@ jobs:
 
 | OS | Compiler | Version | fpm | cmake | meson |
 | --- | --- | ---: | :---: | :---: | :---: |
-| ubuntu 24.04 | `flang-new` | 22.1.0 | 0.13.0 ✅ | 4.2.3 ✅ | 1.10.2 ✅ |
-| ubuntu 24.04 | `gfortran` | 15.2.0 | 0.13.0 ✅ | 4.2.3 ✅ | 1.10.2 ✅ |
-| ubuntu 24.04 | `ifx` | 2025.3.2 | 0.13.0 ✅ | 4.2.3 ✅ | 1.10.2 ✅ |
-| ubuntu 24.04 | `lfortran` | 0.61.0 | 0.12.0 ✅ | 4.2.3 ✅ | — |
+| ubuntu 24.04 | `flang-new` | 22.1.0 | 0.13.0 ✅ | 4.3.0 ✅ | 1.10.2 ✅ |
+| ubuntu 24.04 | `gfortran` | 15.2.0 | 0.13.0 ✅ | 4.3.0 ✅ | 1.10.2 ✅ |
+| ubuntu 24.04 | `ifx` | 2025.3.2 | 0.13.0 ✅ | 4.3.0 ✅ | 1.10.2 ✅ |
+| ubuntu 24.04 | `lfortran` | 0.61.0 | 0.12.0 ✅ | 4.3.0 ✅ | — |
 | ubuntu 24.04 | `mpifort` | Not found | Not found ✅ | — | — |
-| ubuntu 24.04 | `nvfortran` | 26.1 | 0.13.0 ✅ | 4.2.3 ✅ | 1.10.2 ✅ |
-| macos 15 | `gfortran` | 15.2.0 | 0.13.0 ✅ | 4.2.3 ✅ | 1.10.2 ✅ |
-| macos 15 | `lfortran` | 0.61.0 | 0.12.0 ✅ | 4.2.3 ✅ | — |
+| ubuntu 24.04 | `nvfortran` | 26.1 | 0.13.0 ✅ | 4.3.0 ✅ | 1.10.2 ✅ |
+| macos 15 | `gfortran` | 15.2.0 | 0.13.0 ✅ | 4.3.0 ✅ | 1.10.2 ✅ |
+| macos 15 | `lfortran` | 0.61.0 | 0.12.0 ✅ | 4.3.0 ✅ | — |
 | macos 15 | `mpifort` | Not found | Not found ✅ | — | — |
-| windows 2025 | `flang-new` | 22.1.0 | 0.13.0 ✅ | 4.2.3 ✅ | 1.10.2 ✅ |
-| windows 2025 | `gfortran` | 15.2.0 | 0.13.0 ✅ | 4.2.3 ✅ | 1.10.2 ✅ |
-| windows 2025 | `ifx` | 2025.3.2 | 0.12.0 ✅ | 4.2.3 ✅ | 1.10.2 ✅ |
-| windows 2025 | `lfortran` | 0.54.0 | 0.12.0 ✅ | 4.2.3 ✅ | — |
+| windows 2025 | `flang-new` | 22.1.0 | 0.13.0 ✅ | 4.3.0 ✅ | 1.10.2 ✅ |
+| windows 2025 | `gfortran` | 15.2.0 | 0.13.0 ✅ | 4.3.0 ✅ | 1.10.2 ✅ |
+| windows 2025 | `ifx` | 2025.3.2 | 0.12.0 ✅ | 4.3.0 ✅ | 1.10.2 ✅ |
+| windows 2025 | `lfortran` | 0.54.0 | 0.12.0 ✅ | 4.3.0 ✅ | — |
 
 <!-- STATUS:setup-fortran-conda:END -->
 

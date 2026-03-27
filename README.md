@@ -91,7 +91,7 @@ jobs:
 | ubuntu 24.04 | `ifx` | 2025.3.3 | 0.13.0 ✅ | 4.3.0 ✅ | 1.10.2 ✅ |
 | ubuntu 24.04 | `lfortran` | 0.61.0 | 0.12.0 ✅ | 4.3.0 ✅ | — |
 | ubuntu 24.04 | `mpifort` | Not found | Not found ✅ | — | — |
-| ubuntu 24.04 | `nvfortran` | 26.1 | 0.13.0 ✅ | 4.3.0 ✅ | 1.10.2 ✅ |
+| ubuntu 24.04 | `nvfortran` | 26.3 | 0.13.0 ✅ | 4.3.0 ✅ | 1.10.2 ✅ |
 | macos 15 | `gfortran` | 15.2.0 | 0.13.0 ✅ | 4.3.0 ✅ | 1.10.2 ✅ |
 | macos 15 | `lfortran` | 0.61.0 | 0.12.0 ✅ | 4.3.0 ✅ | — |
 | macos 15 | `mpifort` | Not found | Not found ✅ | — | — |

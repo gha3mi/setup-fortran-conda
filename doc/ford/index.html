@@ -253,7 +253,7 @@
 <td><code>flang-new</code></td>
 <td style="text-align: right;">22.1.0</td>
 <td style="text-align: center;">0.13.0 ✅</td>
-<td style="text-align: center;">4.3.0 ✅</td>
+<td style="text-align: center;">4.3.1 ✅</td>
 <td style="text-align: center;">1.10.2 ✅</td>
 </tr>
 <tr>
@@ -261,7 +261,7 @@
 <td><code>gfortran</code></td>
 <td style="text-align: right;">15.2.0</td>
 <td style="text-align: center;">0.13.0 ✅</td>
-<td style="text-align: center;">4.3.0 ✅</td>
+<td style="text-align: center;">4.3.1 ✅</td>
 <td style="text-align: center;">1.10.2 ✅</td>
 </tr>
 <tr>
@@ -269,7 +269,7 @@
 <td><code>ifx</code></td>
 <td style="text-align: right;">2025.3.3</td>
 <td style="text-align: center;">0.13.0 ✅</td>
-<td style="text-align: center;">4.3.0 ✅</td>
+<td style="text-align: center;">4.3.1 ✅</td>
 <td style="text-align: center;">1.10.2 ✅</td>
 </tr>
 <tr>
@@ -277,7 +277,7 @@
 <td><code>lfortran</code></td>
 <td style="text-align: right;">0.61.0</td>
 <td style="text-align: center;">0.12.0 ✅</td>
-<td style="text-align: center;">4.3.0 ✅</td>
+<td style="text-align: center;">4.3.1 ✅</td>
 <td style="text-align: center;">—</td>
 </tr>
 <tr>
@@ -293,7 +293,7 @@
 <td><code>nvfortran</code></td>
 <td style="text-align: right;">26.3</td>
 <td style="text-align: center;">0.13.0 ✅</td>
-<td style="text-align: center;">4.3.0 ✅</td>
+<td style="text-align: center;">4.3.1 ✅</td>
 <td style="text-align: center;">1.10.2 ✅</td>
 </tr>
 <tr>
@@ -301,7 +301,7 @@
 <td><code>gfortran</code></td>
 <td style="text-align: right;">15.2.0</td>
 <td style="text-align: center;">0.13.0 ✅</td>
-<td style="text-align: center;">4.3.0 ✅</td>
+<td style="text-align: center;">4.3.1 ✅</td>
 <td style="text-align: center;">1.10.2 ✅</td>
 </tr>
 <tr>
@@ -309,7 +309,7 @@
 <td><code>lfortran</code></td>
 <td style="text-align: right;">0.61.0</td>
 <td style="text-align: center;">0.12.0 ✅</td>
-<td style="text-align: center;">4.3.0 ✅</td>
+<td style="text-align: center;">4.3.1 ✅</td>
 <td style="text-align: center;">—</td>
 </tr>
 <tr>
@@ -325,7 +325,7 @@
 <td><code>flang-new</code></td>
 <td style="text-align: right;">22.1.0</td>
 <td style="text-align: center;">0.13.0 ✅</td>
-<td style="text-align: center;">4.3.0 ✅</td>
+<td style="text-align: center;">4.3.1 ✅</td>
 <td style="text-align: center;">1.10.2 ✅</td>
 </tr>
 <tr>
@@ -333,7 +333,7 @@
 <td><code>gfortran</code></td>
 <td style="text-align: right;">15.2.0</td>
 <td style="text-align: center;">0.13.0 ✅</td>
-<td style="text-align: center;">4.3.0 ✅</td>
+<td style="text-align: center;">4.3.1 ✅</td>
 <td style="text-align: center;">1.10.2 ✅</td>
 </tr>
 <tr>
@@ -341,7 +341,7 @@
 <td><code>ifx</code></td>
 <td style="text-align: right;">2025.3.3</td>
 <td style="text-align: center;">0.12.0 ✅</td>
-<td style="text-align: center;">4.3.0 ✅</td>
+<td style="text-align: center;">4.3.1 ✅</td>
 <td style="text-align: center;">1.10.2 ✅</td>
 </tr>
 <tr>
@@ -349,7 +349,7 @@
 <td><code>lfortran</code></td>
 <td style="text-align: right;">0.54.0</td>
 <td style="text-align: center;">0.12.0 ✅</td>
-<td style="text-align: center;">4.3.0 ✅</td>
+<td style="text-align: center;">4.3.1 ✅</td>
 <td style="text-align: center;">—</td>
 </tr>
 </tbody>
@@ -713,29 +713,29 @@ To keep your <code>main</code> branch clean, consider using a separate branch (e
 <p>If <code>compiler-version</code> is set to an empty string <code>""</code>, the latest version will be installed.</p>
 <h3>MPI Support</h3>
 <p>MPI-based tests can be executed using fpm with the mpifort. This is currently supported on Linux and macOS runners. The following example job sets up the environment and runs parallel MPI tests:</p>
-<div class="codehilite"><pre><span></span><code><span class="n">test_mpi_fpm</span><span class="o">:</span>
-<span class="w">  </span><span class="n">name</span><span class="o">:</span><span class="w"> </span><span class="n">$</span><span class="o">{{</span><span class="w"> </span><span class="n">matrix</span><span class="o">.</span><span class="na">os</span><span class="w"> </span><span class="o">}}</span><span class="n">_$</span><span class="o">{{</span><span class="w"> </span><span class="n">matrix</span><span class="o">.</span><span class="na">compiler</span><span class="w"> </span><span class="o">}}</span><span class="n">_mpi_fpm</span>
-<span class="w">  </span><span class="n">runs</span><span class="o">-</span><span class="n">on</span><span class="o">:</span><span class="w"> </span><span class="n">$</span><span class="o">{{</span><span class="w"> </span><span class="n">matrix</span><span class="o">.</span><span class="na">os</span><span class="w"> </span><span class="o">}}</span>
-<span class="w">  </span><span class="n">strategy</span><span class="o">:</span>
-<span class="w">    </span><span class="n">fail</span><span class="o">-</span><span class="n">fast</span><span class="o">:</span><span class="w"> </span><span class="kc">false</span>
-<span class="w">    </span><span class="n">matrix</span><span class="o">:</span>
-<span class="w">      </span><span class="k">include</span><span class="o">:</span>
-<span class="w">      </span><span class="o">-</span><span class="w"> </span><span class="o">{</span><span class="n">os</span><span class="o">:</span><span class="w"> </span><span class="n">ubuntu</span><span class="o">-</span><span class="n">latest</span><span class="o">,</span><span class="w"> </span><span class="n">compiler</span><span class="o">:</span><span class="w"> </span><span class="n">mpifort</span><span class="o">,</span><span class="w"> </span><span class="n">compiler</span><span class="o">-</span><span class="n">version</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="o">,</span><span class="w"> </span><span class="n">extra</span><span class="o">-</span><span class="n">packages</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="o">}</span>
-<span class="w">      </span><span class="o">-</span><span class="w"> </span><span class="o">{</span><span class="n">os</span><span class="o">:</span><span class="w"> </span><span class="n">macos</span><span class="o">-</span><span class="n">latest</span><span class="o">,</span><span class="w">  </span><span class="n">compiler</span><span class="o">:</span><span class="w"> </span><span class="n">mpifort</span><span class="o">,</span><span class="w"> </span><span class="n">compiler</span><span class="o">-</span><span class="n">version</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="o">,</span><span class="w"> </span><span class="n">extra</span><span class="o">-</span><span class="n">packages</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="o">}</span>
+<div class="codehilite"><pre><span></span><code>test_mpi_fpm:
+<span class="w">  </span>name:<span class="w"> </span><span class="cp">${</span><span class="p">{</span> <span class="n">matrix</span><span class="o">.</span><span class="n">os</span> <span class="cp">}</span>}_<span class="cp">${</span><span class="p">{</span> <span class="n">matrix</span><span class="o">.</span><span class="n">compiler</span> <span class="cp">}</span>}_mpi_fpm
+<span class="w">  </span>runs-on:<span class="w"> </span><span class="cp">${</span><span class="p">{</span> <span class="n">matrix</span><span class="o">.</span><span class="n">os</span> <span class="cp">}</span>}
+<span class="w">  </span>strategy:
+<span class="w">    </span>fail-fast:<span class="w"> </span>false
+<span class="w">    </span>matrix:
+<span class="w">      </span>include:
+<span class="w">      </span>-<span class="w"> </span>{os:<span class="w"> </span>ubuntu-latest,<span class="w"> </span>compiler:<span class="w"> </span>mpifort,<span class="w"> </span>compiler-version:<span class="w"> </span>&quot;&quot;,<span class="w"> </span>extra-packages:<span class="w"> </span>&quot;&quot;}
+<span class="w">      </span>-<span class="w"> </span>{os:<span class="w"> </span>macos-latest,<span class="w">  </span>compiler:<span class="w"> </span>mpifort,<span class="w"> </span>compiler-version:<span class="w"> </span>&quot;&quot;,<span class="w"> </span>extra-packages:<span class="w"> </span>&quot;&quot;}
 
-<span class="w">  </span><span class="n">steps</span><span class="o">:</span>
-<span class="w">    </span><span class="o">-</span><span class="w"> </span><span class="n">name</span><span class="o">:</span><span class="w"> </span><span class="n">Setup</span><span class="w"> </span><span class="n">Fortran</span>
-<span class="w">      </span><span class="n">uses</span><span class="o">:</span><span class="w"> </span><span class="n">gha3mi</span><span class="o">/</span><span class="n">setup</span><span class="o">-</span><span class="n">fortran</span><span class="o">-</span><span class="n">conda</span><span class="err">@</span><span class="n">latest</span>
-<span class="w">      </span><span class="k">with</span><span class="o">:</span>
-<span class="w">        </span><span class="n">compiler</span><span class="o">:</span><span class="w"> </span><span class="n">$</span><span class="o">{{</span><span class="w"> </span><span class="n">matrix</span><span class="o">.</span><span class="na">compiler</span><span class="w"> </span><span class="o">}}</span>
-<span class="w">        </span><span class="n">compiler</span><span class="o">-</span><span class="n">version</span><span class="o">:</span><span class="w"> </span><span class="n">$</span><span class="o">{{</span><span class="w"> </span><span class="n">matrix</span><span class="o">.</span><span class="na">compiler</span><span class="o">-</span><span class="n">version</span><span class="w"> </span><span class="o">}}</span>
-<span class="w">        </span><span class="n">extra</span><span class="o">-</span><span class="n">packages</span><span class="o">:</span><span class="w"> </span><span class="n">$</span><span class="o">{{</span><span class="w"> </span><span class="n">matrix</span><span class="o">.</span><span class="na">extra</span><span class="o">-</span><span class="n">packages</span><span class="w"> </span><span class="o">}}</span>
+<span class="w">  </span>steps:
+<span class="w">    </span>-<span class="w"> </span>name:<span class="w"> </span>Setup<span class="w"> </span>Fortran
+<span class="w">      </span>uses:<span class="w"> </span>gha3mi/setup-fortran-conda@latest
+<span class="w">      </span>with:
+<span class="w">        </span>compiler:<span class="w"> </span><span class="cp">${</span><span class="p">{</span> <span class="n">matrix</span><span class="o">.</span><span class="n">compiler</span> <span class="cp">}</span>}
+<span class="w">        </span>compiler-version:<span class="w"> </span><span class="cp">${</span><span class="p">{</span> <span class="n">matrix</span><span class="o">.</span><span class="n">compiler</span><span class="o">-</span><span class="n">version</span> <span class="cp">}</span>}
+<span class="w">        </span>extra-packages:<span class="w"> </span><span class="cp">${</span><span class="p">{</span> <span class="n">matrix</span><span class="o">.</span><span class="n">extra</span><span class="o">-</span><span class="n">packages</span> <span class="cp">}</span>}
 
-<span class="w">    </span><span class="o">-</span><span class="w"> </span><span class="n">name</span><span class="o">:</span><span class="w"> </span><span class="n">fpm</span><span class="w"> </span><span class="n">test</span><span class="w"> </span><span class="o">(</span><span class="n">debug</span><span class="o">)</span>
-<span class="w">      </span><span class="n">run</span><span class="o">:</span><span class="w"> </span><span class="n">fpm</span><span class="w"> </span><span class="n">test</span><span class="w"> </span><span class="o">--</span><span class="n">target</span><span class="w"> </span><span class="n">mpi_hello</span><span class="w"> </span><span class="o">--</span><span class="n">compiler</span><span class="w"> </span><span class="n">$</span><span class="o">{{</span><span class="w"> </span><span class="n">matrix</span><span class="o">.</span><span class="na">compiler</span><span class="w"> </span><span class="o">}}</span><span class="w"> </span><span class="o">--</span><span class="n">profile</span><span class="w"> </span><span class="n">debug</span><span class="w"> </span><span class="o">--</span><span class="n">flag</span><span class="w"> </span><span class="s2">&quot;-cpp -DUSE_MPI&quot;</span><span class="w"> </span><span class="o">--</span><span class="n">runner</span><span class="w"> </span><span class="s2">&quot;mpirun -np 4&quot;</span><span class="w"> </span><span class="o">--</span><span class="n">verbose</span>
+<span class="w">    </span>-<span class="w"> </span>name:<span class="w"> </span>fpm<span class="w"> </span>test<span class="w"> </span>(debug)
+<span class="w">      </span>run:<span class="w"> </span>fpm<span class="w"> </span>test<span class="w"> </span>--target<span class="w"> </span>mpi_hello<span class="w"> </span>--compiler<span class="w"> </span><span class="cp">${</span><span class="p">{</span> <span class="n">matrix</span><span class="o">.</span><span class="n">compiler</span> <span class="cp">}</span>}<span class="w"> </span>--profile<span class="w"> </span>debug<span class="w"> </span>--flag<span class="w"> </span>&quot;-cpp<span class="w"> </span>-DUSE_MPI&quot;<span class="w"> </span>--runner<span class="w"> </span>&quot;mpirun<span class="w"> </span>-np<span class="w"> </span>4&quot;<span class="w"> </span>--verbose
 
-<span class="w">    </span><span class="o">-</span><span class="w"> </span><span class="n">name</span><span class="o">:</span><span class="w"> </span><span class="n">fpm</span><span class="w"> </span><span class="n">test</span><span class="w"> </span><span class="o">(</span><span class="n">release</span><span class="o">)</span>
-<span class="w">      </span><span class="n">run</span><span class="o">:</span><span class="w"> </span><span class="n">fpm</span><span class="w"> </span><span class="n">test</span><span class="w"> </span><span class="o">--</span><span class="n">target</span><span class="w"> </span><span class="n">mpi_hello</span><span class="w"> </span><span class="o">--</span><span class="n">compiler</span><span class="w"> </span><span class="n">$</span><span class="o">{{</span><span class="w"> </span><span class="n">matrix</span><span class="o">.</span><span class="na">compiler</span><span class="w"> </span><span class="o">}}</span><span class="w"> </span><span class="o">--</span><span class="n">profile</span><span class="w"> </span><span class="n">release</span><span class="w"> </span><span class="o">--</span><span class="n">flag</span><span class="w"> </span><span class="s2">&quot;-cpp -DUSE_MPI&quot;</span><span class="w"> </span><span class="o">--</span><span class="n">runner</span><span class="w"> </span><span class="s2">&quot;mpirun -np 4&quot;</span><span class="w"> </span><span class="o">--</span><span class="n">verbose</span>
+<span class="w">    </span>-<span class="w"> </span>name:<span class="w"> </span>fpm<span class="w"> </span>test<span class="w"> </span>(release)
+<span class="w">      </span>run:<span class="w"> </span>fpm<span class="w"> </span>test<span class="w"> </span>--target<span class="w"> </span>mpi_hello<span class="w"> </span>--compiler<span class="w"> </span><span class="cp">${</span><span class="p">{</span> <span class="n">matrix</span><span class="o">.</span><span class="n">compiler</span> <span class="cp">}</span>}<span class="w"> </span>--profile<span class="w"> </span>release<span class="w"> </span>--flag<span class="w"> </span>&quot;-cpp<span class="w"> </span>-DUSE_MPI&quot;<span class="w"> </span>--runner<span class="w"> </span>&quot;mpirun<span class="w"> </span>-np<span class="w"> </span>4&quot;<span class="w"> </span>--verbose
 </code></pre></div>
 
 <h2>🚀 Release Automation</h2>
@@ -843,7 +843,7 @@ To keep your <code>main</code> branch clean, consider using a separate branch (e
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2026-03-29T05:11:22.728284+0000             </p>
+ on 2026-03-30T05:24:48.913736+0000             </p>
           </div>
         </div>
         <br>

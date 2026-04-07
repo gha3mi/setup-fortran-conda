@@ -47,7 +47,6 @@ async function setMacOSSDKROOT() {
   sdkPath = sdkPath.trim();
   if (sdkPath) {
     exportEnv('SDKROOT', sdkPath);
-    info(`Set SDKROOT → ${sdkPath}`);
   } else {
     info('⚠️ Failed to detect macOS SDK path.');
   }
@@ -64,7 +63,7 @@ export async function setup(version = '') {
   const packages = [Pkg, 'llvm', 'clangxx', 'clang-tools', 'llvm-openmp'];
 
   // Install required compilers and tools via Conda
-  startGroup('Installing Conda packages');
+  startGroup('setup-fortran-conda: Install Conda Packages');
   try {
     await _exec('conda', [
       'install',
@@ -82,7 +81,7 @@ export async function setup(version = '') {
   endGroup();
 
   // Conda environment information
-  startGroup('Conda environment information');
+  startGroup('setup-fortran-conda: Show Conda Environment');
   await _exec('conda', ['info']);
   await _exec('conda', ['list', '--name', 'fortran']);
   endGroup();
@@ -92,25 +91,23 @@ export async function setup(version = '') {
   const binPath = join(prefix, 'bin');
   const libPath = join(prefix, 'lib');
 
-  startGroup('Setting up environment paths');
+  startGroup('setup-fortran-conda: Configure Compiler Paths');
   const paths = [binPath];
   for (const p of paths) {
     if (existsSync(p)) {
       addPath(p);
-      info(`Added to PATH: ${p}`);
     }
   }
+  endGroup();
 
   const dyldLibPath = [libPath, process.env.DYLD_LIBRARY_PATH || ''].filter(Boolean).join(':');
   exportEnv('DYLD_LIBRARY_PATH', dyldLibPath);
-  info(`Set DYLD_LIBRARY_PATH → ${dyldLibPath}`);
-  endGroup();
 
   // Set macOS SDK path
   await setMacOSSDKROOT();
 
   // Verify compilers are installed
-  startGroup('Verifying compiler versions');
+  startGroup('setup-fortran-conda: Verify Compiler Commands');
   await _exec('which', ['lfortran']);
   await _exec('lfortran', ['--version']);
   await _exec('which', ['clang']);
@@ -120,7 +117,7 @@ export async function setup(version = '') {
   endGroup();
 
   // Export environment variables
-  startGroup('Exporting compiler environment variables');
+  startGroup('setup-fortran-conda: Export Compiler Environment');
   const envVars = {
     FC: 'lfortran',
     CC: 'clang',
@@ -142,7 +139,7 @@ export async function setup(version = '') {
   endGroup();
 
   // Export all to process.env and GITHUB_ENV
-  startGroup('Exporting all environment variables to process.env and GITHUB_ENV');
+  startGroup('setup-fortran-conda: Export Process Environment');
   for (const [key, value] of Object.entries(env)) {
     if (typeof value === 'string') {
       try {

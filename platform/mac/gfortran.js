@@ -40,7 +40,6 @@ async function setMacOSSDKROOT() {
   sdkPath = sdkPath.trim();
   if (sdkPath) {
     exportEnv('SDKROOT', sdkPath);
-    info(`Set SDKROOT → ${sdkPath}`);
   } else {
     info('⚠️ Failed to detect macOS SDK path.');
   }
@@ -68,7 +67,7 @@ export async function setup(version = '') {
   let gpp = '';
   let major = '';
 
-  startGroup('Installing GCC via Homebrew');
+  startGroup('setup-fortran-conda: Install Homebrew GCC');
   try {
     if (version) {
       major = version.split('.')[0];
@@ -92,7 +91,7 @@ export async function setup(version = '') {
   const Pkg = version ? `gfortran=${version}` : 'gfortran';
   const packages = [Pkg, 'binutils'];
 
-  startGroup('Installing Conda packages');
+  startGroup('setup-fortran-conda: Install Conda Packages');
   try {
     await _exec('conda', [
       'install',
@@ -110,7 +109,7 @@ export async function setup(version = '') {
   endGroup();
 
   // Conda environment information
-  startGroup('Conda environment information');
+  startGroup('setup-fortran-conda: Show Conda Environment');
   await _exec('conda', ['info']);
   await _exec('conda', ['list', '--name', 'fortran']);
   endGroup();
@@ -120,12 +119,11 @@ export async function setup(version = '') {
   const binPath = join(prefix, 'bin');
   const libPath = join(prefix, 'lib');
 
-  startGroup('Setting up environment paths');
+  startGroup('setup-fortran-conda: Configure Compiler Paths');
   const paths = [binPath];
   for (const p of paths) {
     if (existsSync(p)) {
       addPath(p);
-      info(`Added to PATH: ${p}`);
     }
   }
   endGroup();
@@ -133,7 +131,7 @@ export async function setup(version = '') {
   await setMacOSSDKROOT();
 
   // Verify compiler versions
-  startGroup('Verifying compiler versions');
+  startGroup('setup-fortran-conda: Verify Compiler Commands');
   await _exec('which', ['gfortran']);
   await _exec('gfortran', ['--version']);
   await _exec('which', [gcc]);
@@ -143,7 +141,7 @@ export async function setup(version = '') {
   endGroup();
 
   // Export compiler-related environment variables
-  startGroup('Exporting compiler environment variables');
+  startGroup('setup-fortran-conda: Export Compiler Environment');
   const envVars = {
     FC: 'gfortran',
     CC: gcc,
@@ -163,7 +161,7 @@ export async function setup(version = '') {
   endGroup();
 
   // Export all environment variables to process.env and GITHUB_ENV
-  startGroup('Exporting all environment variables to process.env and GITHUB_ENV');
+  startGroup('setup-fortran-conda: Export Process Environment');
   for (const [key, value] of Object.entries(env)) {
     if (typeof value === 'string') {
       try {

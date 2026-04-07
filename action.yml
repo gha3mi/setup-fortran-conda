@@ -149,8 +149,7 @@ runs:
       id: setup_fortran
       if: ${{ inputs.compiler != '' }}
       shell: bash
-      run: |
-        node "${{ github.action_path }}/index.js"
+      run: node "${{ github.action_path }}/index.js"
       env:
         INPUT_COMPILER: ${{ inputs.compiler }}
         INPUT_COMPILER_VERSION: ${{ inputs.compiler-version }}
@@ -182,11 +181,14 @@ runs:
         source "${CONDA}/etc/profile.d/conda.sh"
         conda activate fortran
 
-        echo "::group:: Installing Fortitude"
-        pip install fortitude-lint
+        echo "::group:: setup-fortran-conda: Install Fortitude"
+        pip install fortitude-lint || {
+          status=$?
+          echo "::endgroup::"
+          exit $status
+        }
         echo "::endgroup::"
 
-        echo "Running Fortitude with settings: ${{ inputs.fortitude-settings }}"
         fortitude check ${{ inputs.fortitude-settings }}
 
     - name: Build FORD documentation
@@ -195,13 +197,17 @@ runs:
       run: |
         source "${CONDA}/etc/profile.d/conda.sh"
         conda activate fortran
-        echo "::group:: Setting up FORD documentation"
+
+        echo "::group:: setup-fortran-conda: Prepare FORD Docs"
         conda install -y pip graphviz
         pip install ford
         mkdir -p "${{ inputs.ford-output-directory }}"
         cd "${{ inputs.ford-working-directory }}"
         echo "::endgroup::"
+
+        echo "::group:: setup-fortran-conda: Build FORD Docs"
         ford "${{ inputs.ford-config }}"
+        echo "::endgroup::"
 
     - name: Deploy FORD documentation
       if: ${{ inputs.generate-doc-ford == 'true' }}
@@ -219,12 +225,16 @@ runs:
       run: |
         source "${CONDA}/etc/profile.d/conda.sh"
         conda activate fortran
-        echo "::group:: Setting up Doxygen documentation"
+
+        echo "::group:: setup-fortran-conda: Prepare Doxygen Docs"
         conda install -y graphviz doxygen
         mkdir -p "${{ inputs.doxygen-output-directory }}"
         cd "${{ inputs.doxygen-working-directory }}"
         echo "::endgroup::"
+
+        echo "::group:: setup-fortran-conda: Build Doxygen Docs"
         doxygen "${{ inputs.doxygen-config }}"
+        echo "::endgroup::"
 
     - name: Deploy Doxygen documentation
       if: ${{ inputs.generate-doc-doxygen == 'true' }}
@@ -244,7 +254,9 @@ runs:
         REPO: ${{ github.repository }}
         RUN_ID: ${{ github.run_id }}
       run: |
+        echo "::group:: setup-fortran-conda: Generate FPM Status"
         bash "${{ github.action_path }}/scripts/generate-status-fpm.sh"
+        echo "::endgroup::"
 
     - name: Deploy STATUS.md (test_fpm)
       if: ${{ inputs.generate-status-fpm == 'true' }}
@@ -263,7 +275,9 @@ runs:
         REPO: ${{ github.repository }}
         RUN_ID: ${{ github.run_id }}
       run: |
+        echo "::group:: setup-fortran-conda: Generate CMake Status"
         bash "${{ github.action_path }}/scripts/generate-status-cmake.sh"
+        echo "::endgroup::"
 
     - name: Deploy STATUS.md (test_cmake)
       if: ${{ inputs.generate-status-cmake == 'true' }}
@@ -282,7 +296,9 @@ runs:
         REPO: ${{ github.repository }}
         RUN_ID: ${{ github.run_id }}
       run: |
+        echo "::group:: setup-fortran-conda: Generate Meson Status"
         bash "${{ github.action_path }}/scripts/generate-status-meson.sh"
+        echo "::endgroup::"
 
     - name: Deploy STATUS.md (test_meson)
       if: ${{ inputs.generate-status-meson == 'true' }}
@@ -310,7 +326,10 @@ runs:
     - name: Generate and Inject CI Matrix into README (metadata-based)
       if: ${{ inputs.generate-status-table == 'true' }}
       shell: bash
-      run: node "${{ github.action_path }}/scripts/update-readme-matrix-table.js"
+      run: |
+        echo "::group:: setup-fortran-conda: Generate README Matrix"
+        node "${{ github.action_path }}/scripts/update-readme-matrix-table.js"
+        echo "::endgroup::"
       env:
         GITHUB_TOKEN: ${{ github.token }}
         SETUP_FORTRAN_CONDA_META_DIR: ${{ runner.temp }}/setup-fortran-conda-meta
@@ -319,7 +338,10 @@ runs:
     - name: Generate status table in README
       if: ${{ inputs.update-readme-table == 'true' }}
       shell: bash
-      run: node "${{ github.action_path }}/scripts/update-readme-matrix-table.js"
+      run: |
+        echo "::group:: setup-fortran-conda: Update README Status"
+        node "${{ github.action_path }}/scripts/update-readme-matrix-table.js"
+        echo "::endgroup::"
       env:
         GITHUB_TOKEN: ${{ github.token }}
         SETUP_FORTRAN_CONDA_META_DIR: ${{ runner.temp }}/setup-fortran-conda-meta

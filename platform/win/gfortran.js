@@ -46,7 +46,7 @@ export async function setup(version = '') {
 
 
   // Install required compilers and tools via Conda
-  startGroup('Installing Conda packages');
+  startGroup('setup-fortran-conda: Install Conda Packages');
   try {
     await _exec('conda', [
       'install',
@@ -64,7 +64,7 @@ export async function setup(version = '') {
   endGroup();
 
   // Conda environment information
-  startGroup('Conda environment information');
+  startGroup('setup-fortran-conda: Show Conda Environment');
   await _exec('conda', ['info']);
   await _exec('conda', ['list', '--name', 'fortran']);
   endGroup();
@@ -76,7 +76,7 @@ export async function setup(version = '') {
   const usrBinPath = join(prefix, 'Library', 'usr', 'bin');
   const scriptsPath = join(prefix, 'Scripts');
 
-  startGroup('Setting up environment paths');
+  startGroup('setup-fortran-conda: Configure Compiler Paths');
   const paths = [binPath, libBinPath, usrBinPath, scriptsPath];
   for (const p of paths) {
     if (existsSync(p)) {
@@ -87,7 +87,7 @@ export async function setup(version = '') {
   endGroup();
 
   // Verify that the compilers are installed and working
-  startGroup('Verifying compiler versions');
+  startGroup('setup-fortran-conda: Verify Compiler Commands');
   await _exec('where', ['gfortran']);
   await _exec('gfortran', ['--version']);
   await _exec('where', ['gcc']);
@@ -97,7 +97,7 @@ export async function setup(version = '') {
   endGroup();
 
   // Export compiler-related environment variables
-  startGroup('Exporting compiler environment variables');
+  startGroup('setup-fortran-conda: Export Compiler Environment');
   const envVars = {
     FC: 'gfortran',
     CC: 'gcc',
@@ -117,7 +117,7 @@ export async function setup(version = '') {
   }
   endGroup();
 
-  startGroup('Exporting all environment variables to process.env and GITHUB_ENV');
+  startGroup('setup-fortran-conda: Export Process Environment');
   for (const [key, value] of Object.entries(env)) {
     if (typeof value === 'string') {
       try {

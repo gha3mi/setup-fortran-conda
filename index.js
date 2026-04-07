@@ -15,6 +15,7 @@ async function execCapture(cmd, args = []) {
   let exitCode = 0;
   try {
     exitCode = await _exec(cmd, args, {
+      silent: true,
       ignoreReturnCode: true,
       listeners: {
         stdout: (d) => (stdout += d.toString()),

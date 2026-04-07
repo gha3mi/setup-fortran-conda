@@ -31,7 +31,7 @@ async function getCondaPrefix(envName) {
 
 // Optional: Set unlimited ulimits for Linux
 function setLinuxUlimits() {
-  startGroup('Setting unlimited ulimits (Linux)');
+  startGroup('setup-fortran-conda: Configure Linux Environment');
   const ulimitCmd =
     'ulimit -c unlimited -d unlimited -f unlimited -m unlimited -s unlimited -t unlimited -v unlimited -x unlimited';
   const script = `${process.env.RUNNER_TEMP}/ulimit.sh`;
@@ -58,7 +58,7 @@ export async function setup(version = '') {
   ];
 
   // Install required compilers and tools via Conda
-  startGroup('Installing Conda packages');
+  startGroup('setup-fortran-conda: Install Conda Packages');
   try {
     await _exec('conda', [
       'install',
@@ -76,7 +76,7 @@ export async function setup(version = '') {
   endGroup();
 
   // Conda environment information
-  startGroup('Conda environment information');
+  startGroup('setup-fortran-conda: Show Conda Environment');
   await _exec('conda', ['info']);
   await _exec('conda', ['list', '--name', 'fortran']);
   endGroup();
@@ -85,7 +85,7 @@ export async function setup(version = '') {
   const prefix = await getCondaPrefix('fortran');
   const binPath = join(prefix, 'bin');
 
-  startGroup('Setting up environment paths');
+  startGroup('setup-fortran-conda: Configure Compiler Paths');
   if (existsSync(binPath)) {
     addPath(binPath);
     info(`Added to PATH: ${binPath}`);
@@ -93,7 +93,7 @@ export async function setup(version = '') {
   endGroup();
 
   // Verify that the compilers are installed and working
-  startGroup('Verifying compiler versions');
+  startGroup('setup-fortran-conda: Verify Compiler Commands');
   await _exec('which', ['ifx']);
   await _exec('ifx', ['--version']);
   await _exec('which', ['icx']);
@@ -101,7 +101,7 @@ export async function setup(version = '') {
   endGroup();
 
   // Export compiler-related environment variables
-  startGroup('Exporting compiler environment variables');
+  startGroup('setup-fortran-conda: Export Compiler Environment');
   const envVars = {
     FC: 'ifx',
     CC: 'icx',
@@ -124,7 +124,7 @@ export async function setup(version = '') {
   setLinuxUlimits();
 
   // Export all env variables to GITHUB_ENV and process.env
-  startGroup('Exporting all environment variables to process.env and GITHUB_ENV');
+  startGroup('setup-fortran-conda: Export Process Environment');
   for (const [key, value] of Object.entries(env)) {
     if (typeof value === 'string') {
       try {

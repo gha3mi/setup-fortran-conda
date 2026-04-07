@@ -7,7 +7,7 @@ export async function installExtras(env = 'fortran', extras = [], fpmVersion = '
   const pkgs = [fpmPkg,'pkg-config', 'cmake', 'ninja', 'meson', ...extras.map(p => p.trim()).filter(Boolean)];
   if (!pkgs.length) return;
 
-  startGroup(`Installing extra packages: ${pkgs.join(', ')}`);
+  startGroup('setup-fortran-conda: Install Extra Packages');
   await _exec('conda', [
     'install',
     '--yes',
@@ -18,5 +18,4 @@ export async function installExtras(env = 'fortran', extras = [], fpmVersion = '
     ...pkgs
   ]);
   endGroup();
-
 }

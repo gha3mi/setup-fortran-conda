@@ -1,6 +1,7 @@
 import {
     startGroup,
     endGroup,
+    info,
 } from '@actions/core';
 import { exec as _exec } from '@actions/exec';
 import { sep } from 'path';
@@ -29,7 +30,7 @@ async function setUlimits() {
         throw new Error('GITHUB_ENV or RUNNER_TEMP not defined.');
     }
 
-    startGroup('Set unlimited ulimits)');
+    startGroup('setup-fortran-conda: Configure Linux Environment');
     const ulimitCmd =
         'ulimit -c unlimited -d unlimited -f unlimited -m unlimited -s unlimited -t unlimited -v unlimited -x unlimited';
 
@@ -48,6 +49,7 @@ async function setUlimits() {
 async function exportActivatedCondaEnv(envName) {
     const scriptPath = path.join(os.tmpdir(), 'export-conda-env.sh');
 
+    startGroup('setup-fortran-conda: Export Conda Environment');
     fs.writeFileSync(scriptPath, `#!/usr/bin/env bash
 set -eo pipefail
 
@@ -63,10 +65,10 @@ printenv | while IFS="=" read -r line; do
 done
 `);
 
-    console.log(`Written export script to: ${scriptPath}`);
-    console.log(fs.readFileSync(scriptPath, 'utf8'));
+    info(`Script: ${scriptPath}`);
 
     await _exec('bash', [scriptPath]);
+    endGroup();
 }
 
 export async function setup(version = '') {
@@ -74,7 +76,7 @@ export async function setup(version = '') {
         ? [`gfortran=${version}`, 'mpich']
         : ['gfortran', 'mpich'];
 
-    startGroup('Conda install');
+    startGroup('setup-fortran-conda: Install Conda Packages');
     await _exec('conda', [
         'install',
         '--yes',

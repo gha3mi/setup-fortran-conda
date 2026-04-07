@@ -30,7 +30,7 @@ async function runVcvars64() {
     throw new Error('"vswhere" not found in PATH. Ensure Visual Studio is installed.');
   }
 
-  startGroup('Detecting Visual Studio installation');
+  startGroup('setup-fortran-conda: Detect Visual Studio Installation');
 
   // Query the latest Visual Studio installation path
   let vsPath = '';
@@ -59,7 +59,7 @@ async function runVcvars64() {
     throw new Error(`vcvars64.bat not found at expected path: ${vcvars}`);
   }
 
-  startGroup('Running vcvars64.bat');
+  startGroup('setup-fortran-conda: Initialize MSVC Environment');
 
   // Run vcvars64.bat and capture the resulting environment variables
   let output = '';
@@ -80,7 +80,7 @@ async function runVcvars64() {
 
   endGroup();
 
-  startGroup('Exporting MSVC environment variables');
+  startGroup('setup-fortran-conda: Export MSVC Environment');
 
   // Parse and export environment variables line-by-line
   let exportedCount = 0;
@@ -117,7 +117,7 @@ async function getCondaPrefix(envName) {
 // Remove any bad linkers from PATH to avoid conflicts
 function removeBadLinkersFromPath() {
 
-  startGroup('Removing bad linkers from PATH');
+  startGroup('setup-fortran-conda: Clean Up PATH');
   const paths = env.PATH.split(';');
   const filtered = paths.filter(p =>
     !/mingw/i.test(p) &&
@@ -152,7 +152,7 @@ export async function setup(version = '') {
   removeBadLinkersFromPath();
 
   // Install required compilers and tools via Conda
-  startGroup('Installing Conda packages');
+  startGroup('setup-fortran-conda: Install Conda Packages');
   try {
     await _exec('conda', [
       'install',
@@ -170,7 +170,7 @@ export async function setup(version = '') {
   endGroup();
 
   // Conda environment information
-  startGroup('Conda environment information');
+  startGroup('setup-fortran-conda: Show Conda Environment');
   await _exec('conda', ['info']);
   await _exec('conda', ['list', '--name', 'fortran']);
   endGroup();
@@ -182,7 +182,7 @@ export async function setup(version = '') {
   const usrBinPath = join(prefix, 'Library', 'usr', 'bin');
   const scriptsPath = join(prefix, 'Scripts');
 
-  startGroup('Setting up environment paths');
+  startGroup('setup-fortran-conda: Configure Compiler Paths');
   const paths = [binPath, libBinPath, usrBinPath, scriptsPath];
   for (const p of paths) {
     if (existsSync(p)) {
@@ -193,7 +193,7 @@ export async function setup(version = '') {
   endGroup();
 
   // Verify that the compilers are installed and working
-  startGroup('Verifying compiler versions');
+  startGroup('setup-fortran-conda: Verify Compiler Commands');
   await _exec('where', ['lfortran']);
   await _exec('lfortran', ['--version']);
   await _exec('where', ['clang']);
@@ -203,7 +203,7 @@ export async function setup(version = '') {
   endGroup();
 
   // Export compiler-related environment variables
-  startGroup('Exporting compiler environment variables');
+  startGroup('setup-fortran-conda: Export Compiler Environment');
   const envVars = {
     FC: 'lfortran',
     CC: 'clang',
@@ -227,7 +227,7 @@ export async function setup(version = '') {
   }
   endGroup();
 
-  startGroup('Exporting all environment variables to process.env and GITHUB_ENV');
+  startGroup('setup-fortran-conda: Export Process Environment');
   for (const [key, value] of Object.entries(env)) {
     if (typeof value === 'string') {
       try {

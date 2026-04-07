@@ -31,7 +31,7 @@ async function getCondaPrefix(envName) {
 
 // Optional: Set unlimited ulimits for Linux
 function setLinuxUlimits() {
-  startGroup('Setting unlimited ulimits (Linux)');
+  startGroup('setup-fortran-conda: Configure Linux Environment');
   const ulimitCmd =
     'ulimit -c unlimited -d unlimited -f unlimited -m unlimited -s unlimited -t unlimited -v unlimited -x unlimited';
   const script = `${process.env.RUNNER_TEMP}/ulimit.sh`;
@@ -43,7 +43,7 @@ function setLinuxUlimits() {
 
 // Free up disk space
 async function freeUpDiskSpace() {
-  startGroup('Freeing disk space');
+  startGroup('setup-fortran-conda: Free Disk Space');
   await _exec('sudo', ['rm', '-rf', '/usr/local/lib/android', '/usr/local/android-sdk', '/usr/share/dotnet']);
   endGroup();
 }
@@ -72,7 +72,7 @@ export async function setup(version) {
   version = version?.trim() || await getLatestNVHPC();
 
   // Install NVIDIA HPC SDK via apt
-  startGroup('Installing NVIDIA HPC SDK');
+  startGroup('setup-fortran-conda: Install NVIDIA HPC SDK');
   try {
     await _exec('sudo', [
       'bash', '-c',
@@ -102,7 +102,7 @@ export async function setup(version) {
   const condaBin = join(prefix, 'bin');
 
   // Add all relevant bin directories to PATH
-  startGroup('Setting up environment paths');
+  startGroup('setup-fortran-conda: Configure Compiler Paths');
   const paths = [binComp, binMPI, condaBin];
   for (const p of paths) {
     if (existsSync(p)) {
@@ -113,7 +113,7 @@ export async function setup(version) {
   endGroup();
 
   // Verify that the compilers are installed and working
-  startGroup('Verifying compiler versions');
+  startGroup('setup-fortran-conda: Verify Compiler Commands');
   await _exec('which', ['nvfortran']);
   await _exec('nvfortran', ['--version']);
   await _exec('which', ['nvc']);
@@ -123,7 +123,7 @@ export async function setup(version) {
   endGroup();
 
   // Export compiler-related environment variables
-  startGroup('Exporting compiler environment variables');
+  startGroup('setup-fortran-conda: Export Compiler Environment');
   const envVars = {
     FC: 'nvfortran',
     CC: 'nvc',
@@ -146,7 +146,7 @@ export async function setup(version) {
 
   setLinuxUlimits();
 
-  startGroup('Exporting all environment variables to process.env and GITHUB_ENV');
+  startGroup('setup-fortran-conda: Export Process Environment');
   for (const [key, value] of Object.entries(env)) {
     if (typeof value === 'string') {
       try {

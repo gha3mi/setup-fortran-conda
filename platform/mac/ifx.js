@@ -30,7 +30,6 @@ async function setMacOSSDKROOT() {
   sdkPath = sdkPath.trim();
   if (sdkPath) {
     exportVariable('SDKROOT', sdkPath);
-    info(`Set SDKROOT → ${sdkPath}`);
   } else {
     info('Failed to detect macOS SDK path.');
   }

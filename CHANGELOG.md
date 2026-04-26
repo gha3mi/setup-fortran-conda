@@ -1,3 +1,23 @@
+## [v0.15.2](https://github.com/gha3mi/setup-fortran-conda/compare/v0.15.1...v0.15.2) - 2026-04-26
+
+
+### Others
+
+* chore(deps): bump peter-evans/create-pull-request from 8.1.0 to 8.1.1 (#163) ([c6ee8acd](https://github.com/gha3mi/setup-fortran-conda/commit/c6ee8acdeb3f90311790b290acf0a928c8a774d6)) by [@dependabot[bot]](https://github.com/dependabot[bot])
+* chore(deps): bump @actions/core from 3.0.0 to 3.0.1 (#164) ([3ab7b995](https://github.com/gha3mi/setup-fortran-conda/commit/3ab7b9950cdd681794a3397c25e270507dbb2281)) by [@dependabot[bot]](https://github.com/dependabot[bot])
+* chore(deps): bump conda-incubator/setup-miniconda from 3.3.0 to 4.0.0 (#165) ([d49c5213](https://github.com/gha3mi/setup-fortran-conda/commit/d49c52132a293ba0bbc1737295d00293bec82000)) by [@dependabot[bot]](https://github.com/dependabot[bot])
+* chore(deps): bump conda-incubator/setup-miniconda from 4.0.0 to 4.0.1 (#166) ([63ee44be](https://github.com/gha3mi/setup-fortran-conda/commit/63ee44be063ccee7caea666a5ba664ada5d9135a)) by [@dependabot[bot]](https://github.com/dependabot[bot])
+* README: ifx2026.0.0, flang22.1.4, lfortran0.63, cmake4.3.2, meson1.11.1 [ci skip] (#162) ([7439436b](https://github.com/gha3mi/setup-fortran-conda/commit/7439436b8b2672f7f6c631cc99d3d4cf90b9713f)) by [@gha3mi](https://github.com/gha3mi)
+
+
+### Contributors
+- [@dependabot[bot]](https://github.com/dependabot[bot])
+- [@gha3mi](https://github.com/gha3mi)
+
+
+
+Full Changelog: [v0.15.1...v0.15.2](https://github.com/gha3mi/setup-fortran-conda/compare/v0.15.1...v0.15.2)
+
 ## [v0.15.1](https://github.com/gha3mi/setup-fortran-conda/compare/v0.15.0...v0.15.1) - 2026-04-07
 
 

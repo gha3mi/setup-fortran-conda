@@ -1,3 +1,18 @@
+## [v0.15.3](https://github.com/gha3mi/setup-fortran-conda/compare/v0.15.2...v0.15.3) - 2026-05-03
+
+
+### Fixes
+
+* fix: install git in the Conda environment for LFortran setup on macOS ([0195c87a](https://github.com/gha3mi/setup-fortran-conda/commit/0195c87a26ffb7f1a5e5f3f61257f0b32a3e3acc)) by [@gha3mi](https://github.com/gha3mi)
+
+
+### Contributors
+- [@gha3mi](https://github.com/gha3mi)
+
+
+
+Full Changelog: [v0.15.2...v0.15.3](https://github.com/gha3mi/setup-fortran-conda/compare/v0.15.2...v0.15.3)
+
 ## [v0.15.2](https://github.com/gha3mi/setup-fortran-conda/compare/v0.15.1...v0.15.2) - 2026-04-26
 
 

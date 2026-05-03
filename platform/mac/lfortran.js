@@ -60,7 +60,7 @@ export async function setup(version = '') {
 
   // Define the set of Conda packages to install
   const Pkg = version ? `lfortran=${version}` : 'lfortran';
-  const packages = [Pkg, 'llvm', 'clangxx', 'clang-tools', 'llvm-openmp'];
+  const packages = [Pkg, 'git', 'llvm', 'clangxx', 'clang-tools', 'llvm-openmp'];
 
   // Install required compilers and tools via Conda
   startGroup('setup-fortran-conda: Install Conda Packages');

@@ -1,7 +1,9 @@
 program mpi_hello
 #if defined(USE_MPI)
    use mpi_f08
+#endif
    implicit none
+#if defined(USE_MPI)
    integer :: ierr, rank, size
    call mpi_init(ierr)
    call mpi_comm_rank(mpi_comm_world, rank, ierr)

@@ -4,7 +4,7 @@
 \Hypertarget{md_README_autotoc_md118}%
 
 
-A Git\+Hub Action that sets up a Fortran development environment using Conda. Inspired by \href{https://degenerateconic.com/conda-plus-fortran.html}{\texttt{ Conda + Fortran}}.\hypertarget{md_README_autotoc_md119}{}\doxysection{\texorpdfstring{Supported Compiler Configurations}{Supported Compiler Configurations}}\label{md_README_autotoc_md119}
+A Git\+Hub Action that sets up a Fortran development environment using Conda where available and vendor packages where needed. Inspired by \href{https://degenerateconic.com/conda-plus-fortran.html}{\texttt{ Conda + Fortran}}.\hypertarget{md_README_autotoc_md119}{}\doxysection{\texorpdfstring{Supported Compiler Configurations}{Supported Compiler Configurations}}\label{md_README_autotoc_md119}
 The selected Fortran compiler is installed along with the corresponding C and C++ compilers, as well as {\ttfamily fpm}, {\ttfamily cmake}, {\ttfamily ninja}, {\ttfamily pkg-\/config} and {\ttfamily meson}. Additional packages can be installed using the {\ttfamily extra-\/packages} input.\hypertarget{md_README_autotoc_md120}{}\doxysubsection{\texorpdfstring{Ubuntu}{Ubuntu}}\label{md_README_autotoc_md120}
 \tabulinesep=1mm
 \begin{longtabu}spread 0pt [c]{*{3}{|X[-1]}|}
@@ -20,7 +20,8 @@ gfortran   &gcc   &g++    \\\cline{1-3}
 ifx   &icx   &icx    \\\cline{1-3}
 lfortran   &clang   &clang++    \\\cline{1-3}
 flang, flang-\/new   &clang   &clang++    \\\cline{1-3}
-nvfortran   &nvc   &nvc++   \\\cline{1-3}
+nvfortran   &nvc   &nvc++    \\\cline{1-3}
+amdflang   &amdclang   &amdclang++   \\\cline{1-3}
 \end{longtabu}
 \hypertarget{md_README_autotoc_md121}{}\doxysubsection{\texorpdfstring{mac\+OS}{mac\+OS}}\label{md_README_autotoc_md121}
 \tabulinesep=1mm
@@ -79,6 +80,7 @@ flang, flang-\/new   &clang-\/cl   &clang-\/cl   \\\cline{1-3}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ ubuntu-\/latest,\ \ compiler:\ ifx,\ \ \ \ \ \ \ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{}\}}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ ubuntu-\/latest,\ \ compiler:\ flang-\/new,\ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{}\}}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ ubuntu-\/latest,\ \ compiler:\ nvfortran,\ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{}\}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ ubuntu-\/latest,\ \ compiler:\ amdflang,\ \ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{}\}}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ ubuntu-\/latest,\ \ compiler:\ lfortran,\ \ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{},\ fpm-\/version:\ "{}0.12.0"{}\}}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ windows-\/latest,\ compiler:\ gfortran,\ \ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{}\}}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ windows-\/latest,\ compiler:\ ifx,\ \ \ \ \ \ \ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{},\ fpm-\/version:\ "{}0.12.0"{}\}}
@@ -168,7 +170,7 @@ This example automates Fortran CI/\+CD\+:
 \begin{DoxyItemize}
 \item 📦 {\bfseries{Fortran compiler setup}}\+:
 \begin{DoxyItemize}
-\item Supports\+: {\ttfamily gfortran}, {\ttfamily ifx}, {\ttfamily lfortran}, {\ttfamily flang-\/new}, {\ttfamily nvfortran}
+\item Supports\+: {\ttfamily gfortran}, {\ttfamily ifx}, {\ttfamily lfortran}, {\ttfamily flang-\/new}, {\ttfamily nvfortran}, {\ttfamily amdflang}
 \end{DoxyItemize}
 \item 🖥️ {\bfseries{Cross-\/platform testing}}\+:
 \begin{DoxyItemize}
@@ -254,6 +256,7 @@ modify this example workflow file to your needs, and save it as {\ttfamily .gith
 \DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ ubuntu-\/latest,\ \ compiler:\ ifx,\ \ \ \ \ \ \ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{}\}}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ ubuntu-\/latest,\ \ compiler:\ flang-\/new,\ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{}\}}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ ubuntu-\/latest,\ \ compiler:\ nvfortran,\ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{}\}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ ubuntu-\/latest,\ \ compiler:\ amdflang,\ \ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{}\}}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ ubuntu-\/latest,\ \ compiler:\ lfortran,\ \ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{},\ fpm-\/version:\ "{}0.12.0"{}\}}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ windows-\/latest,\ compiler:\ gfortran,\ \ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{}\}}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ windows-\/latest,\ compiler:\ ifx,\ \ \ \ \ \ \ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{},\ fpm-\/version:\ "{}0.12.0"{}\}}
@@ -289,6 +292,7 @@ modify this example workflow file to your needs, and save it as {\ttfamily .gith
 \DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ ubuntu-\/latest,\ \ compiler:\ ifx,\ \ \ \ \ \ \ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{}\}}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ ubuntu-\/latest,\ \ compiler:\ flang-\/new,\ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{}\}}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ ubuntu-\/latest,\ \ compiler:\ nvfortran,\ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{}\}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ ubuntu-\/latest,\ \ compiler:\ amdflang,\ \ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{}\}}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ ubuntu-\/latest,\ \ compiler:\ lfortran,\ \ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{}\}}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ windows-\/latest,\ compiler:\ gfortran,\ \ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{}\}}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ windows-\/latest,\ compiler:\ ifx,\ \ \ \ \ \ \ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{}\}}
@@ -329,6 +333,7 @@ modify this example workflow file to your needs, and save it as {\ttfamily .gith
 \DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ ubuntu-\/latest,\ \ compiler:\ ifx,\ \ \ \ \ \ \ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{}\}}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ ubuntu-\/latest,\ \ compiler:\ flang-\/new,\ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{}\}}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ ubuntu-\/latest,\ \ compiler:\ nvfortran,\ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{}\}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ ubuntu-\/latest,\ \ compiler:\ amdflang,\ \ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{}\}}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ windows-\/latest,\ compiler:\ gfortran,\ \ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{}\}}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ windows-\/latest,\ compiler:\ ifx,\ \ \ \ \ \ \ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{}\}}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ -\/\ \{os:\ windows-\/latest,\ compiler:\ flang-\/new,\ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{}\}}
@@ -453,7 +458,7 @@ modify this example workflow file to your needs, and save it as {\ttfamily .gith
 \end{DoxyCode}
 
 
-If {\ttfamily compiler-\/version} is set to an empty string {\ttfamily "{}"{}}, the latest version will be installed.\hypertarget{md_README_autotoc_md130}{}\doxysubsection{\texorpdfstring{MPI Support}{MPI Support}}\label{md_README_autotoc_md130}
+If {\ttfamily compiler-\/version} is set to an empty string {\ttfamily "{}"{}} or {\ttfamily latest}, the latest version will be installed.\hypertarget{md_README_autotoc_md130}{}\doxysubsection{\texorpdfstring{MPI Support}{MPI Support}}\label{md_README_autotoc_md130}
 MPI-\/based tests can be executed using fpm with the mpifort. This is currently supported on Linux and mac\+OS runners. The following example job sets up the environment and runs parallel MPI tests\+:
 
 

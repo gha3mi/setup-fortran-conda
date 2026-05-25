@@ -100,7 +100,7 @@ $(function(){initNavTree('md_README.html',''); initResizable(true); });
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><p><a class="anchor" id="autotoc_md118"></a></p>
-<p>A GitHub Action that sets up a Fortran development environment using Conda. Inspired by <a href="https://degenerateconic.com/conda-plus-fortran.html">Conda + Fortran</a>.</p>
+<p>A GitHub Action that sets up a Fortran development environment using Conda where available and vendor packages where needed. Inspired by <a href="https://degenerateconic.com/conda-plus-fortran.html">Conda + Fortran</a>.</p>
 <h1><a class="anchor" id="autotoc_md119"></a>
 Supported Compiler Configurations</h1>
 <p>The selected Fortran compiler is installed along with the corresponding C and C++ compilers, as well as <code>fpm</code>, <code>cmake</code>, <code>ninja</code>, <code>pkg-config</code> and <code>meson</code>. Additional packages can be installed using the <code>extra-packages</code> input.</p>
@@ -118,7 +118,9 @@ Ubuntu</h2>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone">flang, flang-new   </td><td class="markdownTableBodyNone">clang   </td><td class="markdownTableBodyNone">clang++    </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone">nvfortran   </td><td class="markdownTableBodyNone">nvc   </td><td class="markdownTableBodyNone">nvc++   </td></tr>
+<td class="markdownTableBodyNone">nvfortran   </td><td class="markdownTableBodyNone">nvc   </td><td class="markdownTableBodyNone">nvc++    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">amdflang   </td><td class="markdownTableBodyNone">amdclang   </td><td class="markdownTableBodyNone">amdclang++   </td></tr>
 </table>
 <h2><a class="anchor" id="autotoc_md121"></a>
 macOS</h2>
@@ -167,6 +169,7 @@ Simple Usage</h1>
 <div class="line">        - {os: ubuntu-latest,  compiler: ifx,       compiler-version: &quot;&quot;, extra-packages: &quot;&quot;}</div>
 <div class="line">        - {os: ubuntu-latest,  compiler: flang-new, compiler-version: &quot;&quot;, extra-packages: &quot;&quot;}</div>
 <div class="line">        - {os: ubuntu-latest,  compiler: nvfortran, compiler-version: &quot;&quot;, extra-packages: &quot;&quot;}</div>
+<div class="line">        - {os: ubuntu-latest,  compiler: amdflang,  compiler-version: &quot;&quot;, extra-packages: &quot;&quot;}</div>
 <div class="line">        - {os: ubuntu-latest,  compiler: lfortran,  compiler-version: &quot;&quot;, extra-packages: &quot;&quot;, fpm-version: &quot;0.12.0&quot;}</div>
 <div class="line">        - {os: windows-latest, compiler: gfortran,  compiler-version: &quot;&quot;, extra-packages: &quot;&quot;}</div>
 <div class="line">        - {os: windows-latest, compiler: ifx,       compiler-version: &quot;&quot;, extra-packages: &quot;&quot;, fpm-version: &quot;0.12.0&quot;}</div>
@@ -249,7 +252,7 @@ Overview</h2>
 <p>This example automates Fortran CI/CD:</p>
 <ul>
 <li>📦 <b>Fortran compiler setup</b>:<ul>
-<li>Supports: <code>gfortran</code>, <code>ifx</code>, <code>lfortran</code>, <code>flang-new</code>, <code>nvfortran</code></li>
+<li>Supports: <code>gfortran</code>, <code>ifx</code>, <code>lfortran</code>, <code>flang-new</code>, <code>nvfortran</code>, <code>amdflang</code></li>
 </ul>
 </li>
 <li>🖥️ <b>Cross-platform testing</b>:<ul>
@@ -334,6 +337,7 @@ Job Breakdown</h2>
 <div class="line">        - {os: ubuntu-latest,  compiler: ifx,       compiler-version: &quot;&quot;, extra-packages: &quot;&quot;}</div>
 <div class="line">        - {os: ubuntu-latest,  compiler: flang-new, compiler-version: &quot;&quot;, extra-packages: &quot;&quot;}</div>
 <div class="line">        - {os: ubuntu-latest,  compiler: nvfortran, compiler-version: &quot;&quot;, extra-packages: &quot;&quot;}</div>
+<div class="line">        - {os: ubuntu-latest,  compiler: amdflang,  compiler-version: &quot;&quot;, extra-packages: &quot;&quot;}</div>
 <div class="line">        - {os: ubuntu-latest,  compiler: lfortran,  compiler-version: &quot;&quot;, extra-packages: &quot;&quot;, fpm-version: &quot;0.12.0&quot;}</div>
 <div class="line">        - {os: windows-latest, compiler: gfortran,  compiler-version: &quot;&quot;, extra-packages: &quot;&quot;}</div>
 <div class="line">        - {os: windows-latest, compiler: ifx,       compiler-version: &quot;&quot;, extra-packages: &quot;&quot;, fpm-version: &quot;0.12.0&quot;}</div>
@@ -369,6 +373,7 @@ Job Breakdown</h2>
 <div class="line">        - {os: ubuntu-latest,  compiler: ifx,       compiler-version: &quot;&quot;, extra-packages: &quot;&quot;}</div>
 <div class="line">        - {os: ubuntu-latest,  compiler: flang-new, compiler-version: &quot;&quot;, extra-packages: &quot;&quot;}</div>
 <div class="line">        - {os: ubuntu-latest,  compiler: nvfortran, compiler-version: &quot;&quot;, extra-packages: &quot;&quot;}</div>
+<div class="line">        - {os: ubuntu-latest,  compiler: amdflang,  compiler-version: &quot;&quot;, extra-packages: &quot;&quot;}</div>
 <div class="line">        - {os: ubuntu-latest,  compiler: lfortran,  compiler-version: &quot;&quot;, extra-packages: &quot;&quot;}</div>
 <div class="line">        - {os: windows-latest, compiler: gfortran,  compiler-version: &quot;&quot;, extra-packages: &quot;&quot;}</div>
 <div class="line">        - {os: windows-latest, compiler: ifx,       compiler-version: &quot;&quot;, extra-packages: &quot;&quot;}</div>
@@ -409,6 +414,7 @@ Job Breakdown</h2>
 <div class="line">        - {os: ubuntu-latest,  compiler: ifx,       compiler-version: &quot;&quot;, extra-packages: &quot;&quot;}</div>
 <div class="line">        - {os: ubuntu-latest,  compiler: flang-new, compiler-version: &quot;&quot;, extra-packages: &quot;&quot;}</div>
 <div class="line">        - {os: ubuntu-latest,  compiler: nvfortran, compiler-version: &quot;&quot;, extra-packages: &quot;&quot;}</div>
+<div class="line">        - {os: ubuntu-latest,  compiler: amdflang,  compiler-version: &quot;&quot;, extra-packages: &quot;&quot;}</div>
 <div class="line">        - {os: windows-latest, compiler: gfortran,  compiler-version: &quot;&quot;, extra-packages: &quot;&quot;}</div>
 <div class="line">        - {os: windows-latest, compiler: ifx,       compiler-version: &quot;&quot;, extra-packages: &quot;&quot;}</div>
 <div class="line">        - {os: windows-latest, compiler: flang-new, compiler-version: &quot;&quot;, extra-packages: &quot;&quot;}</div>
@@ -529,7 +535,7 @@ Job Breakdown</h2>
 <div class="line">        with:</div>
 <div class="line">          fortitude-check: true</div>
 <div class="line">          fortitude-settings: &quot;--output-format github&quot;</div>
-</div><!-- fragment --><p>If <code>compiler-version</code> is set to an empty string <code>""</code>, the latest version will be installed.</p>
+</div><!-- fragment --><p>If <code>compiler-version</code> is set to an empty string <code>""</code> or <code>latest</code>, the latest version will be installed.</p>
 <h2><a class="anchor" id="autotoc_md130"></a>
 MPI Support</h2>
 <p>MPI-based tests can be executed using fpm with the mpifort. This is currently supported on Linux and macOS runners. The following example job sets up the environment and runs parallel MPI tests:</p>

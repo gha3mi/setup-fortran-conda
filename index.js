@@ -37,6 +37,11 @@ function pickFirstVersionLike(text) {
   return m ? m[0] : '';
 }
 
+function pickAoccVersion(text) {
+  const m = (text || '').match(/\bAOCC[_\s-]*(\d+(?:\.\d+){1,3})\b/i);
+  return m ? m[1] : '';
+}
+
 function isNotFoundMessage(s) {
   return /Unable to locate executable file|not found|ENOENT|is not recognized as an internal or external command/i.test(
     s || ''
@@ -49,6 +54,12 @@ async function detectCompilerVersion(compilerBinary, compilerKey) {
   if (compilerKey === 'gfortran') {
     probes.push([compilerBinary, ['-dumpfullversion', '-dumpversion']]);
     probes.push([compilerBinary, ['-dumpversion']]);
+  }
+
+  if (compilerKey === 'amdflang') {
+    probes.push(['amdclang', ['-v']]);
+    probes.push(['amdclang', ['--version']]);
+    probes.push(['amdflang', ['--version']]);
   }
 
   probes.push([compilerBinary, ['--version']]);
@@ -68,7 +79,10 @@ async function detectCompilerVersion(compilerBinary, compilerKey) {
       };
     }
 
-    const ver = pickFirstVersionLike(combined) || pickFirstVersionLike(raw);
+    const ver =
+      compilerKey === 'amdflang'
+        ? pickAoccVersion(combined) || pickAoccVersion(raw) || pickFirstVersionLike(combined) || pickFirstVersionLike(raw)
+        : pickFirstVersionLike(combined) || pickFirstVersionLike(raw);
 
     if (exitCode === 0 || raw) {
       return {

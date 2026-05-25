@@ -1,6 +1,6 @@
 # Setup Fortran with Conda
 
-A GitHub Action that sets up a Fortran development environment using Conda. Inspired by [Conda + Fortran](https://degenerateconic.com/conda-plus-fortran.html).
+A GitHub Action that sets up a Fortran development environment using Conda where available and vendor packages where needed. Inspired by [Conda + Fortran](https://degenerateconic.com/conda-plus-fortran.html).
 
 ## Supported Compiler Configurations
 
@@ -15,6 +15,7 @@ The selected Fortran compiler is installed along with the corresponding C and C+
 | lfortran         | clang      | clang++      |
 | flang, flang-new | clang      | clang++      |
 | nvfortran        | nvc        | nvc++        |
+| amdflang         | amdclang   | amdclang++   |
 
 ### macOS
 
@@ -56,6 +57,7 @@ jobs:
         - {os: ubuntu-latest,  compiler: ifx,       compiler-version: "", extra-packages: ""}
         - {os: ubuntu-latest,  compiler: flang-new, compiler-version: "", extra-packages: ""}
         - {os: ubuntu-latest,  compiler: nvfortran, compiler-version: "", extra-packages: ""}
+        - {os: ubuntu-latest,  compiler: amdflang,  compiler-version: "", extra-packages: ""}
         - {os: ubuntu-latest,  compiler: lfortran,  compiler-version: "", extra-packages: "", fpm-version: "0.12.0"}
         - {os: windows-latest, compiler: gfortran,  compiler-version: "", extra-packages: ""}
         - {os: windows-latest, compiler: ifx,       compiler-version: "", extra-packages: "", fpm-version: "0.12.0"}
@@ -135,7 +137,7 @@ This example automates Fortran CI/CD:
 
 * 📦 **Fortran compiler setup**:
 
-  * Supports: `gfortran`, `ifx`, `lfortran`, `flang-new`, `nvfortran`
+  * Supports: `gfortran`, `ifx`, `lfortran`, `flang-new`, `nvfortran`, `amdflang`
 
 * 🖥️ **Cross-platform testing**:
 
@@ -212,6 +214,7 @@ jobs:
         - {os: ubuntu-latest,  compiler: ifx,       compiler-version: "", extra-packages: ""}
         - {os: ubuntu-latest,  compiler: flang-new, compiler-version: "", extra-packages: ""}
         - {os: ubuntu-latest,  compiler: nvfortran, compiler-version: "", extra-packages: ""}
+        - {os: ubuntu-latest,  compiler: amdflang,  compiler-version: "", extra-packages: ""}
         - {os: ubuntu-latest,  compiler: lfortran,  compiler-version: "", extra-packages: "", fpm-version: "0.12.0"}
         - {os: windows-latest, compiler: gfortran,  compiler-version: "", extra-packages: ""}
         - {os: windows-latest, compiler: ifx,       compiler-version: "", extra-packages: "", fpm-version: "0.12.0"}
@@ -247,6 +250,7 @@ jobs:
         - {os: ubuntu-latest,  compiler: ifx,       compiler-version: "", extra-packages: ""}
         - {os: ubuntu-latest,  compiler: flang-new, compiler-version: "", extra-packages: ""}
         - {os: ubuntu-latest,  compiler: nvfortran, compiler-version: "", extra-packages: ""}
+        - {os: ubuntu-latest,  compiler: amdflang,  compiler-version: "", extra-packages: ""}
         - {os: ubuntu-latest,  compiler: lfortran,  compiler-version: "", extra-packages: ""}
         - {os: windows-latest, compiler: gfortran,  compiler-version: "", extra-packages: ""}
         - {os: windows-latest, compiler: ifx,       compiler-version: "", extra-packages: ""}
@@ -287,6 +291,7 @@ jobs:
         - {os: ubuntu-latest,  compiler: ifx,       compiler-version: "", extra-packages: ""}
         - {os: ubuntu-latest,  compiler: flang-new, compiler-version: "", extra-packages: ""}
         - {os: ubuntu-latest,  compiler: nvfortran, compiler-version: "", extra-packages: ""}
+        - {os: ubuntu-latest,  compiler: amdflang,  compiler-version: "", extra-packages: ""}
         - {os: windows-latest, compiler: gfortran,  compiler-version: "", extra-packages: ""}
         - {os: windows-latest, compiler: ifx,       compiler-version: "", extra-packages: ""}
         - {os: windows-latest, compiler: flang-new, compiler-version: "", extra-packages: ""}
@@ -409,7 +414,7 @@ jobs:
           fortitude-settings: "--output-format github"
 ```
 
-If `compiler-version` is set to an empty string `""`, the latest version will be installed.
+If `compiler-version` is set to an empty string `""` or `latest`, the latest version will be installed.
 
 ### MPI Support
 

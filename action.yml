@@ -1,5 +1,5 @@
 name: Setup Fortran with Conda
-description: Installs Fortran compilers and extra packages using Conda. Optionally builds and deploys FORD and/or Doxygen docs.
+description: Installs Fortran compilers and extra packages using Conda or vendor packages. Optionally builds and deploys FORD and/or Doxygen docs.
 author: Seyed Ali Ghasemi
 branding:
   icon: 'check'
@@ -7,7 +7,7 @@ branding:
 
 inputs:
   compiler:
-    description: "Fortran compiler to install (gfortran, ifx, lfortran, flang)"
+    description: "Fortran compiler to install (gfortran, ifx, lfortran, flang, flang-new, nvfortran, amdflang, mpifort)"
     required: false
     default: ""
   compiler-version:

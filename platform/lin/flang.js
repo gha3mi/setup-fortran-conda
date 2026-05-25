@@ -49,13 +49,9 @@ export async function setup(version = '') {
 
   // Define the set of Conda packages to install
   const packages = [
-    version ? `flang_linux-64=${version}` : 'flang_linux-64',
-    version ? `libflang-rt=${version}` : 'libflang-rt',
-    version ? `llvm=${version}` : 'llvm',
+    version ? `flang=${version}` : 'flang',
     version ? `clangxx=${version}` : 'clangxx',
-    version ? `clang-tools=${version}` : 'clang-tools',
-    version ? `llvm-openmp=${version}` : 'llvm-openmp',
-    version ? `lld=${version}` : 'lld'
+    'libflang-rt'
   ];
 
   startGroup('setup-fortran-conda: Install Conda Packages');

@@ -238,7 +238,8 @@ async function run() {
   let fatalError = null;
 
   const compiler = (process.env.INPUT_COMPILER || '').toLowerCase();
-  const versionRequested = process.env.INPUT_COMPILER_VERSION || '';
+  const rawVersionRequested = (process.env.INPUT_COMPILER_VERSION || '').trim();
+  const versionRequested = rawVersionRequested.toLowerCase() === 'latest' ? '' : rawVersionRequested;
   const platformInput = (process.env.INPUT_PLATFORM || '').toLowerCase();
   const extrasInput = process.env.INPUT_EXTRA_PACKAGES || '';
   const fpmVersion = process.env.INPUT_FPM_VERSION || '';

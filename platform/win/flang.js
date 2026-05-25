@@ -1,7 +1,7 @@
 import { startGroup, endGroup, addPath, info } from '@actions/core';
 import { exec as _exec } from '@actions/exec';
 import { sep, join } from 'path';
-import { existsSync, appendFileSync } from 'fs';
+import { existsSync, appendFileSync, readdirSync } from 'fs';
 import { EOL } from 'os';
 import { env, platform } from 'process';
 
@@ -114,6 +114,18 @@ async function getCondaPrefix(envName) {
   throw new Error(`Unable to locate Conda environment "${envName}".`);
 }
 
+function getClangRuntimeLibPaths(prefix) {
+  const clangRoot = join(prefix, 'Library', 'lib', 'clang');
+  if (!existsSync(clangRoot)) return [];
+
+  return readdirSync(clangRoot, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => entry.name)
+    .sort((a, b) => b.localeCompare(a, undefined, { numeric: true }))
+    .map((version) => join(clangRoot, version, 'lib', 'x86_64-pc-windows-msvc'))
+    .filter((p) => existsSync(p));
+}
+
 // Main setup function to configure compilers and environment
 export async function setup(version = '') {
   // Ensure this only runs on Windows
@@ -124,11 +136,7 @@ export async function setup(version = '') {
   // Define the set of Conda packages to install
   const packages = [
     version ? `flang=${version}` : 'flang',
-    version ? `flang-rt_win-64=${version}` : 'flang-rt_win-64',
-    version ? `llvm=${version}` : 'llvm',
-    version ? `clang-tools=${version}` : 'clang-tools',
-    version ? `llvm-openmp=${version}` : 'llvm-openmp',
-    version ? `lld=${version}` : 'lld'
+    'flang-rt_win-64'
   ];
 
 
@@ -166,9 +174,10 @@ export async function setup(version = '') {
   const usrBinPath = join(prefix, 'Library', 'usr', 'bin');
   const scriptsPath = join(prefix, 'Scripts');
   const libPath = join(prefix, 'Library', 'lib');
+  const runtimeLibPaths = getClangRuntimeLibPaths(prefix);
 
   startGroup('setup-fortran-conda: Configure Compiler Paths');
-  const paths = [binPath, libBinPath, usrBinPath, scriptsPath, libPath];
+  const paths = [binPath, libBinPath, usrBinPath, scriptsPath, libPath, ...runtimeLibPaths];
   for (const p of paths) {
     if (existsSync(p)) {
       addPath(p);
@@ -198,6 +207,7 @@ export async function setup(version = '') {
     CMAKE_C_COMPILER: 'clang-cl',
     CMAKE_CXX_COMPILER: 'clang-cl',
     INCLUDE: [join(prefix, 'Library', 'include'), process.env.INCLUDE || ''].filter(Boolean).join(';'),
+    LIB: [...runtimeLibPaths, libPath, process.env.LIB || ''].filter(Boolean).join(';'),
     AR: 'lib.exe'
   };
 

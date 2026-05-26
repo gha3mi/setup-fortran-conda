@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['see_20also_0',['🔗 See Also',['../md_README.html#autotoc_md142',1,'']]],
+  ['see_20also_0',['🔗 See Also',['../md_README.html#autotoc_md143',1,'']]],
   ['setup_20fortran_20conda_20compare_20v0_2010_200_20v0_2010_201_20v0_2010_201_20a_202025_2008_2017_1',['&lt;a href=&quot;https://github.com/gha3mi/setup-fortran-conda/compare/v0.10.0...v0.10.1&quot; &gt;v0.10.1&lt;/a&gt; - 2025-08-17',['../md_CHANGELOG.html#autotoc_md92',1,'']]],
   ['setup_20fortran_20conda_20compare_20v0_2010_201_20v0_2010_202_20v0_2010_202_20a_202025_2009_2003_2',['&lt;a href=&quot;https://github.com/gha3mi/setup-fortran-conda/compare/v0.10.1...v0.10.2&quot; &gt;v0.10.2&lt;/a&gt; - 2025-09-03',['../md_CHANGELOG.html#autotoc_md89',1,'']]],
   ['setup_20fortran_20conda_20compare_20v0_2010_2010_20v0_2010_2011_20v0_2010_2011_20a_202025_2012_2003_3',['&lt;a href=&quot;https://github.com/gha3mi/setup-fortran-conda/compare/v0.10.10...v0.10.11&quot; &gt;v0.10.11&lt;/a&gt; - 2025-12-03',['../md_CHANGELOG.html#autotoc_md59',1,'']]],
@@ -37,8 +37,8 @@ var searchData=
   ['setup_20fortran_20conda_20compare_20v0_209_200_20v0_209_201_20v0_209_201_20a_202025_2008_2006_34',['&lt;a href=&quot;https://github.com/gha3mi/setup-fortran-conda/compare/v0.9.0...v0.9.1&quot; &gt;v0.9.1&lt;/a&gt; - 2025-08-06',['../md_CHANGELOG.html#autotoc_md100',1,'']]],
   ['setup_20fortran_20conda_20compare_20v0_209_201_20v0_2010_200_20v0_2010_200_20a_202025_2008_2013_35',['&lt;a href=&quot;https://github.com/gha3mi/setup-fortran-conda/compare/v0.9.1...v0.10.0&quot; &gt;v0.10.0&lt;/a&gt; - 2025-08-13',['../md_CHANGELOG.html#autotoc_md95',1,'']]],
   ['setup_20fortran_20with_20conda_36',['Setup Fortran with Conda',['../md_README.html',1,'']]],
-  ['simple_20usage_37',['Simple Usage',['../md_README.html#autotoc_md128',1,'']]],
-  ['status_38',['✅ CI Status',['../md_README.html#autotoc_md129',1,'']]],
-  ['support_39',['MPI Support',['../md_README.html#autotoc_md136',1,'']]],
-  ['supported_20compiler_20configurations_40',['Supported Compiler Configurations',['../md_README.html#autotoc_md124',1,'']]]
+  ['simple_20usage_37',['Simple Usage',['../md_README.html#autotoc_md129',1,'']]],
+  ['status_38',['✅ CI Status',['../md_README.html#autotoc_md130',1,'']]],
+  ['support_39',['MPI Support',['../md_README.html#autotoc_md137',1,'']]],
+  ['supported_20compiler_20configurations_40',['Supported Compiler Configurations',['../md_README.html#autotoc_md125',1,'']]]
 ];

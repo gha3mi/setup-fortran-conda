@@ -37,5 +37,5 @@ var searchData=
   ['fortran_20conda_20compare_20v0_208_201_20v0_209_200_20v0_209_200_20a_202025_2008_2005_34',['&lt;a href=&quot;https://github.com/gha3mi/setup-fortran-conda/compare/v0.8.1...v0.9.0&quot; &gt;v0.9.0&lt;/a&gt; - 2025-08-05',['../md_CHANGELOG.html#autotoc_md103',1,'']]],
   ['fortran_20conda_20compare_20v0_209_200_20v0_209_201_20v0_209_201_20a_202025_2008_2006_35',['&lt;a href=&quot;https://github.com/gha3mi/setup-fortran-conda/compare/v0.9.0...v0.9.1&quot; &gt;v0.9.1&lt;/a&gt; - 2025-08-06',['../md_CHANGELOG.html#autotoc_md100',1,'']]],
   ['fortran_20conda_20compare_20v0_209_201_20v0_2010_200_20v0_2010_200_20a_202025_2008_2013_36',['&lt;a href=&quot;https://github.com/gha3mi/setup-fortran-conda/compare/v0.9.1...v0.10.0&quot; &gt;v0.10.0&lt;/a&gt; - 2025-08-13',['../md_CHANGELOG.html#autotoc_md95',1,'']]],
-  ['fortran_20with_20conda_37',['Setup Fortran with Conda',['../md_README.html#autotoc_md123',1,'']]]
+  ['fortran_20with_20conda_37',['Setup Fortran with Conda',['../md_README.html',1,'']]]
 ];

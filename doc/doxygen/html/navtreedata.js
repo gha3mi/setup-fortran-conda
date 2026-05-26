@@ -183,31 +183,29 @@ var NAVTREE =
         [ "Contributors", "md_CHANGELOG.html#autotoc_md122", null ]
       ] ]
     ] ],
-    [ "README", "md_README.html", [
-      [ "Setup Fortran with Conda", "md_README.html#autotoc_md123", [
-        [ "Supported Compiler Configurations", "md_README.html#autotoc_md124", [
-          [ "Ubuntu", "md_README.html#autotoc_md125", null ],
-          [ "macOS", "md_README.html#autotoc_md126", null ],
-          [ "Windows", "md_README.html#autotoc_md127", null ]
-        ] ],
-        [ "Simple Usage", "md_README.html#autotoc_md128", null ],
-        [ "✅ CI Status", "md_README.html#autotoc_md129", null ],
-        [ "📋 Workflow Example", "md_README.html#autotoc_md130", [
-          [ "🔐 IMPORTANT NOTES", "md_README.html#autotoc_md131", null ],
-          [ "Overview", "md_README.html#autotoc_md132", null ],
-          [ "README Integration", "md_README.html#autotoc_md133", null ],
-          [ "Dependency Graph Integration", "md_README.html#autotoc_md134", null ],
-          [ "Job Breakdown", "md_README.html#autotoc_md135", null ],
-          [ "MPI Support", "md_README.html#autotoc_md136", null ]
-        ] ],
-        [ "🚀 Release Automation", "md_README.html#autotoc_md137", [
-          [ "Features", "md_README.html#autotoc_md138", null ],
-          [ "Requirements", "md_README.html#autotoc_md139", null ],
-          [ "Usage", "md_README.html#autotoc_md140", null ],
-          [ "Recommended Workflow", "md_README.html#autotoc_md141", null ]
-        ] ],
-        [ "🔗 See Also", "md_README.html#autotoc_md142", null ]
-      ] ]
+    [ "Setup Fortran with Conda", "md_README.html", [
+      [ "Supported Compiler Configurations", "md_README.html#autotoc_md124", [
+        [ "Ubuntu", "md_README.html#autotoc_md125", null ],
+        [ "macOS", "md_README.html#autotoc_md126", null ],
+        [ "Windows", "md_README.html#autotoc_md127", null ]
+      ] ],
+      [ "Simple Usage", "md_README.html#autotoc_md128", null ],
+      [ "✅ CI Status", "md_README.html#autotoc_md129", null ],
+      [ "📋 Workflow Example", "md_README.html#autotoc_md130", [
+        [ "🔐 IMPORTANT NOTES", "md_README.html#autotoc_md131", null ],
+        [ "Overview", "md_README.html#autotoc_md132", null ],
+        [ "README Integration", "md_README.html#autotoc_md133", null ],
+        [ "Dependency Graph Integration", "md_README.html#autotoc_md134", null ],
+        [ "Job Breakdown", "md_README.html#autotoc_md135", null ],
+        [ "MPI Support", "md_README.html#autotoc_md136", null ]
+      ] ],
+      [ "🚀 Release Automation", "md_README.html#autotoc_md137", [
+        [ "Features", "md_README.html#autotoc_md138", null ],
+        [ "Requirements", "md_README.html#autotoc_md139", null ],
+        [ "Usage", "md_README.html#autotoc_md140", null ],
+        [ "Recommended Workflow", "md_README.html#autotoc_md141", null ]
+      ] ],
+      [ "🔗 See Also", "md_README.html#autotoc_md142", null ]
     ] ]
   ] ]
 ];

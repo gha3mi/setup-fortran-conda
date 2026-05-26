@@ -1,5 +1,5 @@
 name: Setup Fortran with Conda
-description: Installs Fortran compilers and extra packages using Conda or vendor packages. Optionally builds and deploys FORD and/or Doxygen docs.
+description: Installs Fortran compilers and extra packages using Conda or vendor packages. Optionally builds docs and updates README status/dependency graphs.
 author: Seyed Ali Ghasemi
 branding:
   icon: 'check'
@@ -112,8 +112,25 @@ inputs:
     description: "Git user.email for README.md update commit"
     required: false
   update-readme-token:
-    description: "GitHub token used to create the PR for updating the README table"
+    description: "GitHub token used to create README update PRs"
     required: false
+
+  update-readme-dependencies:
+    description: "Generate and inject one fpm dependency graph into README.md. Supported values: false, fpm-deps, fpm-modules"
+    required: false
+    default: "false"
+  dependency-graph-working-directory:
+    description: "Directory containing fpm.toml for README dependency graph generation"
+    required: false
+    default: "."
+  dependency-graph-readme-file:
+    description: "README file to update with the dependency graph"
+    required: false
+    default: "README.md"
+  dependency-graph-options:
+    description: "Extra one-line CLI options passed to the selected dependency graph tool"
+    required: false
+    default: ""
 
   fortitude-check:
     description: "Run Fortitude check (https://github.com/PlasmaFAIR/fortitude)"
@@ -131,12 +148,34 @@ runs:
       if: ${{ inputs.checkout-repo == 'true' || inputs.generate-doc-ford == 'true' || inputs.generate-doc-doxygen == 'true' }}
       uses: actions/checkout@v6.0.2
 
+    - name: Validate README update mode
+      if: ${{ inputs.update-readme-table == 'true' && inputs.update-readme-dependencies != 'false' }}
+      shell: bash
+      run: |
+        echo "::error::Use separate jobs for update-readme-table and update-readme-dependencies."
+        exit 1
+
+    - name: Validate README dependency graph tool
+      if: ${{ inputs.update-readme-dependencies != 'false' && inputs.update-readme-dependencies != 'fpm-deps' && inputs.update-readme-dependencies != 'fpm-modules' }}
+      shell: bash
+      run: |
+        echo "::error::update-readme-dependencies must be false, fpm-deps, or fpm-modules."
+        exit 1
+
+    - name: Validate README dependency graph platform
+      if: ${{ inputs.update-readme-dependencies != 'false' && runner.os != 'Linux' }}
+      shell: bash
+      run: |
+        echo "::error::README dependency graph generation currently supports Linux runners only."
+        exit 1
+
     - name: Setup Miniconda
       if: >-
         ${{
           inputs.compiler != '' ||
           inputs.generate-doc-ford == 'true' ||
           inputs.generate-doc-doxygen == 'true' ||
+          inputs.update-readme-dependencies != 'false' ||
           inputs.fortitude-check == 'true'
         }}
       uses: conda-incubator/setup-miniconda@v4.0.1
@@ -147,11 +186,11 @@ runs:
 
     - name: Run Fortran compiler setup script
       id: setup_fortran
-      if: ${{ inputs.compiler != '' }}
+      if: ${{ inputs.compiler != '' || inputs.update-readme-dependencies != 'false' }}
       shell: bash
       run: node "${{ github.action_path }}/index.js"
       env:
-        INPUT_COMPILER: ${{ inputs.compiler }}
+        INPUT_COMPILER: ${{ inputs.compiler != '' && inputs.compiler || 'gfortran' }}
         INPUT_COMPILER_VERSION: ${{ inputs.compiler-version }}
         INPUT_PLATFORM: ${{ inputs.platform != '' && inputs.platform || runner.os }}
         INPUT_EXTRA_PACKAGES: ${{ inputs.extra-packages }}
@@ -166,6 +205,7 @@ runs:
           inputs.fortitude-check != 'true' &&
           inputs.generate-doc-ford != 'true' &&
           inputs.generate-doc-doxygen != 'true' &&
+          inputs.update-readme-dependencies == 'false' &&
           inputs.generate-status-table != 'true' &&
           inputs.update-readme-table != 'true'
         }}
@@ -310,7 +350,7 @@ runs:
         commit-message: "Deploy meson status"
 
     - name: Checkout repository (for README update)
-      if: ${{ inputs.update-readme-table == 'true' }}
+      if: ${{ inputs.update-readme-table == 'true' || inputs.update-readme-dependencies != 'false' }}
       uses: actions/checkout@v6.0.2
       with:
         persist-credentials: false
@@ -347,14 +387,44 @@ runs:
         SETUP_FORTRAN_CONDA_META_DIR: ${{ runner.temp }}/setup-fortran-conda-meta
         README_FILE: README.md
 
+    - name: Generate fpm package dependency graph in README
+      if: ${{ inputs.update-readme-dependencies == 'fpm-deps' }}
+      shell: bash
+      run: |
+        source "${CONDA}/etc/profile.d/conda.sh"
+        conda activate fortran
+
+        echo "::group:: setup-fortran-conda: Update README fpm Dependency Graph"
+        node "${{ github.action_path }}/scripts/update-readme-fpm-deps.js"
+        echo "::endgroup::"
+      env:
+        DEPENDENCY_GRAPH_WORKING_DIRECTORY: ${{ inputs.dependency-graph-working-directory }}
+        DEPENDENCY_GRAPH_README_FILE: ${{ inputs.dependency-graph-readme-file }}
+        DEPENDENCY_GRAPH_OPTIONS: ${{ inputs.dependency-graph-options }}
+
+    - name: Generate Fortran module dependency graph in README
+      if: ${{ inputs.update-readme-dependencies == 'fpm-modules' }}
+      shell: bash
+      run: |
+        source "${CONDA}/etc/profile.d/conda.sh"
+        conda activate fortran
+
+        echo "::group:: setup-fortran-conda: Update README Module Dependency Graph"
+        node "${{ github.action_path }}/scripts/update-readme-fpm-modules.js"
+        echo "::endgroup::"
+      env:
+        DEPENDENCY_GRAPH_WORKING_DIRECTORY: ${{ inputs.dependency-graph-working-directory }}
+        DEPENDENCY_GRAPH_README_FILE: ${{ inputs.dependency-graph-readme-file }}
+        DEPENDENCY_GRAPH_OPTIONS: ${{ inputs.dependency-graph-options }}
+
     - name: Setup Git author
-      if: ${{ inputs.update-readme-table == 'true' }}
+      if: ${{ inputs.update-readme-table == 'true' || inputs.update-readme-dependencies != 'false' }}
       shell: bash
       run: |
         git config user.name "${{ inputs.update-readme-user-name }}"
         git config user.email "${{ inputs.update-readme-user-email }}"
 
-    - name: Create Pull Request for README table
+    - name: Create Pull Request for README status table
       if: ${{ inputs.update-readme-table == 'true' }}
       uses: peter-evans/create-pull-request@v8.1.1
       with:
@@ -363,4 +433,26 @@ runs:
         branch: update/readme-status-table
         title: "update README.md status table"
         body: "This PR updates the CI status table in the README.md."
+        delete-branch: true
+
+    - name: Create Pull Request for fpm dependency graph
+      if: ${{ inputs.update-readme-dependencies == 'fpm-deps' }}
+      uses: peter-evans/create-pull-request@v8.1.1
+      with:
+        token: "${{ inputs.update-readme-token }}"
+        commit-message: "Update README.md fpm dependency graph [ci skip]"
+        branch: update/readme-fpm-deps
+        title: "update README.md fpm dependency graph"
+        body: "This PR updates the fpm package dependency graph in the README.md."
+        delete-branch: true
+
+    - name: Create Pull Request for module dependency graph
+      if: ${{ inputs.update-readme-dependencies == 'fpm-modules' }}
+      uses: peter-evans/create-pull-request@v8.1.1
+      with:
+        token: "${{ inputs.update-readme-token }}"
+        commit-message: "Update README.md module dependency graph [ci skip]"
+        branch: update/readme-fpm-modules
+        title: "update README.md module dependency graph"
+        body: "This PR updates the Fortran module dependency graph in the README.md."
         delete-branch: true

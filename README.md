@@ -2,6 +2,29 @@
 
 A GitHub Action that sets up a Fortran development environment using Conda where available and vendor packages where needed. Inspired by [Conda + Fortran](https://degenerateconic.com/conda-plus-fortran.html).
 
+# Table of Contents
+- [Setup Fortran with Conda](#setup-fortran-with-conda)
+- [Table of Contents](#table-of-contents)
+  - [Supported Compiler Configurations](#supported-compiler-configurations)
+    - [Ubuntu](#ubuntu)
+    - [macOS](#macos)
+    - [Windows](#windows)
+  - [Simple Usage](#simple-usage)
+  - [✅ CI Status](#-ci-status)
+  - [📋 Workflow Example](#-workflow-example)
+    - [🔐 IMPORTANT NOTES](#-important-notes)
+    - [Overview](#overview)
+    - [README Integration](#readme-integration)
+    - [Dependency Graph Integration](#dependency-graph-integration)
+    - [Job Breakdown](#job-breakdown)
+    - [MPI Support](#mpi-support)
+  - [🚀 Release Automation](#-release-automation)
+    - [Features](#features)
+    - [Requirements](#requirements)
+    - [Usage](#usage)
+    - [Recommended Workflow](#recommended-workflow)
+  - [🔗 See Also](#-see-also)
+
 ## Supported Compiler Configurations
 
 The selected Fortran compiler is installed along with the corresponding C and C++ compilers, as well as `fpm`, `cmake`, `ninja`, `pkg-config` and `meson`. Additional packages can be installed using the `extra-packages` input.
@@ -115,7 +138,7 @@ jobs:
 
 > ⚠️ **Use your own name and email!** Don’t copy the example values.
 
-To enable automatic updates to the CI status table in `README.md` via the `update_readme_table` job:
+To enable automatic updates to generated `README.md` content via the `update_readme_table`, `update_readme_fpm_deps`, or `update_readme_fpm_modules` jobs:
 
 1. Create a GitHub **Personal Access Token (PAT)** with `repo` scope.
 2. Add it to your repo secrets, e.g. `GH_PAT`.
@@ -161,6 +184,12 @@ This example automates Fortran CI/CD:
   * Injects summary into `README.md`
   * creates PRs to update the status table in `README.md`
 
+* 🧭 **README Dependency Graphs**:
+
+  * Injects dependency graphs into `README.md`
+  * Supports package dependency graphs with [`fpm-deps`](https://github.com/ivan-pi/fpm-deps)
+  * Supports module dependency graphs with [`fpm-modules`](https://github.com/davidpfister/fpm-modules)
+
 * 🧹 **Linting**:
 
   * Runs Fortitude check
@@ -174,20 +203,42 @@ To enable automatic CI status table injection, add the following to your `README
 &lt;!-- STATUS:setup-fortran-conda:END --&gt;
 </pre>
 
+### Dependency Graph Integration
+
+To enable automatic package dependency graph injection with `fpm-deps`, add the following to your `README.md`:
+
+<pre>
+&lt;!-- FPM-DEPS:setup-fortran-conda:START --&gt;
+&lt;!-- FPM-DEPS:setup-fortran-conda:END --&gt;
+</pre>
+
+To enable automatic module dependency graph injection with `fpm-modules`, add the following to your `README.md`:
+
+<pre>
+&lt;!-- FPM-MODULES:setup-fortran-conda:START --&gt;
+&lt;!-- FPM-MODULES:setup-fortran-conda:END --&gt;
+</pre>
+
+Then use one job with `update-readme-dependencies: fpm-deps` for an fpm package dependency graph, and a separate job with `update-readme-dependencies: fpm-modules` for a Fortran module dependency graph. This feature currently runs on Linux runners and uses `gfortran` by default when no `compiler` input is provided.
+
+Extra generator options can be passed as a one-line string with `dependency-graph-options`. The action still controls the Mermaid format and temporary output file arguments needed to update the README.
+
 ### Job Breakdown
 
-| Job Name              | Description                                                      |
-| --------------------- | ---------------------------------------------------------------- |
-| `test_fpm`            | Run `fpm` tests (debug + release) for each OS/compiler           |
-| `test_cmake`          | Run CMake/Ninja builds and tests                                 |
-| `test_meson`          | Run Meson builds and tests                                       |
-| `doc_ford`            | Build and deploy FORD-generated docs                             |
-| `doc_doxygen`         | Build and deploy Doxygen-generated docs                          |
-| `status_fpm`          | Generate `STATUS.md` with fpm test results                       |
-| `status_cmake`        | Generate `STATUS.md` with cmake test results                     |
-| `status_meson`        | Generate `STATUS.md` with meson test results                     |
-| `update_readme_table` | Inject CI summary table into `README.md` and open a pull request |
-| `linter_fortitude`    | Run [Fortitude](https://github.com/PlasmaFAIR/fortitude) linter  |
+| Job Name                     | Description                                                      |
+| ---------------------------- | ---------------------------------------------------------------- |
+| `test_fpm`                   | Run `fpm` tests (debug + release) for each OS/compiler           |
+| `test_cmake`                 | Run CMake/Ninja builds and tests                                 |
+| `test_meson`                 | Run Meson builds and tests                                       |
+| `doc_ford`                   | Build and deploy FORD-generated docs                             |
+| `doc_doxygen`                | Build and deploy Doxygen-generated docs                          |
+| `status_fpm`                 | Generate `STATUS.md` with fpm test results                       |
+| `status_cmake`               | Generate `STATUS.md` with cmake test results                     |
+| `status_meson`               | Generate `STATUS.md` with meson test results                     |
+| `update_readme_table`        | Inject CI summary table into `README.md` and open a pull request |
+| `update_readme_fpm_deps`     | Inject fpm package dependency graph into `README.md` and open a pull request |
+| `update_readme_fpm_modules`  | Inject Fortran module dependency graph into `README.md` and open a pull request |
+| `linter_fortitude`           | Run [Fortitude](https://github.com/PlasmaFAIR/fortitude) linter  |
 
 modify this example workflow file to your needs, and save it as `.github/workflows/CI-CD.yml` in your repository:
 
@@ -200,6 +251,7 @@ on:
 
 permissions:
   contents: write
+  pull-requests: write
 
 jobs:
 
@@ -399,6 +451,46 @@ jobs:
         uses: gha3mi/setup-fortran-conda@latest
         with:
           update-readme-table: true
+          update-readme-token: ${{ secrets.GH_PAT }}   # Update with your GitHub personal access token
+          update-readme-user-name: "Your Name" # Update with your name
+          update-readme-user-email: "you@example.com"  # Update with your email
+
+  # Inject fpm package dependency graph into README.md
+  update_readme_fpm_deps:
+    name: Update README.md fpm dependency graph
+    if: |
+      always() &&
+      github.ref != 'refs/heads/update/readme-fpm-deps'
+    needs: test_fpm
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update README fpm dependency graph
+        uses: gha3mi/setup-fortran-conda@latest
+        with:
+          update-readme-dependencies: fpm-deps
+          dependency-graph-working-directory: .
+          dependency-graph-readme-file: README.md
+          dependency-graph-options: ""
+          update-readme-token: ${{ secrets.GH_PAT }}   # Update with your GitHub personal access token
+          update-readme-user-name: "Your Name" # Update with your name
+          update-readme-user-email: "you@example.com"  # Update with your email
+
+  # Inject Fortran module dependency graph into README.md
+  update_readme_fpm_modules:
+    name: Update README.md module dependency graph
+    if: |
+      always() &&
+      github.ref != 'refs/heads/update/readme-fpm-modules'
+    needs: test_fpm
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update README module dependency graph
+        uses: gha3mi/setup-fortran-conda@latest
+        with:
+          update-readme-dependencies: fpm-modules
+          dependency-graph-working-directory: .
+          dependency-graph-readme-file: README.md
+          dependency-graph-options: "-x fpm,daglib"
           update-readme-token: ${{ secrets.GH_PAT }}   # Update with your GitHub personal access token
           update-readme-user-name: "Your Name" # Update with your name
           update-readme-user-email: "you@example.com"  # Update with your email

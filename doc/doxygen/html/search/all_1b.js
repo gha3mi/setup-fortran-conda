@@ -1,4 +1,7 @@
 var searchData=
 [
-  ['✅_20ci_20status_0',['✅ CI Status',['../md_README.html#autotoc_md124',1,'']]]
+  ['windows_0',['Windows',['../md_README.html#autotoc_md127',1,'']]],
+  ['with_20conda_1',['Setup Fortran with Conda',['../md_README.html#autotoc_md123',1,'']]],
+  ['workflow_2',['Recommended Workflow',['../md_README.html#autotoc_md141',1,'']]],
+  ['workflow_20example_3',['📋 Workflow Example',['../md_README.html#autotoc_md130',1,'']]]
 ];

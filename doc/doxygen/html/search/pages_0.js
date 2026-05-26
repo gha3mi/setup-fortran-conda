@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['03_0',['&lt;a href=&quot;https://github.com/gha3mi/setup-fortran-conda/compare/v0.15.2...v0.15.3&quot; &gt;v0.15.3&lt;/a&gt; - 2026-05-03',['../md_CHANGELOG.html',1,'']]],
-  ['05_2003_1',['&lt;a href=&quot;https://github.com/gha3mi/setup-fortran-conda/compare/v0.15.2...v0.15.3&quot; &gt;v0.15.3&lt;/a&gt; - 2026-05-03',['../md_CHANGELOG.html',1,'']]]
+  ['0_20a_202026_2005_2025_0',['&lt;a href=&quot;https://github.com/gha3mi/setup-fortran-conda/compare/v0.15.3...v0.16.0&quot; &gt;v0.16.0&lt;/a&gt; - 2026-05-25',['../md_CHANGELOG.html',1,'']]],
+  ['0_20v0_2016_200_20a_202026_2005_2025_1',['&lt;a href=&quot;https://github.com/gha3mi/setup-fortran-conda/compare/v0.15.3...v0.16.0&quot; &gt;v0.16.0&lt;/a&gt; - 2026-05-25',['../md_CHANGELOG.html',1,'']]],
+  ['05_2025_2',['&lt;a href=&quot;https://github.com/gha3mi/setup-fortran-conda/compare/v0.15.3...v0.16.0&quot; &gt;v0.16.0&lt;/a&gt; - 2026-05-25',['../md_CHANGELOG.html',1,'']]]
 ];

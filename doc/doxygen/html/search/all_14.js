@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['macos_0',['macOS',['../md_README.html#autotoc_md127',1,'']]],
-  ['mpi_20support_1',['MPI Support',['../md_README.html#autotoc_md137',1,'']]]
+  ['notes_0',['🔐 IMPORTANT NOTES',['../md_README.html#autotoc_md131',1,'']]]
 ];

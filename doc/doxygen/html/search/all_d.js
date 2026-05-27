@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['dependency_20graph_20integration_0',['Dependency Graph Integration',['../md_README.html#autotoc_md135',1,'']]]
+  ['example_0',['📋 Workflow Example',['../md_README.html#autotoc_md130',1,'']]]
 ];

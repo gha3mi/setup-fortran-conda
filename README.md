@@ -223,7 +223,7 @@ To enable automatic module dependency graph injection with `fpm-modules`, add th
 
 Then use one job with `update-readme-dependencies: fpm-deps` for an fpm package dependency graph, and a separate job with `update-readme-dependencies: fpm-modules` for a Fortran module dependency graph. This feature currently runs on Linux runners and uses `gfortran` by default when no `compiler` input is provided.
 
-Extra generator options can be passed as a one-line string with `dependency-graph-options`. The action still controls the Mermaid format and temporary output file arguments needed to update the README.
+Extra generator options can be passed as a one-line string with `dependency-graph-options`.
 
 ### Job Breakdown
 

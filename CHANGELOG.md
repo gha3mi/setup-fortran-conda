@@ -1,3 +1,25 @@
+## [v0.17.0](https://github.com/gha3mi/setup-fortran-conda/compare/v0.16.0...v0.17.0) - 2026-05-29
+
+
+### Features
+
+* feat: add README dependency graphs via fpm-deps and fpm-modules ([a08a0609](https://github.com/gha3mi/setup-fortran-conda/commit/a08a0609d159aa98953b7359d53c7ea21b1f6c4b)) by [@gha3mi](https://github.com/gha3mi)
+* feat: rename AOCC compiler support to aocc ([f78b657b](https://github.com/gha3mi/setup-fortran-conda/commit/f78b657bc5609b3c6b8a17f2d7ef7e703ad3f9c4)) by [@gha3mi](https://github.com/gha3mi)
+* feat: add AOMP compiler support ([050a8b13](https://github.com/gha3mi/setup-fortran-conda/commit/050a8b13d92afc237d457cd95d758479c7cc523c)) by [@gha3mi](https://github.com/gha3mi)
+
+### Others
+
+* docs: fix README ([c59bdb3e](https://github.com/gha3mi/setup-fortran-conda/commit/c59bdb3e15b65034e5875ba9e82e650e98d31df5)) by [@gha3mi](https://github.com/gha3mi)
+* Update README.md status table [ci skip] (#174) ([ce437640](https://github.com/gha3mi/setup-fortran-conda/commit/ce43764097a629c61055958974aab5227479acdb)) by [@gha3mi](https://github.com/gha3mi)
+
+
+### Contributors
+- [@gha3mi](https://github.com/gha3mi)
+
+
+
+Full Changelog: [v0.16.0...v0.17.0](https://github.com/gha3mi/setup-fortran-conda/compare/v0.16.0...v0.17.0)
+
 ## [v0.16.0](https://github.com/gha3mi/setup-fortran-conda/compare/v0.15.3...v0.16.0) - 2026-05-25
 
 

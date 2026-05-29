@@ -62,6 +62,6 @@ var searchData=
   ['a_20href_20https_3a_20github_20com_20gha3mi_20setup_20fortran_20conda_20compare_20v0_208_201_20v0_209_200_20v0_209_200_20a_202025_2008_2005_59',['&lt;a href=&quot;https://github.com/gha3mi/setup-fortran-conda/compare/v0.8.1...v0.9.0&quot; &gt;v0.9.0&lt;/a&gt; - 2025-08-05',['../md_CHANGELOG.html#autotoc_md103',1,'']]],
   ['a_20href_20https_3a_20github_20com_20gha3mi_20setup_20fortran_20conda_20compare_20v0_209_200_20v0_209_201_20v0_209_201_20a_202025_2008_2006_60',['&lt;a href=&quot;https://github.com/gha3mi/setup-fortran-conda/compare/v0.9.0...v0.9.1&quot; &gt;v0.9.1&lt;/a&gt; - 2025-08-06',['../md_CHANGELOG.html#autotoc_md100',1,'']]],
   ['a_20href_20https_3a_20github_20com_20gha3mi_20setup_20fortran_20conda_20compare_20v0_209_201_20v0_2010_200_20v0_2010_200_20a_202025_2008_2013_61',['&lt;a href=&quot;https://github.com/gha3mi/setup-fortran-conda/compare/v0.9.1...v0.10.0&quot; &gt;v0.10.0&lt;/a&gt; - 2025-08-13',['../md_CHANGELOG.html#autotoc_md95',1,'']]],
-  ['also_62',['🔗 See Also',['../md_README.html#autotoc_md141',1,'']]],
-  ['automation_63',['🚀 Release Automation',['../md_README.html#autotoc_md136',1,'']]]
+  ['also_62',['🔗 See Also',['../md_README.html#autotoc_md143',1,'']]],
+  ['automation_63',['🚀 Release Automation',['../md_README.html#autotoc_md138',1,'']]]
 ];

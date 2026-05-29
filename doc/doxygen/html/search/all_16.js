@@ -1,7 +1,6 @@
 var searchData=
 [
-  ['readme_20integration_0',['README Integration',['../md_README.html#autotoc_md133',1,'']]],
-  ['recommended_20workflow_1',['Recommended Workflow',['../md_README.html#autotoc_md140',1,'']]],
-  ['release_20automation_2',['🚀 Release Automation',['../md_README.html#autotoc_md136',1,'']]],
-  ['requirements_3',['Requirements',['../md_README.html#autotoc_md138',1,'']]]
+  ['of_20contents_0',['Table of Contents',['../md_README.html#autotoc_md124',1,'']]],
+  ['others_1',['Others',['../md_CHANGELOG.html#autotoc_md3',1,'Others'],['../md_CHANGELOG.html#autotoc_md9',1,'Others'],['../md_CHANGELOG.html#autotoc_md12',1,'Others'],['../md_CHANGELOG.html#autotoc_md16',1,'Others'],['../md_CHANGELOG.html#autotoc_md20',1,'Others'],['../md_CHANGELOG.html#autotoc_md23',1,'Others'],['../md_CHANGELOG.html#autotoc_md28',1,'Others'],['../md_CHANGELOG.html#autotoc_md33',1,'Others'],['../md_CHANGELOG.html#autotoc_md36',1,'Others'],['../md_CHANGELOG.html#autotoc_md39',1,'Others'],['../md_CHANGELOG.html#autotoc_md45',1,'Others'],['../md_CHANGELOG.html#autotoc_md48',1,'Others'],['../md_CHANGELOG.html#autotoc_md54',1,'Others'],['../md_CHANGELOG.html#autotoc_md57',1,'Others'],['../md_CHANGELOG.html#autotoc_md60',1,'Others'],['../md_CHANGELOG.html#autotoc_md64',1,'Others'],['../md_CHANGELOG.html#autotoc_md70',1,'Others'],['../md_CHANGELOG.html#autotoc_md73',1,'Others'],['../md_CHANGELOG.html#autotoc_md77',1,'Others'],['../md_CHANGELOG.html#autotoc_md84',1,'Others'],['../md_CHANGELOG.html#autotoc_md93',1,'Others'],['../md_CHANGELOG.html#autotoc_md98',1,'Others'],['../md_CHANGELOG.html#autotoc_md101',1,'Others'],['../md_CHANGELOG.html#autotoc_md109',1,'Others'],['../md_CHANGELOG.html#autotoc_md116',1,'Others'],['../md_CHANGELOG.html#autotoc_md121',1,'Others']]],
+  ['overview_2',['Overview',['../md_README.html#autotoc_md133',1,'']]]
 ];

@@ -102,10 +102,43 @@ $(function(){initNavTree('md_README.html',''); initResizable(true); });
 <div class="textblock"><p><a class="anchor" id="autotoc_md123"></a></p>
 <p>A GitHub Action that sets up a Fortran development environment using Conda where available and vendor packages where needed. Inspired by <a href="https://degenerateconic.com/conda-plus-fortran.html">Conda + Fortran</a>.</p>
 <h1><a class="anchor" id="autotoc_md124"></a>
-Supported Compiler Configurations</h1>
-<p>The selected Fortran compiler is installed along with the corresponding C and C++ compilers, as well as <code>fpm</code>, <code>cmake</code>, <code>ninja</code>, <code>pkg-config</code> and <code>meson</code>. Additional packages can be installed using the <code>extra-packages</code> input.</p>
+Table of Contents</h1>
+<ul>
+<li>Setup Fortran with Conda</li>
+<li>Table of Contents<ul>
+<li>Supported Compiler Configurations<ul>
+<li>Ubuntu</li>
+<li>macOS</li>
+<li>Windows</li>
+</ul>
+</li>
+<li>Simple Usage</li>
+<li>✅ CI Status</li>
+<li>📋 Workflow Example<ul>
+<li>🔐 IMPORTANT NOTES</li>
+<li>Overview</li>
+<li>README Integration</li>
+<li>Dependency Graph Integration</li>
+<li>Job Breakdown</li>
+<li>MPI Support</li>
+</ul>
+</li>
+<li>🚀 Release Automation<ul>
+<li>Features</li>
+<li>Requirements</li>
+<li>Usage</li>
+<li>Recommended Workflow</li>
+</ul>
+</li>
+<li>🔗 See Also</li>
+</ul>
+</li>
+</ul>
 <h2><a class="anchor" id="autotoc_md125"></a>
-Ubuntu</h2>
+Supported Compiler Configurations</h2>
+<p>The selected Fortran compiler is installed along with the corresponding C and C++ compilers, as well as <code>fpm</code>, <code>cmake</code>, <code>ninja</code>, <code>pkg-config</code> and <code>meson</code>. Additional packages can be installed using the <code>extra-packages</code> input.</p>
+<h3><a class="anchor" id="autotoc_md126"></a>
+Ubuntu</h3>
 <table class="markdownTable">
 <tr class="markdownTableHead">
 <th class="markdownTableHeadNone">Fortran Compiler   </th><th class="markdownTableHeadNone">C Compiler   </th><th class="markdownTableHeadNone">C++ Compiler    </th></tr>
@@ -120,10 +153,10 @@ Ubuntu</h2>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone">nvfortran   </td><td class="markdownTableBodyNone">nvc   </td><td class="markdownTableBodyNone">nvc++    </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone">amdflang   </td><td class="markdownTableBodyNone">amdclang   </td><td class="markdownTableBodyNone">amdclang++   </td></tr>
+<td class="markdownTableBodyNone">aocc(flang)   </td><td class="markdownTableBodyNone">aocc(clang)   </td><td class="markdownTableBodyNone">aocc(clang++)   </td></tr>
 </table>
-<h2><a class="anchor" id="autotoc_md126"></a>
-macOS</h2>
+<h3><a class="anchor" id="autotoc_md127"></a>
+macOS</h3>
 <table class="markdownTable">
 <tr class="markdownTableHead">
 <th class="markdownTableHeadNone">Fortran Compiler   </th><th class="markdownTableHeadNone">C Compiler   </th><th class="markdownTableHeadNone">C++ Compiler    </th></tr>
@@ -132,8 +165,8 @@ macOS</h2>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone">lfortran   </td><td class="markdownTableBodyNone">clang   </td><td class="markdownTableBodyNone">clang++   </td></tr>
 </table>
-<h2><a class="anchor" id="autotoc_md127"></a>
-Windows</h2>
+<h3><a class="anchor" id="autotoc_md128"></a>
+Windows</h3>
 <table class="markdownTable">
 <tr class="markdownTableHead">
 <th class="markdownTableHeadNone">Fortran Compiler   </th><th class="markdownTableHeadNone">C Compiler   </th><th class="markdownTableHeadNone">C++ Compiler    </th></tr>
@@ -152,8 +185,8 @@ Windows</h2>
 <li><code>FPM_FC</code>, <code>FPM_CC</code>, <code>FPM_CXX</code></li>
 <li><code>CMAKE_Fortran_COMPILER</code>, <code>CMAKE_C_COMPILER</code>, <code>CMAKE_CXX_COMPILER</code></li>
 </ul>
-<h1><a class="anchor" id="autotoc_md128"></a>
-Simple Usage</h1>
+<h2><a class="anchor" id="autotoc_md129"></a>
+Simple Usage</h2>
 <div class="fragment"><div class="line">name: Setup Fortran Conda CI/CD</div>
 <div class="line"> </div>
 <div class="line">on: [push]</div>
@@ -169,7 +202,7 @@ Simple Usage</h1>
 <div class="line">        - {os: ubuntu-latest,  compiler: ifx,       compiler-version: &quot;&quot;, extra-packages: &quot;&quot;}</div>
 <div class="line">        - {os: ubuntu-latest,  compiler: flang-new, compiler-version: &quot;&quot;, extra-packages: &quot;&quot;}</div>
 <div class="line">        - {os: ubuntu-latest,  compiler: nvfortran, compiler-version: &quot;&quot;, extra-packages: &quot;&quot;}</div>
-<div class="line">        - {os: ubuntu-latest,  compiler: amdflang,  compiler-version: &quot;&quot;, extra-packages: &quot;&quot;}</div>
+<div class="line">        - {os: ubuntu-latest,  compiler: aocc,      compiler-version: &quot;&quot;, extra-packages: &quot;&quot;}</div>
 <div class="line">        - {os: ubuntu-latest,  compiler: lfortran,  compiler-version: &quot;&quot;, extra-packages: &quot;&quot;, fpm-version: &quot;0.12.0&quot;}</div>
 <div class="line">        - {os: windows-latest, compiler: gfortran,  compiler-version: &quot;&quot;, extra-packages: &quot;&quot;}</div>
 <div class="line">        - {os: windows-latest, compiler: ifx,       compiler-version: &quot;&quot;, extra-packages: &quot;&quot;, fpm-version: &quot;0.12.0&quot;}</div>
@@ -188,17 +221,17 @@ Simple Usage</h1>
 <div class="line">          fpm-version: ${{ matrix.fpm-version }}</div>
 <div class="line"> </div>
 <div class="line">      - name: fpm test (debug)</div>
-<div class="line">        run: fpm test --compiler ${{ matrix.compiler }} --profile debug</div>
+<div class="line">        run: fpm test --compiler ${{ env.FPM_FC }} --profile debug</div>
 <div class="line"> </div>
 <div class="line">      - name: fpm test (release)</div>
-<div class="line">        run: fpm test --compiler ${{ matrix.compiler }} --profile release</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md129"></a>
-✅ CI Status</h1>
+<div class="line">        run: fpm test --compiler ${{ env.FPM_FC }} --profile release</div>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md130"></a>
+✅ CI Status</h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
 <th class="markdownTableHeadNone">OS   </th><th class="markdownTableHeadNone">Compiler   </th><th class="markdownTableHeadRight">Version   </th><th class="markdownTableHeadCenter">fpm   </th><th class="markdownTableHeadCenter">cmake   </th><th class="markdownTableHeadCenter">meson    </th></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone">ubuntu 24.04   </td><td class="markdownTableBodyNone"><code>amdflang</code>   </td><td class="markdownTableBodyRight">5.2.0   </td><td class="markdownTableBodyCenter">0.13.0 ✅   </td><td class="markdownTableBodyCenter">4.3.3 ✅   </td><td class="markdownTableBodyCenter">1.11.1 ✅    </td></tr>
+<td class="markdownTableBodyNone">ubuntu 24.04   </td><td class="markdownTableBodyNone"><code>aocc</code>   </td><td class="markdownTableBodyRight">5.2.0   </td><td class="markdownTableBodyCenter">0.13.0 ✅   </td><td class="markdownTableBodyCenter">4.3.3 ✅   </td><td class="markdownTableBodyCenter">1.11.1 ✅    </td></tr>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone">ubuntu 24.04   </td><td class="markdownTableBodyNone"><code>flang-new</code>   </td><td class="markdownTableBodyRight">22.1.5   </td><td class="markdownTableBodyCenter">0.13.0 ✅   </td><td class="markdownTableBodyCenter">4.3.3 ✅   </td><td class="markdownTableBodyCenter">1.11.1 ✅    </td></tr>
 <tr class="markdownTableRowOdd">
@@ -231,14 +264,14 @@ Simple Usage</h1>
 <li><a href="https://github.com/gha3mi/setup-fortran-conda/blob/status-cmake/STATUS.md">STATUS.md (CMake)</a></li>
 <li><a href="https://github.com/gha3mi/setup-fortran-conda/blob/status-meson/STATUS.md">STATUS.md (Meson)</a></li>
 </ul>
-<h1><a class="anchor" id="autotoc_md130"></a>
-📋 Workflow Example</h1>
 <h2><a class="anchor" id="autotoc_md131"></a>
-🔐 IMPORTANT NOTES</h2>
+📋 Workflow Example</h2>
+<h3><a class="anchor" id="autotoc_md132"></a>
+🔐 IMPORTANT NOTES</h3>
 <blockquote class="doxtable">
 <p>⚠️ <b>Use your own name and email!</b> Don’t copy the example values. </p>
 </blockquote>
-<p>To enable automatic updates to the CI status table in <code>README.md</code> via the <code>update_readme_table</code> job:</p>
+<p>To enable automatic updates to generated <code>README.md</code> content via the <code>update_readme_table</code>, <code>update_readme_fpm_deps</code>, or <code>update_readme_fpm_modules</code> jobs:</p>
 <ol type="1">
 <li>Create a GitHub <b>Personal Access Token (PAT)</b> with <code>repo</code> scope.</li>
 <li>Add it to your repo secrets, e.g. <code>GH_PAT</code>.</li>
@@ -249,12 +282,12 @@ Simple Usage</h1>
 <div class="line">update-readme-user-email: &quot;you@example.com&quot;</div>
 </div><!-- fragment --><p>💡 Tip: When integrating CI/CD, testing often requires multiple commits and iterations. To keep your <code>main</code> branch clean, consider using a separate branch (e.g., <code>dev</code>) for development and testing. Once everything is working, you can merge it into main.</p>
 <p>You can include only the jobs you need in your workflow. This example includes all available jobs to demonstrate a comprehensive CI/CD setup.</p>
-<h2><a class="anchor" id="autotoc_md132"></a>
-Overview</h2>
+<h3><a class="anchor" id="autotoc_md133"></a>
+Overview</h3>
 <p>This example automates Fortran CI/CD:</p>
 <ul>
 <li>📦 <b>Fortran compiler setup</b>:<ul>
-<li>Supports: <code>gfortran</code>, <code>ifx</code>, <code>lfortran</code>, <code>flang-new</code>, <code>nvfortran</code>, <code>amdflang</code></li>
+<li>Supports: <code>gfortran</code>, <code>ifx</code>, <code>lfortran</code>, <code>flang-new</code>, <code>nvfortran</code>, <code>aocc</code></li>
 </ul>
 </li>
 <li>🖥️ <b>Cross-platform testing</b>:<ul>
@@ -278,19 +311,37 @@ Overview</h2>
 <li>creates PRs to update the status table in <code>README.md</code></li>
 </ul>
 </li>
+<li>🧭 <b>README Dependency Graphs</b>:<ul>
+<li>Injects dependency graphs into <code>README.md</code></li>
+<li>Supports package dependency graphs with <a href="https://github.com/ivan-pi/fpm-deps"><code>fpm-deps</code></a></li>
+<li>Supports module dependency graphs with <a href="https://github.com/davidpfister/fpm-modules"><code>fpm-modules</code></a></li>
+</ul>
+</li>
 <li>🧹 <b>Linting</b>:<ul>
 <li>Runs Fortitude check</li>
 </ul>
 </li>
 </ul>
-<h2><a class="anchor" id="autotoc_md133"></a>
-README Integration</h2>
+<h3><a class="anchor" id="autotoc_md134"></a>
+README Integration</h3>
 <p>To enable automatic CI status table injection, add the following to your <code>README.md</code>:</p>
 <pre>
 &lt;!-- STATUS:setup-fortran-conda:START --&gt;
 &lt;!-- STATUS:setup-fortran-conda:END --&gt;
-</pre><h2><a class="anchor" id="autotoc_md134"></a>
-Job Breakdown</h2>
+</pre><h3><a class="anchor" id="autotoc_md135"></a>
+Dependency Graph Integration</h3>
+<p>To enable automatic package dependency graph injection with <code>fpm-deps</code>, add the following to your <code>README.md</code>:</p>
+<pre>
+&lt;!-- FPM-DEPS:setup-fortran-conda:START --&gt;
+&lt;!-- FPM-DEPS:setup-fortran-conda:END --&gt;
+</pre><p>To enable automatic module dependency graph injection with <code>fpm-modules</code>, add the following to your <code>README.md</code>:</p>
+<pre>
+&lt;!-- FPM-MODULES:setup-fortran-conda:START --&gt;
+&lt;!-- FPM-MODULES:setup-fortran-conda:END --&gt;
+</pre><p>Then use one job with <code>update-readme-dependencies: fpm-deps</code> for an fpm package dependency graph, and a separate job with <code>update-readme-dependencies: fpm-modules</code> for a Fortran module dependency graph. This feature currently runs on Linux runners and uses <code>gfortran</code> by default when no <code>compiler</code> input is provided.</p>
+<p>Extra generator options can be passed as a one-line string with <code>dependency-graph-options</code>. The action still controls the Mermaid format and temporary output file arguments needed to update the README.</p>
+<h3><a class="anchor" id="autotoc_md136"></a>
+Job Breakdown</h3>
 <table class="markdownTable">
 <tr class="markdownTableHead">
 <th class="markdownTableHeadNone">Job Name   </th><th class="markdownTableHeadNone">Description    </th></tr>
@@ -313,6 +364,10 @@ Job Breakdown</h2>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone"><code>update_readme_table</code>   </td><td class="markdownTableBodyNone">Inject CI summary table into <code>README.md</code> and open a pull request    </td></tr>
 <tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>update_readme_fpm_deps</code>   </td><td class="markdownTableBodyNone">Inject fpm package dependency graph into <code>README.md</code> and open a pull request    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>update_readme_fpm_modules</code>   </td><td class="markdownTableBodyNone">Inject Fortran module dependency graph into <code>README.md</code> and open a pull request    </td></tr>
+<tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone"><code>linter_fortitude</code>   </td><td class="markdownTableBodyNone">Run <a href="https://github.com/PlasmaFAIR/fortitude">Fortitude</a> linter   </td></tr>
 </table>
 <p>modify this example workflow file to your needs, and save it as <code>.github/workflows/CI-CD.yml</code> in your repository:</p>
@@ -324,6 +379,7 @@ Job Breakdown</h2>
 <div class="line"> </div>
 <div class="line">permissions:</div>
 <div class="line">  contents: write</div>
+<div class="line">  pull-requests: write</div>
 <div class="line"> </div>
 <div class="line">jobs:</div>
 <div class="line"> </div>
@@ -339,7 +395,7 @@ Job Breakdown</h2>
 <div class="line">        - {os: ubuntu-latest,  compiler: ifx,       compiler-version: &quot;&quot;, extra-packages: &quot;&quot;}</div>
 <div class="line">        - {os: ubuntu-latest,  compiler: flang-new, compiler-version: &quot;&quot;, extra-packages: &quot;&quot;}</div>
 <div class="line">        - {os: ubuntu-latest,  compiler: nvfortran, compiler-version: &quot;&quot;, extra-packages: &quot;&quot;}</div>
-<div class="line">        - {os: ubuntu-latest,  compiler: amdflang,  compiler-version: &quot;&quot;, extra-packages: &quot;&quot;}</div>
+<div class="line">        - {os: ubuntu-latest,  compiler: aocc,      compiler-version: &quot;&quot;, extra-packages: &quot;&quot;}</div>
 <div class="line">        - {os: ubuntu-latest,  compiler: lfortran,  compiler-version: &quot;&quot;, extra-packages: &quot;&quot;, fpm-version: &quot;0.12.0&quot;}</div>
 <div class="line">        - {os: windows-latest, compiler: gfortran,  compiler-version: &quot;&quot;, extra-packages: &quot;&quot;}</div>
 <div class="line">        - {os: windows-latest, compiler: ifx,       compiler-version: &quot;&quot;, extra-packages: &quot;&quot;, fpm-version: &quot;0.12.0&quot;}</div>
@@ -358,10 +414,10 @@ Job Breakdown</h2>
 <div class="line">          fpm-version: ${{ matrix.fpm-version }}</div>
 <div class="line"> </div>
 <div class="line">      - name: fpm test (debug)</div>
-<div class="line">        run: fpm test --compiler ${{ matrix.compiler }} --profile debug --verbose</div>
+<div class="line">        run: fpm test --compiler ${{ env.FPM_FC }} --profile debug --verbose</div>
 <div class="line"> </div>
 <div class="line">      - name: fpm test (release)</div>
-<div class="line">        run: fpm test --compiler ${{ matrix.compiler }} --profile release --verbose</div>
+<div class="line">        run: fpm test --compiler ${{ env.FPM_FC }} --profile release --verbose</div>
 <div class="line"> </div>
 <div class="line">  # Run CMake + Ninja build/tests across OS/compiler matrix</div>
 <div class="line">  test_cmake:</div>
@@ -375,7 +431,7 @@ Job Breakdown</h2>
 <div class="line">        - {os: ubuntu-latest,  compiler: ifx,       compiler-version: &quot;&quot;, extra-packages: &quot;&quot;}</div>
 <div class="line">        - {os: ubuntu-latest,  compiler: flang-new, compiler-version: &quot;&quot;, extra-packages: &quot;&quot;}</div>
 <div class="line">        - {os: ubuntu-latest,  compiler: nvfortran, compiler-version: &quot;&quot;, extra-packages: &quot;&quot;}</div>
-<div class="line">        - {os: ubuntu-latest,  compiler: amdflang,  compiler-version: &quot;&quot;, extra-packages: &quot;&quot;}</div>
+<div class="line">        - {os: ubuntu-latest,  compiler: aocc,      compiler-version: &quot;&quot;, extra-packages: &quot;&quot;}</div>
 <div class="line">        - {os: ubuntu-latest,  compiler: lfortran,  compiler-version: &quot;&quot;, extra-packages: &quot;&quot;}</div>
 <div class="line">        - {os: windows-latest, compiler: gfortran,  compiler-version: &quot;&quot;, extra-packages: &quot;&quot;}</div>
 <div class="line">        - {os: windows-latest, compiler: ifx,       compiler-version: &quot;&quot;, extra-packages: &quot;&quot;}</div>
@@ -394,13 +450,13 @@ Job Breakdown</h2>
 <div class="line"> </div>
 <div class="line">      - name: cmake test (debug)</div>
 <div class="line">        run: |</div>
-<div class="line">          cmake -S . -B build/debug -DCMAKE_BUILD_TYPE=Debug -DCMAKE_Fortran_COMPILER=${{ matrix.compiler }} -G Ninja</div>
+<div class="line">          cmake -S . -B build/debug -DCMAKE_BUILD_TYPE=Debug -DCMAKE_Fortran_COMPILER=${{ env.CMAKE_Fortran_COMPILER }} -G Ninja</div>
 <div class="line">          cmake --build build/debug</div>
 <div class="line">          ctest --test-dir build/debug --output-on-failure</div>
 <div class="line"> </div>
 <div class="line">      - name: cmake test (release)</div>
 <div class="line">        run: |</div>
-<div class="line">          cmake -S . -B build/release -DCMAKE_BUILD_TYPE=Release -DCMAKE_Fortran_COMPILER=${{ matrix.compiler }} -G Ninja</div>
+<div class="line">          cmake -S . -B build/release -DCMAKE_BUILD_TYPE=Release -DCMAKE_Fortran_COMPILER=${{ env.CMAKE_Fortran_COMPILER }} -G Ninja</div>
 <div class="line">          cmake --build build/release</div>
 <div class="line">          ctest --test-dir build/release --output-on-failure</div>
 <div class="line"> </div>
@@ -416,7 +472,7 @@ Job Breakdown</h2>
 <div class="line">        - {os: ubuntu-latest,  compiler: ifx,       compiler-version: &quot;&quot;, extra-packages: &quot;&quot;}</div>
 <div class="line">        - {os: ubuntu-latest,  compiler: flang-new, compiler-version: &quot;&quot;, extra-packages: &quot;&quot;}</div>
 <div class="line">        - {os: ubuntu-latest,  compiler: nvfortran, compiler-version: &quot;&quot;, extra-packages: &quot;&quot;}</div>
-<div class="line">        - {os: ubuntu-latest,  compiler: amdflang,  compiler-version: &quot;&quot;, extra-packages: &quot;&quot;}</div>
+<div class="line">        - {os: ubuntu-latest,  compiler: aocc,      compiler-version: &quot;&quot;, extra-packages: &quot;&quot;}</div>
 <div class="line">        - {os: windows-latest, compiler: gfortran,  compiler-version: &quot;&quot;, extra-packages: &quot;&quot;}</div>
 <div class="line">        - {os: windows-latest, compiler: ifx,       compiler-version: &quot;&quot;, extra-packages: &quot;&quot;}</div>
 <div class="line">        - {os: windows-latest, compiler: flang-new, compiler-version: &quot;&quot;, extra-packages: &quot;&quot;}</div>
@@ -527,6 +583,46 @@ Job Breakdown</h2>
 <div class="line">          update-readme-user-name: &quot;Your Name&quot; # Update with your name</div>
 <div class="line">          update-readme-user-email: &quot;you@example.com&quot;  # Update with your email</div>
 <div class="line"> </div>
+<div class="line">  # Inject fpm package dependency graph into README.md</div>
+<div class="line">  update_readme_fpm_deps:</div>
+<div class="line">    name: Update README.md fpm dependency graph</div>
+<div class="line">    if: |</div>
+<div class="line">      always() &amp;&amp;</div>
+<div class="line">      github.ref != &#39;refs/heads/update/readme-fpm-deps&#39;</div>
+<div class="line">    needs: test_fpm</div>
+<div class="line">    runs-on: ubuntu-latest</div>
+<div class="line">    steps:</div>
+<div class="line">      - name: Update README fpm dependency graph</div>
+<div class="line">        uses: gha3mi/setup-fortran-conda@latest</div>
+<div class="line">        with:</div>
+<div class="line">          update-readme-dependencies: fpm-deps</div>
+<div class="line">          dependency-graph-working-directory: .</div>
+<div class="line">          dependency-graph-readme-file: README.md</div>
+<div class="line">          dependency-graph-options: &quot;&quot;</div>
+<div class="line">          update-readme-token: ${{ secrets.GH_PAT }}   # Update with your GitHub personal access token</div>
+<div class="line">          update-readme-user-name: &quot;Your Name&quot; # Update with your name</div>
+<div class="line">          update-readme-user-email: &quot;you@example.com&quot;  # Update with your email</div>
+<div class="line"> </div>
+<div class="line">  # Inject Fortran module dependency graph into README.md</div>
+<div class="line">  update_readme_fpm_modules:</div>
+<div class="line">    name: Update README.md module dependency graph</div>
+<div class="line">    if: |</div>
+<div class="line">      always() &amp;&amp;</div>
+<div class="line">      github.ref != &#39;refs/heads/update/readme-fpm-modules&#39;</div>
+<div class="line">    needs: test_fpm</div>
+<div class="line">    runs-on: ubuntu-latest</div>
+<div class="line">    steps:</div>
+<div class="line">      - name: Update README module dependency graph</div>
+<div class="line">        uses: gha3mi/setup-fortran-conda@latest</div>
+<div class="line">        with:</div>
+<div class="line">          update-readme-dependencies: fpm-modules</div>
+<div class="line">          dependency-graph-working-directory: .</div>
+<div class="line">          dependency-graph-readme-file: README.md</div>
+<div class="line">          dependency-graph-options: &quot;-x fpm,daglib&quot;</div>
+<div class="line">          update-readme-token: ${{ secrets.GH_PAT }}   # Update with your GitHub personal access token</div>
+<div class="line">          update-readme-user-name: &quot;Your Name&quot; # Update with your name</div>
+<div class="line">          update-readme-user-email: &quot;you@example.com&quot;  # Update with your email</div>
+<div class="line"> </div>
 <div class="line">  # Run Fortran linter with Fortitude</div>
 <div class="line">  linter_fortitude:</div>
 <div class="line">    name: Run Fortitude Linter</div>
@@ -538,8 +634,8 @@ Job Breakdown</h2>
 <div class="line">          fortitude-check: true</div>
 <div class="line">          fortitude-settings: &quot;--output-format github&quot;</div>
 </div><!-- fragment --><p>If <code>compiler-version</code> is set to an empty string <code>""</code> or <code>latest</code>, the latest version will be installed.</p>
-<h2><a class="anchor" id="autotoc_md135"></a>
-MPI Support</h2>
+<h3><a class="anchor" id="autotoc_md137"></a>
+MPI Support</h3>
 <p>MPI-based tests can be executed using fpm with the mpifort. This is currently supported on Linux and macOS runners. The following example job sets up the environment and runs parallel MPI tests:</p>
 <div class="fragment"><div class="line">test_mpi_fpm:</div>
 <div class="line">  name: ${{ matrix.os }}_${{ matrix.compiler }}_mpi_fpm</div>
@@ -564,12 +660,12 @@ MPI Support</h2>
 <div class="line"> </div>
 <div class="line">    - name: fpm test (release)</div>
 <div class="line">      run: fpm test --target mpi_hello --compiler ${{ matrix.compiler }} --profile release --flag &quot;-cpp -DUSE_MPI&quot; --runner &quot;mpirun -np 4&quot; --verbose</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md136"></a>
-🚀 Release Automation</h1>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md138"></a>
+🚀 Release Automation</h2>
 <p>This project includes a Bash script for automating GitHub releases.</p>
 <div class="fragment"><div class="line">curl -L https://raw.githubusercontent.com/gha3mi/setup-fortran-conda/main/release.sh -o release.sh</div>
-</div><!-- fragment --> <h2><a class="anchor" id="autotoc_md137"></a>
-Features</h2>
+</div><!-- fragment --> <h3><a class="anchor" id="autotoc_md139"></a>
+Features</h3>
 <p>The script automates:</p>
 <ul>
 <li>✅ <b>Semantic versioning</b>: Calculates the next version (<code>major</code>, <code>minor</code>, or <code>patch</code>) based on PR titles and commit messages.</li>
@@ -582,20 +678,20 @@ Features</h2>
 </ul>
 </li>
 </ul>
-<h2><a class="anchor" id="autotoc_md138"></a>
-Requirements</h2>
+<h3><a class="anchor" id="autotoc_md140"></a>
+Requirements</h3>
 <ul>
 <li><a href="https://cli.github.com/">GitHub CLI (<code>gh</code>)</a> – must be authenticated (<code>gh auth login</code>)</li>
 <li><a href="https://stedolan.github.io/jq/"><code>jq</code></a></li>
 </ul>
-<h2><a class="anchor" id="autotoc_md139"></a>
-Usage</h2>
+<h3><a class="anchor" id="autotoc_md141"></a>
+Usage</h3>
 <div class="fragment"><div class="line">bash release.sh --help</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md140"></a>
-Recommended Workflow</h2>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md142"></a>
+Recommended Workflow</h3>
 <p>It’s highly recommended to first run in <code>--dry-run</code> mode to verify the output.</p>
-<h1><a class="anchor" id="autotoc_md141"></a>
-🔗 See Also</h1>
+<h2><a class="anchor" id="autotoc_md143"></a>
+🔗 See Also</h2>
 <ul>
 <li><a href="https://github.com/fortran-lang/setup-fortran">fortran-lang/setup-fortran</a></li>
 <li><a href="https://degenerateconic.com/conda-plus-fortran.html">https://degenerateconic.com/conda-plus-fortran.html</a></li>

@@ -39,6 +39,7 @@ The selected Fortran compiler is installed along with the corresponding C and C+
 | flang, flang-new | clang      | clang++      |
 | nvfortran        | nvc        | nvc++        |
 | aocc(flang)      | aocc(clang) | aocc(clang++) |
+| aomp(flang)      | aomp(clang) | aomp(clang++) |
 
 ### macOS
 
@@ -81,6 +82,7 @@ jobs:
         - {os: ubuntu-latest,  compiler: flang-new, compiler-version: "", extra-packages: ""}
         - {os: ubuntu-latest,  compiler: nvfortran, compiler-version: "", extra-packages: ""}
         - {os: ubuntu-latest,  compiler: aocc,      compiler-version: "", extra-packages: ""}
+        - {os: ubuntu-latest,  compiler: aomp,      compiler-version: "", extra-packages: ""}
         - {os: ubuntu-latest,  compiler: lfortran,  compiler-version: "", extra-packages: "", fpm-version: "0.12.0"}
         - {os: windows-latest, compiler: gfortran,  compiler-version: "", extra-packages: ""}
         - {os: windows-latest, compiler: ifx,       compiler-version: "", extra-packages: "", fpm-version: "0.12.0"}
@@ -161,7 +163,7 @@ This example automates Fortran CI/CD:
 
 * 📦 **Fortran compiler setup**:
 
-  * Supports: `gfortran`, `ifx`, `lfortran`, `flang-new`, `nvfortran`, `aocc`
+  * Supports: `gfortran`, `ifx`, `lfortran`, `flang-new`, `nvfortran`, `aocc`, `aomp`
 
 * 🖥️ **Cross-platform testing**:
 
@@ -268,6 +270,7 @@ jobs:
         - {os: ubuntu-latest,  compiler: flang-new, compiler-version: "", extra-packages: ""}
         - {os: ubuntu-latest,  compiler: nvfortran, compiler-version: "", extra-packages: ""}
         - {os: ubuntu-latest,  compiler: aocc,      compiler-version: "", extra-packages: ""}
+        - {os: ubuntu-latest,  compiler: aomp,      compiler-version: "", extra-packages: ""}
         - {os: ubuntu-latest,  compiler: lfortran,  compiler-version: "", extra-packages: "", fpm-version: "0.12.0"}
         - {os: windows-latest, compiler: gfortran,  compiler-version: "", extra-packages: ""}
         - {os: windows-latest, compiler: ifx,       compiler-version: "", extra-packages: "", fpm-version: "0.12.0"}
@@ -304,6 +307,7 @@ jobs:
         - {os: ubuntu-latest,  compiler: flang-new, compiler-version: "", extra-packages: ""}
         - {os: ubuntu-latest,  compiler: nvfortran, compiler-version: "", extra-packages: ""}
         - {os: ubuntu-latest,  compiler: aocc,      compiler-version: "", extra-packages: ""}
+        - {os: ubuntu-latest,  compiler: aomp,      compiler-version: "", extra-packages: ""}
         - {os: ubuntu-latest,  compiler: lfortran,  compiler-version: "", extra-packages: ""}
         - {os: windows-latest, compiler: gfortran,  compiler-version: "", extra-packages: ""}
         - {os: windows-latest, compiler: ifx,       compiler-version: "", extra-packages: ""}
@@ -345,6 +349,7 @@ jobs:
         - {os: ubuntu-latest,  compiler: flang-new, compiler-version: "", extra-packages: ""}
         - {os: ubuntu-latest,  compiler: nvfortran, compiler-version: "", extra-packages: ""}
         - {os: ubuntu-latest,  compiler: aocc,      compiler-version: "", extra-packages: ""}
+        - {os: ubuntu-latest,  compiler: aomp,      compiler-version: "", extra-packages: ""}
         - {os: windows-latest, compiler: gfortran,  compiler-version: "", extra-packages: ""}
         - {os: windows-latest, compiler: ifx,       compiler-version: "", extra-packages: ""}
         - {os: windows-latest, compiler: flang-new, compiler-version: "", extra-packages: ""}

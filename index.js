@@ -51,6 +51,7 @@ function isNotFoundMessage(s) {
 async function detectCompilerVersion(compilerBinary, compilerKey) {
   const probes = [];
   const isAocc = compilerKey === 'aocc';
+  const isAomp = compilerKey === 'aomp';
 
   if (compilerKey === 'gfortran') {
     probes.push([compilerBinary, ['-dumpfullversion', '-dumpversion']]);
@@ -81,7 +82,9 @@ async function detectCompilerVersion(compilerBinary, compilerKey) {
     }
 
     const ver =
-      isAocc
+      isAomp && process.env.AOMP_VERSION
+        ? process.env.AOMP_VERSION
+        : isAocc
         ? pickAoccVersion(combined) || pickAoccVersion(raw) || pickFirstVersionLike(combined) || pickFirstVersionLike(raw)
         : pickFirstVersionLike(combined) || pickFirstVersionLike(raw);
 

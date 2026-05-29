@@ -7,7 +7,7 @@ branding:
 
 inputs:
   compiler:
-    description: "Fortran compiler to install (gfortran, ifx, lfortran, flang, flang-new, nvfortran, aocc, mpifort)"
+    description: "Fortran compiler to install (gfortran, ifx, lfortran, flang, flang-new, nvfortran, aocc, aomp, mpifort)"
     required: false
     default: ""
   compiler-version:

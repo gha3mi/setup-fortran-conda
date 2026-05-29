@@ -94,6 +94,36 @@
           <h1>test</h1>
           <h1>Setup Fortran with Conda</h1>
 <p>A GitHub Action that sets up a Fortran development environment using Conda where available and vendor packages where needed. Inspired by <a href="https://degenerateconic.com/conda-plus-fortran.html">Conda + Fortran</a>.</p>
+<h1>Table of Contents</h1>
+<ul>
+<li><a href="#setup-fortran-with-conda">Setup Fortran with Conda</a></li>
+<li><a href="#table-of-contents">Table of Contents</a></li>
+<li><a href="#supported-compiler-configurations">Supported Compiler Configurations</a><ul>
+<li><a href="#ubuntu">Ubuntu</a></li>
+<li><a href="#macos">macOS</a></li>
+<li><a href="#windows">Windows</a></li>
+</ul>
+</li>
+<li><a href="#simple-usage">Simple Usage</a></li>
+<li><a href="#-ci-status">✅ CI Status</a></li>
+<li><a href="#-workflow-example">📋 Workflow Example</a><ul>
+<li><a href="#-important-notes">🔐 IMPORTANT NOTES</a></li>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#readme-integration">README Integration</a></li>
+<li><a href="#dependency-graph-integration">Dependency Graph Integration</a></li>
+<li><a href="#job-breakdown">Job Breakdown</a></li>
+<li><a href="#mpi-support">MPI Support</a></li>
+</ul>
+</li>
+<li><a href="#-release-automation">🚀 Release Automation</a><ul>
+<li><a href="#features">Features</a></li>
+<li><a href="#requirements">Requirements</a></li>
+<li><a href="#usage">Usage</a></li>
+<li><a href="#recommended-workflow">Recommended Workflow</a></li>
+</ul>
+</li>
+<li><a href="#-see-also">🔗 See Also</a></li>
+</ul>
 <h2>Supported Compiler Configurations</h2>
 <p>The selected Fortran compiler is installed along with the corresponding C and C++ compilers, as well as <code>fpm</code>, <code>cmake</code>, <code>ninja</code>, <code>pkg-config</code> and <code>meson</code>. Additional packages can be installed using the <code>extra-packages</code> input.</p>
 <h3>Ubuntu</h3>
@@ -132,9 +162,9 @@
 <td>nvc++</td>
 </tr>
 <tr>
-<td>amdflang</td>
-<td>amdclang</td>
-<td>amdclang++</td>
+<td>aocc(flang)</td>
+<td>aocc(clang)</td>
+<td>aocc(clang++)</td>
 </tr>
 </tbody>
 </table>
@@ -214,7 +244,7 @@
 <span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">ubuntu-latest</span><span class="p p-Indicator">,</span><span class="nt">  compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">ifx</span><span class="p p-Indicator">,</span><span class="nt">       compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">}</span>
 <span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">ubuntu-latest</span><span class="p p-Indicator">,</span><span class="nt">  compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">flang-new</span><span class="p p-Indicator">,</span><span class="nt"> compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">}</span>
 <span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">ubuntu-latest</span><span class="p p-Indicator">,</span><span class="nt">  compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">nvfortran</span><span class="p p-Indicator">,</span><span class="nt"> compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">}</span>
-<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">ubuntu-latest</span><span class="p p-Indicator">,</span><span class="nt">  compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">amdflang</span><span class="p p-Indicator">,</span><span class="nt">  compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">}</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">ubuntu-latest</span><span class="p p-Indicator">,</span><span class="nt">  compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">aocc</span><span class="p p-Indicator">,</span><span class="nt">      compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">}</span>
 <span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">ubuntu-latest</span><span class="p p-Indicator">,</span><span class="nt">  compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">lfortran</span><span class="p p-Indicator">,</span><span class="nt">  compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> fpm-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;0.12.0&quot;</span><span class="p p-Indicator">}</span>
 <span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">windows-latest</span><span class="p p-Indicator">,</span><span class="nt"> compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">gfortran</span><span class="p p-Indicator">,</span><span class="nt">  compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">}</span>
 <span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">windows-latest</span><span class="p p-Indicator">,</span><span class="nt"> compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">ifx</span><span class="p p-Indicator">,</span><span class="nt">       compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> fpm-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;0.12.0&quot;</span><span class="p p-Indicator">}</span>
@@ -233,10 +263,10 @@
 <span class="w">          </span><span class="nt">fpm-version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ matrix.fpm-version }}</span>
 
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fpm test (debug)</span>
-<span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fpm test --compiler ${{ matrix.compiler }} --profile debug</span>
+<span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fpm test --compiler ${{ env.FPM_FC }} --profile debug</span>
 
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fpm test (release)</span>
-<span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fpm test --compiler ${{ matrix.compiler }} --profile release</span>
+<span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fpm test --compiler ${{ env.FPM_FC }} --profile release</span>
 </code></pre></div>
 
 <h2>✅ CI Status</h2>
@@ -256,7 +286,7 @@
 <tbody>
 <tr>
 <td>ubuntu 24.04</td>
-<td><code>amdflang</code></td>
+<td><code>aocc</code></td>
 <td style="text-align: right;">5.2.0</td>
 <td style="text-align: center;">0.13.0 ✅</td>
 <td style="text-align: center;">4.3.3 ✅</td>
@@ -380,7 +410,7 @@
 <blockquote>
 <p>⚠️ <strong>Use your own name and email!</strong> Don’t copy the example values.</p>
 </blockquote>
-<p>To enable automatic updates to the CI status table in <code>README.md</code> via the <code>update_readme_table</code> job:</p>
+<p>To enable automatic updates to generated <code>README.md</code> content via the <code>update_readme_table</code>, <code>update_readme_fpm_deps</code>, or <code>update_readme_fpm_modules</code> jobs:</p>
 <ol>
 <li>Create a GitHub <strong>Personal Access Token (PAT)</strong> with <code>repo</code> scope.</li>
 <li>Add it to your repo secrets, e.g. <code>GH_PAT</code>.</li>
@@ -401,7 +431,7 @@ To keep your <code>main</code> branch clean, consider using a separate branch (e
 <p>📦 <strong>Fortran compiler setup</strong>:</p>
 </li>
 <li>
-<p>Supports: <code>gfortran</code>, <code>ifx</code>, <code>lfortran</code>, <code>flang-new</code>, <code>nvfortran</code>, <code>amdflang</code></p>
+<p>Supports: <code>gfortran</code>, <code>ifx</code>, <code>lfortran</code>, <code>flang-new</code>, <code>nvfortran</code>, <code>aocc</code></p>
 </li>
 <li>
 <p>🖥️ <strong>Cross-platform testing</strong>:</p>
@@ -439,6 +469,16 @@ To keep your <code>main</code> branch clean, consider using a separate branch (e
 <p>creates PRs to update the status table in <code>README.md</code></p>
 </li>
 <li>
+<p>🧭 <strong>README Dependency Graphs</strong>:</p>
+</li>
+<li>
+<p>Injects dependency graphs into <code>README.md</code></p>
+</li>
+<li>Supports package dependency graphs with <a href="https://github.com/ivan-pi/fpm-deps"><code>fpm-deps</code></a></li>
+<li>
+<p>Supports module dependency graphs with <a href="https://github.com/davidpfister/fpm-modules"><code>fpm-modules</code></a></p>
+</li>
+<li>
 <p>🧹 <strong>Linting</strong>:</p>
 </li>
 <li>
@@ -452,6 +492,21 @@ To keep your <code>main</code> branch clean, consider using a separate branch (e
 &lt;!-- STATUS:setup-fortran-conda:END --&gt;
 </pre>
 
+<h3>Dependency Graph Integration</h3>
+<p>To enable automatic package dependency graph injection with <code>fpm-deps</code>, add the following to your <code>README.md</code>:</p>
+<pre>
+&lt;!-- FPM-DEPS:setup-fortran-conda:START --&gt;
+&lt;!-- FPM-DEPS:setup-fortran-conda:END --&gt;
+</pre>
+
+<p>To enable automatic module dependency graph injection with <code>fpm-modules</code>, add the following to your <code>README.md</code>:</p>
+<pre>
+&lt;!-- FPM-MODULES:setup-fortran-conda:START --&gt;
+&lt;!-- FPM-MODULES:setup-fortran-conda:END --&gt;
+</pre>
+
+<p>Then use one job with <code>update-readme-dependencies: fpm-deps</code> for an fpm package dependency graph, and a separate job with <code>update-readme-dependencies: fpm-modules</code> for a Fortran module dependency graph. This feature currently runs on Linux runners and uses <code>gfortran</code> by default when no <code>compiler</code> input is provided.</p>
+<p>Extra generator options can be passed as a one-line string with <code>dependency-graph-options</code>. The action still controls the Mermaid format and temporary output file arguments needed to update the README.</p>
 <h3>Job Breakdown</h3>
 <table>
 <thead>
@@ -498,6 +553,14 @@ To keep your <code>main</code> branch clean, consider using a separate branch (e
 <td>Inject CI summary table into <code>README.md</code> and open a pull request</td>
 </tr>
 <tr>
+<td><code>update_readme_fpm_deps</code></td>
+<td>Inject fpm package dependency graph into <code>README.md</code> and open a pull request</td>
+</tr>
+<tr>
+<td><code>update_readme_fpm_modules</code></td>
+<td>Inject Fortran module dependency graph into <code>README.md</code> and open a pull request</td>
+</tr>
+<tr>
 <td><code>linter_fortitude</code></td>
 <td>Run <a href="https://github.com/PlasmaFAIR/fortitude">Fortitude</a> linter</td>
 </tr>
@@ -512,6 +575,7 @@ To keep your <code>main</code> branch clean, consider using a separate branch (e
 
 <span class="nt">permissions</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">contents</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span>
+<span class="w">  </span><span class="nt">pull-requests</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span>
 
 <span class="nt">jobs</span><span class="p">:</span>
 
@@ -527,7 +591,7 @@ To keep your <code>main</code> branch clean, consider using a separate branch (e
 <span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">ubuntu-latest</span><span class="p p-Indicator">,</span><span class="nt">  compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">ifx</span><span class="p p-Indicator">,</span><span class="nt">       compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">}</span>
 <span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">ubuntu-latest</span><span class="p p-Indicator">,</span><span class="nt">  compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">flang-new</span><span class="p p-Indicator">,</span><span class="nt"> compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">}</span>
 <span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">ubuntu-latest</span><span class="p p-Indicator">,</span><span class="nt">  compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">nvfortran</span><span class="p p-Indicator">,</span><span class="nt"> compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">}</span>
-<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">ubuntu-latest</span><span class="p p-Indicator">,</span><span class="nt">  compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">amdflang</span><span class="p p-Indicator">,</span><span class="nt">  compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">}</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">ubuntu-latest</span><span class="p p-Indicator">,</span><span class="nt">  compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">aocc</span><span class="p p-Indicator">,</span><span class="nt">      compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">}</span>
 <span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">ubuntu-latest</span><span class="p p-Indicator">,</span><span class="nt">  compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">lfortran</span><span class="p p-Indicator">,</span><span class="nt">  compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> fpm-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;0.12.0&quot;</span><span class="p p-Indicator">}</span>
 <span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">windows-latest</span><span class="p p-Indicator">,</span><span class="nt"> compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">gfortran</span><span class="p p-Indicator">,</span><span class="nt">  compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">}</span>
 <span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">windows-latest</span><span class="p p-Indicator">,</span><span class="nt"> compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">ifx</span><span class="p p-Indicator">,</span><span class="nt">       compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> fpm-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;0.12.0&quot;</span><span class="p p-Indicator">}</span>
@@ -546,10 +610,10 @@ To keep your <code>main</code> branch clean, consider using a separate branch (e
 <span class="w">          </span><span class="nt">fpm-version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ matrix.fpm-version }}</span>
 
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fpm test (debug)</span>
-<span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fpm test --compiler ${{ matrix.compiler }} --profile debug --verbose</span>
+<span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fpm test --compiler ${{ env.FPM_FC }} --profile debug --verbose</span>
 
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fpm test (release)</span>
-<span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fpm test --compiler ${{ matrix.compiler }} --profile release --verbose</span>
+<span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fpm test --compiler ${{ env.FPM_FC }} --profile release --verbose</span>
 
 <span class="w">  </span><span class="c1"># Run CMake + Ninja build/tests across OS/compiler matrix</span>
 <span class="w">  </span><span class="nt">test_cmake</span><span class="p">:</span>
@@ -563,7 +627,7 @@ To keep your <code>main</code> branch clean, consider using a separate branch (e
 <span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">ubuntu-latest</span><span class="p p-Indicator">,</span><span class="nt">  compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">ifx</span><span class="p p-Indicator">,</span><span class="nt">       compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">}</span>
 <span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">ubuntu-latest</span><span class="p p-Indicator">,</span><span class="nt">  compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">flang-new</span><span class="p p-Indicator">,</span><span class="nt"> compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">}</span>
 <span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">ubuntu-latest</span><span class="p p-Indicator">,</span><span class="nt">  compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">nvfortran</span><span class="p p-Indicator">,</span><span class="nt"> compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">}</span>
-<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">ubuntu-latest</span><span class="p p-Indicator">,</span><span class="nt">  compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">amdflang</span><span class="p p-Indicator">,</span><span class="nt">  compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">}</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">ubuntu-latest</span><span class="p p-Indicator">,</span><span class="nt">  compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">aocc</span><span class="p p-Indicator">,</span><span class="nt">      compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">}</span>
 <span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">ubuntu-latest</span><span class="p p-Indicator">,</span><span class="nt">  compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">lfortran</span><span class="p p-Indicator">,</span><span class="nt">  compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">}</span>
 <span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">windows-latest</span><span class="p p-Indicator">,</span><span class="nt"> compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">gfortran</span><span class="p p-Indicator">,</span><span class="nt">  compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">}</span>
 <span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">windows-latest</span><span class="p p-Indicator">,</span><span class="nt"> compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">ifx</span><span class="p p-Indicator">,</span><span class="nt">       compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">}</span>
@@ -582,13 +646,13 @@ To keep your <code>main</code> branch clean, consider using a separate branch (e
 
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cmake test (debug)</span>
 <span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<span class="w">          </span><span class="no">cmake -S . -B build/debug -DCMAKE_BUILD_TYPE=Debug -DCMAKE_Fortran_COMPILER=${{ matrix.compiler }} -G Ninja</span>
+<span class="w">          </span><span class="no">cmake -S . -B build/debug -DCMAKE_BUILD_TYPE=Debug -DCMAKE_Fortran_COMPILER=${{ env.CMAKE_Fortran_COMPILER }} -G Ninja</span>
 <span class="w">          </span><span class="no">cmake --build build/debug</span>
 <span class="w">          </span><span class="no">ctest --test-dir build/debug --output-on-failure</span>
 
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cmake test (release)</span>
 <span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<span class="w">          </span><span class="no">cmake -S . -B build/release -DCMAKE_BUILD_TYPE=Release -DCMAKE_Fortran_COMPILER=${{ matrix.compiler }} -G Ninja</span>
+<span class="w">          </span><span class="no">cmake -S . -B build/release -DCMAKE_BUILD_TYPE=Release -DCMAKE_Fortran_COMPILER=${{ env.CMAKE_Fortran_COMPILER }} -G Ninja</span>
 <span class="w">          </span><span class="no">cmake --build build/release</span>
 <span class="w">          </span><span class="no">ctest --test-dir build/release --output-on-failure</span>
 
@@ -604,7 +668,7 @@ To keep your <code>main</code> branch clean, consider using a separate branch (e
 <span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">ubuntu-latest</span><span class="p p-Indicator">,</span><span class="nt">  compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">ifx</span><span class="p p-Indicator">,</span><span class="nt">       compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">}</span>
 <span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">ubuntu-latest</span><span class="p p-Indicator">,</span><span class="nt">  compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">flang-new</span><span class="p p-Indicator">,</span><span class="nt"> compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">}</span>
 <span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">ubuntu-latest</span><span class="p p-Indicator">,</span><span class="nt">  compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">nvfortran</span><span class="p p-Indicator">,</span><span class="nt"> compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">}</span>
-<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">ubuntu-latest</span><span class="p p-Indicator">,</span><span class="nt">  compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">amdflang</span><span class="p p-Indicator">,</span><span class="nt">  compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">}</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">ubuntu-latest</span><span class="p p-Indicator">,</span><span class="nt">  compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">aocc</span><span class="p p-Indicator">,</span><span class="nt">      compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">}</span>
 <span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">windows-latest</span><span class="p p-Indicator">,</span><span class="nt"> compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">gfortran</span><span class="p p-Indicator">,</span><span class="nt">  compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">}</span>
 <span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">windows-latest</span><span class="p p-Indicator">,</span><span class="nt"> compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">ifx</span><span class="p p-Indicator">,</span><span class="nt">       compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">}</span>
 <span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="nv">windows-latest</span><span class="p p-Indicator">,</span><span class="nt"> compiler</span><span class="p">:</span><span class="w"> </span><span class="nv">flang-new</span><span class="p p-Indicator">,</span><span class="nt"> compiler-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">,</span><span class="nt"> extra-packages</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p p-Indicator">}</span>
@@ -711,6 +775,46 @@ To keep your <code>main</code> branch clean, consider using a separate branch (e
 <span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gha3mi/setup-fortran-conda@latest</span>
 <span class="w">        </span><span class="nt">with</span><span class="p">:</span>
 <span class="w">          </span><span class="nt">update-readme-table</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">          </span><span class="nt">update-readme-token</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.GH_PAT }}</span><span class="w">   </span><span class="c1"># Update with your GitHub personal access token</span>
+<span class="w">          </span><span class="nt">update-readme-user-name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Your</span><span class="nv"> </span><span class="s">Name&quot;</span><span class="w"> </span><span class="c1"># Update with your name</span>
+<span class="w">          </span><span class="nt">update-readme-user-email</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;you@example.com&quot;</span><span class="w">  </span><span class="c1"># Update with your email</span>
+
+<span class="w">  </span><span class="c1"># Inject fpm package dependency graph into README.md</span>
+<span class="w">  </span><span class="nt">update_readme_fpm_deps</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Update README.md fpm dependency graph</span>
+<span class="w">    </span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">      </span><span class="no">always() &amp;&amp;</span>
+<span class="w">      </span><span class="no">github.ref != &#39;refs/heads/update/readme-fpm-deps&#39;</span>
+<span class="w">    </span><span class="nt">needs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">test_fpm</span>
+<span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
+<span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Update README fpm dependency graph</span>
+<span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gha3mi/setup-fortran-conda@latest</span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">update-readme-dependencies</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fpm-deps</span>
+<span class="w">          </span><span class="nt">dependency-graph-working-directory</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">.</span>
+<span class="w">          </span><span class="nt">dependency-graph-readme-file</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">README.md</span>
+<span class="w">          </span><span class="nt">dependency-graph-options</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span>
+<span class="w">          </span><span class="nt">update-readme-token</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.GH_PAT }}</span><span class="w">   </span><span class="c1"># Update with your GitHub personal access token</span>
+<span class="w">          </span><span class="nt">update-readme-user-name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Your</span><span class="nv"> </span><span class="s">Name&quot;</span><span class="w"> </span><span class="c1"># Update with your name</span>
+<span class="w">          </span><span class="nt">update-readme-user-email</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;you@example.com&quot;</span><span class="w">  </span><span class="c1"># Update with your email</span>
+
+<span class="w">  </span><span class="c1"># Inject Fortran module dependency graph into README.md</span>
+<span class="w">  </span><span class="nt">update_readme_fpm_modules</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Update README.md module dependency graph</span>
+<span class="w">    </span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">      </span><span class="no">always() &amp;&amp;</span>
+<span class="w">      </span><span class="no">github.ref != &#39;refs/heads/update/readme-fpm-modules&#39;</span>
+<span class="w">    </span><span class="nt">needs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">test_fpm</span>
+<span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
+<span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Update README module dependency graph</span>
+<span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gha3mi/setup-fortran-conda@latest</span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">update-readme-dependencies</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fpm-modules</span>
+<span class="w">          </span><span class="nt">dependency-graph-working-directory</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">.</span>
+<span class="w">          </span><span class="nt">dependency-graph-readme-file</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">README.md</span>
+<span class="w">          </span><span class="nt">dependency-graph-options</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;-x</span><span class="nv"> </span><span class="s">fpm,daglib&quot;</span>
 <span class="w">          </span><span class="nt">update-readme-token</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.GH_PAT }}</span><span class="w">   </span><span class="c1"># Update with your GitHub personal access token</span>
 <span class="w">          </span><span class="nt">update-readme-user-name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Your</span><span class="nv"> </span><span class="s">Name&quot;</span><span class="w"> </span><span class="c1"># Update with your name</span>
 <span class="w">          </span><span class="nt">update-readme-user-email</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;you@example.com&quot;</span><span class="w">  </span><span class="c1"># Update with your email</span>
@@ -860,7 +964,7 @@ To keep your <code>main</code> branch clean, consider using a separate branch (e
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2026-05-29T07:12:32.307766+0000             </p>
+ on 2026-05-29T11:27:15.947705+0000             </p>
           </div>
         </div>
         <br>

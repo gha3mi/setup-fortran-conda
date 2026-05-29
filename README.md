@@ -38,7 +38,7 @@ The selected Fortran compiler is installed along with the corresponding C and C+
 | lfortran         | clang      | clang++      |
 | flang, flang-new | clang      | clang++      |
 | nvfortran        | nvc        | nvc++        |
-| amdflang         | amdclang   | amdclang++   |
+| aocc(flang)      | aocc(clang) | aocc(clang++) |
 
 ### macOS
 
@@ -80,7 +80,7 @@ jobs:
         - {os: ubuntu-latest,  compiler: ifx,       compiler-version: "", extra-packages: ""}
         - {os: ubuntu-latest,  compiler: flang-new, compiler-version: "", extra-packages: ""}
         - {os: ubuntu-latest,  compiler: nvfortran, compiler-version: "", extra-packages: ""}
-        - {os: ubuntu-latest,  compiler: amdflang,  compiler-version: "", extra-packages: ""}
+        - {os: ubuntu-latest,  compiler: aocc,      compiler-version: "", extra-packages: ""}
         - {os: ubuntu-latest,  compiler: lfortran,  compiler-version: "", extra-packages: "", fpm-version: "0.12.0"}
         - {os: windows-latest, compiler: gfortran,  compiler-version: "", extra-packages: ""}
         - {os: windows-latest, compiler: ifx,       compiler-version: "", extra-packages: "", fpm-version: "0.12.0"}
@@ -99,10 +99,10 @@ jobs:
           fpm-version: ${{ matrix.fpm-version }}
 
       - name: fpm test (debug)
-        run: fpm test --compiler ${{ matrix.compiler }} --profile debug
+        run: fpm test --compiler ${{ env.FPM_FC }} --profile debug
 
       - name: fpm test (release)
-        run: fpm test --compiler ${{ matrix.compiler }} --profile release
+        run: fpm test --compiler ${{ env.FPM_FC }} --profile release
 ```
 
 ## ✅ CI Status
@@ -111,7 +111,7 @@ jobs:
 
 | OS | Compiler | Version | fpm | cmake | meson |
 | --- | --- | ---: | :---: | :---: | :---: |
-| ubuntu 24.04 | `amdflang` | 5.2.0 | 0.13.0 ✅ | 4.3.3 ✅ | 1.11.1 ✅ |
+| ubuntu 24.04 | `aocc` | 5.2.0 | 0.13.0 ✅ | 4.3.3 ✅ | 1.11.1 ✅ |
 | ubuntu 24.04 | `flang-new` | 22.1.5 | 0.13.0 ✅ | 4.3.3 ✅ | 1.11.1 ✅ |
 | ubuntu 24.04 | `gfortran` | 15.2.0 | 0.13.0 ✅ | 4.3.3 ✅ | 1.11.1 ✅ |
 | ubuntu 24.04 | `ifx` | 2026.0.0 | 0.13.0 ✅ | 4.3.3 ✅ | 1.11.1 ✅ |
@@ -161,7 +161,7 @@ This example automates Fortran CI/CD:
 
 * 📦 **Fortran compiler setup**:
 
-  * Supports: `gfortran`, `ifx`, `lfortran`, `flang-new`, `nvfortran`, `amdflang`
+  * Supports: `gfortran`, `ifx`, `lfortran`, `flang-new`, `nvfortran`, `aocc`
 
 * 🖥️ **Cross-platform testing**:
 
@@ -267,7 +267,7 @@ jobs:
         - {os: ubuntu-latest,  compiler: ifx,       compiler-version: "", extra-packages: ""}
         - {os: ubuntu-latest,  compiler: flang-new, compiler-version: "", extra-packages: ""}
         - {os: ubuntu-latest,  compiler: nvfortran, compiler-version: "", extra-packages: ""}
-        - {os: ubuntu-latest,  compiler: amdflang,  compiler-version: "", extra-packages: ""}
+        - {os: ubuntu-latest,  compiler: aocc,      compiler-version: "", extra-packages: ""}
         - {os: ubuntu-latest,  compiler: lfortran,  compiler-version: "", extra-packages: "", fpm-version: "0.12.0"}
         - {os: windows-latest, compiler: gfortran,  compiler-version: "", extra-packages: ""}
         - {os: windows-latest, compiler: ifx,       compiler-version: "", extra-packages: "", fpm-version: "0.12.0"}
@@ -286,10 +286,10 @@ jobs:
           fpm-version: ${{ matrix.fpm-version }}
 
       - name: fpm test (debug)
-        run: fpm test --compiler ${{ matrix.compiler }} --profile debug --verbose
+        run: fpm test --compiler ${{ env.FPM_FC }} --profile debug --verbose
 
       - name: fpm test (release)
-        run: fpm test --compiler ${{ matrix.compiler }} --profile release --verbose
+        run: fpm test --compiler ${{ env.FPM_FC }} --profile release --verbose
 
   # Run CMake + Ninja build/tests across OS/compiler matrix
   test_cmake:
@@ -303,7 +303,7 @@ jobs:
         - {os: ubuntu-latest,  compiler: ifx,       compiler-version: "", extra-packages: ""}
         - {os: ubuntu-latest,  compiler: flang-new, compiler-version: "", extra-packages: ""}
         - {os: ubuntu-latest,  compiler: nvfortran, compiler-version: "", extra-packages: ""}
-        - {os: ubuntu-latest,  compiler: amdflang,  compiler-version: "", extra-packages: ""}
+        - {os: ubuntu-latest,  compiler: aocc,      compiler-version: "", extra-packages: ""}
         - {os: ubuntu-latest,  compiler: lfortran,  compiler-version: "", extra-packages: ""}
         - {os: windows-latest, compiler: gfortran,  compiler-version: "", extra-packages: ""}
         - {os: windows-latest, compiler: ifx,       compiler-version: "", extra-packages: ""}
@@ -322,13 +322,13 @@ jobs:
 
       - name: cmake test (debug)
         run: |
-          cmake -S . -B build/debug -DCMAKE_BUILD_TYPE=Debug -DCMAKE_Fortran_COMPILER=${{ matrix.compiler }} -G Ninja
+          cmake -S . -B build/debug -DCMAKE_BUILD_TYPE=Debug -DCMAKE_Fortran_COMPILER=${{ env.CMAKE_Fortran_COMPILER }} -G Ninja
           cmake --build build/debug
           ctest --test-dir build/debug --output-on-failure
 
       - name: cmake test (release)
         run: |
-          cmake -S . -B build/release -DCMAKE_BUILD_TYPE=Release -DCMAKE_Fortran_COMPILER=${{ matrix.compiler }} -G Ninja
+          cmake -S . -B build/release -DCMAKE_BUILD_TYPE=Release -DCMAKE_Fortran_COMPILER=${{ env.CMAKE_Fortran_COMPILER }} -G Ninja
           cmake --build build/release
           ctest --test-dir build/release --output-on-failure
 
@@ -344,7 +344,7 @@ jobs:
         - {os: ubuntu-latest,  compiler: ifx,       compiler-version: "", extra-packages: ""}
         - {os: ubuntu-latest,  compiler: flang-new, compiler-version: "", extra-packages: ""}
         - {os: ubuntu-latest,  compiler: nvfortran, compiler-version: "", extra-packages: ""}
-        - {os: ubuntu-latest,  compiler: amdflang,  compiler-version: "", extra-packages: ""}
+        - {os: ubuntu-latest,  compiler: aocc,      compiler-version: "", extra-packages: ""}
         - {os: windows-latest, compiler: gfortran,  compiler-version: "", extra-packages: ""}
         - {os: windows-latest, compiler: ifx,       compiler-version: "", extra-packages: ""}
         - {os: windows-latest, compiler: flang-new, compiler-version: "", extra-packages: ""}

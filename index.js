@@ -50,13 +50,14 @@ function isNotFoundMessage(s) {
 
 async function detectCompilerVersion(compilerBinary, compilerKey) {
   const probes = [];
+  const isAocc = compilerKey === 'aocc';
 
   if (compilerKey === 'gfortran') {
     probes.push([compilerBinary, ['-dumpfullversion', '-dumpversion']]);
     probes.push([compilerBinary, ['-dumpversion']]);
   }
 
-  if (compilerKey === 'amdflang') {
+  if (isAocc) {
     probes.push(['amdclang', ['-v']]);
     probes.push(['amdclang', ['--version']]);
     probes.push(['amdflang', ['--version']]);
@@ -80,7 +81,7 @@ async function detectCompilerVersion(compilerBinary, compilerKey) {
     }
 
     const ver =
-      compilerKey === 'amdflang'
+      isAocc
         ? pickAoccVersion(combined) || pickAoccVersion(raw) || pickFirstVersionLike(combined) || pickFirstVersionLike(raw)
         : pickFirstVersionLike(combined) || pickFirstVersionLike(raw);
 

@@ -146,7 +146,7 @@ runs:
   steps:
     - name: Checkout repository
       if: ${{ inputs.checkout-repo == 'true' || inputs.generate-doc-ford == 'true' || inputs.generate-doc-doxygen == 'true' }}
-      uses: actions/checkout@v6.0.2
+      uses: actions/checkout@v6.0.3
 
     - name: Validate README update mode
       if: ${{ inputs.update-readme-table == 'true' && inputs.update-readme-dependencies != 'false' }}
@@ -351,7 +351,7 @@ runs:
 
     - name: Checkout repository (for README update)
       if: ${{ inputs.update-readme-table == 'true' || inputs.update-readme-dependencies != 'false' }}
-      uses: actions/checkout@v6.0.2
+      uses: actions/checkout@v6.0.3
       with:
         persist-credentials: false
 

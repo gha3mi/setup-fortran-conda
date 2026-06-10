@@ -117,7 +117,6 @@ jobs:
 | ubuntu 24.04 | `aomp` | 23.0-0 | 0.13.0 ✅ | 4.3.3 ✅ | 1.11.1 ✅ |
 | ubuntu 24.04 | `flang-new` | 22.1.7 | 0.13.0 ✅ | 4.3.3 ✅ | 1.11.1 ✅ |
 | ubuntu 24.04 | `gfortran` | 15.2.0 | 0.13.0 ✅ | 4.3.3 ✅ | 1.11.1 ✅ |
-| ubuntu 24.04 | `ifx` | 2026.0.0 | 0.13.0 ✅ | 4.3.3 ✅ | 1.11.1 ✅ |
 | ubuntu 24.04 | `lfortran` | 0.63.0 | 0.12.0 ✅ | 4.3.3 ✅ | — |
 | ubuntu 24.04 | `mpifort` | Not found | Not found ✅ | — | — |
 | ubuntu 24.04 | `nvfortran` | 26.3 | 0.13.0 ✅ | 4.3.3 ✅ | 1.11.1 ✅ |
@@ -126,7 +125,6 @@ jobs:
 | macos 15 | `mpifort` | Not found | Not found ✅ | — | — |
 | windows 2025 | `flang-new` | 22.1.7 | 0.13.0 ✅ | 4.3.3 ✅ | 1.11.1 ✅ |
 | windows 2025 | `gfortran` | 15.2.0 | 0.13.0 ✅ | 4.3.3 ✅ | 1.11.1 ✅ |
-| windows 2025 | `ifx` | 2026.0.0 | 0.12.0 ✅ | 4.3.3 ✅ | 1.11.1 ✅ |
 | windows 2025 | `lfortran` | 0.54.0 | 0.12.0 ✅ | 4.3.3 ✅ | — |
 
 <!-- STATUS:setup-fortran-conda:END -->

@@ -121,8 +121,10 @@ jobs:
 | ubuntu 24.04 | `lfortran` | 0.63.0 | 0.12.0 ✅ | 4.3.4 ✅ | — |
 | ubuntu 24.04 | `mpifort` | Not found | Not found ✅ | — | — |
 | ubuntu 24.04 | `nvfortran` | 26.5 | 0.13.0 ✅ | 4.3.4 ✅ | 1.11.1 ✅ |
-| macos 26 | `gfortran` | 15.2.0 | 0.13.0 ✅ | 4.3.4 ✅ | 1.11.1 ✅ |
-| macos 26 | `lfortran` | 0.63.0 | 0.12.0 ✅ | 4.3.4 ✅ | — |
+| macos 15 | `gfortran` | 15.2.0 | 0.13.0 ✅ | 4.3.4 ✅ | — |
+| macos 15 | `lfortran` | 0.63.0 | 0.12.0 ✅ | — | — |
+| macos 26 | `gfortran` | 15.2.0 | — | — | 1.11.1 ✅ |
+| macos 26 | `lfortran` | 0.63.0 | — | 4.3.4 ✅ | — |
 | macos 26 | `mpifort` | Not found | Not found ✅ | — | — |
 | windows 2025 | `flang-new` | 22.1.8 | 0.13.0 ✅ | 4.3.4 ✅ | 1.11.1 ✅ |
 | windows 2025 | `gfortran` | 15.2.0 | 0.13.0 ✅ | 4.3.4 ✅ | 1.11.1 ✅ |

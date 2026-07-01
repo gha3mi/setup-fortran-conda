@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['gha3mi_20setup_20fortran_20conda_20compare_20v0_2016_200_20v0_2017_200_20v0_2017_200_20a_202026_2005_2029_0',['&lt;a href=&quot;https://github.com/gha3mi/setup-fortran-conda/compare/v0.16.0...v0.17.0&quot; &gt;v0.17.0&lt;/a&gt; - 2026-05-29',['../md_CHANGELOG.html',1,'']]],
-  ['github_20com_20gha3mi_20setup_20fortran_20conda_20compare_20v0_2016_200_20v0_2017_200_20v0_2017_200_20a_202026_2005_2029_1',['&lt;a href=&quot;https://github.com/gha3mi/setup-fortran-conda/compare/v0.16.0...v0.17.0&quot; &gt;v0.17.0&lt;/a&gt; - 2026-05-29',['../md_CHANGELOG.html',1,'']]]
+  ['6_202025_2010_2001_0',['&lt;a href=&quot;https://github.com/gha3mi/setup-fortran-conda/compare/v0.10.5...v0.10.6&quot;&gt;v0.10.6&lt;/a&gt; - 2025-10-01',['../md_CHANGELOG.html#autotoc_md79',1,'']]]
 ];

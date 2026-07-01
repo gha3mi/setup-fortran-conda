@@ -1,94 +1,105 @@
-\chapter{Setup Fortran with Conda}
+\chapter{Setup Fortran with Conda }
 \hypertarget{md_README}{}\label{md_README}\index{Setup Fortran with Conda@{Setup Fortran with Conda}}
 \label{md_README_autotoc_md127}%
 \Hypertarget{md_README_autotoc_md127}%
 
 
-A Git\+Hub Action that sets up a Fortran development environment using Conda where available and vendor packages where needed. Inspired by \href{https://degenerateconic.com/conda-plus-fortran.html}{\texttt{ Conda + Fortran}}.\hypertarget{md_README_autotoc_md128}{}\doxysection{\texorpdfstring{Table of Contents}{Table of Contents}}\label{md_README_autotoc_md128}
+A Git\+Hub Action that sets up a Fortran development environment using Conda where available and vendor packages where needed. Inspired by \href{https://degenerateconic.com/conda-plus-fortran.html}{\texttt{Conda + Fortran}}.\hypertarget{md_README_autotoc_md128}{}\doxysection{\texorpdfstring{Table of Contents}{Table of Contents}}\label{md_README_autotoc_md128}
 
 \begin{DoxyItemize}
-\item Setup Fortran with Conda
-\item Table of Contents
-\begin{DoxyItemize}
-\item Supported Compiler Configurations
-\begin{DoxyItemize}
-\item Ubuntu
-\item mac\+OS
-\item Windows
+\item Setup Fortran with CondaSetup Fortran with Conda
 \end{DoxyItemize}
-\item Simple Usage
-\item ✅ CI Status
-\item 📋 Workflow Example
 \begin{DoxyItemize}
-\item 🔐 IMPORTANT NOTES
-\item Overview
-\item README Integration
-\item Dependency Graph Integration
-\item Job Breakdown
-\item MPI Support
+\item Table of ContentsTable of Contents
 \end{DoxyItemize}
-\item 🚀 Release Automation
 \begin{DoxyItemize}
-\item Features
-\item Requirements
-\item Usage
-\item Recommended Workflow
+\item Supported Compiler ConfigurationsSupported Compiler Configurations
 \end{DoxyItemize}
-\item 🔗 See Also
+\begin{DoxyItemize}
+\item UbuntuUbuntu
 \end{DoxyItemize}
+\begin{DoxyItemize}
+\item mac\+OSmac\+OS
+\end{DoxyItemize}
+\begin{DoxyItemize}
+\item WindowsWindows
+\end{DoxyItemize}
+\begin{DoxyItemize}
+\item Simple UsageSimple Usage
+\end{DoxyItemize}
+\begin{DoxyItemize}
+\item ✅ CI Status✅ CI Status
+\end{DoxyItemize}
+\begin{DoxyItemize}
+\item 📋 Workflow Example📋 Workflow Example
+\end{DoxyItemize}
+\begin{DoxyItemize}
+\item 🔐 IMPORTANT NOTES🔐 IMPORTANT NOTES
+\end{DoxyItemize}
+\begin{DoxyItemize}
+\item OverviewOverview
+\end{DoxyItemize}
+\begin{DoxyItemize}
+\item README IntegrationREADME Integration
+\end{DoxyItemize}
+\begin{DoxyItemize}
+\item Dependency Graph IntegrationDependency Graph Integration
+\end{DoxyItemize}
+\begin{DoxyItemize}
+\item Job BreakdownJob Breakdown
+\end{DoxyItemize}
+\begin{DoxyItemize}
+\item MPI SupportMPI Support
+\end{DoxyItemize}
+\begin{DoxyItemize}
+\item 🚀 Release Automation🚀 Release Automation
+\end{DoxyItemize}
+\begin{DoxyItemize}
+\item FeaturesFeatures
+\end{DoxyItemize}
+\begin{DoxyItemize}
+\item RequirementsRequirements
+\end{DoxyItemize}
+\begin{DoxyItemize}
+\item UsageUsage
+\end{DoxyItemize}
+\begin{DoxyItemize}
+\item Recommended WorkflowRecommended Workflow
+\end{DoxyItemize}
+\begin{DoxyItemize}
+\item 🔗 See Also🔗 See Also
 \end{DoxyItemize}\hypertarget{md_README_autotoc_md129}{}\doxysubsection{\texorpdfstring{Supported Compiler Configurations}{Supported Compiler Configurations}}\label{md_README_autotoc_md129}
 The selected Fortran compiler is installed along with the corresponding C and C++ compilers, as well as {\ttfamily fpm}, {\ttfamily cmake}, {\ttfamily ninja}, {\ttfamily pkg-\/config} and {\ttfamily meson}. Additional packages can be installed using the {\ttfamily extra-\/packages} input.\hypertarget{md_README_autotoc_md130}{}\doxysubsubsection{\texorpdfstring{Ubuntu}{Ubuntu}}\label{md_README_autotoc_md130}
-\tabulinesep=1mm
-\begin{longtabu}spread 0pt [c]{*{3}{|X[-1]}|}
-\hline
-\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Fortran Compiler   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ C Compiler   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ C++ Compiler    }\\\cline{1-3}
-\endfirsthead
-\hline
-\endfoot
-\hline
-\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Fortran Compiler   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ C Compiler   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ C++ Compiler    }\\\cline{1-3}
-\endhead
-gfortran   &gcc   &g++    \\\cline{1-3}
-ifx   &icx   &icx    \\\cline{1-3}
-lfortran   &clang   &clang++    \\\cline{1-3}
-flang, flang-\/new   &clang   &clang++    \\\cline{1-3}
-nvfortran   &nvc   &nvc++    \\\cline{1-3}
-aocc(flang)   &aocc(clang)   &aocc(clang++)    \\\cline{1-3}
-aomp(flang)   &aomp(clang)   &aomp(clang++)   \\\cline{1-3}
-\end{longtabu}
+
+\begin{DoxyTable}{3}{}{}{1}
+\SetCell{c,bg=\tableheadbgcolor,font=\bfseries}Fortran Compiler  &\SetCell{c,bg=\tableheadbgcolor,font=\bfseries}C Compiler  &\SetCell{c,bg=\tableheadbgcolor,font=\bfseries}C++ Compiler  \\
+gfortran  &gcc  &g++  \\
+ifx  &icx  &icx  \\
+lfortran  &clang  &clang++  \\
+flang, flang-\/new  &clang  &clang++  \\
+nvfortran  &nvc  &nvc++  \\
+aocc(flang)  &aocc(clang)  &aocc(clang++)  \\
+aomp(flang)  &aomp(clang)  &aomp(clang++)  \\
+\end{DoxyTable}
 \hypertarget{md_README_autotoc_md131}{}\doxysubsubsection{\texorpdfstring{mac\+OS}{mac\+OS}}\label{md_README_autotoc_md131}
-\tabulinesep=1mm
-\begin{longtabu}spread 0pt [c]{*{3}{|X[-1]}|}
-\hline
-\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Fortran Compiler   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ C Compiler   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ C++ Compiler    }\\\cline{1-3}
-\endfirsthead
-\hline
-\endfoot
-\hline
-\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Fortran Compiler   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ C Compiler   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ C++ Compiler    }\\\cline{1-3}
-\endhead
-gfortran   &gcc   &g++    \\\cline{1-3}
-lfortran   &clang   &clang++   \\\cline{1-3}
-\end{longtabu}
+
+\begin{DoxyTable}{3}{}{}{1}
+\SetCell{c,bg=\tableheadbgcolor,font=\bfseries}Fortran Compiler  &\SetCell{c,bg=\tableheadbgcolor,font=\bfseries}C Compiler  &\SetCell{c,bg=\tableheadbgcolor,font=\bfseries}C++ Compiler  \\
+gfortran  &gcc  &g++  \\
+lfortran  &clang  &clang++  \\
+\end{DoxyTable}
 \hypertarget{md_README_autotoc_md132}{}\doxysubsubsection{\texorpdfstring{Windows}{Windows}}\label{md_README_autotoc_md132}
-\tabulinesep=1mm
-\begin{longtabu}spread 0pt [c]{*{3}{|X[-1]}|}
-\hline
-\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Fortran Compiler   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ C Compiler   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ C++ Compiler    }\\\cline{1-3}
-\endfirsthead
-\hline
-\endfoot
-\hline
-\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Fortran Compiler   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ C Compiler   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ C++ Compiler    }\\\cline{1-3}
-\endhead
-gfortran   &gcc   &g++    \\\cline{1-3}
-ifx   &icx   &icx    \\\cline{1-3}
-lfortran   &clang   &clang++    \\\cline{1-3}
-flang, flang-\/new   &clang-\/cl   &clang-\/cl   \\\cline{1-3}
-\end{longtabu}
+
+\begin{DoxyTable}{3}{}{}{1}
+\SetCell{c,bg=\tableheadbgcolor,font=\bfseries}Fortran Compiler  &\SetCell{c,bg=\tableheadbgcolor,font=\bfseries}C Compiler  &\SetCell{c,bg=\tableheadbgcolor,font=\bfseries}C++ Compiler  \\
+gfortran  &gcc  &g++  \\
+ifx  &icx  &icx  \\
+lfortran  &clang  &clang++  \\
+flang, flang-\/new  &clang-\/cl  &clang-\/cl  \\
+\end{DoxyTable}
 
 
-{\bfseries{The following environment variables are automatically set\+:}}
+{\bfseries{The following environment variables are automatically set:\+}}
 
 
 \begin{DoxyItemize}
@@ -140,52 +151,45 @@ flang, flang-\/new   &clang-\/cl   &clang-\/cl   \\\cline{1-3}
 
 \end{DoxyCode}
 \hypertarget{md_README_autotoc_md134}{}\doxysubsection{\texorpdfstring{✅ CI Status}{✅ CI Status}}\label{md_README_autotoc_md134}
-\tabulinesep=1mm
-\begin{longtabu}spread 0pt [c]{*{6}{|X[-1]}|}
-\hline
-\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ OS   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Compiler   }&\PBS\raggedleft \cellcolor{\tableheadbgcolor}\textbf{ Version   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ fpm   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ cmake   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ meson    }\\\cline{1-6}
-\endfirsthead
-\hline
-\endfoot
-\hline
-\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ OS   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Compiler   }&\PBS\raggedleft \cellcolor{\tableheadbgcolor}\textbf{ Version   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ fpm   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ cmake   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ meson    }\\\cline{1-6}
-\endhead
-ubuntu 24.\+04   &{\ttfamily aocc}   &\PBS\raggedleft 5.\+2.\+0   &\PBS\centering 0.\+13.\+0 ✅   &\PBS\centering 4.\+3.\+4 ✅   &\PBS\centering 1.\+11.\+1 ✅    \\\cline{1-6}
-ubuntu 24.\+04   &{\ttfamily aomp}   &\PBS\raggedleft 23.\+0-\/0   &\PBS\centering 0.\+13.\+0 ✅   &\PBS\centering 4.\+3.\+4 ✅   &\PBS\centering 1.\+11.\+1 ✅    \\\cline{1-6}
-ubuntu 24.\+04   &{\ttfamily flang-\/new}   &\PBS\raggedleft 22.\+1.\+8   &\PBS\centering 0.\+13.\+0 ✅   &\PBS\centering 4.\+3.\+4 ✅   &\PBS\centering 1.\+11.\+1 ✅    \\\cline{1-6}
-ubuntu 24.\+04   &{\ttfamily gfortran}   &\PBS\raggedleft 15.\+2.\+0   &\PBS\centering 0.\+13.\+0 ✅   &\PBS\centering 4.\+3.\+4 ✅   &\PBS\centering 1.\+11.\+1 ✅    \\\cline{1-6}
-ubuntu 24.\+04   &{\ttfamily ifx}   &\PBS\raggedleft 2026.\+0.\+0   &\PBS\centering 0.\+13.\+0 ✅   &\PBS\centering 4.\+3.\+4 ✅   &\PBS\centering 1.\+11.\+1 ✅    \\\cline{1-6}
-ubuntu 24.\+04   &{\ttfamily lfortran}   &\PBS\raggedleft 0.\+63.\+0   &\PBS\centering 0.\+12.\+0 ✅   &\PBS\centering 4.\+3.\+4 ✅   &\PBS\centering —    \\\cline{1-6}
-ubuntu 24.\+04   &{\ttfamily mpifort}   &\PBS\raggedleft Not found   &\PBS\centering Not found ✅   &\PBS\centering —   &\PBS\centering —    \\\cline{1-6}
-ubuntu 24.\+04   &{\ttfamily nvfortran}   &\PBS\raggedleft 26.\+5   &\PBS\centering 0.\+13.\+0 ✅   &\PBS\centering 4.\+3.\+4 ✅   &\PBS\centering 1.\+11.\+1 ✅    \\\cline{1-6}
-macos 26   &{\ttfamily gfortran}   &\PBS\raggedleft 15.\+2.\+0   &\PBS\centering 0.\+13.\+0 ✅   &\PBS\centering 4.\+3.\+4 ✅   &\PBS\centering 1.\+11.\+1 ✅    \\\cline{1-6}
-macos 26   &{\ttfamily lfortran}   &\PBS\raggedleft 0.\+63.\+0   &\PBS\centering 0.\+12.\+0 ✅   &\PBS\centering 4.\+3.\+4 ✅   &\PBS\centering —    \\\cline{1-6}
-macos 26   &{\ttfamily mpifort}   &\PBS\raggedleft Not found   &\PBS\centering Not found ✅   &\PBS\centering —   &\PBS\centering —    \\\cline{1-6}
-windows 2025   &{\ttfamily flang-\/new}   &\PBS\raggedleft 22.\+1.\+8   &\PBS\centering 0.\+13.\+0 ✅   &\PBS\centering 4.\+3.\+4 ✅   &\PBS\centering 1.\+11.\+1 ✅    \\\cline{1-6}
-windows 2025   &{\ttfamily gfortran}   &\PBS\raggedleft 15.\+2.\+0   &\PBS\centering 0.\+13.\+0 ✅   &\PBS\centering 4.\+3.\+4 ✅   &\PBS\centering 1.\+11.\+1 ✅    \\\cline{1-6}
-windows 2025   &{\ttfamily ifx}   &\PBS\raggedleft 2026.\+0.\+0   &\PBS\centering 0.\+12.\+0 ✅   &\PBS\centering 4.\+3.\+4 ✅   &\PBS\centering 1.\+11.\+1 ✅    \\\cline{1-6}
-windows 2025   &{\ttfamily lfortran}   &\PBS\raggedleft 0.\+54.\+0   &\PBS\centering 0.\+12.\+0 ✅   &\PBS\centering 4.\+3.\+4 ✅   &\PBS\centering —   \\\cline{1-6}
-\end{longtabu}
+
+\begin{DoxyTable}{6}{}{}{1}
+\SetCell{c,bg=\tableheadbgcolor,font=\bfseries}OS  &\SetCell{c,bg=\tableheadbgcolor,font=\bfseries}Compiler  &\SetCell{r,bg=\tableheadbgcolor,font=\bfseries}Version  &\SetCell{c,bg=\tableheadbgcolor,font=\bfseries}fpm  &\SetCell{c,bg=\tableheadbgcolor,font=\bfseries}cmake  &\SetCell{c,bg=\tableheadbgcolor,font=\bfseries}meson  \\
+ubuntu 24.\+04  &{\ttfamily aocc}  &\SetCell{r}5.\+2.\+0  &\SetCell{c}0.\+13.\+0 ✅  &\SetCell{c}4.\+3.\+4 ✅  &\SetCell{c}1.\+11.\+1 ✅  \\
+ubuntu 24.\+04  &{\ttfamily aomp}  &\SetCell{r}23.\+0-\/0  &\SetCell{c}0.\+13.\+0 ✅  &\SetCell{c}4.\+3.\+4 ✅  &\SetCell{c}1.\+11.\+1 ✅  \\
+ubuntu 24.\+04  &{\ttfamily flang-\/new}  &\SetCell{r}22.\+1.\+8  &\SetCell{c}0.\+13.\+0 ✅  &\SetCell{c}4.\+3.\+4 ✅  &\SetCell{c}1.\+11.\+1 ✅  \\
+ubuntu 24.\+04  &{\ttfamily gfortran}  &\SetCell{r}15.\+2.\+0  &\SetCell{c}0.\+13.\+0 ✅  &\SetCell{c}4.\+3.\+4 ✅  &\SetCell{c}1.\+11.\+1 ✅  \\
+ubuntu 24.\+04  &{\ttfamily ifx}  &\SetCell{r}2026.\+0.\+0  &\SetCell{c}0.\+13.\+0 ✅  &\SetCell{c}4.\+3.\+4 ✅  &\SetCell{c}1.\+11.\+1 ✅  \\
+ubuntu 24.\+04  &{\ttfamily lfortran}  &\SetCell{r}0.\+63.\+0  &\SetCell{c}0.\+12.\+0 ✅  &\SetCell{c}4.\+3.\+4 ✅  &\SetCell{c}—  \\
+ubuntu 24.\+04  &{\ttfamily mpifort}  &\SetCell{r}Not found  &\SetCell{c}Not found ✅  &\SetCell{c}—  &\SetCell{c}—  \\
+ubuntu 24.\+04  &{\ttfamily nvfortran}  &\SetCell{r}26.\+5  &\SetCell{c}0.\+13.\+0 ✅  &\SetCell{c}4.\+3.\+4 ✅  &\SetCell{c}1.\+11.\+1 ✅  \\
+macos 26  &{\ttfamily gfortran}  &\SetCell{r}15.\+2.\+0  &\SetCell{c}0.\+13.\+0 ✅  &\SetCell{c}4.\+3.\+4 ✅  &\SetCell{c}1.\+11.\+1 ✅  \\
+macos 26  &{\ttfamily lfortran}  &\SetCell{r}0.\+63.\+0  &\SetCell{c}0.\+12.\+0 ✅  &\SetCell{c}4.\+3.\+4 ✅  &\SetCell{c}—  \\
+macos 26  &{\ttfamily mpifort}  &\SetCell{r}Not found  &\SetCell{c}Not found ✅  &\SetCell{c}—  &\SetCell{c}—  \\
+windows 2025  &{\ttfamily flang-\/new}  &\SetCell{r}22.\+1.\+8  &\SetCell{c}0.\+13.\+0 ✅  &\SetCell{c}4.\+3.\+4 ✅  &\SetCell{c}1.\+11.\+1 ✅  \\
+windows 2025  &{\ttfamily gfortran}  &\SetCell{r}15.\+2.\+0  &\SetCell{c}0.\+13.\+0 ✅  &\SetCell{c}4.\+3.\+4 ✅  &\SetCell{c}1.\+11.\+1 ✅  \\
+windows 2025  &{\ttfamily ifx}  &\SetCell{r}2026.\+0.\+0  &\SetCell{c}0.\+12.\+0 ✅  &\SetCell{c}4.\+3.\+4 ✅  &\SetCell{c}1.\+11.\+1 ✅  \\
+windows 2025  &{\ttfamily lfortran}  &\SetCell{r}0.\+54.\+0  &\SetCell{c}0.\+12.\+0 ✅  &\SetCell{c}4.\+3.\+4 ✅  &\SetCell{c}—  \\
+\end{DoxyTable}
 
 
 
 \begin{DoxyItemize}
-\item \href{https://github.com/gha3mi/setup-fortran-conda/blob/status-fpm/STATUS.md}{\texttt{ STATUS.\+md (FPM)}}
-\item \href{https://github.com/gha3mi/setup-fortran-conda/blob/status-cmake/STATUS.md}{\texttt{ STATUS.\+md (CMake)}}
-\item \href{https://github.com/gha3mi/setup-fortran-conda/blob/status-meson/STATUS.md}{\texttt{ STATUS.\+md (Meson)}}
+\item \href{https://github.com/gha3mi/setup-fortran-conda/blob/status-fpm/STATUS.md}{\texttt{STATUS.\+md (FPM)}}
+\item \href{https://github.com/gha3mi/setup-fortran-conda/blob/status-cmake/STATUS.md}{\texttt{STATUS.\+md (CMake)}}
+\item \href{https://github.com/gha3mi/setup-fortran-conda/blob/status-meson/STATUS.md}{\texttt{STATUS.\+md (Meson)}}
 \end{DoxyItemize}\hypertarget{md_README_autotoc_md135}{}\doxysubsection{\texorpdfstring{📋 Workflow Example}{📋 Workflow Example}}\label{md_README_autotoc_md135}
 \hypertarget{md_README_autotoc_md136}{}\doxysubsubsection{\texorpdfstring{🔐 IMPORTANT NOTES}{🔐 IMPORTANT NOTES}}\label{md_README_autotoc_md136}
 \begin{quote}
 ⚠️ {\bfseries{Use your own name and email!}} Don’t copy the example values. \end{quote}
 
 
-To enable automatic updates to generated {\ttfamily README.\+md} content via the {\ttfamily update\+\_\+readme\+\_\+table}, {\ttfamily update\+\_\+readme\+\_\+fpm\+\_\+deps}, or {\ttfamily update\+\_\+readme\+\_\+fpm\+\_\+modules} jobs\+:
+To enable automatic updates to generated {\ttfamily README.\+md} content via the {\ttfamily update\+\_\+readme\+\_\+table}, {\ttfamily update\+\_\+readme\+\_\+fpm\+\_\+deps}, or {\ttfamily update\+\_\+readme\+\_\+fpm\+\_\+modules} jobs:\+
 
 
 \begin{DoxyEnumerate}
 \item Create a Git\+Hub {\bfseries{Personal Access Token (PAT)}} with {\ttfamily repo} scope.
 \item Add it to your repo secrets, e.\+g. {\ttfamily GH\+\_\+\+PAT}.
-\item Configure these inputs\+:
+\item Configure these inputs:\+
 \end{DoxyEnumerate}
 
 
@@ -197,50 +201,50 @@ To enable automatic updates to generated {\ttfamily README.\+md} content via the
 \end{DoxyCode}
 
 
-💡 Tip\+: When integrating CI/\+CD, testing often requires multiple commits and iterations. To keep your {\ttfamily main} branch clean, consider using a separate branch (e.\+g., {\ttfamily dev}) for development and testing. Once everything is working, you can merge it into main.
+💡 Tip:\+ When integrating CI/\+\+CD, testing often requires multiple commits and iterations. To keep your {\ttfamily main} branch clean, consider using a separate branch (e.\+g., {\ttfamily dev}) for development and testing. Once everything is working, you can merge it into main.
 
-You can include only the jobs you need in your workflow. This example includes all available jobs to demonstrate a comprehensive CI/\+CD setup.\hypertarget{md_README_autotoc_md137}{}\doxysubsubsection{\texorpdfstring{Overview}{Overview}}\label{md_README_autotoc_md137}
-This example automates Fortran CI/\+CD\+:
+You can include only the jobs you need in your workflow. This example includes all available jobs to demonstrate a comprehensive CI/\+\+CD setup.\hypertarget{md_README_autotoc_md137}{}\doxysubsubsection{\texorpdfstring{Overview}{Overview}}\label{md_README_autotoc_md137}
+This example automates Fortran CI/\+\+CD:\+
 
 
 \begin{DoxyItemize}
-\item 📦 {\bfseries{Fortran compiler setup}}\+:
+\item 📦 {\bfseries{Fortran compiler setup}}:\+
 \begin{DoxyItemize}
-\item Supports\+: {\ttfamily gfortran}, {\ttfamily ifx}, {\ttfamily lfortran}, {\ttfamily flang-\/new}, {\ttfamily nvfortran}, {\ttfamily aocc}, {\ttfamily aomp}
+\item Supports:\+ {\ttfamily gfortran}, {\ttfamily ifx}, {\ttfamily lfortran}, {\ttfamily flang-\/new}, {\ttfamily nvfortran}, {\ttfamily aocc}, {\ttfamily aomp}
 \end{DoxyItemize}
-\item 🖥️ {\bfseries{Cross-\/platform testing}}\+:
+\item 🖥️ {\bfseries{Cross-\/platform testing}}:\+
 \begin{DoxyItemize}
 \item Ubuntu, Windows, mac\+OS Git\+Hub runners
 \end{DoxyItemize}
-\item 🧪 {\bfseries{Testing}}\+:
+\item 🧪 {\bfseries{Testing}}:\+
 \begin{DoxyItemize}
 \item {\ttfamily fpm} test with {\ttfamily debug} and {\ttfamily release} profiles
 \item {\ttfamily CMake} with {\ttfamily Ninja} and {\ttfamily CTest}
 \item {\ttfamily Meson} with {\ttfamily Ninja}
 \end{DoxyItemize}
-\item 📄 {\bfseries{Documentation}}\+:
+\item 📄 {\bfseries{Documentation}}:\+
 \begin{DoxyItemize}
-\item \href{https://github.com/Fortran-FOSS-Programmers/ford}{\texttt{ FORD}}
-\item \href{https://www.doxygen.nl}{\texttt{ Doxygen}}
+\item \href{https://github.com/Fortran-FOSS-Programmers/ford}{\texttt{FORD}}
+\item \href{https://www.doxygen.nl}{\texttt{Doxygen}}
 \end{DoxyItemize}
-\item 📊 {\bfseries{Status Reporting}}\+:
+\item 📊 {\bfseries{Status Reporting}}:\+
 \begin{DoxyItemize}
-\item Auto-\/generates {\ttfamily STATUS.\+md} for {\ttfamily fpm}/{\ttfamily cmake}/{\ttfamily meson} test results
+\item Auto-\/generates {\ttfamily STATUS.\+md} for {\ttfamily fpm}/\+{\ttfamily cmake}/\+{\ttfamily meson} test results
 \item Injects summary into {\ttfamily README.\+md}
 \item creates PRs to update the status table in {\ttfamily README.\+md}
 \end{DoxyItemize}
-\item 🧭 {\bfseries{README Dependency Graphs}}\+:
+\item 🧭 {\bfseries{README Dependency Graphs}}:\+
 \begin{DoxyItemize}
 \item Injects dependency graphs into {\ttfamily README.\+md}
-\item Supports package dependency graphs with \href{https://github.com/ivan-pi/fpm-deps}{\texttt{ {\ttfamily fpm-\/deps}}}
-\item Supports module dependency graphs with \href{https://github.com/davidpfister/fpm-modules}{\texttt{ {\ttfamily fpm-\/modules}}}
+\item Supports package dependency graphs with \href{https://github.com/ivan-pi/fpm-deps}{\texttt{{\ttfamily fpm-\/deps}}}
+\item Supports module dependency graphs with \href{https://github.com/davidpfister/fpm-modules}{\texttt{{\ttfamily fpm-\/modules}}}
 \end{DoxyItemize}
-\item 🧹 {\bfseries{Linting}}\+:
+\item 🧹 {\bfseries{Linting}}:\+
 \begin{DoxyItemize}
 \item Runs Fortitude check
 \end{DoxyItemize}
 \end{DoxyItemize}\hypertarget{md_README_autotoc_md138}{}\doxysubsubsection{\texorpdfstring{README Integration}{README Integration}}\label{md_README_autotoc_md138}
-To enable automatic CI status table injection, add the following to your {\ttfamily README.\+md}\+:
+To enable automatic CI status table injection, add the following to your {\ttfamily README.\+md}:\+
 
 
 \begin{DoxyPre}
@@ -248,7 +252,7 @@ To enable automatic CI status table injection, add the following to your {\ttfam
 <!-\/-\/ STATUS:setup-\/fortran-\/conda:END -\/-\/>
 \end{DoxyPre}
 \hypertarget{md_README_autotoc_md139}{}\doxysubsubsection{\texorpdfstring{Dependency Graph Integration}{Dependency Graph Integration}}\label{md_README_autotoc_md139}
-To enable automatic package dependency graph injection with {\ttfamily fpm-\/deps}, add the following to your {\ttfamily README.\+md}\+:
+To enable automatic package dependency graph injection with {\ttfamily fpm-\/deps}, add the following to your {\ttfamily README.\+md}:\+
 
 
 \begin{DoxyPre}
@@ -257,7 +261,7 @@ To enable automatic package dependency graph injection with {\ttfamily fpm-\/dep
 \end{DoxyPre}
 
 
-To enable automatic module dependency graph injection with {\ttfamily fpm-\/modules}, add the following to your {\ttfamily README.\+md}\+:
+To enable automatic module dependency graph injection with {\ttfamily fpm-\/modules}, add the following to your {\ttfamily README.\+md}:\+
 
 
 \begin{DoxyPre}
@@ -266,35 +270,28 @@ To enable automatic module dependency graph injection with {\ttfamily fpm-\/modu
 \end{DoxyPre}
 
 
-Then use one job with {\ttfamily update-\/readme-\/dependencies\+: fpm-\/deps} for an fpm package dependency graph, and a separate job with {\ttfamily update-\/readme-\/dependencies\+: fpm-\/modules} for a Fortran module dependency graph. This feature currently runs on Linux runners and uses {\ttfamily gfortran} by default when no {\ttfamily compiler} input is provided.
+Then use one job with {\ttfamily update-\/readme-\/dependencies:\+ fpm-\/deps} for an fpm package dependency graph, and a separate job with {\ttfamily update-\/readme-\/dependencies:\+ fpm-\/modules} for a Fortran module dependency graph. This feature currently runs on Linux runners and uses {\ttfamily gfortran} by default when no {\ttfamily compiler} input is provided.
 
 Extra generator options can be passed as a one-\/line string with {\ttfamily dependency-\/graph-\/options}.\hypertarget{md_README_autotoc_md140}{}\doxysubsubsection{\texorpdfstring{Job Breakdown}{Job Breakdown}}\label{md_README_autotoc_md140}
-\tabulinesep=1mm
-\begin{longtabu}spread 0pt [c]{*{2}{|X[-1]}|}
-\hline
-\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Job Name   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Description    }\\\cline{1-2}
-\endfirsthead
-\hline
-\endfoot
-\hline
-\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Job Name   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Description    }\\\cline{1-2}
-\endhead
-{\ttfamily test\+\_\+fpm}   &Run {\ttfamily fpm} tests (debug + release) for each OS/compiler    \\\cline{1-2}
-{\ttfamily test\+\_\+cmake}   &Run CMake/\+Ninja builds and tests    \\\cline{1-2}
-{\ttfamily test\+\_\+meson}   &Run Meson builds and tests    \\\cline{1-2}
-{\ttfamily doc\+\_\+ford}   &Build and deploy FORD-\/generated docs    \\\cline{1-2}
-{\ttfamily doc\+\_\+doxygen}   &Build and deploy Doxygen-\/generated docs    \\\cline{1-2}
-{\ttfamily status\+\_\+fpm}   &Generate {\ttfamily STATUS.\+md} with fpm test results    \\\cline{1-2}
-{\ttfamily status\+\_\+cmake}   &Generate {\ttfamily STATUS.\+md} with cmake test results    \\\cline{1-2}
-{\ttfamily status\+\_\+meson}   &Generate {\ttfamily STATUS.\+md} with meson test results    \\\cline{1-2}
-{\ttfamily update\+\_\+readme\+\_\+table}   &Inject CI summary table into {\ttfamily README.\+md} and open a pull request    \\\cline{1-2}
-{\ttfamily update\+\_\+readme\+\_\+fpm\+\_\+deps}   &Inject fpm package dependency graph into {\ttfamily README.\+md} and open a pull request    \\\cline{1-2}
-{\ttfamily update\+\_\+readme\+\_\+fpm\+\_\+modules}   &Inject Fortran module dependency graph into {\ttfamily README.\+md} and open a pull request    \\\cline{1-2}
-{\ttfamily linter\+\_\+fortitude}   &Run \href{https://github.com/PlasmaFAIR/fortitude}{\texttt{ Fortitude}} linter   \\\cline{1-2}
-\end{longtabu}
+
+\begin{DoxyTable}{2}{}{}{1}
+\SetCell{c,bg=\tableheadbgcolor,font=\bfseries}Job Name  &\SetCell{c,bg=\tableheadbgcolor,font=\bfseries}Description  \\
+{\ttfamily test\+\_\+fpm}  &Run {\ttfamily fpm} tests (debug + release) for each OS/\+compiler  \\
+{\ttfamily test\+\_\+cmake}  &Run CMake/\+\+Ninja builds and tests  \\
+{\ttfamily test\+\_\+meson}  &Run Meson builds and tests  \\
+{\ttfamily doc\+\_\+ford}  &Build and deploy FORD-\/generated docs  \\
+{\ttfamily doc\+\_\+doxygen}  &Build and deploy Doxygen-\/generated docs  \\
+{\ttfamily status\+\_\+fpm}  &Generate {\ttfamily STATUS.\+md} with fpm test results  \\
+{\ttfamily status\+\_\+cmake}  &Generate {\ttfamily STATUS.\+md} with cmake test results  \\
+{\ttfamily status\+\_\+meson}  &Generate {\ttfamily STATUS.\+md} with meson test results  \\
+{\ttfamily update\+\_\+readme\+\_\+table}  &Inject CI summary table into {\ttfamily README.\+md} and open a pull request  \\
+{\ttfamily update\+\_\+readme\+\_\+fpm\+\_\+deps}  &Inject fpm package dependency graph into {\ttfamily README.\+md} and open a pull request  \\
+{\ttfamily update\+\_\+readme\+\_\+fpm\+\_\+modules}  &Inject Fortran module dependency graph into {\ttfamily README.\+md} and open a pull request  \\
+{\ttfamily linter\+\_\+fortitude}  &Run \href{https://github.com/PlasmaFAIR/fortitude}{\texttt{Fortitude}} linter  \\
+\end{DoxyTable}
 
 
-modify this example workflow file to your needs, and save it as {\ttfamily .github/workflows/\+CI-\/\+CD.\+yml} in your repository\+:
+modify this example workflow file to your needs, and save it as {\ttfamily .github/\+workflows/\+\+CI-\/\+CD.\+yml} in your repository:\+
 
 
 \begin{DoxyCode}{0}
@@ -568,7 +565,7 @@ modify this example workflow file to your needs, and save it as {\ttfamily .gith
 
 
 If {\ttfamily compiler-\/version} is set to an empty string {\ttfamily "{}"{}} or {\ttfamily latest}, the latest version will be installed.\hypertarget{md_README_autotoc_md141}{}\doxysubsubsection{\texorpdfstring{MPI Support}{MPI Support}}\label{md_README_autotoc_md141}
-MPI-\/based tests can be executed using fpm with the mpifort. This is currently supported on Linux and mac\+OS runners. The following example job sets up the environment and runs parallel MPI tests\+:
+MPI-\/based tests can be executed using fpm with the mpifort. This is currently supported on Linux and mac\+OS runners. The following example job sets up the environment and runs parallel MPI tests:\+
 
 
 \begin{DoxyCode}{0}
@@ -606,24 +603,24 @@ This project includes a Bash script for automating Git\+Hub releases.
 
 \end{DoxyCode}
  \hypertarget{md_README_autotoc_md143}{}\doxysubsubsection{\texorpdfstring{Features}{Features}}\label{md_README_autotoc_md143}
-The script automates\+:
+The script automates:\+
 
 
 \begin{DoxyItemize}
-\item ✅ {\bfseries{Semantic versioning}}\+: Calculates the next version ({\ttfamily major}, {\ttfamily minor}, or {\ttfamily patch}) based on PR titles and commit messages.
-\item 📝 {\bfseries{CHANGELOG generation}}\+: Compiles a categorized {\ttfamily CHANGELOG.\+md} using PR data and commits since the last release.
-\item 🔖 {\bfseries{Git tagging}}\+: Tags the new version (e.\+g., {\ttfamily v1.\+2.\+3}) and updates the floating {\ttfamily latest} tag.
-\item 📤 {\bfseries{Git\+Hub Release}}\+: Publishes a release with autogenerated notes.
-\item 💻 {\bfseries{Modes}}\+:
+\item ✅ {\bfseries{Semantic versioning}}:\+ Calculates the next version ({\ttfamily major}, {\ttfamily minor}, or {\ttfamily patch}) based on PR titles and commit messages.
+\item 📝 {\bfseries{CHANGELOG generation}}:\+ Compiles a categorized {\ttfamily CHANGELOG.\+md} using PR data and commits since the last release.
+\item 🔖 {\bfseries{Git tagging}}:\+ Tags the new version (e.\+g., {\ttfamily v1.\+2.\+3}) and updates the floating {\ttfamily latest} tag.
+\item 📤 {\bfseries{Git\+Hub Release}}:\+ Publishes a release with autogenerated notes.
+\item 💻 {\bfseries{Modes}}:\+
 \begin{DoxyItemize}
-\item {\ttfamily -\/-\/dry-\/run}\+: Simulates the release steps with no side effects.
-\item {\ttfamily -\/-\/local}\+: Updates files and tags locally, but skips pushing or publishing the release.
+\item {\ttfamily -\/-\/dry-\/run}:\+ Simulates the release steps with no side effects.
+\item {\ttfamily -\/-\/local}:\+ Updates files and tags locally, but skips pushing or publishing the release.
 \end{DoxyItemize}
 \end{DoxyItemize}\hypertarget{md_README_autotoc_md144}{}\doxysubsubsection{\texorpdfstring{Requirements}{Requirements}}\label{md_README_autotoc_md144}
 
 \begin{DoxyItemize}
-\item \href{https://cli.github.com/}{\texttt{ Git\+Hub CLI ({\ttfamily gh})}} – must be authenticated ({\ttfamily gh auth login})
-\item \href{https://stedolan.github.io/jq/}{\texttt{ {\ttfamily jq}}}
+\item \href{https://cli.github.com/}{\texttt{Git\+Hub CLI ({\ttfamily gh})}} – must be authenticated ({\ttfamily gh auth login})
+\item \href{https://stedolan.github.io/jq/}{\texttt{{\ttfamily jq}}}
 \end{DoxyItemize}\hypertarget{md_README_autotoc_md145}{}\doxysubsubsection{\texorpdfstring{Usage}{Usage}}\label{md_README_autotoc_md145}
 
 \begin{DoxyCode}{0}
@@ -634,8 +631,8 @@ The script automates\+:
 It’s highly recommended to first run in {\ttfamily -\/-\/dry-\/run} mode to verify the output.\hypertarget{md_README_autotoc_md147}{}\doxysubsection{\texorpdfstring{🔗 See Also}{🔗 See Also}}\label{md_README_autotoc_md147}
 
 \begin{DoxyItemize}
-\item \href{https://github.com/fortran-lang/setup-fortran}{\texttt{ fortran-\/lang/setup-\/fortran}}
-\item \href{https://degenerateconic.com/conda-plus-fortran.html}{\texttt{ https\+://degenerateconic.\+com/conda-\/plus-\/fortran.\+html}}
-\item \href{https://fortran-lang.discourse.group/t/github-action-setup-fortran-with-conda/9869/}{\texttt{ Fortran Discourse\+: Git\+Hub Action\+: Setup Fortran with Conda}}
-\item \href{https://fortran-lang.discourse.group/t/very-simple-ci-workflow-for-fortran-apps-using-conda/9867}{\texttt{ Fortran Discourse\+: Simple CI with Conda}} 
+\item \href{https://github.com/fortran-lang/setup-fortran}{\texttt{fortran-\/lang/\+setup-\/fortran}}
+\item \href{https://degenerateconic.com/conda-plus-fortran.html}{\texttt{https:\+/\+/\+degenerateconic.\+com/\+conda-\/plus-\/fortran.\+html}}
+\item \href{https://fortran-lang.discourse.group/t/github-action-setup-fortran-with-conda/9869/}{\texttt{Fortran Discourse:\+ Git\+Hub Action:\+ Setup Fortran with Conda}}
+\item \href{https://fortran-lang.discourse.group/t/very-simple-ci-workflow-for-fortran-apps-using-conda/9867}{\texttt{Fortran Discourse:\+ Simple CI with Conda}} 
 \end{DoxyItemize}

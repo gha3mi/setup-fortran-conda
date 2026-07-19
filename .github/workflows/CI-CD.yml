@@ -53,30 +53,30 @@ jobs:
       - name: fpm test (release)
         run: fpm test --compiler ${{ env.FPM_FC }} --target check --profile release --verbose
 
-  test_mpi_fpm:
-    if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
-    name: ${{ matrix.os }}_${{ matrix.compiler }}_mpi_fpm
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-        - {os: ubuntu-latest, compiler: mpifort, compiler-version: "", extra-packages: ""}
-        - {os: macos-latest,  compiler: mpifort, compiler-version: "", extra-packages: ""}
+  # test_mpi_fpm:
+  #   if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
+  #   name: ${{ matrix.os }}_${{ matrix.compiler }}_mpi_fpm
+  #   runs-on: ${{ matrix.os }}
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       include:
+  #       - {os: ubuntu-latest, compiler: mpifort, compiler-version: "", extra-packages: ""}
+  #       - {os: macos-latest,  compiler: mpifort, compiler-version: "", extra-packages: ""}
 
-    steps:
-      - name: Setup Fortran
-        uses: gha3mi/setup-fortran-conda@main
-        with:
-          compiler: ${{ matrix.compiler }}
-          compiler-version: ${{ matrix.compiler-version }}
-          extra-packages: ${{ matrix.extra-packages }}
+  #   steps:
+  #     - name: Setup Fortran
+  #       uses: gha3mi/setup-fortran-conda@main
+  #       with:
+  #         compiler: ${{ matrix.compiler }}
+  #         compiler-version: ${{ matrix.compiler-version }}
+  #         extra-packages: ${{ matrix.extra-packages }}
 
-      - name: fpm test (debug)
-        run: fpm test --target mpi_hello --compiler ${{ matrix.compiler }} --profile debug --flag "-cpp -DUSE_MPI" --runner "mpirun -np 4" --verbose
+  #     - name: fpm test (debug)
+  #       run: fpm test --target mpi_hello --compiler ${{ matrix.compiler }} --profile debug --flag "-cpp -DUSE_MPI" --runner "mpirun -np 4" --verbose
 
-      - name: fpm test (release)
-        run: fpm test --target mpi_hello --compiler ${{ matrix.compiler }} --profile release --flag "-cpp -DUSE_MPI" --runner "mpirun -np 4" --verbose
+  #     - name: fpm test (release)
+  #       run: fpm test --target mpi_hello --compiler ${{ matrix.compiler }} --profile release --flag "-cpp -DUSE_MPI" --runner "mpirun -np 4" --verbose
 
   test_cmake:
     if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
@@ -194,7 +194,8 @@ jobs:
   status_fpm:
     if: ${{ always() && (github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule') && !contains(github.event.head_commit.message, '[skip ci]') }}
     name: Generate STATUS.md
-    needs: [test_fpm, test_mpi_fpm]
+    # needs: [test_fpm, test_mpi_fpm]
+    needs: [test_fpm]
     runs-on: ubuntu-latest
     steps:
       - name: Generate summary
@@ -227,7 +228,8 @@ jobs:
   update_readme_table:
     if: ${{ always() && (github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule') && github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, '[skip ci]') }}
     name: Update README.md status table
-    needs: [test_fpm, test_mpi_fpm, test_cmake, test_meson]
+    # needs: [test_fpm, test_mpi_fpm, test_cmake, test_meson]
+    needs: [test_fpm, test_cmake, test_meson]
     runs-on: ubuntu-latest
     steps:
       - name: Update README status

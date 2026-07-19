@@ -5,6 +5,9 @@ import { existsSync, appendFileSync } from 'fs';
 import { EOL } from 'os';
 import { env, platform } from 'process';
 
+const TOOLS_ENV = 'fortran';
+const COMPILER_ENV = 'setup-fortran-conda-lfortran';
+
 // Export a key=value pair to GitHub Actions' environment and current process.env
 function exportEnv(key, value) {
   const envFile = process.env.GITHUB_ENV;
@@ -99,7 +102,7 @@ async function runVcvars64() {
 }
 
 // Resolve the absolute path of a named conda environment
-async function getCondaPrefix(envName) {
+async function getCondaPrefix(envName, required = true) {
   let raw = '';
   await _exec('conda', ['env', 'list', '--json'], {
     silent: true,
@@ -111,7 +114,11 @@ async function getCondaPrefix(envName) {
     if (p.endsWith(sep + envName) || p.endsWith('/' + envName)) return p;
   }
 
-  throw new Error(`Unable to locate Conda environment "${envName}".`);
+  if (required) {
+    throw new Error(`Unable to locate Conda environment "${envName}".`);
+  }
+
+  return '';
 }
 
 // Remove any bad linkers from PATH to avoid conflicts
@@ -143,7 +150,8 @@ export async function setup(version = '') {
 
   // Define the set of Conda packages to install
   const Pkg = version ? `lfortran=${version}` : 'lfortran';
-  const packages = [Pkg, 'llvm', 'clang-tools', 'clangxx', 'llvm-openmp', 'lld', 'gcc'];
+  const packages = [Pkg, ...(version ? [] : ['zstd=1.5.6']), 'llvm', 'clang-tools', 'clangxx', 'llvm-openmp', 'lld', 'gcc'];
+  let compilerPrefix = await getCondaPrefix(COMPILER_ENV, false);
 
   // Prepare MSVC environment
   await runVcvars64();
@@ -154,41 +162,50 @@ export async function setup(version = '') {
   // Install required compilers and tools via Conda
   startGroup('setup-fortran-conda: Install Conda Packages');
   try {
+    const condaCommand = compilerPrefix ? 'install' : 'create';
     await _exec('conda', [
-      'install',
+      condaCommand,
+      ...(condaCommand === 'create' ? ['--no-default-packages'] : []),
       '--yes',
       '--name',
-      'fortran',
+      COMPILER_ENV,
       ...packages,
       '-c',
       'conda-forge'
     ]);
-    info('Conda packages installed');
+    info(`Conda packages installed in ${COMPILER_ENV}`);
   } catch (err) {
-    throw new Error(`Conda install failed: ${err.message}`);
+    throw new Error(`Conda compiler environment setup failed: ${err.message}`);
   }
   endGroup();
 
   // Conda environment information
   startGroup('setup-fortran-conda: Show Conda Environment');
   await _exec('conda', ['info']);
-  await _exec('conda', ['list', '--name', 'fortran']);
+  await _exec('conda', ['list', '--name', TOOLS_ENV]);
+  await _exec('conda', ['list', '--name', COMPILER_ENV]);
   endGroup();
 
-  // Add Conda bin paths to PATH so tools are usable
-  const prefix = await getCondaPrefix('fortran');
-  const binPath = join(prefix, 'bin');
-  const libBinPath = join(prefix, 'Library', 'bin');
-  const usrBinPath = join(prefix, 'Library', 'usr', 'bin');
-  const scriptsPath = join(prefix, 'Scripts');
+  // Add the private compiler paths to PATH so compiler commands remain unchanged
+  compilerPrefix ||= await getCondaPrefix(COMPILER_ENV);
+  const toolsPrefix = await getCondaPrefix(TOOLS_ENV);
+  const variantBinPath = ['ucrt64', 'clang64', 'mingw64', 'clangarm64']
+    .map(variant => join(compilerPrefix, 'Library', variant, 'bin'))
+    .find(p => existsSync(p));
 
   startGroup('setup-fortran-conda: Configure Compiler Paths');
-  const paths = [binPath, libBinPath, usrBinPath, scriptsPath];
+  // Expose compiler-specific paths only; keep Python and Scripts from the active tools environment.
+  // addPath prepends each entry, so add them in reverse order.
+  const paths = [
+    variantBinPath,
+    join(compilerPrefix, 'Library', 'mingw-w64', 'bin'),
+    join(compilerPrefix, 'Library', 'usr', 'bin'),
+    join(compilerPrefix, 'Library', 'bin'),
+    join(compilerPrefix, 'bin')
+  ].filter(p => p && existsSync(p)).reverse();
   for (const p of paths) {
-    if (existsSync(p)) {
-      addPath(p);
-      info(`Added to PATH: ${p}`);
-    }
+    addPath(p);
+    info(`Added to PATH: ${p}`);
   }
   endGroup();
 
@@ -214,7 +231,11 @@ export async function setup(version = '') {
     CMAKE_Fortran_COMPILER: 'lfortran',
     CMAKE_C_COMPILER: 'clang',
     CMAKE_CXX_COMPILER: 'clang++',
-    INCLUDE: [join(prefix, 'Library', 'include'), process.env.INCLUDE || ''].filter(Boolean).join(';'),
+    INCLUDE: [
+      join(toolsPrefix, 'Library', 'include'),
+      join(compilerPrefix, 'Library', 'include'),
+      process.env.INCLUDE || ''
+    ].filter(Boolean).join(';'),
     LFORTRAN_LINKER: 'gcc',
     CMAKE_AR: 'llvm-ar',
     CMAKE_RANLIB: 'llvm-ranlib',

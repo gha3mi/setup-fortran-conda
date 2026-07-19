@@ -1,3 +1,34 @@
+## [v0.17.1](https://github.com/gha3mi/setup-fortran-conda/compare/v0.17.0...v0.17.1) - 2026-07-19
+
+
+### Fixes
+
+* fix: isolate lfortran from build-tool dependencies #170 ([af75ebce](https://github.com/gha3mi/setup-fortran-conda/commit/af75ebce61e755ad4ef0f43ebb28a8e921a4c1c0)) by [@gha3mi](https://github.com/gha3mi)
+
+### Others
+
+* chore(deps): bump actions/checkout from 6.0.2 to 6.0.3 (#176) ([9734c1ef](https://github.com/gha3mi/setup-fortran-conda/commit/9734c1ef6f60409246db39f06faaa5c9ab9957f4)) by [@dependabot[bot]](https://github.com/dependabot[bot])
+* Update README.md status table [ci skip] (#177) ([c5fa057d](https://github.com/gha3mi/setup-fortran-conda/commit/c5fa057d89b7cb3dd0ccf643fdd42b9c3b853df0)) by [@gha3mi](https://github.com/gha3mi)
+* chore(deps): bump actions/checkout from 6.0.3 to 7.0.0 (#179) ([d36f85a9](https://github.com/gha3mi/setup-fortran-conda/commit/d36f85a9b87db1b5195654e77e7b2cc29955a0cf)) by [@dependabot[bot]](https://github.com/dependabot[bot])
+* Update README.md status table [ci skip] (#180) ([fe34410d](https://github.com/gha3mi/setup-fortran-conda/commit/fe34410d79f49f7122317c1f82c269c2103d844a)) by [@gha3mi](https://github.com/gha3mi)
+* Update README.md status table [ci skip] (#181) ([e29ce253](https://github.com/gha3mi/setup-fortran-conda/commit/e29ce2532f1ad3b63d32d615e20056dd298967d2)) by [@gha3mi](https://github.com/gha3mi)
+* Update README.md status table [ci skip] (#182) ([f5b7a043](https://github.com/gha3mi/setup-fortran-conda/commit/f5b7a0434b4bf666fedf6f4cbb1f38a12c66ad03)) by [@gha3mi](https://github.com/gha3mi)
+* Update README.md status table [ci skip] (#183) ([d5f57f56](https://github.com/gha3mi/setup-fortran-conda/commit/d5f57f56236d40adba181eac4c14fb28ea57a2b4)) by [@gha3mi](https://github.com/gha3mi)
+* Update README.md status table [ci skip] (#184) ([6b4b8887](https://github.com/gha3mi/setup-fortran-conda/commit/6b4b88878d2b99e8bbae830afaf216b19ba40021)) by [@gha3mi](https://github.com/gha3mi)
+* Update README.md status table [ci skip] (#185) ([084dc049](https://github.com/gha3mi/setup-fortran-conda/commit/084dc049abc36ebdc2b4988530abc4a3a9f6a27c)) by [@gha3mi](https://github.com/gha3mi)
+* Update README.md status table [ci skip] (#186) ([9441f635](https://github.com/gha3mi/setup-fortran-conda/commit/9441f63595f75fb704e4ef570111d223b1092871)) by [@gha3mi](https://github.com/gha3mi)
+* refactor: remove mpi fpm test from CI ([3fc688fc](https://github.com/gha3mi/setup-fortran-conda/commit/3fc688fc9c2374280356a46280b7ec572ea9e71e)) by [@gha3mi](https://github.com/gha3mi)
+* Update README.md status table [ci skip] (#188) ([b1e146cc](https://github.com/gha3mi/setup-fortran-conda/commit/b1e146cc37d6a575f9b241104b7b12f4f33bd335)) by [@gha3mi](https://github.com/gha3mi)
+
+
+### Contributors
+- [@dependabot[bot]](https://github.com/dependabot[bot])
+- [@gha3mi](https://github.com/gha3mi)
+
+
+
+Full Changelog: [v0.17.0...v0.17.1](https://github.com/gha3mi/setup-fortran-conda/compare/v0.17.0...v0.17.1)
+
 ## [v0.17.0](https://github.com/gha3mi/setup-fortran-conda/compare/v0.16.0...v0.17.0) - 2026-05-29
 
 

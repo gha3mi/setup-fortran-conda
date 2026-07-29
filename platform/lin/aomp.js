@@ -1,52 +1,28 @@
-import { startGroup, endGroup, addPath, info, warning } from '@actions/core';
+import { info, warning } from '@actions/core';
 import { exec as _exec } from '@actions/exec';
+import { createHash } from 'node:crypto';
 import {
-  appendFileSync,
   createReadStream,
   existsSync,
   mkdirSync,
-  readdirSync
-} from 'fs';
-import { createHash } from 'crypto';
-import { EOL, tmpdir } from 'os';
-import { join, sep } from 'path';
-import { env, platform } from 'process';
-import https from 'https';
+  readdirSync,
+} from 'node:fs';
+import https from 'node:https';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { env } from 'node:process';
+import {
+  addExistingPaths,
+  assertLinux,
+  compilerEnvironment,
+  exportCompilerEnvironment,
+  getCondaPrefix,
+  grouped,
+  setLinuxUlimits,
+  verifyCommands,
+} from './common.js';
 
 const AOMP_REPO_API = 'https://api.github.com/repos/ROCm/aomp/releases';
-
-function exportEnv(key, value) {
-  const envFile = process.env.GITHUB_ENV;
-  if (!envFile) throw new Error('GITHUB_ENV not defined');
-  appendFileSync(envFile, `${key}=${value}${EOL}`);
-  env[key] = value;
-}
-
-function setLinuxUlimits() {
-  startGroup('setup-fortran-conda: Configure Linux Environment');
-  const ulimitCmd =
-    'ulimit -c unlimited -d unlimited -f unlimited -m unlimited -s unlimited -t unlimited -v unlimited -x unlimited';
-  const script = `${process.env.RUNNER_TEMP}/ulimit.sh`;
-  appendFileSync(script, `${ulimitCmd}${EOL}`);
-  appendFileSync(process.env.GITHUB_ENV, `BASH_ENV=${script}${EOL}`);
-  info('ulimit settings exported to BASH_ENV');
-  endGroup();
-}
-
-async function getCondaPrefix(envName) {
-  let raw = '';
-  await _exec('conda', ['env', 'list', '--json'], {
-    silent: true,
-    listeners: { stdout: d => (raw += d.toString()) }
-  });
-
-  const { envs } = JSON.parse(raw);
-  for (const p of envs) {
-    if (p.endsWith(sep + envName) || p.endsWith('/' + envName)) return p;
-  }
-
-  throw new Error(`Unable to locate Conda environment "${envName}".`);
-}
 
 function normalizeVersion(version = '') {
   const v = version.trim().toLowerCase();
@@ -59,7 +35,10 @@ function normalizeVersion(version = '') {
     .replace(/\.tar\.gz$/, '');
 
   if (!/^\d+\.\d+-\d+$/.test(bare)) {
-    throw new Error(`AOMP compiler-version must be "latest" or major.minor-patch, for example "23.0-0"; got "${version}".`);
+    throw new Error(
+      'AOMP compiler-version must be "latest" or major.minor-patch, ' +
+        `for example "23.0-0"; got "${version}".`
+    );
   }
 
   return bare;
@@ -214,67 +193,76 @@ function prependPathList(paths, current = '') {
 }
 
 export async function setup(version = '') {
-  if (platform !== 'linux') {
-    throw new Error('AOMP setup is only supported on Linux.');
-  }
+  assertLinux('AOMP setup is only supported on Linux.');
 
-  startGroup('setup-fortran-conda: Install AOMP System Dependencies');
-  try {
-    await _exec('sudo', ['apt-get', 'update', '-y']);
-    await _exec('sudo', [
-      'apt-get',
-      'install',
-      '-y',
-      'ca-certificates',
-      'curl',
-      'tar',
-      'gzip',
-      'libstdc++6',
-      'libtinfo6',
-      'libxml2',
-      'libdrm2',
-      'zlib1g',
-      'python3'
-    ]);
-  } catch (err) {
-    throw new Error(`AOMP system dependency install failed: ${err.message}`);
-  }
-  endGroup();
+  await grouped(
+    'setup-fortran-conda: Install AOMP System Dependencies',
+    async () => {
+      try {
+        await _exec('sudo', ['apt-get', 'update', '-y']);
+        await _exec('sudo', [
+          'apt-get',
+          'install',
+          '-y',
+          'ca-certificates',
+          'curl',
+          'tar',
+          'gzip',
+          'libstdc++6',
+          'libtinfo6',
+          'libxml2',
+          'libdrm2',
+          'zlib1g',
+          'python3',
+        ]);
+      } catch (error) {
+        throw new Error(
+          `AOMP system dependency install failed: ${error.message}`
+        );
+      }
+    }
+  );
 
   const release = await resolveAompRelease(version);
   const tarPath = join(tmpdir(), `aomp-${release.version}.tar.gz`);
-  const extractDir = join(process.env.RUNNER_TEMP || tmpdir(), `setup-fortran-conda-aomp-${release.version}`);
+  const extractDir = join(
+    process.env.RUNNER_TEMP || tmpdir(),
+    `setup-fortran-conda-aomp-${release.version}`
+  );
 
-  startGroup('setup-fortran-conda: Download AOMP Binary Tarball');
-  try {
-    await _exec('curl', [
-      '--fail',
-      '--location',
-      '--connect-timeout',
-      '30',
-      '--retry',
-      '3',
-      '--retry-all-errors',
-      '--retry-delay',
-      '2',
-      '--output',
-      tarPath,
-      release.url
-    ]);
-    await verifyChecksum(tarPath, release.version, release.checksum);
-  } catch (err) {
-    throw new Error(`AOMP download failed: ${err.message}`);
-  }
-  endGroup();
+  await grouped(
+    'setup-fortran-conda: Download AOMP Binary Tarball',
+    async () => {
+      try {
+        await _exec('curl', [
+          '--fail',
+          '--location',
+          '--connect-timeout',
+          '30',
+          '--retry',
+          '3',
+          '--retry-all-errors',
+          '--retry-delay',
+          '2',
+          '--output',
+          tarPath,
+          release.url,
+        ]);
+        await verifyChecksum(tarPath, release.version, release.checksum);
+      } catch (error) {
+        throw new Error(`AOMP download failed: ${error.message}`);
+      }
+    }
+  );
 
-  startGroup('setup-fortran-conda: Extract AOMP');
-  mkdirSync(extractDir, { recursive: true });
-  try {
-    await _exec('tar', ['-xzf', tarPath, '-C', extractDir]);
-  } catch (err) {
-    throw new Error(`AOMP extraction failed: ${err.message}`);
-  }
-  endGroup();
+  await grouped('setup-fortran-conda: Extract AOMP', async () => {
+    mkdirSync(extractDir, { recursive: true });
+    try {
+      await _exec('tar', ['-xzf', tarPath, '-C', extractDir]);
+    } catch (error) {
+      throw new Error(`AOMP extraction failed: ${error.message}`);
+    }
+  });
 
   const aompRoot = findAompRoot(extractDir);
   if (!aompRoot) {
@@ -292,48 +280,24 @@ export async function setup(version = '') {
     env.LD_LIBRARY_PATH || ''
   );
 
-  startGroup('setup-fortran-conda: Configure Compiler Paths');
-  for (const p of [condaBin, binPath]) {
-    if (existsSync(p)) {
-      addPath(p);
-      info(`Added to PATH: ${p}`);
-    }
-  }
-  endGroup();
+  await addExistingPaths([condaBin, binPath]);
 
-  startGroup('setup-fortran-conda: Verify Compiler Commands');
-  await _exec('which', ['flang']);
-  await _exec('flang', ['--version']);
-  await _exec('which', ['clang']);
-  await _exec('clang', ['--version']);
-  await _exec('which', ['clang++']);
-  await _exec('clang++', ['--version']);
-  endGroup();
+  await verifyCommands([
+    { command: 'flang', args: ['--version'] },
+    { command: 'clang', args: ['--version'] },
+    { command: 'clang++', args: ['--version'] },
+  ]);
 
-  startGroup('setup-fortran-conda: Export Compiler Environment');
-  const envVars = {
-    AOMP_HOME: aompRoot,
-    AOMP_ROOT: aompRoot,
-    AOMP_VERSION: release.version,
-    FC: 'flang',
-    CC: 'clang',
-    CXX: 'clang++',
-    FPM_FC: 'flang',
-    FPM_CC: 'clang',
-    FPM_CXX: 'clang++',
-    CMAKE_Fortran_COMPILER: 'flang',
-    CMAKE_C_COMPILER: 'clang',
-    CMAKE_CXX_COMPILER: 'clang++',
-    LD_LIBRARY_PATH: ldLibraryPath
-  };
+  await exportCompilerEnvironment(
+    compilerEnvironment('flang', 'clang', 'clang++', {
+      AOMP_HOME: aompRoot,
+      AOMP_ROOT: aompRoot,
+      AOMP_VERSION: release.version,
+      LD_LIBRARY_PATH: ldLibraryPath,
+    })
+  );
 
-  for (const [key, value] of Object.entries(envVars)) {
-    exportEnv(key, value);
-    info(`Exported: ${key}=${value}`);
-  }
-  endGroup();
-
-  setLinuxUlimits();
+  await setLinuxUlimits();
 
   info('AOMP compiler setup complete');
 }

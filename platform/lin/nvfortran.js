@@ -1,51 +1,35 @@
-import { startGroup, endGroup, addPath, info } from '@actions/core';
+import { info } from '@actions/core';
 import { exec as _exec } from '@actions/exec';
-import { sep, join } from 'path';
-import { appendFileSync, existsSync } from 'fs';
-import { EOL } from 'os';
-import { env, platform } from 'process';
+import { rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { basename, join } from 'node:path';
+import { env } from 'node:process';
+import {
+  addExistingPaths,
+  assertLinux,
+  compilerEnvironment,
+  exportCompilerEnvironment,
+  exportProcessEnvironment,
+  getCondaPrefix,
+  grouped,
+  setLinuxUlimits,
+  verifyCommands,
+} from './common.js';
 
-// Export a key=value pair to GITHUB_ENV and process.env
-function exportEnv(key, value) {
-  const envFile = process.env.GITHUB_ENV;
-  if (!envFile) throw new Error('GITHUB_ENV not defined');
-  appendFileSync(envFile, `${key}=${value}${EOL}`);
-  env[key] = value;
-}
-
-// Resolve the absolute path of a named conda environment
-async function getCondaPrefix(envName) {
-  let raw = '';
-  await _exec('conda', ['env', 'list', '--json'], {
-    silent: true,
-    listeners: { stdout: d => (raw += d.toString()) }
-  });
-
-  const { envs } = JSON.parse(raw);
-  for (const p of envs) {
-    if (p.endsWith(sep + envName) || p.endsWith('/' + envName)) return p;
-  }
-
-  throw new Error(`Unable to locate Conda environment "${envName}".`);
-}
-
-// Optional: Set unlimited ulimits for Linux
-function setLinuxUlimits() {
-  startGroup('setup-fortran-conda: Configure Linux Environment');
-  const ulimitCmd =
-    'ulimit -c unlimited -d unlimited -f unlimited -m unlimited -s unlimited -t unlimited -v unlimited -x unlimited';
-  const script = `${process.env.RUNNER_TEMP}/ulimit.sh`;
-  appendFileSync(script, `${ulimitCmd}${EOL}`);
-  appendFileSync(process.env.GITHUB_ENV, `BASH_ENV=${script}${EOL}`);
-  info('ulimit settings exported to BASH_ENV');
-  endGroup();
-}
+const NVHPC_APT_ROOT =
+  'https://developer.download.nvidia.com/hpc-sdk/ubuntu/amd64';
 
 // Free up disk space
 async function freeUpDiskSpace() {
-  startGroup('setup-fortran-conda: Free Disk Space');
-  await _exec('sudo', ['rm', '-rf', '/usr/local/lib/android', '/usr/local/android-sdk', '/usr/share/dotnet']);
-  endGroup();
+  await grouped('setup-fortran-conda: Free Disk Space', async () => {
+    await _exec('sudo', [
+      'rm',
+      '-rf',
+      '/usr/local/lib/android',
+      '/usr/local/android-sdk',
+      '/usr/share/dotnet',
+    ]);
+  });
 }
 
 async function getLatestNVHPC() {
@@ -61,34 +45,90 @@ async function getLatestNVHPC() {
   return out.trim();
 }
 
+async function getNVHPCPackage(version) {
+  if (!/^\d+\.\d+$/.test(version)) {
+    throw new Error(`Invalid NVIDIA HPC SDK version "${version}". Expected MAJOR.MINOR.`);
+  }
+
+  const packageId = `nvhpc-${version.replace(/\./g, '-')}`;
+  let packageIndex = '';
+  await _exec(
+    'curl',
+    [
+      '--fail',
+      '--location',
+      '--silent',
+      '--show-error',
+      '--retry',
+      '5',
+      '--retry-all-errors',
+      `${NVHPC_APT_ROOT}/Packages`,
+    ],
+    {
+      silent: true,
+      listeners: { stdout: data => (packageIndex += data.toString()) },
+    }
+  );
+
+  const stanza = packageIndex
+    .split(/\r?\n\r?\n/)
+    .find(entry => entry.split(/\r?\n/).includes(`Package: ${packageId}`));
+  const filenameLine = stanza
+    ?.split(/\r?\n/)
+    .find(line => line.startsWith('Filename:'));
+  const packageName = basename(filenameLine?.slice('Filename:'.length).trim() || '');
+
+  if (!packageName.endsWith('.deb')) {
+    throw new Error(`NVIDIA package index does not contain ${packageId}.`);
+  }
+
+  return {
+    path: join(process.env.RUNNER_TEMP || tmpdir(), packageName),
+    url: `${NVHPC_APT_ROOT}/${packageName}`,
+  };
+}
+
 // Main setup function
 export async function setup(version) {
-  if (platform !== 'linux') {
-    throw new Error('This setup script is only supported on Linux.');
-  }
+  assertLinux();
 
   await freeUpDiskSpace();
 
   version = version?.trim() || await getLatestNVHPC();
 
-  // Install NVIDIA HPC SDK via apt
-  startGroup('setup-fortran-conda: Install NVIDIA HPC SDK');
-  try {
-    await _exec('sudo', [
-      'bash', '-c',
-      'curl -fsSL https://developer.download.nvidia.com/hpc-sdk/ubuntu/DEB-GPG-KEY-NVIDIA-HPC-SDK | gpg --dearmor -o /usr/share/keyrings/nvidia-hpcsdk-archive-keyring.gpg'
-    ]);
-    await _exec('sudo', [
-      'bash', '-c',
-      `echo 'deb [signed-by=/usr/share/keyrings/nvidia-hpcsdk-archive-keyring.gpg] https://developer.download.nvidia.com/hpc-sdk/ubuntu/amd64 /' > /etc/apt/sources.list.d/nvhpc.list`
-    ]);
-    await _exec('sudo', ['apt-get', 'update', '-y']);
-    await _exec('sudo', ['apt-get', 'install', '-y', `nvhpc-${version.replace(/\./g, '-')}`]);
-    info('NVIDIA HPC SDK installed');
-  } catch (err) {
-    throw new Error(`NVIDIA HPC SDK install failed: ${err.message}`);
-  }
-  endGroup();
+  // Download the package directly because NVIDIA's APT index currently uses
+  // a "./" filename that its CDN does not serve.
+  let nvhpcPackage;
+  await grouped('setup-fortran-conda: Install NVIDIA HPC SDK', async () => {
+    try {
+      nvhpcPackage = await getNVHPCPackage(version);
+      await _exec('curl', [
+        '--fail',
+        '--location',
+        '--silent',
+        '--show-error',
+        '--retry',
+        '5',
+        '--retry-all-errors',
+        '--continue-at',
+        '-',
+        '--output',
+        nvhpcPackage.path,
+        nvhpcPackage.url,
+      ]);
+      await _exec('sudo', ['apt-get', 'update', '-y']);
+      await _exec('sudo', ['apt-get', 'install', '-y', nvhpcPackage.path]);
+      info('NVIDIA HPC SDK installed');
+    } catch (error) {
+      throw new Error(`NVIDIA HPC SDK install failed: ${error.message}`);
+    } finally {
+      try {
+        if (nvhpcPackage) await rm(nvhpcPackage.path, { force: true });
+      } catch (error) {
+        info(`Unable to remove NVIDIA installer: ${error.message}`);
+      }
+    }
+  });
 
   const base = '/opt/nvidia/hpc_sdk';
   const arch = 'Linux_x86_64';
@@ -101,64 +141,26 @@ export async function setup(version) {
   const prefix = await getCondaPrefix('fortran');
   const condaBin = join(prefix, 'bin');
 
-  // Add all relevant bin directories to PATH
-  startGroup('setup-fortran-conda: Configure Compiler Paths');
-  const paths = [binComp, binMPI, condaBin];
-  for (const p of paths) {
-    if (existsSync(p)) {
-      addPath(p);
-      info(`Added to PATH: ${p}`);
-    }
-  }
-  endGroup();
+  await addExistingPaths([binComp, binMPI, condaBin]);
 
-  // Verify that the compilers are installed and working
-  startGroup('setup-fortran-conda: Verify Compiler Commands');
-  await _exec('which', ['nvfortran']);
-  await _exec('nvfortran', ['--version']);
-  await _exec('which', ['nvc']);
-  await _exec('nvc', ['--version']);
-  await _exec('which', ['nvc++']);
-  await _exec('nvc++', ['--version']);
-  endGroup();
+  await verifyCommands([
+    { command: 'nvfortran', args: ['--version'] },
+    { command: 'nvc', args: ['--version'] },
+    { command: 'nvc++', args: ['--version'] },
+  ]);
 
   // Export compiler-related environment variables
-  startGroup('setup-fortran-conda: Export Compiler Environment');
-  const envVars = {
-    FC: 'nvfortran',
-    CC: 'nvc',
-    CXX: 'nvc++',
-    FPM_FC: 'nvfortran',
-    FPM_CC: 'nvc',
-    FPM_CXX: 'nvc++',
-    CMAKE_Fortran_COMPILER: 'nvfortran',
-    CMAKE_C_COMPILER: 'nvc',
-    CMAKE_CXX_COMPILER: 'nvc++',
-    LD_LIBRARY_PATH: [libComp, libMPI, env.LD_LIBRARY_PATH || ''].filter(Boolean).join(':'),
-    NVHPC: base
-  };
+  await exportCompilerEnvironment(
+    compilerEnvironment('nvfortran', 'nvc', 'nvc++', {
+      LD_LIBRARY_PATH: [libComp, libMPI, env.LD_LIBRARY_PATH || '']
+        .filter(Boolean)
+        .join(':'),
+      NVHPC: base,
+    })
+  );
 
-  for (const [key, value] of Object.entries(envVars)) {
-    exportEnv(key, value);
-    info(`Exported: ${key}=${value}`);
-  }
-  endGroup();
-
-  setLinuxUlimits();
-
-  startGroup('setup-fortran-conda: Export Process Environment');
-  for (const [key, value] of Object.entries(env)) {
-    if (typeof value === 'string') {
-      try {
-        process.env[key] = value;
-        appendFileSync(process.env.GITHUB_ENV, `${key}=${value}${EOL}`);
-        info(`Exported: ${key}`);
-      } catch (err) {
-        info(`⚠️ Failed to export: ${key} (${err.message})`);
-      }
-    }
-  }
-  endGroup();
+  await setLinuxUlimits();
+  await exportProcessEnvironment();
 
   info('✅ compiler setup complete');
 }

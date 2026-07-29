@@ -1,267 +1,110 @@
-import { startGroup, endGroup, addPath, info } from '@actions/core';
-import { exec as _exec } from '@actions/exec';
-import { sep, join } from 'path';
-import { existsSync, appendFileSync } from 'fs';
-import { EOL } from 'os';
-import { env, platform } from 'process';
+import { info } from '@actions/core';
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
+import {
+  TOOLS_ENVIRONMENT,
+  addExistingPaths,
+  assertWindows,
+  compilerEnvironment,
+  exportCompilerEnvironment,
+  exportEnv,
+  exportProcessEnvironment,
+  getCondaPrefix,
+  grouped,
+  initializeMsvcEnvironment,
+  installCondaPackages,
+  showCondaEnvironment,
+  verifyCommands,
+} from './common.js';
 
-const TOOLS_ENV = 'fortran';
-const COMPILER_ENV = 'setup-fortran-conda-lfortran';
+const COMPILER_ENVIRONMENT = 'setup-fortran-conda-lfortran';
 
-// Export a key=value pair to GitHub Actions' environment and current process.env
-function exportEnv(key, value) {
-  const envFile = process.env.GITHUB_ENV;
-  if (!envFile) throw new Error('GITHUB_ENV not defined');
-  appendFileSync(envFile, `${key}=${value}${EOL}`);
-  env[key] = value;
-}
-
-// Check if a given command exists in PATH using 'where' (Windows)
-async function commandExists(cmd) {
-  try {
-    await _exec('where', [cmd], { silent: true });
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-// Locate Visual Studio installation and extract the MSVC build environment
-async function runVcvars64() {
-  // Ensure vswhere is available to find Visual Studio
-  if (!(await commandExists('vswhere'))) {
-    throw new Error('"vswhere" not found in PATH. Ensure Visual Studio is installed.');
-  }
-
-  startGroup('setup-fortran-conda: Detect Visual Studio Installation');
-
-  // Query the latest Visual Studio installation path
-  let vsPath = '';
-  await _exec('vswhere', [
-    '-latest',
-    '-products', '*',
-    '-requires', 'Microsoft.VisualStudio.Component.VC.Tools.x86.x64',
-    '-property', 'installationPath'
-  ], {
-    silent: true,
-    listeners: {
-      stdout: data => { vsPath += data.toString(); }
-    }
+async function removeConflictingLinkers() {
+  await grouped('setup-fortran-conda: Clean Up PATH', async () => {
+    const filtered = process.env.PATH.split(';').filter(
+      (path) =>
+        !/mingw/i.test(path) &&
+        !/strawberry[\\/]c[\\/]bin/i.test(path)
+    );
+    exportEnv('PATH', filtered.join(';'));
+    info('Removed conflicting linkers (MinGW, Strawberry Perl) from PATH');
   });
-
-  vsPath = vsPath.trim();
-  if (!vsPath) throw new Error('vswhere did not return any installation path');
-
-  // Construct the path to vcvars64.bat
-  const vcvars = join(vsPath, 'VC', 'Auxiliary', 'Build', 'vcvars64.bat');
-  info(`Found Visual Studio: ${vsPath}`);
-  info(`Resolved vcvars64.bat: ${vcvars}`);
-  endGroup();
-
-  if (!existsSync(vcvars)) {
-    throw new Error(`vcvars64.bat not found at expected path: ${vcvars}`);
-  }
-
-  startGroup('setup-fortran-conda: Initialize MSVC Environment');
-
-  // Run vcvars64.bat and capture the resulting environment variables
-  let output = '';
-  const code = await _exec('cmd.exe', ['/c', vcvars, '&&', 'set'], {
-    silent: true,
-    ignoreReturnCode: true,
-    listeners: {
-      stdout: data => { output += data.toString(); },
-      stderr: data => { output += data.toString(); }
-    }
-  });
-
-  if (code !== 0) {
-    throw new Error(`vcvars64.bat failed with code ${code}:\n${output}`);
-  } else {
-    info(`vcvars64.bat ran successfully`);
-  }
-
-  endGroup();
-
-  startGroup('setup-fortran-conda: Export MSVC Environment');
-
-  // Parse and export environment variables line-by-line
-  let exportedCount = 0;
-  output.split('\n').forEach(line => {
-    const [key, ...rest] = line.trim().split('=');
-    if (key && rest.length > 0) {
-      const value = rest.join('=');
-      exportEnv(key, value);
-      info(`Exported: ${key}`);
-      exportedCount++;
-    }
-  });
-
-  info(`MSVC environment loaded with ${exportedCount} variables`);
-  endGroup();
 }
 
-// Resolve the absolute path of a named conda environment
-async function getCondaPrefix(envName, required = true) {
-  let raw = '';
-  await _exec('conda', ['env', 'list', '--json'], {
-    silent: true,
-    listeners: { stdout: d => (raw += d.toString()) }
-  });
-
-  const { envs } = JSON.parse(raw);
-  for (const p of envs) {
-    if (p.endsWith(sep + envName) || p.endsWith('/' + envName)) return p;
-  }
-
-  if (required) {
-    throw new Error(`Unable to locate Conda environment "${envName}".`);
-  }
-
-  return '';
-}
-
-// Remove any bad linkers from PATH to avoid conflicts
-function removeBadLinkersFromPath() {
-
-  startGroup('setup-fortran-conda: Clean Up PATH');
-  const paths = env.PATH.split(';');
-  const filtered = paths.filter(p =>
-    !/mingw/i.test(p) &&
-    !/strawberry[\\\/]c[\\\/]bin/i.test(p)
-  );
-  env.PATH = filtered.join(';');
-
-  const envFile = process.env.GITHUB_ENV;
-  if (envFile) {
-    appendFileSync(envFile, `PATH=${env.PATH}${EOL}`);
-  }
-
-  info('Removed conflicting linkers (MinGW, Strawberry Perl) from PATH');
-  endGroup();
-}
-
-// Main setup function to configure compilers and environment
 export async function setup(version = '') {
-  // Ensure this only runs on Windows
-  if (platform !== 'win32') {
-    throw new Error('This setup script is only supported on Windows.');
-  }
+  assertWindows();
 
-  // Define the set of Conda packages to install
-  const Pkg = version ? `lfortran=${version}` : 'lfortran';
-  const packages = [Pkg, ...(version ? [] : ['zstd=1.5.6']), 'llvm', 'clang-tools', 'clangxx', 'llvm-openmp', 'lld', 'gcc'];
-  let compilerPrefix = await getCondaPrefix(COMPILER_ENV, false);
+  const packages = [
+    version ? `lfortran=${version}` : 'lfortran',
+    ...(version ? [] : ['zstd=1.5.6']),
+    'llvm',
+    'llvm-tools',
+    'clang-tools',
+    'clangxx',
+    'llvm-openmp',
+    'lld',
+    'gcc',
+  ];
+  let compilerPrefix = await getCondaPrefix(COMPILER_ENVIRONMENT, false);
 
-  // Prepare MSVC environment
-  await runVcvars64();
+  await initializeMsvcEnvironment();
+  await removeConflictingLinkers();
 
-  // Remove any bad linkers from PATH to avoid conflicts
-  removeBadLinkersFromPath();
+  const condaCommand = compilerPrefix ? 'install' : 'create';
+  await installCondaPackages(packages, {
+    envName: COMPILER_ENVIRONMENT,
+    command: condaCommand,
+    commandOptions:
+      condaCommand === 'create' ? ['--no-default-packages'] : [],
+    successMessage: `Conda packages installed in ${COMPILER_ENVIRONMENT}`,
+    errorMessage: 'Conda compiler environment setup failed',
+  });
+  await showCondaEnvironment([
+    TOOLS_ENVIRONMENT,
+    COMPILER_ENVIRONMENT,
+  ]);
 
-  // Install required compilers and tools via Conda
-  startGroup('setup-fortran-conda: Install Conda Packages');
-  try {
-    const condaCommand = compilerPrefix ? 'install' : 'create';
-    await _exec('conda', [
-      condaCommand,
-      ...(condaCommand === 'create' ? ['--no-default-packages'] : []),
-      '--yes',
-      '--name',
-      COMPILER_ENV,
-      ...packages,
-      '-c',
-      'conda-forge'
-    ]);
-    info(`Conda packages installed in ${COMPILER_ENV}`);
-  } catch (err) {
-    throw new Error(`Conda compiler environment setup failed: ${err.message}`);
-  }
-  endGroup();
-
-  // Conda environment information
-  startGroup('setup-fortran-conda: Show Conda Environment');
-  await _exec('conda', ['info']);
-  await _exec('conda', ['list', '--name', TOOLS_ENV]);
-  await _exec('conda', ['list', '--name', COMPILER_ENV]);
-  endGroup();
-
-  // Add the private compiler paths to PATH so compiler commands remain unchanged
-  compilerPrefix ||= await getCondaPrefix(COMPILER_ENV);
-  const toolsPrefix = await getCondaPrefix(TOOLS_ENV);
+  compilerPrefix ||= await getCondaPrefix(COMPILER_ENVIRONMENT);
+  const toolsPrefix = await getCondaPrefix(TOOLS_ENVIRONMENT);
   const variantBinPath = ['ucrt64', 'clang64', 'mingw64', 'clangarm64']
-    .map(variant => join(compilerPrefix, 'Library', variant, 'bin'))
-    .find(p => existsSync(p));
+    .map((variant) =>
+      join(compilerPrefix, 'Library', variant, 'bin')
+    )
+    .find((path) => existsSync(path));
 
-  startGroup('setup-fortran-conda: Configure Compiler Paths');
-  // Expose compiler-specific paths only; keep Python and Scripts from the active tools environment.
-  // addPath prepends each entry, so add them in reverse order.
-  const paths = [
+  const compilerPaths = [
     variantBinPath,
     join(compilerPrefix, 'Library', 'mingw-w64', 'bin'),
     join(compilerPrefix, 'Library', 'usr', 'bin'),
     join(compilerPrefix, 'Library', 'bin'),
-    join(compilerPrefix, 'bin')
-  ].filter(p => p && existsSync(p)).reverse();
-  for (const p of paths) {
-    addPath(p);
-    info(`Added to PATH: ${p}`);
-  }
-  endGroup();
+    join(compilerPrefix, 'bin'),
+  ]
+    .filter((path) => path && existsSync(path))
+    .reverse();
+  await addExistingPaths(compilerPaths);
 
-  // Verify that the compilers are installed and working
-  startGroup('setup-fortran-conda: Verify Compiler Commands');
-  await _exec('where', ['lfortran']);
-  await _exec('lfortran', ['--version']);
-  await _exec('where', ['clang']);
-  await _exec('clang', ['--version']);
-  await _exec('where', ['clang++']);
-  await _exec('clang++', ['--version']);
-  endGroup();
+  await verifyCommands([
+    { command: 'lfortran', args: ['--version'] },
+    { command: 'clang', args: ['--version'] },
+    { command: 'clang++', args: ['--version'] },
+    { command: 'llvm-dwarfdump', args: ['--version'] },
+  ]);
+  await exportCompilerEnvironment(
+    compilerEnvironment('lfortran', 'clang', 'clang++', {
+      INCLUDE: [
+        join(toolsPrefix, 'Library', 'include'),
+        join(compilerPrefix, 'Library', 'include'),
+        process.env.INCLUDE || '',
+      ]
+        .filter(Boolean)
+        .join(';'),
+      LFORTRAN_LINKER: 'gcc',
+      CMAKE_AR: 'llvm-ar',
+      CMAKE_RANLIB: 'llvm-ranlib',
+      CMAKE_LINKER: 'lld',
+    })
+  );
+  await exportProcessEnvironment({ warningPrefix: '' });
 
-  // Export compiler-related environment variables
-  startGroup('setup-fortran-conda: Export Compiler Environment');
-  const envVars = {
-    FC: 'lfortran',
-    CC: 'clang',
-    CXX: 'clang++',
-    FPM_FC: 'lfortran',
-    FPM_CC: 'clang',
-    FPM_CXX: 'clang++',
-    CMAKE_Fortran_COMPILER: 'lfortran',
-    CMAKE_C_COMPILER: 'clang',
-    CMAKE_CXX_COMPILER: 'clang++',
-    INCLUDE: [
-      join(toolsPrefix, 'Library', 'include'),
-      join(compilerPrefix, 'Library', 'include'),
-      process.env.INCLUDE || ''
-    ].filter(Boolean).join(';'),
-    LFORTRAN_LINKER: 'gcc',
-    CMAKE_AR: 'llvm-ar',
-    CMAKE_RANLIB: 'llvm-ranlib',
-    CMAKE_LINKER: 'lld'
-  };
-
-  for (const [key, value] of Object.entries(envVars)) {
-    exportEnv(key, value);
-    info(`Exported: ${key}=${value}`);
-  }
-  endGroup();
-
-  startGroup('setup-fortran-conda: Export Process Environment');
-  for (const [key, value] of Object.entries(env)) {
-    if (typeof value === 'string') {
-      try {
-        process.env[key] = value;
-        appendFileSync(process.env.GITHUB_ENV, `${key}=${value}${EOL}`);
-        info(`Exported: ${key}`);
-      } catch (err) {
-        info(`Failed to export: ${key} (${err.message})`);
-      }
-    }
-  }
-  endGroup();
-
-  // Final success message
   info('✅ compiler setup complete');
 }

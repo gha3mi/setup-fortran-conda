@@ -119,7 +119,7 @@ Ubuntu  &nvfortran  &NVIDIA HPC-\/X  \\
 \item {\ttfamily FC}, {\ttfamily CC}, {\ttfamily CXX}
 \item {\ttfamily FPM\+\_\+\+FC}, {\ttfamily FPM\+\_\+\+CC}, {\ttfamily FPM\+\_\+\+CXX}
 \item {\ttfamily CMAKE\+\_\+\+Fortran\+\_\+\+COMPILER}, {\ttfamily CMAKE\+\_\+\+C\+\_\+\+COMPILER}, {\ttfamily CMAKE\+\_\+\+CXX\+\_\+\+COMPILER}
-\item When MPI is enabled:\+ {\ttfamily MPIFC}, {\ttfamily MPIF90}, {\ttfamily MPIF77}, {\ttfamily MPICC}, {\ttfamily MPICXX}, {\ttfamily MPIEXEC}, {\ttfamily MPIEXEC\+\_\+\+NUMPROC\+\_\+\+FLAG}, {\ttfamily MPIEXEC\+\_\+\+PREFLAGS}, {\ttfamily MPIEXEC\+\_\+\+POSTFLAGS}, {\ttfamily MPI\+\_\+\+HOME}
+\item When MPI is enabled:\+ {\ttfamily MPIFC}, {\ttfamily MPIF90}, {\ttfamily MPIF77}, {\ttfamily MPICC}, {\ttfamily MPICXX}, {\ttfamily MPIEXEC}, {\ttfamily MPIEXEC\+\_\+\+NUMPROC\+\_\+\+FLAG}, {\ttfamily MPI\+\_\+\+HOME}
 \end{DoxyItemize}\hypertarget{md_README_autotoc_md138}{}\doxysubsection{\texorpdfstring{Simple Usage}{Simple Usage}}\label{md_README_autotoc_md138}
 
 \begin{DoxyCode}{0}
@@ -610,7 +610,7 @@ If {\ttfamily compiler-\/version} is set to an empty string {\ttfamily "{}"{}} o
 \DoxyCodeLine{\ \ \ \ \ \ run:\ >}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ fpm\ run\ -\/-\/compiler\ "{}\$FPM\_FC"{}}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ -\/-\/runner\ "{}\$MPIEXEC"{}}
-\DoxyCodeLine{\ \ \ \ \ \ \ \ -\/-\/runner-\/args="{}\$MPIEXEC\_PREFLAGS\ \$MPIEXEC\_NUMPROC\_FLAG\ 2\ \$MPIEXEC\_POSTFLAGS"{}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ -\/-\/runner-\/args="{}\ \$MPIEXEC\_NUMPROC\_FLAG\ 2"{}}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ -\/-\/verbose}
 
 \end{DoxyCode}

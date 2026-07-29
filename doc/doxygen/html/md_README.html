@@ -256,7 +256,7 @@ MPI Toolchains</h3>
 <li><span class="tt">FC</span>, <span class="tt">CC</span>, <span class="tt">CXX</span></li>
 <li><span class="tt">FPM_FC</span>, <span class="tt">FPM_CC</span>, <span class="tt">FPM_CXX</span></li>
 <li><span class="tt">CMAKE_Fortran_COMPILER</span>, <span class="tt">CMAKE_C_COMPILER</span>, <span class="tt">CMAKE_CXX_COMPILER</span></li>
-<li>When MPI is enabled: <span class="tt">MPIFC</span>, <span class="tt">MPIF90</span>, <span class="tt">MPIF77</span>, <span class="tt">MPICC</span>, <span class="tt">MPICXX</span>, <span class="tt">MPIEXEC</span>, <span class="tt">MPIEXEC_NUMPROC_FLAG</span>, <span class="tt">MPIEXEC_PREFLAGS</span>, <span class="tt">MPIEXEC_POSTFLAGS</span>, <span class="tt">MPI_HOME</span></li>
+<li>When MPI is enabled: <span class="tt">MPIFC</span>, <span class="tt">MPIF90</span>, <span class="tt">MPIF77</span>, <span class="tt">MPICC</span>, <span class="tt">MPICXX</span>, <span class="tt">MPIEXEC</span>, <span class="tt">MPIEXEC_NUMPROC_FLAG</span>, <span class="tt">MPI_HOME</span></li>
 </ul>
 <h2 class="doxsection"><a class="anchor" id="autotoc_md138"></a>
 Simple Usage</h2>
@@ -745,7 +745,7 @@ MPI Support</h3>
 <div class="line">      run: &gt;</div>
 <div class="line">        fpm run --compiler &quot;$FPM_FC&quot;</div>
 <div class="line">        --runner &quot;$MPIEXEC&quot;</div>
-<div class="line">        --runner-args=&quot;$MPIEXEC_PREFLAGS $MPIEXEC_NUMPROC_FLAG 2 $MPIEXEC_POSTFLAGS&quot;</div>
+<div class="line">        --runner-args=&quot; $MPIEXEC_NUMPROC_FLAG 2&quot;</div>
 <div class="line">        --verbose</div>
 </div><!-- fragment --><p>For current fpm projects, declare MPI in <span class="tt">fpm.toml</span>:</p>
 <div class="fragment"><div class="line">[dependencies]</div>

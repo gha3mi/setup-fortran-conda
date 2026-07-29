@@ -188,7 +188,7 @@ runs:
       id: setup_fortran
       if: ${{ inputs.compiler != '' || inputs.update-readme-dependencies != 'false' }}
       shell: bash
-      run: node "${{ github.action_path }}/index.js"
+      run: node "${{ github.action_path }}/dist/index.js"
       env:
         INPUT_COMPILER: ${{ inputs.compiler != '' && inputs.compiler || 'gfortran' }}
         INPUT_COMPILER_VERSION: ${{ inputs.compiler-version }}

@@ -44,23 +44,26 @@ async function installIntelMpiWheel(mpiVersion) {
   });
 }
 
-async function getIntelMpiVersion() {
-  const result = await execCapture('conda', [
-    'run',
-    '--name',
-    'fortran',
-    'python',
+async function getIntelMpiVersion(prefix, osKey) {
+  const python =
+    osKey === 'win'
+      ? join(prefix, 'python.exe')
+      : join(prefix, 'bin', 'python');
+  const result = await execCapture(python, [
     '-c',
-    'from importlib.metadata import version; print(version("impi-devel"))',
+    'import json; from importlib.metadata import version; ' +
+      'print(json.dumps(version("impi-devel")))',
   ]);
   if (result.exitCode !== 0) return 'Unknown';
 
-  return (
-    result.stdout
-      .split(/\r?\n/)
-      .map((line) => line.trim())
-      .find((line) => /^\d+(?:\.\d+)+/.test(line)) || 'Unknown'
-  );
+  try {
+    const version = JSON.parse(result.stdout.trim());
+    return typeof version === 'string' && version.trim()
+      ? version.trim()
+      : 'Unknown';
+  } catch {
+    return 'Unknown';
+  }
 }
 
 function assertIntelMpiLayout(root, osKey) {
@@ -107,7 +110,7 @@ export async function setupIntelMpi({ mpiVersion, osKey }) {
   assertIntelMpiLayout(root, osKey);
   addCondaPaths(prefix, osKey);
 
-  const actualVersion = await getIntelMpiVersion();
+  const actualVersion = await getIntelMpiVersion(prefix, osKey);
   info(`Configured Intel MPI ${actualVersion} from the official Intel wheel`);
 
   const environment = {

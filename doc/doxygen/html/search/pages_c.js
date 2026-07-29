@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['ci_20status_0',['✅ CI Status',['../md_README.html#autotoc_md138',1,'']]],
+  ['ci_20status_0',['✅ CI Status',['../md_README.html#autotoc_md139',1,'']]],
   ['compiler_20configurations_1',['Supported Compiler Configurations',['../md_README.html#autotoc_md133',1,'']]],
   ['conda_2',['Setup Fortran with Conda',['../md_README.html',1,'']]],
   ['configurations_3',['Supported Compiler Configurations',['../md_README.html#autotoc_md133',1,'']]],

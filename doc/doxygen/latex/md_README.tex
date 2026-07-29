@@ -25,6 +25,9 @@ A Git\+Hub Action that sets up a Fortran development environment using Conda whe
 \item WindowsWindows
 \end{DoxyItemize}
 \begin{DoxyItemize}
+\item MPI ToolchainsMPI Toolchains
+\end{DoxyItemize}
+\begin{DoxyItemize}
 \item Simple UsageSimple Usage
 \end{DoxyItemize}
 \begin{DoxyItemize}
@@ -97,6 +100,16 @@ ifx  &icx  &icx  \\
 lfortran  &clang  &clang++  \\
 flang, flang-\/new  &clang-\/cl  &clang-\/cl  \\
 \end{DoxyTable}
+\hypertarget{md_README_autotoc_md137}{}\doxysubsubsection{\texorpdfstring{MPI Toolchains}{MPI Toolchains}}\label{md_README_autotoc_md137}
+
+\begin{DoxyTable}{3}{}{}{1}
+\SetCell{c,bg=\tableheadbgcolor,font=\bfseries}Platform  &\SetCell{c,bg=\tableheadbgcolor,font=\bfseries}Fortran Compiler  &\SetCell{c,bg=\tableheadbgcolor,font=\bfseries}MPI  \\
+Ubuntu  &gfortran  &MPICH, Open MPI  \\
+mac\+OS  &gfortran  &MPICH, Open MPI  \\
+Ubuntu  &ifx  &Intel MPI  \\
+Windows  &ifx  &Intel MPI  \\
+Ubuntu  &nvfortran  &NVIDIA HPC-\/X  \\
+\end{DoxyTable}
 
 
 {\bfseries{The following environment variables are automatically set:\+}}
@@ -106,7 +119,8 @@ flang, flang-\/new  &clang-\/cl  &clang-\/cl  \\
 \item {\ttfamily FC}, {\ttfamily CC}, {\ttfamily CXX}
 \item {\ttfamily FPM\+\_\+\+FC}, {\ttfamily FPM\+\_\+\+CC}, {\ttfamily FPM\+\_\+\+CXX}
 \item {\ttfamily CMAKE\+\_\+\+Fortran\+\_\+\+COMPILER}, {\ttfamily CMAKE\+\_\+\+C\+\_\+\+COMPILER}, {\ttfamily CMAKE\+\_\+\+CXX\+\_\+\+COMPILER}
-\end{DoxyItemize}\hypertarget{md_README_autotoc_md137}{}\doxysubsection{\texorpdfstring{Simple Usage}{Simple Usage}}\label{md_README_autotoc_md137}
+\item When MPI is enabled:\+ {\ttfamily MPIFC}, {\ttfamily MPIF90}, {\ttfamily MPIF77}, {\ttfamily MPICC}, {\ttfamily MPICXX}, {\ttfamily MPIEXEC}, {\ttfamily MPIEXEC\+\_\+\+NUMPROC\+\_\+\+FLAG}, {\ttfamily MPIEXEC\+\_\+\+PREFLAGS}, {\ttfamily MPIEXEC\+\_\+\+POSTFLAGS}, {\ttfamily MPI\+\_\+\+HOME}
+\end{DoxyItemize}\hypertarget{md_README_autotoc_md138}{}\doxysubsection{\texorpdfstring{Simple Usage}{Simple Usage}}\label{md_README_autotoc_md138}
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{name:\ Setup\ Fortran\ Conda\ CI/CD}
@@ -150,7 +164,7 @@ flang, flang-\/new  &clang-\/cl  &clang-\/cl  \\
 \DoxyCodeLine{\ \ \ \ \ \ \ \ run:\ fpm\ test\ -\/-\/compiler\ \$\{\{\ env.FPM\_FC\ \}\}\ -\/-\/profile\ release}
 
 \end{DoxyCode}
-\hypertarget{md_README_autotoc_md138}{}\doxysubsection{\texorpdfstring{✅ CI Status}{✅ CI Status}}\label{md_README_autotoc_md138}
+\hypertarget{md_README_autotoc_md139}{}\doxysubsection{\texorpdfstring{✅ CI Status}{✅ CI Status}}\label{md_README_autotoc_md139}
 
 \begin{DoxyTable}{6}{}{}{1}
 \SetCell{c,bg=\tableheadbgcolor,font=\bfseries}OS  &\SetCell{c,bg=\tableheadbgcolor,font=\bfseries}Compiler  &\SetCell{r,bg=\tableheadbgcolor,font=\bfseries}Version  &\SetCell{c,bg=\tableheadbgcolor,font=\bfseries}fpm  &\SetCell{c,bg=\tableheadbgcolor,font=\bfseries}cmake  &\SetCell{c,bg=\tableheadbgcolor,font=\bfseries}meson  \\
@@ -175,8 +189,8 @@ windows 2025  &{\ttfamily lfortran}  &\SetCell{r}0.\+64.\+0  &\SetCell{c}0.\+12.
 \item \href{https://github.com/gha3mi/setup-fortran-conda/blob/status-fpm/STATUS.md}{\texttt{STATUS.\+md (FPM)}}
 \item \href{https://github.com/gha3mi/setup-fortran-conda/blob/status-cmake/STATUS.md}{\texttt{STATUS.\+md (CMake)}}
 \item \href{https://github.com/gha3mi/setup-fortran-conda/blob/status-meson/STATUS.md}{\texttt{STATUS.\+md (Meson)}}
-\end{DoxyItemize}\hypertarget{md_README_autotoc_md139}{}\doxysubsection{\texorpdfstring{📋 Workflow Example}{📋 Workflow Example}}\label{md_README_autotoc_md139}
-\hypertarget{md_README_autotoc_md140}{}\doxysubsubsection{\texorpdfstring{🔐 IMPORTANT NOTES}{🔐 IMPORTANT NOTES}}\label{md_README_autotoc_md140}
+\end{DoxyItemize}\hypertarget{md_README_autotoc_md140}{}\doxysubsection{\texorpdfstring{📋 Workflow Example}{📋 Workflow Example}}\label{md_README_autotoc_md140}
+\hypertarget{md_README_autotoc_md141}{}\doxysubsubsection{\texorpdfstring{🔐 IMPORTANT NOTES}{🔐 IMPORTANT NOTES}}\label{md_README_autotoc_md141}
 \begin{quote}
 ⚠️ {\bfseries{Use your own name and email!}} Don’t copy the example values. \end{quote}
 
@@ -201,7 +215,7 @@ To enable automatic updates to generated {\ttfamily README.\+md} content via the
 
 💡 Tip:\+ When integrating CI/\+\+CD, testing often requires multiple commits and iterations. To keep your {\ttfamily main} branch clean, consider using a separate branch (e.\+g., {\ttfamily dev}) for development and testing. Once everything is working, you can merge it into main.
 
-You can include only the jobs you need in your workflow. This example includes all available jobs to demonstrate a comprehensive CI/\+\+CD setup.\hypertarget{md_README_autotoc_md141}{}\doxysubsubsection{\texorpdfstring{Overview}{Overview}}\label{md_README_autotoc_md141}
+You can include only the jobs you need in your workflow. This example includes all available jobs to demonstrate a comprehensive CI/\+\+CD setup.\hypertarget{md_README_autotoc_md142}{}\doxysubsubsection{\texorpdfstring{Overview}{Overview}}\label{md_README_autotoc_md142}
 This example automates Fortran CI/\+\+CD:\+
 
 
@@ -209,6 +223,7 @@ This example automates Fortran CI/\+\+CD:\+
 \item 📦 {\bfseries{Fortran compiler setup}}:\+
 \begin{DoxyItemize}
 \item Supports:\+ {\ttfamily gfortran}, {\ttfamily ifx}, {\ttfamily lfortran}, {\ttfamily flang-\/new}, {\ttfamily nvfortran}, {\ttfamily aocc}, {\ttfamily aomp}
+\item Optional validated MPI toolchains using MPICH, Open MPI, Intel MPI, or NVIDIA HPC-\/X
 \end{DoxyItemize}
 \item 🖥️ {\bfseries{Cross-\/platform testing}}:\+
 \begin{DoxyItemize}
@@ -241,7 +256,7 @@ This example automates Fortran CI/\+\+CD:\+
 \begin{DoxyItemize}
 \item Runs Fortitude check
 \end{DoxyItemize}
-\end{DoxyItemize}\hypertarget{md_README_autotoc_md142}{}\doxysubsubsection{\texorpdfstring{README Integration}{README Integration}}\label{md_README_autotoc_md142}
+\end{DoxyItemize}\hypertarget{md_README_autotoc_md143}{}\doxysubsubsection{\texorpdfstring{README Integration}{README Integration}}\label{md_README_autotoc_md143}
 To enable automatic CI status table injection, add the following to your {\ttfamily README.\+md}:\+
 
 
@@ -249,7 +264,7 @@ To enable automatic CI status table injection, add the following to your {\ttfam
 <!-\/-\/ STATUS:setup-\/fortran-\/conda:START -\/-\/>
 <!-\/-\/ STATUS:setup-\/fortran-\/conda:END -\/-\/>
 \end{DoxyPre}
-\hypertarget{md_README_autotoc_md143}{}\doxysubsubsection{\texorpdfstring{Dependency Graph Integration}{Dependency Graph Integration}}\label{md_README_autotoc_md143}
+\hypertarget{md_README_autotoc_md144}{}\doxysubsubsection{\texorpdfstring{Dependency Graph Integration}{Dependency Graph Integration}}\label{md_README_autotoc_md144}
 To enable automatic package dependency graph injection with {\ttfamily fpm-\/deps}, add the following to your {\ttfamily README.\+md}:\+
 
 
@@ -270,13 +285,16 @@ To enable automatic module dependency graph injection with {\ttfamily fpm-\/modu
 
 Then use one job with {\ttfamily update-\/readme-\/dependencies:\+ fpm-\/deps} for an fpm package dependency graph, and a separate job with {\ttfamily update-\/readme-\/dependencies:\+ fpm-\/modules} for a Fortran module dependency graph. This feature currently runs on Linux runners and uses {\ttfamily gfortran} by default when no {\ttfamily compiler} input is provided.
 
-Extra generator options can be passed as a one-\/line string with {\ttfamily dependency-\/graph-\/options}.\hypertarget{md_README_autotoc_md144}{}\doxysubsubsection{\texorpdfstring{Job Breakdown}{Job Breakdown}}\label{md_README_autotoc_md144}
+Extra generator options can be passed as a one-\/line string with {\ttfamily dependency-\/graph-\/options}.\hypertarget{md_README_autotoc_md145}{}\doxysubsubsection{\texorpdfstring{Job Breakdown}{Job Breakdown}}\label{md_README_autotoc_md145}
 
 \begin{DoxyTable}{2}{}{}{1}
 \SetCell{c,bg=\tableheadbgcolor,font=\bfseries}Job Name  &\SetCell{c,bg=\tableheadbgcolor,font=\bfseries}Description  \\
 {\ttfamily test\+\_\+fpm}  &Run {\ttfamily fpm} tests (debug + release) for each OS/\+compiler  \\
+{\ttfamily test\+\_\+mpi\+\_\+fpm}  &Run fpm MPI tests for supported OS/\+compiler/\+\+MPI toolchains  \\
 {\ttfamily test\+\_\+cmake}  &Run CMake/\+\+Ninja builds and tests  \\
+{\ttfamily test\+\_\+mpi\+\_\+cmake}  &Run CMake MPI builds and two-\/rank tests  \\
 {\ttfamily test\+\_\+meson}  &Run Meson builds and tests  \\
+{\ttfamily test\+\_\+mpi\+\_\+meson}  &Run Meson MPI builds and two-\/rank tests  \\
 {\ttfamily doc\+\_\+ford}  &Build and deploy FORD-\/generated docs  \\
 {\ttfamily doc\+\_\+doxygen}  &Build and deploy Doxygen-\/generated docs  \\
 {\ttfamily status\+\_\+fpm}  &Generate {\ttfamily STATUS.\+md} with fpm test results  \\
@@ -562,37 +580,55 @@ modify this example workflow file to your needs, and save it as {\ttfamily .gith
 \end{DoxyCode}
 
 
-If {\ttfamily compiler-\/version} is set to an empty string {\ttfamily "{}"{}} or {\ttfamily latest}, the latest version will be installed.\hypertarget{md_README_autotoc_md145}{}\doxysubsubsection{\texorpdfstring{MPI Support}{MPI Support}}\label{md_README_autotoc_md145}
-MPI-\/based tests can be executed using fpm with the mpifort. This is currently supported on Linux and mac\+OS runners. The following example job sets up the environment and runs parallel MPI tests:\+
-
+If {\ttfamily compiler-\/version} is set to an empty string {\ttfamily "{}"{}} or {\ttfamily latest}, the latest version will be installed.\hypertarget{md_README_autotoc_md146}{}\doxysubsubsection{\texorpdfstring{MPI Support}{MPI Support}}\label{md_README_autotoc_md146}
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{test\_mpi\_fpm:}
-\DoxyCodeLine{\ \ name:\ \$\{\{\ matrix.os\ \}\}\_\$\{\{\ matrix.compiler\ \}\}\_mpi\_fpm}
+\DoxyCodeLine{\ \ name:\ \$\{\{\ matrix.os\ \}\}\_\$\{\{\ matrix.compiler\ \}\}\_\$\{\{\ matrix.mpi\ \}\}\_fpm}
 \DoxyCodeLine{\ \ runs-\/on:\ \$\{\{\ matrix.os\ \}\}}
 \DoxyCodeLine{\ \ strategy:}
 \DoxyCodeLine{\ \ \ \ fail-\/fast:\ false}
 \DoxyCodeLine{\ \ \ \ matrix:}
 \DoxyCodeLine{\ \ \ \ \ \ include:}
-\DoxyCodeLine{\ \ \ \ \ \ -\/\ \{os:\ ubuntu-\/latest,\ compiler:\ mpifort,\ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{}\}}
-\DoxyCodeLine{\ \ \ \ \ \ -\/\ \{os:\ macos-\/latest,\ \ compiler:\ mpifort,\ compiler-\/version:\ "{}"{},\ extra-\/packages:\ "{}"{}\}}
+\DoxyCodeLine{\ \ \ \ \ \ -\/\ \{os:\ ubuntu-\/latest,\ compiler:\ gfortran,\ mpi:\ mpich\}}
+\DoxyCodeLine{\ \ \ \ \ \ -\/\ \{os:\ ubuntu-\/latest,\ compiler:\ gfortran,\ mpi:\ openmpi\}}
+\DoxyCodeLine{\ \ \ \ \ \ -\/\ \{os:\ macos-\/latest,\ \ compiler:\ gfortran,\ mpi:\ mpich\}}
+\DoxyCodeLine{\ \ \ \ \ \ -\/\ \{os:\ macos-\/latest,\ \ compiler:\ gfortran,\ mpi:\ openmpi\}}
+\DoxyCodeLine{\ \ \ \ \ \ -\/\ \{os:\ ubuntu-\/latest,\ compiler:\ ifx,\ mpi:\ intelmpi\}}
+\DoxyCodeLine{\ \ \ \ \ \ -\/\ \{os:\ windows-\/latest,\ compiler:\ ifx,\ mpi:\ intelmpi\}}
+\DoxyCodeLine{\ \ \ \ \ \ -\/\ \{os:\ ubuntu-\/latest,\ compiler:\ nvfortran,\ mpi:\ hpcx\}}
 \DoxyCodeLine{}
 \DoxyCodeLine{\ \ steps:}
-\DoxyCodeLine{\ \ \ \ -\/\ name:\ Setup\ Fortran}
+\DoxyCodeLine{\ \ \ \ -\/\ name:\ Setup\ Fortran\ and\ MPI}
 \DoxyCodeLine{\ \ \ \ \ \ uses:\ gha3mi/setup-\/fortran-\/conda@latest}
 \DoxyCodeLine{\ \ \ \ \ \ with:}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ compiler:\ \$\{\{\ matrix.compiler\ \}\}}
-\DoxyCodeLine{\ \ \ \ \ \ \ \ compiler-\/version:\ \$\{\{\ matrix.compiler-\/version\ \}\}}
-\DoxyCodeLine{\ \ \ \ \ \ \ \ extra-\/packages:\ \$\{\{\ matrix.extra-\/packages\ \}\}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ mpi:\ \$\{\{\ matrix.mpi\ \}\}}
 \DoxyCodeLine{}
-\DoxyCodeLine{\ \ \ \ -\/\ name:\ fpm\ test\ (debug)}
-\DoxyCodeLine{\ \ \ \ \ \ run:\ fpm\ test\ -\/-\/target\ mpi\_hello\ -\/-\/compiler\ \$\{\{\ matrix.compiler\ \}\}\ -\/-\/profile\ debug\ -\/-\/flag\ "{}-\/cpp\ -\/DUSE\_MPI"{}\ -\/-\/runner\ "{}mpirun\ -\/np\ 4"{}\ -\/-\/verbose}
-\DoxyCodeLine{}
-\DoxyCodeLine{\ \ \ \ -\/\ name:\ fpm\ test\ (release)}
-\DoxyCodeLine{\ \ \ \ \ \ run:\ fpm\ test\ -\/-\/target\ mpi\_hello\ -\/-\/compiler\ \$\{\{\ matrix.compiler\ \}\}\ -\/-\/profile\ release\ -\/-\/flag\ "{}-\/cpp\ -\/DUSE\_MPI"{}\ -\/-\/runner\ "{}mpirun\ -\/np\ 4"{}\ -\/-\/verbose}
+\DoxyCodeLine{\ \ \ \ -\/\ name:\ Run\ an\ fpm\ project\ that\ declares\ dependencies.mpi}
+\DoxyCodeLine{\ \ \ \ \ \ shell:\ bash}
+\DoxyCodeLine{\ \ \ \ \ \ run:\ >}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ fpm\ run\ -\/-\/compiler\ "{}\$FPM\_FC"{}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ -\/-\/runner\ "{}\$MPIEXEC"{}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ -\/-\/runner-\/args="{}\ \$MPIEXEC\_NUMPROC\_FLAG\ 2"{}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ -\/-\/verbose}
 
 \end{DoxyCode}
-\hypertarget{md_README_autotoc_md146}{}\doxysubsection{\texorpdfstring{🚀 Release Automation}{🚀 Release Automation}}\label{md_README_autotoc_md146}
+
+
+For current fpm projects, declare MPI in {\ttfamily fpm.\+toml}:\+
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{[dependencies]}
+\DoxyCodeLine{mpi\ =\ "{}*"{}}
+
+\end{DoxyCode}
+
+
+For CMake, use {\ttfamily find\+\_\+package(\+MPI REQUIRED COMPONENTS Fortran)} and link {\ttfamily MPI::\+\+MPI\+\_\+\+Fortran}. For Meson, use {\ttfamily dependency(\textquotesingle{}mpi\textquotesingle{}, language:\+ \textquotesingle{}fortran\textquotesingle{})}.
+
+The action checks the wrapper\textquotesingle{}s underlying compiler, detects the available {\ttfamily mpi\+\_\+f08}, {\ttfamily mpi}, and {\ttfamily mpif.\+h} bindings, and runs a two-\/rank program before setup succeeds. Unsupported compiler/\+\+MPI/\+platform combinations fail with the supported alternatives.\hypertarget{md_README_autotoc_md147}{}\doxysubsection{\texorpdfstring{🚀 Release Automation}{🚀 Release Automation}}\label{md_README_autotoc_md147}
 This project includes a Bash script for automating Git\+Hub releases.
 
 
@@ -600,7 +636,7 @@ This project includes a Bash script for automating Git\+Hub releases.
 \DoxyCodeLine{curl\ -\/L\ https://raw.githubusercontent.com/gha3mi/setup-\/fortran-\/conda/main/release.sh\ -\/o\ release.sh}
 
 \end{DoxyCode}
- \hypertarget{md_README_autotoc_md147}{}\doxysubsubsection{\texorpdfstring{Features}{Features}}\label{md_README_autotoc_md147}
+ \hypertarget{md_README_autotoc_md148}{}\doxysubsubsection{\texorpdfstring{Features}{Features}}\label{md_README_autotoc_md148}
 The script automates:\+
 
 
@@ -614,19 +650,19 @@ The script automates:\+
 \item {\ttfamily -\/-\/dry-\/run}:\+ Simulates the release steps with no side effects.
 \item {\ttfamily -\/-\/local}:\+ Updates files and tags locally, but skips pushing or publishing the release.
 \end{DoxyItemize}
-\end{DoxyItemize}\hypertarget{md_README_autotoc_md148}{}\doxysubsubsection{\texorpdfstring{Requirements}{Requirements}}\label{md_README_autotoc_md148}
+\end{DoxyItemize}\hypertarget{md_README_autotoc_md149}{}\doxysubsubsection{\texorpdfstring{Requirements}{Requirements}}\label{md_README_autotoc_md149}
 
 \begin{DoxyItemize}
 \item \href{https://cli.github.com/}{\texttt{Git\+Hub CLI ({\ttfamily gh})}} – must be authenticated ({\ttfamily gh auth login})
 \item \href{https://stedolan.github.io/jq/}{\texttt{{\ttfamily jq}}}
-\end{DoxyItemize}\hypertarget{md_README_autotoc_md149}{}\doxysubsubsection{\texorpdfstring{Usage}{Usage}}\label{md_README_autotoc_md149}
+\end{DoxyItemize}\hypertarget{md_README_autotoc_md150}{}\doxysubsubsection{\texorpdfstring{Usage}{Usage}}\label{md_README_autotoc_md150}
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{bash\ release.sh\ -\/-\/help}
 
 \end{DoxyCode}
-\hypertarget{md_README_autotoc_md150}{}\doxysubsubsection{\texorpdfstring{Recommended Workflow}{Recommended Workflow}}\label{md_README_autotoc_md150}
-It’s highly recommended to first run in {\ttfamily -\/-\/dry-\/run} mode to verify the output.\hypertarget{md_README_autotoc_md151}{}\doxysubsection{\texorpdfstring{🔗 See Also}{🔗 See Also}}\label{md_README_autotoc_md151}
+\hypertarget{md_README_autotoc_md151}{}\doxysubsubsection{\texorpdfstring{Recommended Workflow}{Recommended Workflow}}\label{md_README_autotoc_md151}
+It’s highly recommended to first run in {\ttfamily -\/-\/dry-\/run} mode to verify the output.\hypertarget{md_README_autotoc_md152}{}\doxysubsection{\texorpdfstring{🔗 See Also}{🔗 See Also}}\label{md_README_autotoc_md152}
 
 \begin{DoxyItemize}
 \item \href{https://github.com/fortran-lang/setup-fortran}{\texttt{fortran-\/lang/\+setup-\/fortran}}

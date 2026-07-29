@@ -141,6 +141,9 @@ Table of Contents</h1>
 <li>WindowsWindows</li>
 </ul>
 <ul>
+<li>MPI ToolchainsMPI Toolchains</li>
+</ul>
+<ul>
 <li>Simple UsageSimple Usage</li>
 </ul>
 <ul>
@@ -232,13 +235,30 @@ Windows</h3>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone">flang, flang-new  </td><td class="markdownTableBodyNone">clang-cl  </td><td class="markdownTableBodyNone">clang-cl  </td></tr>
 </table>
+<h3 class="doxsection"><a class="anchor" id="autotoc_md137"></a>
+MPI Toolchains</h3>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Platform  </th><th class="markdownTableHeadNone">Fortran Compiler  </th><th class="markdownTableHeadNone">MPI  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">Ubuntu  </td><td class="markdownTableBodyNone">gfortran  </td><td class="markdownTableBodyNone">MPICH, Open MPI  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">macOS  </td><td class="markdownTableBodyNone">gfortran  </td><td class="markdownTableBodyNone">MPICH, Open MPI  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">Ubuntu  </td><td class="markdownTableBodyNone">ifx  </td><td class="markdownTableBodyNone">Intel MPI  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">Windows  </td><td class="markdownTableBodyNone">ifx  </td><td class="markdownTableBodyNone">Intel MPI  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">Ubuntu  </td><td class="markdownTableBodyNone">nvfortran  </td><td class="markdownTableBodyNone">NVIDIA HPC-X  </td></tr>
+</table>
 <p><b>The following environment variables are automatically set:</b></p>
 <ul>
 <li><span class="tt">FC</span>, <span class="tt">CC</span>, <span class="tt">CXX</span></li>
 <li><span class="tt">FPM_FC</span>, <span class="tt">FPM_CC</span>, <span class="tt">FPM_CXX</span></li>
 <li><span class="tt">CMAKE_Fortran_COMPILER</span>, <span class="tt">CMAKE_C_COMPILER</span>, <span class="tt">CMAKE_CXX_COMPILER</span></li>
+<li>When MPI is enabled: <span class="tt">MPIFC</span>, <span class="tt">MPIF90</span>, <span class="tt">MPIF77</span>, <span class="tt">MPICC</span>, <span class="tt">MPICXX</span>, <span class="tt">MPIEXEC</span>, <span class="tt">MPIEXEC_NUMPROC_FLAG</span>, <span class="tt">MPIEXEC_PREFLAGS</span>, <span class="tt">MPIEXEC_POSTFLAGS</span>, <span class="tt">MPI_HOME</span></li>
 </ul>
-<h2 class="doxsection"><a class="anchor" id="autotoc_md137"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md138"></a>
 Simple Usage</h2>
 <div class="fragment"><div class="line">name: Setup Fortran Conda CI/CD</div>
 <div class="line"> </div>
@@ -279,7 +299,7 @@ Simple Usage</h2>
 <div class="line"> </div>
 <div class="line">      - name: fpm test (release)</div>
 <div class="line">        run: fpm test --compiler ${{ env.FPM_FC }} --profile release</div>
-</div><!-- fragment --><h2 class="doxsection"><a class="anchor" id="autotoc_md138"></a>
+</div><!-- fragment --><h2 class="doxsection"><a class="anchor" id="autotoc_md139"></a>
 ✅ CI Status</h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -316,9 +336,9 @@ Simple Usage</h2>
 <li><a href="https://github.com/gha3mi/setup-fortran-conda/blob/status-cmake/STATUS.md">STATUS.md (CMake)</a></li>
 <li><a href="https://github.com/gha3mi/setup-fortran-conda/blob/status-meson/STATUS.md">STATUS.md (Meson)</a></li>
 </ul>
-<h2 class="doxsection"><a class="anchor" id="autotoc_md139"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md140"></a>
 📋 Workflow Example</h2>
-<h3 class="doxsection"><a class="anchor" id="autotoc_md140"></a>
+<h3 class="doxsection"><a class="anchor" id="autotoc_md141"></a>
 🔐 IMPORTANT NOTES</h3>
 <blockquote class="doxtable">
 <p>⚠️ <b>Use your own name and email!</b> Don’t copy the example values. </p>
@@ -334,12 +354,13 @@ Simple Usage</h2>
 <div class="line">update-readme-user-email: &quot;you@example.com&quot;</div>
 </div><!-- fragment --><p>💡 Tip: When integrating CI/CD, testing often requires multiple commits and iterations. To keep your <span class="tt">main</span> branch clean, consider using a separate branch (e.g., <span class="tt">dev</span>) for development and testing. Once everything is working, you can merge it into main.</p>
 <p>You can include only the jobs you need in your workflow. This example includes all available jobs to demonstrate a comprehensive CI/CD setup.</p>
-<h3 class="doxsection"><a class="anchor" id="autotoc_md141"></a>
+<h3 class="doxsection"><a class="anchor" id="autotoc_md142"></a>
 Overview</h3>
 <p>This example automates Fortran CI/CD:</p>
 <ul>
 <li>📦 <b>Fortran compiler setup</b>:<ul>
 <li>Supports: <span class="tt">gfortran</span>, <span class="tt">ifx</span>, <span class="tt">lfortran</span>, <span class="tt">flang-new</span>, <span class="tt">nvfortran</span>, <span class="tt">aocc</span>, <span class="tt">aomp</span></li>
+<li>Optional validated MPI toolchains using MPICH, Open MPI, Intel MPI, or NVIDIA HPC-X</li>
 </ul>
 </li>
 <li>🖥️ <b>Cross-platform testing</b>:<ul>
@@ -374,13 +395,13 @@ Overview</h3>
 </ul>
 </li>
 </ul>
-<h3 class="doxsection"><a class="anchor" id="autotoc_md142"></a>
+<h3 class="doxsection"><a class="anchor" id="autotoc_md143"></a>
 README Integration</h3>
 <p>To enable automatic CI status table injection, add the following to your <span class="tt">README.md</span>:</p>
 <pre>
 &lt;!-- STATUS:setup-fortran-conda:START --&gt;
 &lt;!-- STATUS:setup-fortran-conda:END --&gt;
-</pre><h3 class="doxsection"><a class="anchor" id="autotoc_md143"></a>
+</pre><h3 class="doxsection"><a class="anchor" id="autotoc_md144"></a>
 Dependency Graph Integration</h3>
 <p>To enable automatic package dependency graph injection with <span class="tt">fpm-deps</span>, add the following to your <span class="tt">README.md</span>:</p>
 <pre>
@@ -392,7 +413,7 @@ Dependency Graph Integration</h3>
 &lt;!-- FPM-MODULES:setup-fortran-conda:END --&gt;
 </pre><p>Then use one job with <span class="tt">update-readme-dependencies: fpm-deps</span> for an fpm package dependency graph, and a separate job with <span class="tt">update-readme-dependencies: fpm-modules</span> for a Fortran module dependency graph. This feature currently runs on Linux runners and uses <span class="tt">gfortran</span> by default when no <span class="tt">compiler</span> input is provided.</p>
 <p>Extra generator options can be passed as a one-line string with <span class="tt">dependency-graph-options</span>.</p>
-<h3 class="doxsection"><a class="anchor" id="autotoc_md144"></a>
+<h3 class="doxsection"><a class="anchor" id="autotoc_md145"></a>
 Job Breakdown</h3>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -400,26 +421,32 @@ Job Breakdown</h3>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone"><span class="tt">test_fpm</span>  </td><td class="markdownTableBodyNone">Run <span class="tt">fpm</span> tests (debug + release) for each OS/compiler  </td></tr>
 <tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><span class="tt">test_mpi_fpm</span>  </td><td class="markdownTableBodyNone">Run fpm MPI tests for supported OS/compiler/MPI toolchains  </td></tr>
+<tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone"><span class="tt">test_cmake</span>  </td><td class="markdownTableBodyNone">Run CMake/Ninja builds and tests  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><span class="tt">test_mpi_cmake</span>  </td><td class="markdownTableBodyNone">Run CMake MPI builds and two-rank tests  </td></tr>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone"><span class="tt">test_meson</span>  </td><td class="markdownTableBodyNone">Run Meson builds and tests  </td></tr>
 <tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><span class="tt">test_mpi_meson</span>  </td><td class="markdownTableBodyNone">Run Meson MPI builds and two-rank tests  </td></tr>
+<tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone"><span class="tt">doc_ford</span>  </td><td class="markdownTableBodyNone">Build and deploy FORD-generated docs  </td></tr>
-<tr class="markdownTableRowOdd">
+<tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone"><span class="tt">doc_doxygen</span>  </td><td class="markdownTableBodyNone">Build and deploy Doxygen-generated docs  </td></tr>
-<tr class="markdownTableRowEven">
+<tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone"><span class="tt">status_fpm</span>  </td><td class="markdownTableBodyNone">Generate <span class="tt">STATUS.md</span> with fpm test results  </td></tr>
-<tr class="markdownTableRowOdd">
+<tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone"><span class="tt">status_cmake</span>  </td><td class="markdownTableBodyNone">Generate <span class="tt">STATUS.md</span> with cmake test results  </td></tr>
-<tr class="markdownTableRowEven">
+<tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone"><span class="tt">status_meson</span>  </td><td class="markdownTableBodyNone">Generate <span class="tt">STATUS.md</span> with meson test results  </td></tr>
-<tr class="markdownTableRowOdd">
+<tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone"><span class="tt">update_readme_table</span>  </td><td class="markdownTableBodyNone">Inject CI summary table into <span class="tt">README.md</span> and open a pull request  </td></tr>
-<tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone"><span class="tt">update_readme_fpm_deps</span>  </td><td class="markdownTableBodyNone">Inject fpm package dependency graph into <span class="tt">README.md</span> and open a pull request  </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><span class="tt">update_readme_fpm_modules</span>  </td><td class="markdownTableBodyNone">Inject Fortran module dependency graph into <span class="tt">README.md</span> and open a pull request  </td></tr>
+<td class="markdownTableBodyNone"><span class="tt">update_readme_fpm_deps</span>  </td><td class="markdownTableBodyNone">Inject fpm package dependency graph into <span class="tt">README.md</span> and open a pull request  </td></tr>
 <tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><span class="tt">update_readme_fpm_modules</span>  </td><td class="markdownTableBodyNone">Inject Fortran module dependency graph into <span class="tt">README.md</span> and open a pull request  </td></tr>
+<tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone"><span class="tt">linter_fortitude</span>  </td><td class="markdownTableBodyNone">Run <a href="https://github.com/PlasmaFAIR/fortitude">Fortitude</a> linter  </td></tr>
 </table>
 <p>modify this example workflow file to your needs, and save it as <span class="tt">.github/workflows/CI-CD.yml</span> in your repository:</p>
@@ -689,37 +716,47 @@ Job Breakdown</h3>
 <div class="line">          fortitude-check: true</div>
 <div class="line">          fortitude-settings: &quot;--output-format github&quot;</div>
 </div><!-- fragment --><p>If <span class="tt">compiler-version</span> is set to an empty string <span class="tt">""</span> or <span class="tt">latest</span>, the latest version will be installed.</p>
-<h3 class="doxsection"><a class="anchor" id="autotoc_md145"></a>
+<h3 class="doxsection"><a class="anchor" id="autotoc_md146"></a>
 MPI Support</h3>
-<p>MPI-based tests can be executed using fpm with the mpifort. This is currently supported on Linux and macOS runners. The following example job sets up the environment and runs parallel MPI tests:</p>
 <div class="fragment"><div class="line">test_mpi_fpm:</div>
-<div class="line">  name: ${{ matrix.os }}_${{ matrix.compiler }}_mpi_fpm</div>
+<div class="line">  name: ${{ matrix.os }}_${{ matrix.compiler }}_${{ matrix.mpi }}_fpm</div>
 <div class="line">  runs-on: ${{ matrix.os }}</div>
 <div class="line">  strategy:</div>
 <div class="line">    fail-fast: false</div>
 <div class="line">    matrix:</div>
 <div class="line">      include:</div>
-<div class="line">      - {os: ubuntu-latest, compiler: mpifort, compiler-version: &quot;&quot;, extra-packages: &quot;&quot;}</div>
-<div class="line">      - {os: macos-latest,  compiler: mpifort, compiler-version: &quot;&quot;, extra-packages: &quot;&quot;}</div>
+<div class="line">      - {os: ubuntu-latest, compiler: gfortran, mpi: mpich}</div>
+<div class="line">      - {os: ubuntu-latest, compiler: gfortran, mpi: openmpi}</div>
+<div class="line">      - {os: macos-latest,  compiler: gfortran, mpi: mpich}</div>
+<div class="line">      - {os: macos-latest,  compiler: gfortran, mpi: openmpi}</div>
+<div class="line">      - {os: ubuntu-latest, compiler: ifx, mpi: intelmpi}</div>
+<div class="line">      - {os: windows-latest, compiler: ifx, mpi: intelmpi}</div>
+<div class="line">      - {os: ubuntu-latest, compiler: nvfortran, mpi: hpcx}</div>
 <div class="line"> </div>
 <div class="line">  steps:</div>
-<div class="line">    - name: Setup Fortran</div>
+<div class="line">    - name: Setup Fortran and MPI</div>
 <div class="line">      uses: gha3mi/setup-fortran-conda@latest</div>
 <div class="line">      with:</div>
 <div class="line">        compiler: ${{ matrix.compiler }}</div>
-<div class="line">        compiler-version: ${{ matrix.compiler-version }}</div>
-<div class="line">        extra-packages: ${{ matrix.extra-packages }}</div>
+<div class="line">        mpi: ${{ matrix.mpi }}</div>
 <div class="line"> </div>
-<div class="line">    - name: fpm test (debug)</div>
-<div class="line">      run: fpm test --target mpi_hello --compiler ${{ matrix.compiler }} --profile debug --flag &quot;-cpp -DUSE_MPI&quot; --runner &quot;mpirun -np 4&quot; --verbose</div>
-<div class="line"> </div>
-<div class="line">    - name: fpm test (release)</div>
-<div class="line">      run: fpm test --target mpi_hello --compiler ${{ matrix.compiler }} --profile release --flag &quot;-cpp -DUSE_MPI&quot; --runner &quot;mpirun -np 4&quot; --verbose</div>
-</div><!-- fragment --><h2 class="doxsection"><a class="anchor" id="autotoc_md146"></a>
+<div class="line">    - name: Run an fpm project that declares dependencies.mpi</div>
+<div class="line">      shell: bash</div>
+<div class="line">      run: &gt;</div>
+<div class="line">        fpm run --compiler &quot;$FPM_FC&quot;</div>
+<div class="line">        --runner &quot;$MPIEXEC&quot;</div>
+<div class="line">        --runner-args=&quot; $MPIEXEC_NUMPROC_FLAG 2&quot;</div>
+<div class="line">        --verbose</div>
+</div><!-- fragment --><p>For current fpm projects, declare MPI in <span class="tt">fpm.toml</span>:</p>
+<div class="fragment"><div class="line">[dependencies]</div>
+<div class="line">mpi = &quot;*&quot;</div>
+</div><!-- fragment --><p>For CMake, use <span class="tt">find_package(MPI REQUIRED COMPONENTS Fortran)</span> and link <span class="tt">MPI::MPI_Fortran</span>. For Meson, use <span class="tt">dependency('mpi', language: 'fortran')</span>.</p>
+<p>The action checks the wrapper's underlying compiler, detects the available <span class="tt">mpi_f08</span>, <span class="tt">mpi</span>, and <span class="tt">mpif.h</span> bindings, and runs a two-rank program before setup succeeds. Unsupported compiler/MPI/platform combinations fail with the supported alternatives.</p>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md147"></a>
 🚀 Release Automation</h2>
 <p>This project includes a Bash script for automating GitHub releases.</p>
 <div class="fragment"><div class="line">curl -L https://raw.githubusercontent.com/gha3mi/setup-fortran-conda/main/release.sh -o release.sh</div>
-</div><!-- fragment --> <h3 class="doxsection"><a class="anchor" id="autotoc_md147"></a>
+</div><!-- fragment --> <h3 class="doxsection"><a class="anchor" id="autotoc_md148"></a>
 Features</h3>
 <p>The script automates:</p>
 <ul>
@@ -733,19 +770,19 @@ Features</h3>
 </ul>
 </li>
 </ul>
-<h3 class="doxsection"><a class="anchor" id="autotoc_md148"></a>
+<h3 class="doxsection"><a class="anchor" id="autotoc_md149"></a>
 Requirements</h3>
 <ul>
 <li><a href="https://cli.github.com/">GitHub CLI (<span class="tt">gh</span>)</a> – must be authenticated (<span class="tt">gh auth login</span>)</li>
 <li><a href="https://stedolan.github.io/jq/"><span class="tt">jq</span></a></li>
 </ul>
-<h3 class="doxsection"><a class="anchor" id="autotoc_md149"></a>
+<h3 class="doxsection"><a class="anchor" id="autotoc_md150"></a>
 Usage</h3>
 <div class="fragment"><div class="line">bash release.sh --help</div>
-</div><!-- fragment --><h3 class="doxsection"><a class="anchor" id="autotoc_md150"></a>
+</div><!-- fragment --><h3 class="doxsection"><a class="anchor" id="autotoc_md151"></a>
 Recommended Workflow</h3>
 <p>It’s highly recommended to first run in <span class="tt">--dry-run</span> mode to verify the output.</p>
-<h2 class="doxsection"><a class="anchor" id="autotoc_md151"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md152"></a>
 🔗 See Also</h2>
 <ul>
 <li><a href="https://github.com/fortran-lang/setup-fortran">fortran-lang/setup-fortran</a></li>

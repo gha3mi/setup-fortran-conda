@@ -198,25 +198,26 @@ var NAVTREE =
         [ "Supported Compiler Configurations", "md_README.html#autotoc_md133", [
           [ "Ubuntu", "md_README.html#autotoc_md134", null ],
           [ "macOS", "md_README.html#autotoc_md135", null ],
-          [ "Windows", "md_README.html#autotoc_md136", null ]
+          [ "Windows", "md_README.html#autotoc_md136", null ],
+          [ "MPI Toolchains", "md_README.html#autotoc_md137", null ]
         ] ],
-        [ "Simple Usage", "md_README.html#autotoc_md137", null ],
-        [ "✅ CI Status", "md_README.html#autotoc_md138", null ],
-        [ "📋 Workflow Example", "md_README.html#autotoc_md139", [
-          [ "🔐 IMPORTANT NOTES", "md_README.html#autotoc_md140", null ],
-          [ "Overview", "md_README.html#autotoc_md141", null ],
-          [ "README Integration", "md_README.html#autotoc_md142", null ],
-          [ "Dependency Graph Integration", "md_README.html#autotoc_md143", null ],
-          [ "Job Breakdown", "md_README.html#autotoc_md144", null ],
-          [ "MPI Support", "md_README.html#autotoc_md145", null ]
+        [ "Simple Usage", "md_README.html#autotoc_md138", null ],
+        [ "✅ CI Status", "md_README.html#autotoc_md139", null ],
+        [ "📋 Workflow Example", "md_README.html#autotoc_md140", [
+          [ "🔐 IMPORTANT NOTES", "md_README.html#autotoc_md141", null ],
+          [ "Overview", "md_README.html#autotoc_md142", null ],
+          [ "README Integration", "md_README.html#autotoc_md143", null ],
+          [ "Dependency Graph Integration", "md_README.html#autotoc_md144", null ],
+          [ "Job Breakdown", "md_README.html#autotoc_md145", null ],
+          [ "MPI Support", "md_README.html#autotoc_md146", null ]
         ] ],
-        [ "🚀 Release Automation", "md_README.html#autotoc_md146", [
-          [ "Features", "md_README.html#autotoc_md147", null ],
-          [ "Requirements", "md_README.html#autotoc_md148", null ],
-          [ "Usage", "md_README.html#autotoc_md149", null ],
-          [ "Recommended Workflow", "md_README.html#autotoc_md150", null ]
+        [ "🚀 Release Automation", "md_README.html#autotoc_md147", [
+          [ "Features", "md_README.html#autotoc_md148", null ],
+          [ "Requirements", "md_README.html#autotoc_md149", null ],
+          [ "Usage", "md_README.html#autotoc_md150", null ],
+          [ "Recommended Workflow", "md_README.html#autotoc_md151", null ]
         ] ],
-        [ "🔗 See Also", "md_README.html#autotoc_md151", null ]
+        [ "🔗 See Also", "md_README.html#autotoc_md152", null ]
       ] ]
     ] ]
   ] ]

@@ -1,5 +1,5 @@
-export const id = 237;
-export const ids = [237,673];
+export const id = 673;
+export const ids = [673];
 export const modules = {
 
 /***/ 7174:
@@ -329,54 +329,6 @@ function windowsCondaPaths(prefix) {
     (0,node_path__WEBPACK_IMPORTED_MODULE_3__.join)(prefix, 'Library', 'usr', 'bin'),
     (0,node_path__WEBPACK_IMPORTED_MODULE_3__.join)(prefix, 'Scripts'),
   ];
-}
-
-
-/***/ }),
-
-/***/ 1237:
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   setup: () => (/* binding */ setup)
-/* harmony export */ });
-/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3360);
-/* harmony import */ var node_path__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(6760);
-/* harmony import */ var _common_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(9673);
-
-
-
-
-async function setup(version = '') {
-  (0,_common_js__WEBPACK_IMPORTED_MODULE_2__/* .assertWindows */ .oB)();
-
-  const packages = [
-    version ? `gfortran=${version}` : 'gfortran',
-    version ? `gcc=${version}` : 'gcc',
-    version ? `gxx=${version}` : 'gxx',
-    'binutils',
-  ];
-  await (0,_common_js__WEBPACK_IMPORTED_MODULE_2__/* .installCondaPackages */ .MA)(packages);
-  await (0,_common_js__WEBPACK_IMPORTED_MODULE_2__/* .showCondaEnvironment */ .Qv)();
-
-  const prefix = await (0,_common_js__WEBPACK_IMPORTED_MODULE_2__/* .getCondaPrefix */ .s6)();
-  await (0,_common_js__WEBPACK_IMPORTED_MODULE_2__/* .addExistingPaths */ .Bf)((0,_common_js__WEBPACK_IMPORTED_MODULE_2__/* .windowsCondaPaths */ .RB)(prefix));
-  await (0,_common_js__WEBPACK_IMPORTED_MODULE_2__/* .verifyCommands */ .I6)([
-    { command: 'gfortran', args: ['--version'] },
-    { command: 'gcc', args: ['--version'] },
-    { command: 'g++', args: ['--version'] },
-  ]);
-
-  await (0,_common_js__WEBPACK_IMPORTED_MODULE_2__/* .exportCompilerEnvironment */ .x7)(
-    (0,_common_js__WEBPACK_IMPORTED_MODULE_2__/* .compilerEnvironment */ .HD)('gfortran', 'gcc', 'g++', {
-      INCLUDE: [(0,node_path__WEBPACK_IMPORTED_MODULE_1__.join)(prefix, 'Library', 'include'), process.env.INCLUDE || '']
-        .filter(Boolean)
-        .join(';'),
-    })
-  );
-  await (0,_common_js__WEBPACK_IMPORTED_MODULE_2__/* .exportProcessEnvironment */ .pI)({ warningPrefix: '' });
-
-  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)('✅ compiler setup complete');
 }
 
 

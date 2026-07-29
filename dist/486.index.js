@@ -1,6 +1,243 @@
 export const id = 486;
-export const ids = [486];
+export const ids = [486,410];
 export const modules = {
+
+/***/ 7174:
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Aq: () => (/* binding */ TOOLS_ENVIRONMENT),
+/* harmony export */   Bf: () => (/* binding */ addExistingPaths),
+/* harmony export */   EE: () => (/* binding */ exportEnv),
+/* harmony export */   G6: () => (/* binding */ assertPlatform),
+/* harmony export */   HD: () => (/* binding */ compilerEnvironment),
+/* harmony export */   I6: () => (/* binding */ verifyCommands),
+/* harmony export */   MA: () => (/* binding */ installCondaPackages),
+/* harmony export */   Qv: () => (/* binding */ showCondaEnvironment),
+/* harmony export */   pI: () => (/* binding */ exportProcessEnvironment),
+/* harmony export */   s6: () => (/* binding */ getCondaPrefix),
+/* harmony export */   x7: () => (/* binding */ exportCompilerEnvironment),
+/* harmony export */   zD: () => (/* binding */ grouped)
+/* harmony export */ });
+/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3360);
+/* harmony import */ var _actions_exec__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2876);
+/* harmony import */ var node_fs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3024);
+/* harmony import */ var node_os__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(8161);
+/* harmony import */ var node_path__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(6760);
+
+
+
+
+
+
+const TOOLS_ENVIRONMENT = 'fortran';
+
+function assertPlatform(expected, message) {
+  if (process.platform !== expected) {
+    throw new Error(message);
+  }
+}
+
+async function grouped(name, operation) {
+  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .startGroup */ .Oh)(name);
+  try {
+    return await operation();
+  } finally {
+    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .endGroup */ .N4)();
+  }
+}
+
+function exportEnv(key, value) {
+  const envFile = process.env.GITHUB_ENV;
+  if (!envFile) throw new Error('GITHUB_ENV not defined');
+
+  const normalized = String(value);
+  (0,node_fs__WEBPACK_IMPORTED_MODULE_2__.appendFileSync)(envFile, `${key}=${normalized}${node_os__WEBPACK_IMPORTED_MODULE_3__.EOL}`);
+  process.env[key] = normalized;
+}
+
+function compilerEnvironment(fortran, c, cxx, extra = {}) {
+  return {
+    FC: fortran,
+    CC: c,
+    CXX: cxx,
+    FPM_FC: fortran,
+    FPM_CC: c,
+    FPM_CXX: cxx,
+    CMAKE_Fortran_COMPILER: fortran,
+    CMAKE_C_COMPILER: c,
+    CMAKE_CXX_COMPILER: cxx,
+    ...extra,
+  };
+}
+
+async function exportCompilerEnvironment(values) {
+  await grouped('setup-fortran-conda: Export Compiler Environment', async () => {
+    for (const [key, value] of Object.entries(values)) {
+      exportEnv(key, value);
+      (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)(`Exported: ${key}=${value}`);
+    }
+  });
+}
+
+async function exportProcessEnvironment({ warningPrefix = '⚠️ ' } = {}) {
+  await grouped('setup-fortran-conda: Export Process Environment', async () => {
+    for (const [key, value] of Object.entries(process.env)) {
+      if (typeof value !== 'string') continue;
+
+      try {
+        process.env[key] = value;
+        (0,node_fs__WEBPACK_IMPORTED_MODULE_2__.appendFileSync)(process.env.GITHUB_ENV, `${key}=${value}${node_os__WEBPACK_IMPORTED_MODULE_3__.EOL}`);
+        (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)(`Exported: ${key}`);
+      } catch (error) {
+        (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)(`${warningPrefix}Failed to export: ${key} (${error.message})`);
+      }
+    }
+  });
+}
+
+async function getCondaPrefix(
+  envName = TOOLS_ENVIRONMENT,
+  required = true
+) {
+  let output = '';
+  await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('conda', ['env', 'list', '--json'], {
+    silent: true,
+    listeners: {
+      stdout: (data) => {
+        output += data.toString();
+      },
+    },
+  });
+
+  const { envs = [] } = JSON.parse(output);
+  const prefix = envs.find(
+    (candidate) =>
+      candidate.endsWith(node_path__WEBPACK_IMPORTED_MODULE_4__.sep + envName) || candidate.endsWith('/' + envName)
+  );
+
+  if (!prefix && required) {
+    throw new Error(`Unable to locate Conda environment "${envName}".`);
+  }
+  return prefix || '';
+}
+
+async function installCondaPackages(
+  packages,
+  {
+    envName = TOOLS_ENVIRONMENT,
+    channels = ['conda-forge'],
+    command = 'install',
+    commandOptions = [],
+    successMessage = 'Conda packages installed',
+    errorMessage = 'Conda install failed',
+  } = {}
+) {
+  await grouped('setup-fortran-conda: Install Conda Packages', async () => {
+    try {
+      const args = [
+        command,
+        ...commandOptions,
+        '--yes',
+        '--name',
+        envName,
+        ...packages,
+      ];
+      for (const channel of channels) args.push('-c', channel);
+
+      await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('conda', args);
+      (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)(successMessage);
+    } catch (error) {
+      throw new Error(`${errorMessage}: ${error.message}`);
+    }
+  });
+}
+
+async function showCondaEnvironment(envNames = [TOOLS_ENVIRONMENT]) {
+  await grouped('setup-fortran-conda: Show Conda Environment', async () => {
+    await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('conda', ['info']);
+    for (const envName of envNames) {
+      await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('conda', ['list', '--name', envName]);
+    }
+  });
+}
+
+async function addExistingPaths(paths, { log = true } = {}) {
+  await grouped('setup-fortran-conda: Configure Compiler Paths', async () => {
+    for (const path of paths) {
+      if (!path || !(0,node_fs__WEBPACK_IMPORTED_MODULE_2__.existsSync)(path)) continue;
+
+      (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .addPath */ .fM)(path);
+      if (log) (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)(`Added to PATH: ${path}`);
+    }
+  });
+}
+
+async function verifyCommands(commands, lookup) {
+  const lookupCommand =
+    lookup || (process.platform === 'win32' ? 'where' : 'which');
+
+  await grouped('setup-fortran-conda: Verify Compiler Commands', async () => {
+    for (const { command, args } of commands) {
+      await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)(lookupCommand, [command]);
+      if (args) await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)(command, args);
+    }
+  });
+}
+
+
+/***/ }),
+
+/***/ 410:
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Bf: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_2__.Bf),
+/* harmony export */   HD: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_2__.HD),
+/* harmony export */   I6: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_2__.I6),
+/* harmony export */   MA: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_2__.MA),
+/* harmony export */   Qv: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_2__.Qv),
+/* harmony export */   eI: () => (/* binding */ assertMacOs),
+/* harmony export */   gT: () => (/* binding */ setMacOsSdkRoot),
+/* harmony export */   pI: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_2__.pI),
+/* harmony export */   s6: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_2__.s6),
+/* harmony export */   x7: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_2__.x7),
+/* harmony export */   zD: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_2__.zD)
+/* harmony export */ });
+/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3360);
+/* harmony import */ var _actions_exec__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2876);
+/* harmony import */ var _common_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(7174);
+
+
+
+
+
+
+function assertMacOs() {
+  (0,_common_js__WEBPACK_IMPORTED_MODULE_2__/* .assertPlatform */ .G6)('darwin', 'This setup script is only supported on macOS.');
+}
+
+async function setMacOsSdkRoot() {
+  let sdkPath = '';
+  await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('xcrun', ['--sdk', 'macosx', '--show-sdk-path'], {
+    silent: true,
+    listeners: {
+      stdout: (data) => {
+        sdkPath += data.toString();
+      },
+    },
+  });
+
+  sdkPath = sdkPath.trim();
+  if (sdkPath) {
+    (0,_common_js__WEBPACK_IMPORTED_MODULE_2__/* .exportEnv */ .EE)('SDKROOT', sdkPath);
+  } else {
+    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)('⚠️ Failed to detect macOS SDK path.');
+  }
+}
+
+
+/***/ }),
 
 /***/ 2486:
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
@@ -8,188 +245,97 @@ export const modules = {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   setup: () => (/* binding */ setup)
 /* harmony export */ });
-/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7264);
+/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3360);
 /* harmony import */ var _actions_exec__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2876);
-/* harmony import */ var path__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(6928);
-/* harmony import */ var fs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(9896);
-/* harmony import */ var os__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(857);
-/* harmony import */ var process__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(932);
+/* harmony import */ var node_fs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3024);
+/* harmony import */ var node_path__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(6760);
+/* harmony import */ var _common_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(410);
 
 
 
 
 
 
-
-// Export a key=value pair to GitHub Actions' environment and current process.env
-function exportEnv(key, value) {
-  const envFile = process.env.GITHUB_ENV;
-  if (!envFile) throw new Error('GITHUB_ENV not defined');
-  (0,fs__WEBPACK_IMPORTED_MODULE_3__.appendFileSync)(envFile, `${key}=${value}${os__WEBPACK_IMPORTED_MODULE_4__.EOL}`);
-  process__WEBPACK_IMPORTED_MODULE_5__.env[key] = value;
-}
-
-// Resolve the absolute path of a named conda environment
-async function getCondaPrefix(envName) {
-  let raw = '';
-  await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('conda', ['env', 'list', '--json'], {
-    silent: true,
-    listeners: { stdout: d => (raw += d.toString()) }
-  });
-
-  const { envs } = JSON.parse(raw);
-  for (const p of envs) {
-    if (p.endsWith(path__WEBPACK_IMPORTED_MODULE_2__.sep + envName) || p.endsWith('/' + envName)) return p;
-  }
-
-  throw new Error(`Unable to locate Conda environment "${envName}".`);
-}
-
-// Set macOS SDK path for compiler compatibility
-async function setMacOSSDKROOT() {
-  let sdkPath = '';
-  await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('xcrun', ['--sdk', 'macosx', '--show-sdk-path'], {
-    silent: true,
-    listeners: { stdout: d => (sdkPath += d.toString()) }
-  });
-
-  sdkPath = sdkPath.trim();
-  if (sdkPath) {
-    exportEnv('SDKROOT', sdkPath);
-  } else {
-    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)('⚠️ Failed to detect macOS SDK path.');
-  }
-}
-
-// Detect the latest Homebrew GCC version (e.g., gcc-13, gcc-14, etc.)
-function detectHomebrewGccVersion() {
-  const binDir = '/opt/homebrew/bin';
-  const gccVersions = (0,fs__WEBPACK_IMPORTED_MODULE_3__.readdirSync)(binDir)
-    .filter(f => f.startsWith('gcc-'))
-    .map(f => parseInt(f.replace('gcc-', '')))
+function detectHomebrewGcc() {
+  const versions = (0,node_fs__WEBPACK_IMPORTED_MODULE_2__.readdirSync)('/opt/homebrew/bin')
+    .filter((name) => name.startsWith('gcc-'))
+    .map((name) => Number.parseInt(name.replace('gcc-', ''), 10))
     .filter(Number.isFinite);
-  const latest = Math.max(...gccVersions);
-  return `gcc-${latest}`;
+  return `gcc-${Math.max(...versions)}`;
 }
 
-// Main setup function
-async function setup(version = '') {
-  if (process__WEBPACK_IMPORTED_MODULE_5__.platform !== 'darwin') {
-    throw new Error('This setup script is only supported on macOS.');
+function filesNamed(root, name, depth = 0) {
+  if (!(0,node_fs__WEBPACK_IMPORTED_MODULE_2__.existsSync)(root) || depth > 3) return [];
+
+  const matches = [];
+  for (const entry of (0,node_fs__WEBPACK_IMPORTED_MODULE_2__.readdirSync)(root, { withFileTypes: true })) {
+    const path = (0,node_path__WEBPACK_IMPORTED_MODULE_3__.join)(root, entry.name);
+    if (entry.isDirectory()) {
+      matches.push(...filesNamed(path, name, depth + 1));
+    } else if (entry.isFile() && entry.name === name) {
+      matches.push(path);
+    }
   }
+  return matches;
+}
 
-  // Install Homebrew GCC
-  let gcc = '';
-  let gpp = '';
-  let major = '';
+function normalizeCondaGfortranRpaths(prefix) {
+  let changed = 0;
+  for (const path of filesNamed((0,node_path__WEBPACK_IMPORTED_MODULE_3__.join)(prefix, 'lib', 'gcc'), 'conda.specs')) {
+    const content = (0,node_fs__WEBPACK_IMPORTED_MODULE_2__.readFileSync)(path, 'utf8');
+    const updated = content.replace(/(\*darwin_rpaths:\r?\n)[^\r\n]*/, '$1');
+    if (updated === content) continue;
 
-  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .startGroup */ .Oh)('setup-fortran-conda: Install Homebrew GCC');
-  try {
-    if (version) {
-      major = version.split('.')[0];
-      await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('brew', ['install', `gcc@${major}`], { silent: true });
-      (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)(`Homebrew gcc@${major} installed`);
-      gcc = `gcc-${major}`;
-      gpp = `g++-${major}`;
-    } else {
+    (0,node_fs__WEBPACK_IMPORTED_MODULE_2__.writeFileSync)(path, updated);
+    changed += 1;
+  }
+  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)(`Normalized macOS gfortran RPATH specs in ${changed} files`);
+}
+
+async function installHomebrewGcc(version) {
+  return (0,_common_js__WEBPACK_IMPORTED_MODULE_4__/* .grouped */ .zD)('setup-fortran-conda: Install Homebrew GCC', async () => {
+    try {
+      if (version) {
+        const major = version.split('.')[0];
+        await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('brew', ['install', `gcc@${major}`], { silent: true });
+        (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)(`Homebrew gcc@${major} installed`);
+        return { c: `gcc-${major}`, cxx: `g++-${major}` };
+      }
+
       await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('brew', ['install', 'gcc'], { silent: true });
       (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)('Homebrew latest gcc installed');
-      gcc = detectHomebrewGccVersion();       // e.g., "gcc-14"
-      gpp = gcc.replace('gcc', 'g++');        // e.g., "g++-14"
-      major = gcc.split('-')[1];              // extract "14" from "gcc-14"
+      const c = detectHomebrewGcc();
+      return { c, cxx: c.replace('gcc', 'g++') };
+    } catch (error) {
+      throw new Error(`Homebrew gcc install failed: ${error.message}`);
     }
-  } catch (err) {
-    throw new Error(`Homebrew gcc install failed: ${err.message}`);
-  }
-  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .endGroup */ .N4)();
+  });
+}
 
-  // Install gfortran via Conda
-  const Pkg = version ? `gfortran=${version}` : 'gfortran';
-  const packages = [Pkg, 'binutils'];
+async function setup(version = '') {
+  (0,_common_js__WEBPACK_IMPORTED_MODULE_4__/* .assertMacOs */ .eI)();
 
-  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .startGroup */ .Oh)('setup-fortran-conda: Install Conda Packages');
-  try {
-    await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('conda', [
-      'install',
-      '--yes',
-      '--name',
-      'fortran',
-      ...packages,
-      '-c',
-      'conda-forge'
-    ]);
-    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)('Conda packages installed');
-  } catch (err) {
-    throw new Error(`Conda install failed: ${err.message}`);
-  }
-  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .endGroup */ .N4)();
+  const { c, cxx } = await installHomebrewGcc(version);
+  await (0,_common_js__WEBPACK_IMPORTED_MODULE_4__/* .installCondaPackages */ .MA)([
+    version ? `gfortran=${version}` : 'gfortran',
+    'binutils',
+  ]);
+  await (0,_common_js__WEBPACK_IMPORTED_MODULE_4__/* .showCondaEnvironment */ .Qv)();
 
-  // Conda environment information
-  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .startGroup */ .Oh)('setup-fortran-conda: Show Conda Environment');
-  await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('conda', ['info']);
-  await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('conda', ['list', '--name', 'fortran']);
-  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .endGroup */ .N4)();
+  const prefix = await (0,_common_js__WEBPACK_IMPORTED_MODULE_4__/* .getCondaPrefix */ .s6)();
+  normalizeCondaGfortranRpaths(prefix);
+  await (0,_common_js__WEBPACK_IMPORTED_MODULE_4__/* .addExistingPaths */ .Bf)([(0,node_path__WEBPACK_IMPORTED_MODULE_3__.join)(prefix, 'bin')], { log: false });
+  await (0,_common_js__WEBPACK_IMPORTED_MODULE_4__/* .setMacOsSdkRoot */ .gT)();
 
-  // Add Conda bin path to PATH
-  const prefix = await getCondaPrefix('fortran');
-  const binPath = (0,path__WEBPACK_IMPORTED_MODULE_2__.join)(prefix, 'bin');
-  const libPath = (0,path__WEBPACK_IMPORTED_MODULE_2__.join)(prefix, 'lib');
-
-  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .startGroup */ .Oh)('setup-fortran-conda: Configure Compiler Paths');
-  const paths = [binPath];
-  for (const p of paths) {
-    if ((0,fs__WEBPACK_IMPORTED_MODULE_3__.existsSync)(p)) {
-      (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .addPath */ .fM)(p);
-    }
-  }
-  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .endGroup */ .N4)();
-
-  await setMacOSSDKROOT();
-
-  // Verify compiler versions
-  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .startGroup */ .Oh)('setup-fortran-conda: Verify Compiler Commands');
-  await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('which', ['gfortran']);
-  await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('gfortran', ['--version']);
-  await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('which', [gcc]);
-  await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)(gcc, ['--version']);
-  await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('which', [gpp]);
-  await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)(gpp, ['--version']);
-  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .endGroup */ .N4)();
-
-  // Export compiler-related environment variables
-  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .startGroup */ .Oh)('setup-fortran-conda: Export Compiler Environment');
-  const envVars = {
-    FC: 'gfortran',
-    CC: gcc,
-    CXX: gpp,
-    FPM_FC: 'gfortran',
-    FPM_CC: gcc,
-    FPM_CXX: gpp,
-    CMAKE_Fortran_COMPILER: 'gfortran',
-    CMAKE_C_COMPILER: gcc,
-    CMAKE_CXX_COMPILER: gpp
-  };
-
-  for (const [key, value] of Object.entries(envVars)) {
-    exportEnv(key, value);
-    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)(`Exported: ${key}=${value}`);
-  }
-  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .endGroup */ .N4)();
-
-  // Export all environment variables to process.env and GITHUB_ENV
-  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .startGroup */ .Oh)('setup-fortran-conda: Export Process Environment');
-  for (const [key, value] of Object.entries(process__WEBPACK_IMPORTED_MODULE_5__.env)) {
-    if (typeof value === 'string') {
-      try {
-        process.env[key] = value;
-        (0,fs__WEBPACK_IMPORTED_MODULE_3__.appendFileSync)(process.env.GITHUB_ENV, `${key}=${value}${os__WEBPACK_IMPORTED_MODULE_4__.EOL}`);
-        (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)(`Exported: ${key}`);
-      } catch (err) {
-        (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)(`Failed to export: ${key} (${err.message})`);
-      }
-    }
-  }
-  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .endGroup */ .N4)();
+  await (0,_common_js__WEBPACK_IMPORTED_MODULE_4__/* .verifyCommands */ .I6)([
+    { command: 'gfortran', args: ['--version'] },
+    { command: c, args: ['--version'] },
+    { command: cxx, args: ['--version'] },
+  ]);
+  await (0,_common_js__WEBPACK_IMPORTED_MODULE_4__/* .exportCompilerEnvironment */ .x7)(
+    (0,_common_js__WEBPACK_IMPORTED_MODULE_4__/* .compilerEnvironment */ .HD)('gfortran', c, cxx)
+  );
+  await (0,_common_js__WEBPACK_IMPORTED_MODULE_4__/* .exportProcessEnvironment */ .pI)({ warningPrefix: '' });
 
   (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)('✅ compiler setup complete');
 }

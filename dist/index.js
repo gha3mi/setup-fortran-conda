@@ -28012,6 +28012,10 @@ var map = {
 		3058,
 		58
 	],
+	"./lin/common.js": [
+		994,
+		994
+	],
 	"./lin/flang-new.js": [
 		5062,
 		62
@@ -28032,13 +28036,13 @@ var map = {
 		9257,
 		257
 	],
-	"./lin/mpifort.js": [
-		7070,
-		70
-	],
 	"./lin/nvfortran.js": [
 		249,
 		249
+	],
+	"./mac/common.js": [
+		410,
+		410
 	],
 	"./mac/flang-new.js": [
 		7582,
@@ -28060,9 +28064,9 @@ var map = {
 		2337,
 		337
 	],
-	"./mac/mpifort.js": [
-		8086,
-		86
+	"./win/common.js": [
+		9673,
+		673
 	],
 	"./win/flang-new.js": [
 		2819,
@@ -28109,13 +28113,6 @@ module.exports = webpackAsyncContext;
 /***/ ((module) => {
 
 module.exports = __WEBPACK_EXTERNAL_createRequire(import.meta.url)("assert");
-
-/***/ }),
-
-/***/ 6982:
-/***/ ((module) => {
-
-module.exports = __WEBPACK_EXTERNAL_createRequire(import.meta.url)("crypto");
 
 /***/ }),
 
@@ -28210,6 +28207,20 @@ module.exports = __WEBPACK_EXTERNAL_createRequire(import.meta.url)("node:events"
 
 /***/ }),
 
+/***/ 3024:
+/***/ ((module) => {
+
+module.exports = __WEBPACK_EXTERNAL_createRequire(import.meta.url)("node:fs");
+
+/***/ }),
+
+/***/ 1455:
+/***/ ((module) => {
+
+module.exports = __WEBPACK_EXTERNAL_createRequire(import.meta.url)("node:fs/promises");
+
+/***/ }),
+
 /***/ 7067:
 /***/ ((module) => {
 
@@ -28224,6 +28235,13 @@ module.exports = __WEBPACK_EXTERNAL_createRequire(import.meta.url)("node:http2")
 
 /***/ }),
 
+/***/ 4708:
+/***/ ((module) => {
+
+module.exports = __WEBPACK_EXTERNAL_createRequire(import.meta.url)("node:https");
+
+/***/ }),
+
 /***/ 7030:
 /***/ ((module) => {
 
@@ -28231,10 +28249,31 @@ module.exports = __WEBPACK_EXTERNAL_createRequire(import.meta.url)("node:net");
 
 /***/ }),
 
+/***/ 8161:
+/***/ ((module) => {
+
+module.exports = __WEBPACK_EXTERNAL_createRequire(import.meta.url)("node:os");
+
+/***/ }),
+
+/***/ 6760:
+/***/ ((module) => {
+
+module.exports = __WEBPACK_EXTERNAL_createRequire(import.meta.url)("node:path");
+
+/***/ }),
+
 /***/ 643:
 /***/ ((module) => {
 
 module.exports = __WEBPACK_EXTERNAL_createRequire(import.meta.url)("node:perf_hooks");
+
+/***/ }),
+
+/***/ 1708:
+/***/ ((module) => {
+
+module.exports = __WEBPACK_EXTERNAL_createRequire(import.meta.url)("node:process");
 
 /***/ }),
 
@@ -28308,13 +28347,6 @@ module.exports = __WEBPACK_EXTERNAL_createRequire(import.meta.url)("path");
 
 /***/ }),
 
-/***/ 932:
-/***/ ((module) => {
-
-module.exports = __WEBPACK_EXTERNAL_createRequire(import.meta.url)("process");
-
-/***/ }),
-
 /***/ 3193:
 /***/ ((module) => {
 
@@ -28336,7 +28368,7 @@ module.exports = __WEBPACK_EXTERNAL_createRequire(import.meta.url)("util");
 
 /***/ }),
 
-/***/ 7264:
+/***/ 3360:
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __nccwpck_require__) => {
 
 
@@ -28484,8 +28516,8 @@ function escapeProperty(s) {
         .replace(/,/g, '%2C');
 }
 //# sourceMappingURL=command.js.map
-// EXTERNAL MODULE: external "crypto"
-var external_crypto_ = __nccwpck_require__(6982);
+;// CONCATENATED MODULE: external "crypto"
+const external_crypto_namespaceObject = __WEBPACK_EXTERNAL_createRequire(import.meta.url)("crypto");
 // EXTERNAL MODULE: external "fs"
 var external_fs_ = __nccwpck_require__(9896);
 ;// CONCATENATED MODULE: ./node_modules/@actions/core/lib/file-command.js
@@ -28509,7 +28541,7 @@ function file_command_issueFileCommand(command, message) {
     });
 }
 function file_command_prepareKeyValueMessage(key, value) {
-    const delimiter = `ghadelimiter_${external_crypto_.randomUUID()}`;
+    const delimiter = `ghadelimiter_${external_crypto_namespaceObject.randomUUID()}`;
     const convertedValue = utils_toCommandValue(value);
     // These should realistically never happen, but just in case someone finds a
     // way to exploit uuid generation let's not allow keys or values that contain
@@ -31469,19 +31501,842 @@ function getExecOutput(commandLine, args, options) {
 /************************************************************************/
 var __webpack_exports__ = {};
 
-// EXTERNAL MODULE: ./node_modules/@actions/core/lib/core.js + 10 modules
-var core = __nccwpck_require__(7264);
+// EXTERNAL MODULE: ./node_modules/@actions/core/lib/core.js + 11 modules
+var core = __nccwpck_require__(3360);
 // EXTERNAL MODULE: ./node_modules/@actions/exec/lib/exec.js + 5 modules
 var index_exec = __nccwpck_require__(2876);
-;// CONCATENATED MODULE: external "node:fs/promises"
-const promises_namespaceObject = __WEBPACK_EXTERNAL_createRequire(import.meta.url)("node:fs/promises");
-;// CONCATENATED MODULE: external "node:path"
-const external_node_path_namespaceObject = __WEBPACK_EXTERNAL_createRequire(import.meta.url)("node:path");
-;// CONCATENATED MODULE: external "node:os"
-const external_node_os_namespaceObject = __WEBPACK_EXTERNAL_createRequire(import.meta.url)("node:os");
-;// CONCATENATED MODULE: external "node:https"
-const external_node_https_namespaceObject = __WEBPACK_EXTERNAL_createRequire(import.meta.url)("node:https");
+// EXTERNAL MODULE: external "node:fs/promises"
+var promises_ = __nccwpck_require__(1455);
+// EXTERNAL MODULE: external "node:path"
+var external_node_path_ = __nccwpck_require__(6760);
+// EXTERNAL MODULE: external "node:os"
+var external_node_os_ = __nccwpck_require__(8161);
+// EXTERNAL MODULE: external "node:https"
+var external_node_https_ = __nccwpck_require__(4708);
+// EXTERNAL MODULE: external "node:fs"
+var external_node_fs_ = __nccwpck_require__(3024);
+;// CONCATENATED MODULE: ./mpi/common.js
+
+
+
+
+
+
+const DEFAULT_WRAPPERS = Object.freeze({
+  fortran: 'mpifort',
+  c: 'mpicc',
+  cxx: 'mpicxx',
+});
+
+const DEFAULT_LAUNCHER = Object.freeze({
+  command: 'mpiexec',
+  numProcFlag: '-n',
+});
+
+async function grouped(name, operation) {
+  (0,core/* startGroup */.Oh)(name);
+  try {
+    return await operation();
+  } finally {
+    (0,core/* endGroup */.N4)();
+  }
+}
+
+function exportEnv(key, value) {
+  if (value == null) return;
+
+  const envFile = process.env.GITHUB_ENV;
+  if (!envFile) throw new Error('GITHUB_ENV not defined');
+
+  const normalized = String(value);
+  if (/[\r\n]/.test(normalized)) {
+    throw new Error(`Cannot export multiline MPI environment variable ${key}.`);
+  }
+
+  (0,external_node_fs_.appendFileSync)(envFile, `${key}=${normalized}${external_node_os_.EOL}`);
+  process.env[key] = normalized;
+}
+
+async function execCapture(command, args = []) {
+  let stdout = '';
+  let stderr = '';
+  const exitCode = await (0,index_exec/* exec */.m)(command, args, {
+    silent: true,
+    ignoreReturnCode: true,
+    listeners: {
+      stdout: (data) => {
+        stdout += data.toString();
+      },
+      stderr: (data) => {
+        stderr += data.toString();
+      },
+    },
+  });
+
+  return { stdout, stderr, exitCode };
+}
+
+async function getCondaPrefix(envName = 'fortran') {
+  const result = await execCapture('conda', ['env', 'list', '--json']);
+  if (result.exitCode !== 0) {
+    throw new Error(
+      `Unable to inspect Conda environments: ${result.stderr || result.stdout}`
+    );
+  }
+
+  const { envs = [] } = JSON.parse(result.stdout);
+  const prefix = envs.find(
+    (candidate) =>
+      candidate.endsWith(external_node_path_.sep + envName) ||
+      candidate.endsWith('/' + envName)
+  );
+
+  if (!prefix) throw new Error(`Unable to locate Conda environment "${envName}".`);
+  return prefix;
+}
+
+async function installCondaPackages(packages, channels) {
+  await grouped('setup-fortran-conda: Install MPI Packages', async () => {
+    try {
+      const args = ['install', '--yes', '--name', 'fortran', ...packages];
+      for (const channel of channels) args.push('-c', channel);
+      await (0,index_exec/* exec */.m)('conda', args);
+    } catch (error) {
+      throw new Error(`MPI package installation failed: ${error.message}`);
+    }
+  });
+}
+
+function addCondaPaths(prefix, osKey) {
+  const candidates =
+    osKey === 'win'
+      ? [
+          (0,external_node_path_.join)(prefix, 'bin'),
+          (0,external_node_path_.join)(prefix, 'Library', 'bin'),
+          (0,external_node_path_.join)(prefix, 'Library', 'usr', 'bin'),
+          (0,external_node_path_.join)(prefix, 'Scripts'),
+        ]
+      : [(0,external_node_path_.join)(prefix, 'bin')];
+
+  for (const candidate of candidates) {
+    if ((0,external_node_fs_.existsSync)(candidate)) {
+      (0,core/* addPath */.fM)(candidate);
+      (0,core/* info */.pq)(`Added MPI path: ${candidate}`);
+    }
+  }
+}
+
+async function getCondaPackageVersion(packageName) {
+  const result = await execCapture('conda', [
+    'list',
+    '--name',
+    'fortran',
+    packageName,
+    '--json',
+  ]);
+  if (result.exitCode !== 0) return 'Unknown';
+
+  try {
+    const packages = JSON.parse(result.stdout);
+    const match = packages.find((pkg) => pkg.name === packageName);
+    return match?.version || 'Unknown';
+  } catch {
+    return 'Unknown';
+  }
+}
+
+async function commandPath(command) {
+  const lookup =
+    process.platform === 'win32'
+      ? ['where', [command]]
+      : ['which', [command]];
+  const result = await execCapture(lookup[0], lookup[1]);
+  const resolved = result.stdout
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .find(Boolean);
+
+  if (result.exitCode !== 0 || !resolved) {
+    throw new Error(`Required MPI command "${command}" was not found in PATH.`);
+  }
+
+  return resolved;
+}
+
+function normalizedCommandName(command) {
+  return (0,external_node_path_.basename)(String(command || ''))
+    .toLowerCase()
+    .replace(/\.(exe|bat|cmd)$/i, '');
+}
+
+function hostedRunnerUcxEnvironment(osKey) {
+  const hasAzureMana =
+    process.env.RUNNER_ENVIRONMENT === 'github-hosted' &&
+    osKey === 'lin' &&
+    (0,external_node_fs_.existsSync)('/sys/class/infiniband/mana_0');
+
+  if (!hasAzureMana || process.env.UCX_TLS) {
+    return {};
+  }
+
+  (0,core/* info */.pq)('Disabled unusable UCX UD transports exposed by this GitHub-hosted runner');
+  return { UCX_TLS: '^ud,ud:aux' };
+}
+
+function createMpiDescriptor({
+  implementation,
+  version = 'Unknown',
+  root,
+  wrappers = {},
+  launcher = {},
+  wrapperProbeArgs,
+  versionProbe,
+  expectedFortranCompiler,
+  environment = {},
+}) {
+  return {
+    implementation,
+    version,
+    root,
+    wrappers: {
+      ...DEFAULT_WRAPPERS,
+      ...wrappers,
+    },
+    launcher: {
+      ...DEFAULT_LAUNCHER,
+      ...launcher,
+    },
+    wrapperProbe: { args: wrapperProbeArgs },
+    versionProbe,
+    expectedFortranCompiler,
+    requiredBinding: 'mpi_f08',
+    environment,
+  };
+}
+
+function applyEnvironment(values) {
+  for (const [key, value] of Object.entries(values || {})) {
+    if (value != null) process.env[key] = String(value);
+  }
+}
+
+function exportMpiEnvironment(descriptor) {
+  const values = {
+    MPIFC: descriptor.wrappers.fortran,
+    MPIF90: descriptor.wrappers.fortran,
+    MPIF77: descriptor.wrappers.fortran,
+    MPICC: descriptor.wrappers.c,
+    MPICXX: descriptor.wrappers.cxx,
+    MPIEXEC:
+      descriptor.resolvedLauncher?.command || descriptor.launcher.command,
+    MPIEXEC_NUMPROC_FLAG: descriptor.launcher.numProcFlag,
+    MPI_HOME: descriptor.root,
+    ...(descriptor.environment || {}),
+  };
+
+  return grouped('setup-fortran-conda: Export MPI Environment', async () => {
+    for (const [key, value] of Object.entries(values)) {
+      exportEnv(key, value);
+      (0,core/* info */.pq)(`Exported: ${key}=${value}`);
+    }
+  });
+}
+
+;// CONCATENATED MODULE: ./mpi/conda.js
+
+
+
+
+
+function filesNamed(root, predicate, depth = 0) {
+  if (!(0,external_node_fs_.existsSync)(root) || depth > 3) return [];
+
+  const matches = [];
+  for (const entry of (0,external_node_fs_.readdirSync)(root, { withFileTypes: true })) {
+    const path = (0,external_node_path_.join)(root, entry.name);
+    if (entry.isDirectory()) {
+      matches.push(...filesNamed(path, predicate, depth + 1));
+    } else if (entry.isFile() && predicate(entry.name)) {
+      matches.push(path);
+    }
+  }
+  return matches;
+}
+
+function rewriteFile(path, transform) {
+  const content = (0,external_node_fs_.readFileSync)(path, 'utf8');
+  const updated = transform(content);
+  if (updated === content) return false;
+
+  (0,external_node_fs_.writeFileSync)(path, updated);
+  return true;
+}
+
+function macOsMpiMetadata(prefix, implementation) {
+  if (implementation === 'openmpi') {
+    return [
+      ...filesNamed(
+        (0,external_node_path_.join)(prefix, 'share', 'openmpi'),
+        (name) => name.endsWith('-wrapper-data.txt')
+      ),
+      ...filesNamed(
+        (0,external_node_path_.join)(prefix, 'lib', 'pkgconfig'),
+        (name) => name.startsWith('ompi') && name.endsWith('.pc')
+      ),
+    ];
+  }
+
+  const mpichWrapper =
+    /^(?:mpic\+\+|mpicc(?:_abi)?|mpicxx(?:_abi)?|mpif77|mpif90|mpifort)$/;
+  return [
+    ...filesNamed((0,external_node_path_.join)(prefix, 'bin'), (name) => mpichWrapper.test(name)),
+    ...filesNamed(
+      (0,external_node_path_.join)(prefix, 'lib', 'pkgconfig'),
+      (name) => name === 'mpich.pc'
+    ),
+  ];
+}
+
+function normalizeMacOsMpiRpaths(prefix, implementation) {
+  // The compiler setup keeps one conda runtime RPATH. Remove the duplicate
+  // copies embedded in the MPI wrappers and pkg-config metadata.
+  const mpiMetadata = macOsMpiMetadata(prefix, implementation);
+
+  let changed = 0;
+  for (const path of mpiMetadata) {
+    if (
+      rewriteFile(path, (content) =>
+        content
+          .replace(/[ \t]+-Wl,-rpath,[^ \t"'\\\r\n]+/g, '')
+          .replace(/[ \t]+-R[^ \t"'\\\r\n]+/g, '')
+      )
+    ) {
+      changed += 1;
+    }
+  }
+
+  (0,core/* info */.pq)(`Normalized macOS ${implementation} RPATH metadata in ${changed} files`);
+}
+
+async function setupCondaMpi({
+  implementation,
+  mpiVersion,
+  compilerVersion,
+  osKey,
+}) {
+  const packages = [
+    compilerVersion ? `gfortran=${compilerVersion}` : 'gfortran',
+    mpiVersion ? `${implementation}=${mpiVersion}` : implementation,
+  ];
+
+  await installCondaPackages(packages, ['conda-forge']);
+
+  const prefix = await getCondaPrefix();
+  addCondaPaths(prefix, osKey);
+  if (osKey === 'mac') {
+    normalizeMacOsMpiRpaths(prefix, implementation);
+  }
+
+  const actualVersion = await getCondaPackageVersion(implementation);
+  (0,core/* info */.pq)(`Configured ${implementation} ${actualVersion} from Conda`);
+
+  return createMpiDescriptor({
+    implementation,
+    version: actualVersion,
+    root: prefix,
+    wrapperProbeArgs:
+      implementation === 'openmpi' ? ['--showme:command'] : ['-show'],
+    versionProbe:
+      implementation === 'openmpi'
+        ? { command: 'mpirun', args: ['--version'] }
+        : { command: 'mpiexec', args: ['--version'] },
+    expectedFortranCompiler: 'gfortran',
+    environment: hostedRunnerUcxEnvironment(osKey),
+  });
+}
+
+;// CONCATENATED MODULE: ./mpi/hpcx.js
+
+
+
+
+
+function hostedCpuEnvironment() {
+  const environment = hostedRunnerUcxEnvironment('lin');
+  const isHostedCpuRunner =
+    process.env.RUNNER_ENVIRONMENT === 'github-hosted' &&
+    !(0,external_node_fs_.existsSync)('/dev/nvidia0');
+
+  if (!isHostedCpuRunner || process.env.UCX_WARN_UNUSED_ENV_VARS) {
+    return environment;
+  }
+
+  (0,core/* info */.pq)('Disabled irrelevant UCX GPU-variable warnings on this CPU-only hosted runner');
+  return {
+    ...environment,
+    UCX_WARN_UNUSED_ENV_VARS: 'n',
+  };
+}
+
+async function setupHpcx({ mpiVersion }) {
+  if (mpiVersion) {
+    throw new Error(
+      'mpi-version cannot be set for hpcx because NVIDIA HPC SDK supplies the matching MPI version.'
+    );
+  }
+
+  const wrapper = await commandPath('mpifort');
+  const root = (0,external_node_path_.dirname)((0,external_node_path_.dirname)(wrapper));
+
+  return createMpiDescriptor({
+    implementation: 'hpcx',
+    root,
+    wrappers: {
+      fortran: wrapper,
+    },
+    wrapperProbeArgs: ['--showme:command'],
+    versionProbe: { command: 'mpirun', args: ['--version'] },
+    expectedFortranCompiler: 'nvfortran',
+    environment: hostedCpuEnvironment(),
+  });
+}
+
+;// CONCATENATED MODULE: ./mpi/intel.js
+
+
+
+
+
+
+
+
+function prependPath(value, current = '') {
+  return [value, current].filter(Boolean).join(external_node_path_.delimiter);
+}
+
+function prependFlag(value, current = '') {
+  return [value, current].filter(Boolean).join(' ');
+}
+
+async function installIntelMpiWheel(mpiVersion) {
+  await installCondaPackages(['pip'], ['conda-forge']);
+
+  const packageSpec = mpiVersion ? `impi-devel==${mpiVersion}` : 'impi-devel';
+  await grouped('setup-fortran-conda: Install Intel MPI SDK', async () => {
+    try {
+      await (0,index_exec/* exec */.m)('conda', [
+        'run',
+        '--name',
+        'fortran',
+        'python',
+        '-m',
+        'pip',
+        'install',
+        '--disable-pip-version-check',
+        packageSpec,
+      ]);
+    } catch (error) {
+      throw new Error(`Intel MPI SDK installation failed: ${error.message}`);
+    }
+  });
+}
+
+async function getIntelMpiVersion() {
+  const result = await execCapture('conda', [
+    'run',
+    '--name',
+    'fortran',
+    'python',
+    '-c',
+    'from importlib.metadata import version; print(version("impi-devel"))',
+  ]);
+  if (result.exitCode !== 0) return 'Unknown';
+
+  return (
+    result.stdout
+      .split(/\r?\n/)
+      .map((line) => line.trim())
+      .find((line) => /^\d+(?:\.\d+)+/.test(line)) || 'Unknown'
+  );
+}
+
+function assertIntelMpiLayout(root, osKey) {
+  const required =
+    osKey === 'win'
+      ? [
+          (0,external_node_path_.join)(root, 'bin', 'mpiifx.bat'),
+          (0,external_node_path_.join)(root, 'bin', 'mpiexec.exe'),
+          (0,external_node_path_.join)(root, 'include', 'mpi', 'mpi_f08.mod'),
+          (0,external_node_path_.join)(root, 'lib', 'impi.lib'),
+        ]
+      : [
+          (0,external_node_path_.join)(root, 'bin', 'mpiifx'),
+          (0,external_node_path_.join)(root, 'bin', 'mpiexec'),
+          (0,external_node_path_.join)(root, 'include', 'mpi', 'mpi_f08.mod'),
+          (0,external_node_path_.join)(root, 'lib', 'libmpifort.so'),
+        ];
+  const missing = required.filter((candidate) => !(0,external_node_fs_.existsSync)(candidate));
+  if (missing.length) {
+    throw new Error(
+      `Intel MPI SDK installation is incomplete; missing: ${missing.join(', ')}`
+    );
+  }
+}
+
+async function configureLinuxWrapper(environment) {
+  const configDirectory = await (0,promises_.mkdtemp)(
+    (0,external_node_path_.join)(process.env.RUNNER_TEMP || (0,external_node_os_.tmpdir)(), 'intel-mpi-wrapper-')
+  );
+  await (0,promises_.writeFile)(
+    (0,external_node_path_.join)(configDirectory, 'mpif90-ifx.conf'),
+    'modincdir="${I_MPI_ROOT}/include/mpi"\n',
+    'utf8'
+  );
+  environment.I_MPI_COMPILER_CONFIG_DIR = configDirectory;
+  (0,core/* info */.pq)(`Configured Intel MPI wrapper modules: ${environment.I_MPI_ROOT}/include/mpi`);
+}
+
+async function setupIntelMpi({ mpiVersion, osKey }) {
+  await installIntelMpiWheel(mpiVersion);
+
+  const prefix = await getCondaPrefix();
+  const root = osKey === 'win' ? (0,external_node_path_.join)(prefix, 'Library') : prefix;
+  assertIntelMpiLayout(root, osKey);
+  addCondaPaths(prefix, osKey);
+
+  const actualVersion = await getIntelMpiVersion();
+  (0,core/* info */.pq)(`Configured Intel MPI ${actualVersion} from the official Intel wheel`);
+
+  const environment = {
+    I_MPI_ROOT: root,
+    I_MPI_FC: 'ifx',
+    I_MPI_F77: 'ifx',
+    I_MPI_F90: 'ifx',
+    I_MPI_CHECK_COMPILER: 'enable',
+  };
+  if (osKey === 'win') {
+    environment.CMPLR_ROOT = process.env.CMPLR_ROOT || root;
+    environment.INCLUDE = prependPath(
+      (0,external_node_path_.join)(root, 'include', 'mpi'),
+      prependPath((0,external_node_path_.join)(root, 'include'), process.env.INCLUDE)
+    );
+    environment.LIB = prependPath((0,external_node_path_.join)(root, 'lib'), process.env.LIB);
+    environment.FFLAGS = prependFlag(
+      `-I"${(0,external_node_path_.join)(root, 'include', 'mpi')}"`,
+      process.env.FFLAGS
+    );
+  } else {
+    await configureLinuxWrapper(environment);
+    environment.LD_LIBRARY_PATH = prependPath(
+      (0,external_node_path_.join)(root, 'lib'),
+      process.env.LD_LIBRARY_PATH
+    );
+    environment.LIBRARY_PATH = prependPath(
+      (0,external_node_path_.join)(root, 'lib'),
+      process.env.LIBRARY_PATH
+    );
+    environment.FI_PROVIDER_PATH = prependPath(
+      (0,external_node_path_.join)(root, 'lib'),
+      process.env.FI_PROVIDER_PATH
+    );
+  }
+
+  return createMpiDescriptor({
+    implementation: 'intelmpi',
+    version: actualVersion,
+    root,
+    wrappers: {
+      fortran: 'mpiifx',
+      c: 'mpiicx',
+      cxx: 'mpiicpx',
+    },
+    wrapperProbeArgs: ['-show'],
+    versionProbe: { command: 'mpiexec', args: ['-version'] },
+    expectedFortranCompiler: 'ifx',
+    environment,
+  });
+}
+
+;// CONCATENATED MODULE: ./mpi/validate.js
+
+
+
+
+
+
+const BINDING_DECLARATIONS = {
+  mpi_f08: '  use mpi_f08\n  implicit none',
+  mpi: '  use mpi\n  implicit none',
+  mpif_h: "  implicit none\n  include 'mpif.h'",
+};
+
+function validationSource(declarations) {
+  return `program mpi_validate
+${declarations}
+  integer :: ierr, rank, nprocs
+  call MPI_Init(ierr)
+  call MPI_Comm_rank(MPI_COMM_WORLD, rank, ierr)
+  call MPI_Comm_size(MPI_COMM_WORLD, nprocs, ierr)
+  write(*,'(A,I0,A,I0)') 'MPI_RANK=', rank, ' MPI_SIZE=', nprocs
+  if (nprocs /= 2 .or. rank < 0 .or. rank >= nprocs) error stop 1
+  call MPI_Finalize(ierr)
+end program mpi_validate
+`;
+}
+
+const SOURCES = Object.fromEntries(
+  Object.entries(BINDING_DECLARATIONS).map(([binding, declarations]) => [
+    binding,
+    validationSource(declarations),
+  ])
+);
+
+function firstVersion(text) {
+  const match = String(text || '').match(/\b\d+(?:\.\d+){1,3}\b/);
+  return match?.[0] || '';
+}
+
+function outputShowsExpectedCompiler(output, expected) {
+  const normalizedOutput = String(output || '').toLowerCase();
+  const normalizedExpected = normalizedCommandName(expected);
+  return normalizedExpected && normalizedOutput.includes(normalizedExpected);
+}
+
+async function resolveToolchain(descriptor) {
+  return {
+    wrappers: {
+      fortran: await commandPath(descriptor.wrappers.fortran),
+      c: await commandPath(descriptor.wrappers.c),
+      cxx: await commandPath(descriptor.wrappers.cxx),
+    },
+    launcher: {
+      ...descriptor.launcher,
+      command: await commandPath(descriptor.launcher.command),
+    },
+  };
+}
+
+async function inspectWrapper(wrapper, descriptor) {
+  const result = await execCapture(
+    wrapper,
+    descriptor.wrapperProbe?.args || []
+  );
+  const output = `${result.stdout}\n${result.stderr}`.trim();
+  if (result.exitCode !== 0) {
+    throw new Error(
+      `Unable to inspect MPI Fortran wrapper "${wrapper}": ${output}`
+    );
+  }
+
+  const expectedCompiler =
+    descriptor.expectedFortranCompiler || process.env.FC || '';
+  if (!outputShowsExpectedCompiler(output, expectedCompiler)) {
+    throw new Error(
+      `MPI wrapper/compiler mismatch: ${wrapper} does not report ` +
+        `"${expectedCompiler}" as its underlying compiler. Wrapper output: ${output}`
+    );
+  }
+
+  return { output, expectedCompiler };
+}
+
+async function compileBinding(wrapper, directory, binding) {
+  const source = (0,external_node_path_.join)(directory, `${binding}.f90`);
+  const executable = (0,external_node_path_.join)(
+    directory,
+    process.platform === 'win32' ? `${binding}.exe` : binding
+  );
+  await (0,promises_.writeFile)(source, SOURCES[binding], 'utf8');
+
+  const result = await execCapture(wrapper, [source, '-o', executable]);
+  return {
+    supported: result.exitCode === 0,
+    executable,
+    diagnostic: `${result.stdout}\n${result.stderr}`.trim(),
+  };
+}
+
+async function compileBindings(wrapper, directory) {
+  const compiled = {};
+  for (const binding of Object.keys(SOURCES)) {
+    compiled[binding] = await compileBinding(wrapper, directory, binding);
+    (0,core/* info */.pq)(`${binding}: ${compiled[binding].supported ? 'available' : 'unavailable'}`);
+  }
+  return compiled;
+}
+
+function assertRequiredBinding(compiled, requiredBinding) {
+  if (compiled[requiredBinding]?.supported) return;
+
+  throw new Error(
+    `MPI installation does not provide the required ${requiredBinding} Fortran binding. ` +
+      `${compiled[requiredBinding]?.diagnostic || ''}`.trim()
+  );
+}
+
+async function validateTwoRanks(launcher, executable) {
+  const result = await execCapture(launcher.command, [
+    launcher.numProcFlag,
+    '2',
+    executable,
+  ]);
+  const output = `${result.stdout}\n${result.stderr}`.trim();
+  if (result.exitCode !== 0) {
+    throw new Error(`MPI two-rank validation failed: ${output}`);
+  }
+
+  const rankZero = /MPI_RANK=\s*0\s+MPI_SIZE=\s*2/i.test(output);
+  const rankOne = /MPI_RANK=\s*1\s+MPI_SIZE=\s*2/i.test(output);
+  if (!rankZero || !rankOne) {
+    throw new Error(
+      `MPI launcher did not produce exactly the expected two-rank result: ${output}`
+    );
+  }
+}
+
+async function detectVersion(descriptor) {
+  if (descriptor.version && descriptor.version !== 'Unknown') {
+    return descriptor.version;
+  }
+  if (!descriptor.versionProbe) return 'Unknown';
+
+  const result = await execCapture(
+    descriptor.versionProbe.command,
+    descriptor.versionProbe.args
+  );
+  return firstVersion(`${result.stdout}\n${result.stderr}`) || 'Unknown';
+}
+
+async function validateMpi(descriptor) {
+  return grouped('setup-fortran-conda: Validate MPI Toolchain', async () => {
+    const resolved = await resolveToolchain(descriptor);
+    const wrapperInspection = await inspectWrapper(
+      resolved.wrappers.fortran,
+      descriptor
+    );
+
+    const directory = await (0,promises_.mkdtemp)(
+      (0,external_node_path_.join)(process.env.RUNNER_TEMP || (0,external_node_os_.tmpdir)(), 'mpi-validate-')
+    );
+    const compiled = await compileBindings(
+      resolved.wrappers.fortran,
+      directory
+    );
+    const requiredBinding = descriptor.requiredBinding || 'mpi_f08';
+    assertRequiredBinding(compiled, requiredBinding);
+    await validateTwoRanks(
+      resolved.launcher,
+      compiled[requiredBinding].executable
+    );
+
+    const version = await detectVersion(descriptor);
+    (0,core/* info */.pq)(`Validated ${descriptor.implementation} ${version} with two MPI ranks`);
+
+    return {
+      ...descriptor,
+      version,
+      wrappers: resolved.wrappers,
+      resolvedWrappers: resolved.wrappers,
+      resolvedLauncher: resolved.launcher,
+      bindings: {
+        mpi_f08: compiled.mpi_f08.supported,
+        mpi: compiled.mpi.supported,
+        mpif_h: compiled.mpif_h.supported,
+      },
+      backendCompiler: wrapperInspection.expectedCompiler,
+      wrapperProbeOutput:
+        wrapperInspection.output.split(/\r?\n/)[0] ||
+        wrapperInspection.output,
+      validated: true,
+    };
+  });
+}
+
+;// CONCATENATED MODULE: ./mpi/support.js
+
+
+
+
+
+
+const MPI_SUPPORT = Object.freeze({
+  lin: Object.freeze({
+    gfortran: Object.freeze(['mpich', 'openmpi']),
+    ifx: Object.freeze(['intelmpi']),
+    nvfortran: Object.freeze(['hpcx']),
+  }),
+  mac: Object.freeze({
+    gfortran: Object.freeze(['mpich', 'openmpi']),
+  }),
+  win: Object.freeze({
+    ifx: Object.freeze(['intelmpi']),
+  }),
+});
+
+const MPI_INSTALLERS = {
+  mpich: (options) =>
+    setupCondaMpi({ ...options, implementation: 'mpich' }),
+  openmpi: (options) =>
+    setupCondaMpi({ ...options, implementation: 'openmpi' }),
+  intelmpi: ({ mpiVersion, osKey }) =>
+    setupIntelMpi({ mpiVersion, osKey }),
+  hpcx: ({ mpiVersion }) => setupHpcx({ mpiVersion }),
+};
+
+function supportedRows(osKey) {
+  return Object.entries(MPI_SUPPORT[osKey] || {}).flatMap(
+    ([compiler, implementations]) =>
+      implementations.map(
+        (implementation) => `${compiler} + ${implementation}`
+      )
+  );
+}
+
+function assertMpiSupported(osKey, compiler, implementation) {
+  const supported = MPI_SUPPORT[osKey]?.[compiler] || [];
+  if (supported.includes(implementation)) return;
+
+  const rows = supportedRows(osKey);
+  throw new Error(
+    [
+      `Unsupported MPI toolchain: platform=${osKey}, compiler=${compiler}, mpi=${implementation}.`,
+      rows.length
+        ? `Supported combinations on this platform: ${rows.join(', ')}.`
+        : 'No MPI combinations are currently supported on this platform.',
+    ].join(' ')
+  );
+}
+
+async function setupMpi({
+  osKey,
+  compiler,
+  compilerVersion,
+  implementation,
+  mpiVersion,
+}) {
+  assertMpiSupported(osKey, compiler, implementation);
+
+  const install = MPI_INSTALLERS[implementation];
+  if (!install) {
+    throw new Error(
+      `No installer is available for MPI implementation "${implementation}".`
+    );
+  }
+
+  const descriptor = await install({
+    mpiVersion,
+    compilerVersion,
+    osKey,
+  });
+
+  applyEnvironment(descriptor.environment);
+  const validated = await validateMpi(descriptor);
+  await exportMpiEnvironment(validated);
+  return validated;
+}
+
 ;// CONCATENATED MODULE: ./index.js
+
 
 
 
@@ -31493,7 +32348,7 @@ function nowIso() {
   return new Date().toISOString();
 }
 
-async function execCapture(cmd, args = []) {
+async function index_execCapture(cmd, args = []) {
   let stdout = '';
   let stderr = '';
   let exitCode = 0;
@@ -31553,7 +32408,7 @@ async function detectCompilerVersion(compilerBinary, compilerKey) {
   probes.push([compilerBinary, ['-v']]);
 
   for (const [cmd, args] of probes) {
-    const { stdout, stderr, exitCode } = await execCapture(cmd, args);
+    const { stdout, stderr, exitCode } = await index_execCapture(cmd, args);
     const raw = firstLine(stdout) || firstLine(stderr);
     const combined = `${stdout}\n${stderr}`.trim();
 
@@ -31588,7 +32443,7 @@ async function detectToolVersion(tool) {
   if (!tool) return null;
 
   const run = async (cmd, args) => {
-    const { stdout, stderr, exitCode } = await execCapture(cmd, args);
+    const { stdout, stderr, exitCode } = await index_execCapture(cmd, args);
     const combined = `${stdout}\n${stderr}`.trim();
     const line = firstLine(stdout) || firstLine(stderr);
 
@@ -31610,7 +32465,7 @@ async function detectOSInfo() {
   const runnerOs = process.env.RUNNER_OS || '';
 
   if (runnerOs === 'Linux') {
-    const { stdout } = await execCapture('bash', [
+    const { stdout } = await index_execCapture('bash', [
       '-c',
       'source /etc/os-release 2>/dev/null && echo "${ID:-linux}|${VERSION_ID:-}" || echo "linux|"',
     ]);
@@ -31624,7 +32479,7 @@ async function detectOSInfo() {
   }
 
   if (runnerOs === 'macOS') {
-    const v = await execCapture('sw_vers', ['-productVersion']);
+    const v = await index_execCapture('sw_vers', ['-productVersion']);
     const version = firstLine(v.stdout) || '';
     const family = 'macos';
     const label = version ? `macos ${version}` : 'macos';
@@ -31632,7 +32487,7 @@ async function detectOSInfo() {
   }
 
   if (runnerOs === 'Windows') {
-    const { stdout } = await execCapture('powershell', [
+    const { stdout } = await index_execCapture('powershell', [
       '-NoProfile',
       '-Command',
       '$os=(Get-CimInstance Win32_OperatingSystem); "$($os.Caption)|$($os.Version)"',
@@ -31652,7 +32507,7 @@ async function detectOSInfo() {
 function ghRequestJson(url, token) {
   return new Promise((resolve, reject) => {
     const u = new URL(url);
-    const req = external_node_https_namespaceObject.request(
+    const req = external_node_https_.request(
       {
         method: 'GET',
         hostname: u.hostname,
@@ -31713,8 +32568,12 @@ async function findCurrentJob(token) {
   if (!candidates.length) return null;
 
   const compiler = (process.env.INPUT_COMPILER || '').toLowerCase();
-  const byCompiler = candidates.find((j) => typeof j.name === 'string' && j.name.includes(compiler));
-  return byCompiler || candidates.sort((a, b) => String(b.started_at).localeCompare(String(a.started_at)))[0];
+  const mpi = (process.env.INPUT_MPI || 'none').toLowerCase();
+  const byToolchain = candidates.find((j) => {
+    if (typeof j.name !== 'string' || !j.name.includes(compiler)) return false;
+    return mpi === 'none' || j.name.includes(mpi);
+  });
+  return byToolchain || candidates.sort((a, b) => String(b.started_at).localeCompare(String(a.started_at)))[0];
 }
 
 function inferToolFromJobName(jobName) {
@@ -31731,6 +32590,9 @@ async function run() {
   const platformInput = (process.env.INPUT_PLATFORM || '').toLowerCase();
   const extrasInput = process.env.INPUT_EXTRA_PACKAGES || '';
   const fpmVersion = process.env.INPUT_FPM_VERSION || '';
+  const mpi = (process.env.INPUT_MPI || 'none').trim().toLowerCase() || 'none';
+  const rawMpiVersion = (process.env.INPUT_MPI_VERSION || '').trim();
+  const mpiVersion = rawMpiVersion.toLowerCase() === 'latest' ? '' : rawMpiVersion;
 
   const token = process.env.GITHUB_TOKEN || process.env.GH_TOKEN || '';
   let jobInfo = null;
@@ -31738,7 +32600,7 @@ async function run() {
   const osInfo = await detectOSInfo();
 
   const metaBase = {
-    schema_version: 1,
+    schema_version: 2,
     repo: process.env.GITHUB_REPOSITORY || '',
     run_id: Number(process.env.GITHUB_RUN_ID || 0),
     created_at: nowIso(),
@@ -31758,6 +32620,19 @@ async function run() {
       actual_version: 'Unknown',
       raw_first_line: 'Unknown',
     },
+    mpi: {
+      enabled: mpi !== 'none',
+      requested: mpi,
+      requested_version: mpiVersion === '' ? 'latest' : mpiVersion,
+      implementation: mpi === 'none' ? 'none' : mpi,
+      actual_version: mpi === 'none' ? '' : 'Unknown',
+      root: '',
+      wrappers: {},
+      launcher: {},
+      bindings: {},
+      backend_compiler: '',
+      validated: false,
+    },
     tool: '',
     tools: {},
     error: '',
@@ -31765,10 +32640,20 @@ async function run() {
 
   const fallbackSuffix = `${process.env.GITHUB_RUN_ID || 'run'}-${Date.now()}`;
 
-  const tempDir = process.env.RUNNER_TEMP || external_node_os_namespaceObject.tmpdir();
-  let metaPath = external_node_path_namespaceObject.join(tempDir, `setup-fortran-conda-meta-${fallbackSuffix}.json`);
+  const tempDir = process.env.RUNNER_TEMP || external_node_os_.tmpdir();
+  let metaPath = external_node_path_.join(tempDir, `setup-fortran-conda-meta-${fallbackSuffix}.json`);
 
   try {
+    if (compiler === 'mpifort') {
+      throw new Error(
+        'compiler=mpifort is no longer supported because mpifort is an MPI wrapper, not a compiler. ' +
+          'Use compiler=gfortran and mpi=mpich.'
+      );
+    }
+    if (mpi === 'none' && rawMpiVersion) {
+      throw new Error('mpi-version requires an MPI implementation selected with the mpi input.');
+    }
+
     const osKey =
       platformInput.includes('ubuntu') || platformInput.includes('linux')
         ? 'lin'
@@ -31778,6 +32663,7 @@ async function run() {
             ? 'mac'
             : undefined;
     if (!osKey) throw new Error(`Unsupported platform: ${platformInput}`);
+    if (mpi !== 'none') assertMpiSupported(osKey, compiler, mpi);
 
     const { installExtras } = await __nccwpck_require__.e(/* import() */ 841).then(__nccwpck_require__.bind(__nccwpck_require__, 5841));
     const extras = extrasInput
@@ -31789,13 +32675,32 @@ async function run() {
     const { setup } = await __nccwpck_require__(9439)(`./${osKey}/${compiler}.js`);
     await setup(versionRequested);
 
+    if (mpi !== 'none') {
+      const mpiDescriptor = await setupMpi({
+        osKey,
+        compiler,
+        compilerVersion: versionRequested,
+        implementation: mpi,
+        mpiVersion,
+      });
+
+      metaBase.mpi.implementation = mpiDescriptor.implementation;
+      metaBase.mpi.actual_version = mpiDescriptor.version;
+      metaBase.mpi.root = mpiDescriptor.root;
+      metaBase.mpi.wrappers = mpiDescriptor.wrappers;
+      metaBase.mpi.launcher = mpiDescriptor.launcher;
+      metaBase.mpi.bindings = mpiDescriptor.bindings;
+      metaBase.mpi.backend_compiler = mpiDescriptor.backendCompiler;
+      metaBase.mpi.validated = mpiDescriptor.validated;
+    }
+
     jobInfo = await findCurrentJob(token);
     if (jobInfo?.id) {
       metaBase.job.id = jobInfo.id;
       metaBase.job.name = jobInfo.name || '';
       metaBase.job.labels = jobInfo.labels || [];
       metaBase.tool = inferToolFromJobName(jobInfo.name);
-      metaPath = external_node_path_namespaceObject.join(tempDir, `setup-fortran-conda-meta-${jobInfo.id}.json`);
+      metaPath = external_node_path_.join(tempDir, `setup-fortran-conda-meta-${jobInfo.id}.json`);
     }
 
     const compilerBinary = process.env.FC || compiler;
@@ -31809,24 +32714,32 @@ async function run() {
       if (tv != null) metaBase.tools[metaBase.tool] = { version: tv };
     }
 
-    await core/* summary */.z
-      .addTable([
-        ['OS', 'OS Version', 'Compiler', 'Version', 'Tool', 'Tool Version'],
-        [
-          metaBase.runner.os_family || metaBase.runner.os,
-          metaBase.runner.os_version || metaBase.runner.os_label,
-          compiler,
-          metaBase.compiler.actual_version,
-          metaBase.tool || '-',
-          metaBase.tool ? (metaBase.tools?.[metaBase.tool]?.version || 'Unknown') : '-',
-        ],
-      ])
-      .write();
+    const summaryHeader = ['OS', 'OS Version', 'Compiler', 'Version'];
+    const summaryRow = [
+      metaBase.runner.os_family || metaBase.runner.os,
+      metaBase.runner.os_version || metaBase.runner.os_label,
+      compiler,
+      metaBase.compiler.actual_version,
+    ];
+    if (metaBase.mpi.enabled) {
+      summaryHeader.push('MPI', 'MPI Version');
+      summaryRow.push(
+        metaBase.mpi.implementation,
+        metaBase.mpi.actual_version
+      );
+    }
+    summaryHeader.push('Tool', 'Tool Version');
+    summaryRow.push(
+      metaBase.tool || '-',
+      metaBase.tool ? (metaBase.tools?.[metaBase.tool]?.version || 'Unknown') : '-'
+    );
+
+    await core/* summary */.z.addTable([summaryHeader, summaryRow]).write();
   } catch (err) {
     fatalError = err;
     metaBase.error = err?.message ? String(err.message) : String(err);
   } finally {
-    await promises_namespaceObject.writeFile(metaPath, JSON.stringify(metaBase, null, 2), 'utf8');
+    await promises_.writeFile(metaPath, JSON.stringify(metaBase, null, 2), 'utf8');
 
     const runnerTag = [
       (process.env.RUNNER_OS || '').toLowerCase() || 'os',

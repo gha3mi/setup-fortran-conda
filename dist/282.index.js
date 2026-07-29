@@ -1,6 +1,338 @@
 export const id = 282;
-export const ids = [282];
+export const ids = [282,673];
 export const modules = {
+
+/***/ 7174:
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Aq: () => (/* binding */ TOOLS_ENVIRONMENT),
+/* harmony export */   Bf: () => (/* binding */ addExistingPaths),
+/* harmony export */   EE: () => (/* binding */ exportEnv),
+/* harmony export */   G6: () => (/* binding */ assertPlatform),
+/* harmony export */   HD: () => (/* binding */ compilerEnvironment),
+/* harmony export */   I6: () => (/* binding */ verifyCommands),
+/* harmony export */   MA: () => (/* binding */ installCondaPackages),
+/* harmony export */   Qv: () => (/* binding */ showCondaEnvironment),
+/* harmony export */   pI: () => (/* binding */ exportProcessEnvironment),
+/* harmony export */   s6: () => (/* binding */ getCondaPrefix),
+/* harmony export */   x7: () => (/* binding */ exportCompilerEnvironment),
+/* harmony export */   zD: () => (/* binding */ grouped)
+/* harmony export */ });
+/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3360);
+/* harmony import */ var _actions_exec__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2876);
+/* harmony import */ var node_fs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3024);
+/* harmony import */ var node_os__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(8161);
+/* harmony import */ var node_path__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(6760);
+
+
+
+
+
+
+const TOOLS_ENVIRONMENT = 'fortran';
+
+function assertPlatform(expected, message) {
+  if (process.platform !== expected) {
+    throw new Error(message);
+  }
+}
+
+async function grouped(name, operation) {
+  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .startGroup */ .Oh)(name);
+  try {
+    return await operation();
+  } finally {
+    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .endGroup */ .N4)();
+  }
+}
+
+function exportEnv(key, value) {
+  const envFile = process.env.GITHUB_ENV;
+  if (!envFile) throw new Error('GITHUB_ENV not defined');
+
+  const normalized = String(value);
+  (0,node_fs__WEBPACK_IMPORTED_MODULE_2__.appendFileSync)(envFile, `${key}=${normalized}${node_os__WEBPACK_IMPORTED_MODULE_3__.EOL}`);
+  process.env[key] = normalized;
+}
+
+function compilerEnvironment(fortran, c, cxx, extra = {}) {
+  return {
+    FC: fortran,
+    CC: c,
+    CXX: cxx,
+    FPM_FC: fortran,
+    FPM_CC: c,
+    FPM_CXX: cxx,
+    CMAKE_Fortran_COMPILER: fortran,
+    CMAKE_C_COMPILER: c,
+    CMAKE_CXX_COMPILER: cxx,
+    ...extra,
+  };
+}
+
+async function exportCompilerEnvironment(values) {
+  await grouped('setup-fortran-conda: Export Compiler Environment', async () => {
+    for (const [key, value] of Object.entries(values)) {
+      exportEnv(key, value);
+      (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)(`Exported: ${key}=${value}`);
+    }
+  });
+}
+
+async function exportProcessEnvironment({ warningPrefix = '⚠️ ' } = {}) {
+  await grouped('setup-fortran-conda: Export Process Environment', async () => {
+    for (const [key, value] of Object.entries(process.env)) {
+      if (typeof value !== 'string') continue;
+
+      try {
+        process.env[key] = value;
+        (0,node_fs__WEBPACK_IMPORTED_MODULE_2__.appendFileSync)(process.env.GITHUB_ENV, `${key}=${value}${node_os__WEBPACK_IMPORTED_MODULE_3__.EOL}`);
+        (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)(`Exported: ${key}`);
+      } catch (error) {
+        (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)(`${warningPrefix}Failed to export: ${key} (${error.message})`);
+      }
+    }
+  });
+}
+
+async function getCondaPrefix(
+  envName = TOOLS_ENVIRONMENT,
+  required = true
+) {
+  let output = '';
+  await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('conda', ['env', 'list', '--json'], {
+    silent: true,
+    listeners: {
+      stdout: (data) => {
+        output += data.toString();
+      },
+    },
+  });
+
+  const { envs = [] } = JSON.parse(output);
+  const prefix = envs.find(
+    (candidate) =>
+      candidate.endsWith(node_path__WEBPACK_IMPORTED_MODULE_4__.sep + envName) || candidate.endsWith('/' + envName)
+  );
+
+  if (!prefix && required) {
+    throw new Error(`Unable to locate Conda environment "${envName}".`);
+  }
+  return prefix || '';
+}
+
+async function installCondaPackages(
+  packages,
+  {
+    envName = TOOLS_ENVIRONMENT,
+    channels = ['conda-forge'],
+    command = 'install',
+    commandOptions = [],
+    successMessage = 'Conda packages installed',
+    errorMessage = 'Conda install failed',
+  } = {}
+) {
+  await grouped('setup-fortran-conda: Install Conda Packages', async () => {
+    try {
+      const args = [
+        command,
+        ...commandOptions,
+        '--yes',
+        '--name',
+        envName,
+        ...packages,
+      ];
+      for (const channel of channels) args.push('-c', channel);
+
+      await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('conda', args);
+      (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)(successMessage);
+    } catch (error) {
+      throw new Error(`${errorMessage}: ${error.message}`);
+    }
+  });
+}
+
+async function showCondaEnvironment(envNames = [TOOLS_ENVIRONMENT]) {
+  await grouped('setup-fortran-conda: Show Conda Environment', async () => {
+    await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('conda', ['info']);
+    for (const envName of envNames) {
+      await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('conda', ['list', '--name', envName]);
+    }
+  });
+}
+
+async function addExistingPaths(paths, { log = true } = {}) {
+  await grouped('setup-fortran-conda: Configure Compiler Paths', async () => {
+    for (const path of paths) {
+      if (!path || !(0,node_fs__WEBPACK_IMPORTED_MODULE_2__.existsSync)(path)) continue;
+
+      (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .addPath */ .fM)(path);
+      if (log) (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)(`Added to PATH: ${path}`);
+    }
+  });
+}
+
+async function verifyCommands(commands, lookup) {
+  const lookupCommand =
+    lookup || (process.platform === 'win32' ? 'where' : 'which');
+
+  await grouped('setup-fortran-conda: Verify Compiler Commands', async () => {
+    for (const { command, args } of commands) {
+      await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)(lookupCommand, [command]);
+      if (args) await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)(command, args);
+    }
+  });
+}
+
+
+/***/ }),
+
+/***/ 9673:
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Aq: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_4__.Aq),
+/* harmony export */   Bf: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_4__.Bf),
+/* harmony export */   EE: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_4__.EE),
+/* harmony export */   HD: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_4__.HD),
+/* harmony export */   I6: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_4__.I6),
+/* harmony export */   MA: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_4__.MA),
+/* harmony export */   Qv: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_4__.Qv),
+/* harmony export */   RB: () => (/* binding */ windowsCondaPaths),
+/* harmony export */   lM: () => (/* binding */ initializeMsvcEnvironment),
+/* harmony export */   oB: () => (/* binding */ assertWindows),
+/* harmony export */   pI: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_4__.pI),
+/* harmony export */   s6: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_4__.s6),
+/* harmony export */   x7: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_4__.x7),
+/* harmony export */   zD: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_4__.zD)
+/* harmony export */ });
+/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3360);
+/* harmony import */ var _actions_exec__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2876);
+/* harmony import */ var node_fs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3024);
+/* harmony import */ var node_path__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(6760);
+/* harmony import */ var _common_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(7174);
+
+
+
+
+
+
+
+
+function assertWindows() {
+  (0,_common_js__WEBPACK_IMPORTED_MODULE_4__/* .assertPlatform */ .G6)('win32', 'This setup script is only supported on Windows.');
+}
+
+async function commandExists(command) {
+  try {
+    await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('where', [command], { silent: true });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+async function initializeMsvcEnvironment() {
+  if (!(await commandExists('vswhere'))) {
+    throw new Error(
+      '"vswhere" not found in PATH. Ensure Visual Studio is installed.'
+    );
+  }
+
+  const vcvars = await (0,_common_js__WEBPACK_IMPORTED_MODULE_4__/* .grouped */ .zD)(
+    'setup-fortran-conda: Detect Visual Studio Installation',
+    async () => {
+      let vsPath = '';
+      await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)(
+        'vswhere',
+        [
+          '-latest',
+          '-products',
+          '*',
+          '-requires',
+          'Microsoft.VisualStudio.Component.VC.Tools.x86.x64',
+          '-property',
+          'installationPath',
+        ],
+        {
+          silent: true,
+          listeners: {
+            stdout: (data) => {
+              vsPath += data.toString();
+            },
+          },
+        }
+      );
+
+      vsPath = vsPath.trim();
+      if (!vsPath) {
+        throw new Error('vswhere did not return any installation path');
+      }
+
+      const path = (0,node_path__WEBPACK_IMPORTED_MODULE_3__.join)(vsPath, 'VC', 'Auxiliary', 'Build', 'vcvars64.bat');
+      (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)(`Found Visual Studio: ${vsPath}`);
+      (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)(`Resolved vcvars64.bat: ${path}`);
+      return path;
+    }
+  );
+
+  if (!(0,node_fs__WEBPACK_IMPORTED_MODULE_2__.existsSync)(vcvars)) {
+    throw new Error(`vcvars64.bat not found at expected path: ${vcvars}`);
+  }
+
+  const output = await (0,_common_js__WEBPACK_IMPORTED_MODULE_4__/* .grouped */ .zD)(
+    'setup-fortran-conda: Initialize MSVC Environment',
+    async () => {
+      let captured = '';
+      const exitCode = await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('cmd.exe', ['/c', vcvars, '&&', 'set'], {
+        silent: true,
+        ignoreReturnCode: true,
+        listeners: {
+          stdout: (data) => {
+            captured += data.toString();
+          },
+          stderr: (data) => {
+            captured += data.toString();
+          },
+        },
+      });
+
+      if (exitCode !== 0) {
+        throw new Error(
+          `vcvars64.bat failed with code ${exitCode}:\n${captured}`
+        );
+      }
+      (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)('vcvars64.bat ran successfully');
+      return captured;
+    }
+  );
+
+  await (0,_common_js__WEBPACK_IMPORTED_MODULE_4__/* .grouped */ .zD)('setup-fortran-conda: Export MSVC Environment', async () => {
+    let exportedCount = 0;
+    for (const line of output.split('\n')) {
+      const [key, ...rest] = line.trim().split('=');
+      if (!key || rest.length === 0) continue;
+
+      (0,_common_js__WEBPACK_IMPORTED_MODULE_4__/* .exportEnv */ .EE)(key, rest.join('='));
+      (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)(`Exported: ${key}`);
+      exportedCount += 1;
+    }
+    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)(`MSVC environment loaded with ${exportedCount} variables`);
+  });
+}
+
+function windowsCondaPaths(prefix) {
+  return [
+    (0,node_path__WEBPACK_IMPORTED_MODULE_3__.join)(prefix, 'bin'),
+    (0,node_path__WEBPACK_IMPORTED_MODULE_3__.join)(prefix, 'Library', 'bin'),
+    (0,node_path__WEBPACK_IMPORTED_MODULE_3__.join)(prefix, 'Library', 'usr', 'bin'),
+    (0,node_path__WEBPACK_IMPORTED_MODULE_3__.join)(prefix, 'Scripts'),
+  ];
+}
+
+
+/***/ }),
 
 /***/ 282:
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
@@ -8,277 +340,104 @@ export const modules = {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   setup: () => (/* binding */ setup)
 /* harmony export */ });
-/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7264);
-/* harmony import */ var _actions_exec__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2876);
-/* harmony import */ var path__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(6928);
-/* harmony import */ var fs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(9896);
-/* harmony import */ var os__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(857);
-/* harmony import */ var process__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(932);
+/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3360);
+/* harmony import */ var node_fs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3024);
+/* harmony import */ var node_path__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(6760);
+/* harmony import */ var _common_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(9673);
 
 
 
 
 
+const COMPILER_ENVIRONMENT = 'setup-fortran-conda-lfortran';
 
-
-const TOOLS_ENV = 'fortran';
-const COMPILER_ENV = 'setup-fortran-conda-lfortran';
-
-// Export a key=value pair to GitHub Actions' environment and current process.env
-function exportEnv(key, value) {
-  const envFile = process.env.GITHUB_ENV;
-  if (!envFile) throw new Error('GITHUB_ENV not defined');
-  (0,fs__WEBPACK_IMPORTED_MODULE_3__.appendFileSync)(envFile, `${key}=${value}${os__WEBPACK_IMPORTED_MODULE_4__.EOL}`);
-  process__WEBPACK_IMPORTED_MODULE_5__.env[key] = value;
-}
-
-// Check if a given command exists in PATH using 'where' (Windows)
-async function commandExists(cmd) {
-  try {
-    await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('where', [cmd], { silent: true });
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-// Locate Visual Studio installation and extract the MSVC build environment
-async function runVcvars64() {
-  // Ensure vswhere is available to find Visual Studio
-  if (!(await commandExists('vswhere'))) {
-    throw new Error('"vswhere" not found in PATH. Ensure Visual Studio is installed.');
-  }
-
-  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .startGroup */ .Oh)('setup-fortran-conda: Detect Visual Studio Installation');
-
-  // Query the latest Visual Studio installation path
-  let vsPath = '';
-  await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('vswhere', [
-    '-latest',
-    '-products', '*',
-    '-requires', 'Microsoft.VisualStudio.Component.VC.Tools.x86.x64',
-    '-property', 'installationPath'
-  ], {
-    silent: true,
-    listeners: {
-      stdout: data => { vsPath += data.toString(); }
-    }
+async function removeConflictingLinkers() {
+  await (0,_common_js__WEBPACK_IMPORTED_MODULE_3__/* .grouped */ .zD)('setup-fortran-conda: Clean Up PATH', async () => {
+    const filtered = process.env.PATH.split(';').filter(
+      (path) =>
+        !/mingw/i.test(path) &&
+        !/strawberry[\\/]c[\\/]bin/i.test(path)
+    );
+    (0,_common_js__WEBPACK_IMPORTED_MODULE_3__/* .exportEnv */ .EE)('PATH', filtered.join(';'));
+    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)('Removed conflicting linkers (MinGW, Strawberry Perl) from PATH');
   });
-
-  vsPath = vsPath.trim();
-  if (!vsPath) throw new Error('vswhere did not return any installation path');
-
-  // Construct the path to vcvars64.bat
-  const vcvars = (0,path__WEBPACK_IMPORTED_MODULE_2__.join)(vsPath, 'VC', 'Auxiliary', 'Build', 'vcvars64.bat');
-  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)(`Found Visual Studio: ${vsPath}`);
-  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)(`Resolved vcvars64.bat: ${vcvars}`);
-  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .endGroup */ .N4)();
-
-  if (!(0,fs__WEBPACK_IMPORTED_MODULE_3__.existsSync)(vcvars)) {
-    throw new Error(`vcvars64.bat not found at expected path: ${vcvars}`);
-  }
-
-  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .startGroup */ .Oh)('setup-fortran-conda: Initialize MSVC Environment');
-
-  // Run vcvars64.bat and capture the resulting environment variables
-  let output = '';
-  const code = await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('cmd.exe', ['/c', vcvars, '&&', 'set'], {
-    silent: true,
-    ignoreReturnCode: true,
-    listeners: {
-      stdout: data => { output += data.toString(); },
-      stderr: data => { output += data.toString(); }
-    }
-  });
-
-  if (code !== 0) {
-    throw new Error(`vcvars64.bat failed with code ${code}:\n${output}`);
-  } else {
-    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)(`vcvars64.bat ran successfully`);
-  }
-
-  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .endGroup */ .N4)();
-
-  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .startGroup */ .Oh)('setup-fortran-conda: Export MSVC Environment');
-
-  // Parse and export environment variables line-by-line
-  let exportedCount = 0;
-  output.split('\n').forEach(line => {
-    const [key, ...rest] = line.trim().split('=');
-    if (key && rest.length > 0) {
-      const value = rest.join('=');
-      exportEnv(key, value);
-      (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)(`Exported: ${key}`);
-      exportedCount++;
-    }
-  });
-
-  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)(`MSVC environment loaded with ${exportedCount} variables`);
-  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .endGroup */ .N4)();
 }
 
-// Resolve the absolute path of a named conda environment
-async function getCondaPrefix(envName, required = true) {
-  let raw = '';
-  await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('conda', ['env', 'list', '--json'], {
-    silent: true,
-    listeners: { stdout: d => (raw += d.toString()) }
-  });
-
-  const { envs } = JSON.parse(raw);
-  for (const p of envs) {
-    if (p.endsWith(path__WEBPACK_IMPORTED_MODULE_2__.sep + envName) || p.endsWith('/' + envName)) return p;
-  }
-
-  if (required) {
-    throw new Error(`Unable to locate Conda environment "${envName}".`);
-  }
-
-  return '';
-}
-
-// Remove any bad linkers from PATH to avoid conflicts
-function removeBadLinkersFromPath() {
-
-  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .startGroup */ .Oh)('setup-fortran-conda: Clean Up PATH');
-  const paths = process__WEBPACK_IMPORTED_MODULE_5__.env.PATH.split(';');
-  const filtered = paths.filter(p =>
-    !/mingw/i.test(p) &&
-    !/strawberry[\\\/]c[\\\/]bin/i.test(p)
-  );
-  process__WEBPACK_IMPORTED_MODULE_5__.env.PATH = filtered.join(';');
-
-  const envFile = process.env.GITHUB_ENV;
-  if (envFile) {
-    (0,fs__WEBPACK_IMPORTED_MODULE_3__.appendFileSync)(envFile, `PATH=${process__WEBPACK_IMPORTED_MODULE_5__.env.PATH}${os__WEBPACK_IMPORTED_MODULE_4__.EOL}`);
-  }
-
-  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)('Removed conflicting linkers (MinGW, Strawberry Perl) from PATH');
-  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .endGroup */ .N4)();
-}
-
-// Main setup function to configure compilers and environment
 async function setup(version = '') {
-  // Ensure this only runs on Windows
-  if (process__WEBPACK_IMPORTED_MODULE_5__.platform !== 'win32') {
-    throw new Error('This setup script is only supported on Windows.');
-  }
+  (0,_common_js__WEBPACK_IMPORTED_MODULE_3__/* .assertWindows */ .oB)();
 
-  // Define the set of Conda packages to install
-  const Pkg = version ? `lfortran=${version}` : 'lfortran';
-  const packages = [Pkg, ...(version ? [] : ['zstd=1.5.6']), 'llvm', 'clang-tools', 'clangxx', 'llvm-openmp', 'lld', 'gcc'];
-  let compilerPrefix = await getCondaPrefix(COMPILER_ENV, false);
+  const packages = [
+    version ? `lfortran=${version}` : 'lfortran',
+    ...(version ? [] : ['zstd=1.5.6']),
+    'llvm',
+    'llvm-tools',
+    'clang-tools',
+    'clangxx',
+    'llvm-openmp',
+    'lld',
+    'gcc',
+  ];
+  let compilerPrefix = await (0,_common_js__WEBPACK_IMPORTED_MODULE_3__/* .getCondaPrefix */ .s6)(COMPILER_ENVIRONMENT, false);
 
-  // Prepare MSVC environment
-  await runVcvars64();
+  await (0,_common_js__WEBPACK_IMPORTED_MODULE_3__/* .initializeMsvcEnvironment */ .lM)();
+  await removeConflictingLinkers();
 
-  // Remove any bad linkers from PATH to avoid conflicts
-  removeBadLinkersFromPath();
+  const condaCommand = compilerPrefix ? 'install' : 'create';
+  await (0,_common_js__WEBPACK_IMPORTED_MODULE_3__/* .installCondaPackages */ .MA)(packages, {
+    envName: COMPILER_ENVIRONMENT,
+    command: condaCommand,
+    commandOptions:
+      condaCommand === 'create' ? ['--no-default-packages'] : [],
+    successMessage: `Conda packages installed in ${COMPILER_ENVIRONMENT}`,
+    errorMessage: 'Conda compiler environment setup failed',
+  });
+  await (0,_common_js__WEBPACK_IMPORTED_MODULE_3__/* .showCondaEnvironment */ .Qv)([
+    _common_js__WEBPACK_IMPORTED_MODULE_3__/* .TOOLS_ENVIRONMENT */ .Aq,
+    COMPILER_ENVIRONMENT,
+  ]);
 
-  // Install required compilers and tools via Conda
-  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .startGroup */ .Oh)('setup-fortran-conda: Install Conda Packages');
-  try {
-    const condaCommand = compilerPrefix ? 'install' : 'create';
-    await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('conda', [
-      condaCommand,
-      ...(condaCommand === 'create' ? ['--no-default-packages'] : []),
-      '--yes',
-      '--name',
-      COMPILER_ENV,
-      ...packages,
-      '-c',
-      'conda-forge'
-    ]);
-    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)(`Conda packages installed in ${COMPILER_ENV}`);
-  } catch (err) {
-    throw new Error(`Conda compiler environment setup failed: ${err.message}`);
-  }
-  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .endGroup */ .N4)();
-
-  // Conda environment information
-  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .startGroup */ .Oh)('setup-fortran-conda: Show Conda Environment');
-  await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('conda', ['info']);
-  await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('conda', ['list', '--name', TOOLS_ENV]);
-  await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('conda', ['list', '--name', COMPILER_ENV]);
-  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .endGroup */ .N4)();
-
-  // Add the private compiler paths to PATH so compiler commands remain unchanged
-  compilerPrefix ||= await getCondaPrefix(COMPILER_ENV);
-  const toolsPrefix = await getCondaPrefix(TOOLS_ENV);
+  compilerPrefix ||= await (0,_common_js__WEBPACK_IMPORTED_MODULE_3__/* .getCondaPrefix */ .s6)(COMPILER_ENVIRONMENT);
+  const toolsPrefix = await (0,_common_js__WEBPACK_IMPORTED_MODULE_3__/* .getCondaPrefix */ .s6)(_common_js__WEBPACK_IMPORTED_MODULE_3__/* .TOOLS_ENVIRONMENT */ .Aq);
   const variantBinPath = ['ucrt64', 'clang64', 'mingw64', 'clangarm64']
-    .map(variant => (0,path__WEBPACK_IMPORTED_MODULE_2__.join)(compilerPrefix, 'Library', variant, 'bin'))
-    .find(p => (0,fs__WEBPACK_IMPORTED_MODULE_3__.existsSync)(p));
+    .map((variant) =>
+      (0,node_path__WEBPACK_IMPORTED_MODULE_2__.join)(compilerPrefix, 'Library', variant, 'bin')
+    )
+    .find((path) => (0,node_fs__WEBPACK_IMPORTED_MODULE_1__.existsSync)(path));
 
-  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .startGroup */ .Oh)('setup-fortran-conda: Configure Compiler Paths');
-  // Expose compiler-specific paths only; keep Python and Scripts from the active tools environment.
-  // addPath prepends each entry, so add them in reverse order.
-  const paths = [
+  const compilerPaths = [
     variantBinPath,
-    (0,path__WEBPACK_IMPORTED_MODULE_2__.join)(compilerPrefix, 'Library', 'mingw-w64', 'bin'),
-    (0,path__WEBPACK_IMPORTED_MODULE_2__.join)(compilerPrefix, 'Library', 'usr', 'bin'),
-    (0,path__WEBPACK_IMPORTED_MODULE_2__.join)(compilerPrefix, 'Library', 'bin'),
-    (0,path__WEBPACK_IMPORTED_MODULE_2__.join)(compilerPrefix, 'bin')
-  ].filter(p => p && (0,fs__WEBPACK_IMPORTED_MODULE_3__.existsSync)(p)).reverse();
-  for (const p of paths) {
-    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .addPath */ .fM)(p);
-    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)(`Added to PATH: ${p}`);
-  }
-  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .endGroup */ .N4)();
+    (0,node_path__WEBPACK_IMPORTED_MODULE_2__.join)(compilerPrefix, 'Library', 'mingw-w64', 'bin'),
+    (0,node_path__WEBPACK_IMPORTED_MODULE_2__.join)(compilerPrefix, 'Library', 'usr', 'bin'),
+    (0,node_path__WEBPACK_IMPORTED_MODULE_2__.join)(compilerPrefix, 'Library', 'bin'),
+    (0,node_path__WEBPACK_IMPORTED_MODULE_2__.join)(compilerPrefix, 'bin'),
+  ]
+    .filter((path) => path && (0,node_fs__WEBPACK_IMPORTED_MODULE_1__.existsSync)(path))
+    .reverse();
+  await (0,_common_js__WEBPACK_IMPORTED_MODULE_3__/* .addExistingPaths */ .Bf)(compilerPaths);
 
-  // Verify that the compilers are installed and working
-  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .startGroup */ .Oh)('setup-fortran-conda: Verify Compiler Commands');
-  await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('where', ['lfortran']);
-  await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('lfortran', ['--version']);
-  await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('where', ['clang']);
-  await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('clang', ['--version']);
-  await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('where', ['clang++']);
-  await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('clang++', ['--version']);
-  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .endGroup */ .N4)();
+  await (0,_common_js__WEBPACK_IMPORTED_MODULE_3__/* .verifyCommands */ .I6)([
+    { command: 'lfortran', args: ['--version'] },
+    { command: 'clang', args: ['--version'] },
+    { command: 'clang++', args: ['--version'] },
+    { command: 'llvm-dwarfdump', args: ['--version'] },
+  ]);
+  await (0,_common_js__WEBPACK_IMPORTED_MODULE_3__/* .exportCompilerEnvironment */ .x7)(
+    (0,_common_js__WEBPACK_IMPORTED_MODULE_3__/* .compilerEnvironment */ .HD)('lfortran', 'clang', 'clang++', {
+      INCLUDE: [
+        (0,node_path__WEBPACK_IMPORTED_MODULE_2__.join)(toolsPrefix, 'Library', 'include'),
+        (0,node_path__WEBPACK_IMPORTED_MODULE_2__.join)(compilerPrefix, 'Library', 'include'),
+        process.env.INCLUDE || '',
+      ]
+        .filter(Boolean)
+        .join(';'),
+      LFORTRAN_LINKER: 'gcc',
+      CMAKE_AR: 'llvm-ar',
+      CMAKE_RANLIB: 'llvm-ranlib',
+      CMAKE_LINKER: 'lld',
+    })
+  );
+  await (0,_common_js__WEBPACK_IMPORTED_MODULE_3__/* .exportProcessEnvironment */ .pI)({ warningPrefix: '' });
 
-  // Export compiler-related environment variables
-  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .startGroup */ .Oh)('setup-fortran-conda: Export Compiler Environment');
-  const envVars = {
-    FC: 'lfortran',
-    CC: 'clang',
-    CXX: 'clang++',
-    FPM_FC: 'lfortran',
-    FPM_CC: 'clang',
-    FPM_CXX: 'clang++',
-    CMAKE_Fortran_COMPILER: 'lfortran',
-    CMAKE_C_COMPILER: 'clang',
-    CMAKE_CXX_COMPILER: 'clang++',
-    INCLUDE: [
-      (0,path__WEBPACK_IMPORTED_MODULE_2__.join)(toolsPrefix, 'Library', 'include'),
-      (0,path__WEBPACK_IMPORTED_MODULE_2__.join)(compilerPrefix, 'Library', 'include'),
-      process.env.INCLUDE || ''
-    ].filter(Boolean).join(';'),
-    LFORTRAN_LINKER: 'gcc',
-    CMAKE_AR: 'llvm-ar',
-    CMAKE_RANLIB: 'llvm-ranlib',
-    CMAKE_LINKER: 'lld'
-  };
-
-  for (const [key, value] of Object.entries(envVars)) {
-    exportEnv(key, value);
-    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)(`Exported: ${key}=${value}`);
-  }
-  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .endGroup */ .N4)();
-
-  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .startGroup */ .Oh)('setup-fortran-conda: Export Process Environment');
-  for (const [key, value] of Object.entries(process__WEBPACK_IMPORTED_MODULE_5__.env)) {
-    if (typeof value === 'string') {
-      try {
-        process.env[key] = value;
-        (0,fs__WEBPACK_IMPORTED_MODULE_3__.appendFileSync)(process.env.GITHUB_ENV, `${key}=${value}${os__WEBPACK_IMPORTED_MODULE_4__.EOL}`);
-        (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)(`Exported: ${key}`);
-      } catch (err) {
-        (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)(`Failed to export: ${key} (${err.message})`);
-      }
-    }
-  }
-  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .endGroup */ .N4)();
-
-  // Final success message
   (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)('✅ compiler setup complete');
 }
 

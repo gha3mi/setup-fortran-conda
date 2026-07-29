@@ -1,6 +1,192 @@
 export const id = 58;
-export const ids = [58];
+export const ids = [58,994];
 export const modules = {
+
+/***/ 7174:
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Aq: () => (/* binding */ TOOLS_ENVIRONMENT),
+/* harmony export */   Bf: () => (/* binding */ addExistingPaths),
+/* harmony export */   EE: () => (/* binding */ exportEnv),
+/* harmony export */   G6: () => (/* binding */ assertPlatform),
+/* harmony export */   HD: () => (/* binding */ compilerEnvironment),
+/* harmony export */   I6: () => (/* binding */ verifyCommands),
+/* harmony export */   MA: () => (/* binding */ installCondaPackages),
+/* harmony export */   Qv: () => (/* binding */ showCondaEnvironment),
+/* harmony export */   pI: () => (/* binding */ exportProcessEnvironment),
+/* harmony export */   s6: () => (/* binding */ getCondaPrefix),
+/* harmony export */   x7: () => (/* binding */ exportCompilerEnvironment),
+/* harmony export */   zD: () => (/* binding */ grouped)
+/* harmony export */ });
+/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3360);
+/* harmony import */ var _actions_exec__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2876);
+/* harmony import */ var node_fs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3024);
+/* harmony import */ var node_os__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(8161);
+/* harmony import */ var node_path__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(6760);
+
+
+
+
+
+
+const TOOLS_ENVIRONMENT = 'fortran';
+
+function assertPlatform(expected, message) {
+  if (process.platform !== expected) {
+    throw new Error(message);
+  }
+}
+
+async function grouped(name, operation) {
+  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .startGroup */ .Oh)(name);
+  try {
+    return await operation();
+  } finally {
+    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .endGroup */ .N4)();
+  }
+}
+
+function exportEnv(key, value) {
+  const envFile = process.env.GITHUB_ENV;
+  if (!envFile) throw new Error('GITHUB_ENV not defined');
+
+  const normalized = String(value);
+  (0,node_fs__WEBPACK_IMPORTED_MODULE_2__.appendFileSync)(envFile, `${key}=${normalized}${node_os__WEBPACK_IMPORTED_MODULE_3__.EOL}`);
+  process.env[key] = normalized;
+}
+
+function compilerEnvironment(fortran, c, cxx, extra = {}) {
+  return {
+    FC: fortran,
+    CC: c,
+    CXX: cxx,
+    FPM_FC: fortran,
+    FPM_CC: c,
+    FPM_CXX: cxx,
+    CMAKE_Fortran_COMPILER: fortran,
+    CMAKE_C_COMPILER: c,
+    CMAKE_CXX_COMPILER: cxx,
+    ...extra,
+  };
+}
+
+async function exportCompilerEnvironment(values) {
+  await grouped('setup-fortran-conda: Export Compiler Environment', async () => {
+    for (const [key, value] of Object.entries(values)) {
+      exportEnv(key, value);
+      (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)(`Exported: ${key}=${value}`);
+    }
+  });
+}
+
+async function exportProcessEnvironment({ warningPrefix = '⚠️ ' } = {}) {
+  await grouped('setup-fortran-conda: Export Process Environment', async () => {
+    for (const [key, value] of Object.entries(process.env)) {
+      if (typeof value !== 'string') continue;
+
+      try {
+        process.env[key] = value;
+        (0,node_fs__WEBPACK_IMPORTED_MODULE_2__.appendFileSync)(process.env.GITHUB_ENV, `${key}=${value}${node_os__WEBPACK_IMPORTED_MODULE_3__.EOL}`);
+        (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)(`Exported: ${key}`);
+      } catch (error) {
+        (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)(`${warningPrefix}Failed to export: ${key} (${error.message})`);
+      }
+    }
+  });
+}
+
+async function getCondaPrefix(
+  envName = TOOLS_ENVIRONMENT,
+  required = true
+) {
+  let output = '';
+  await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('conda', ['env', 'list', '--json'], {
+    silent: true,
+    listeners: {
+      stdout: (data) => {
+        output += data.toString();
+      },
+    },
+  });
+
+  const { envs = [] } = JSON.parse(output);
+  const prefix = envs.find(
+    (candidate) =>
+      candidate.endsWith(node_path__WEBPACK_IMPORTED_MODULE_4__.sep + envName) || candidate.endsWith('/' + envName)
+  );
+
+  if (!prefix && required) {
+    throw new Error(`Unable to locate Conda environment "${envName}".`);
+  }
+  return prefix || '';
+}
+
+async function installCondaPackages(
+  packages,
+  {
+    envName = TOOLS_ENVIRONMENT,
+    channels = ['conda-forge'],
+    command = 'install',
+    commandOptions = [],
+    successMessage = 'Conda packages installed',
+    errorMessage = 'Conda install failed',
+  } = {}
+) {
+  await grouped('setup-fortran-conda: Install Conda Packages', async () => {
+    try {
+      const args = [
+        command,
+        ...commandOptions,
+        '--yes',
+        '--name',
+        envName,
+        ...packages,
+      ];
+      for (const channel of channels) args.push('-c', channel);
+
+      await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('conda', args);
+      (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)(successMessage);
+    } catch (error) {
+      throw new Error(`${errorMessage}: ${error.message}`);
+    }
+  });
+}
+
+async function showCondaEnvironment(envNames = [TOOLS_ENVIRONMENT]) {
+  await grouped('setup-fortran-conda: Show Conda Environment', async () => {
+    await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('conda', ['info']);
+    for (const envName of envNames) {
+      await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('conda', ['list', '--name', envName]);
+    }
+  });
+}
+
+async function addExistingPaths(paths, { log = true } = {}) {
+  await grouped('setup-fortran-conda: Configure Compiler Paths', async () => {
+    for (const path of paths) {
+      if (!path || !(0,node_fs__WEBPACK_IMPORTED_MODULE_2__.existsSync)(path)) continue;
+
+      (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .addPath */ .fM)(path);
+      if (log) (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)(`Added to PATH: ${path}`);
+    }
+  });
+}
+
+async function verifyCommands(commands, lookup) {
+  const lookupCommand =
+    lookup || (process.platform === 'win32' ? 'where' : 'which');
+
+  await grouped('setup-fortran-conda: Verify Compiler Commands', async () => {
+    for (const { command, args } of commands) {
+      await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)(lookupCommand, [command]);
+      if (args) await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)(command, args);
+    }
+  });
+}
+
+
+/***/ }),
 
 /***/ 3058:
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
@@ -8,14 +194,16 @@ export const modules = {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   setup: () => (/* binding */ setup)
 /* harmony export */ });
-/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7264);
+/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3360);
 /* harmony import */ var _actions_exec__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2876);
-/* harmony import */ var fs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(9896);
-/* harmony import */ var crypto__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(6982);
-/* harmony import */ var os__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(857);
-/* harmony import */ var path__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(6928);
-/* harmony import */ var process__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(932);
-/* harmony import */ var https__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(5692);
+/* harmony import */ var node_crypto__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(7598);
+/* harmony import */ var node_fs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(3024);
+/* harmony import */ var node_https__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(4708);
+/* harmony import */ var node_os__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(8161);
+/* harmony import */ var node_path__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(6760);
+/* harmony import */ var node_process__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(1708);
+/* harmony import */ var _common_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(994);
+
 
 
 
@@ -26,39 +214,6 @@ export const modules = {
 
 
 const AOMP_REPO_API = 'https://api.github.com/repos/ROCm/aomp/releases';
-
-function exportEnv(key, value) {
-  const envFile = process.env.GITHUB_ENV;
-  if (!envFile) throw new Error('GITHUB_ENV not defined');
-  (0,fs__WEBPACK_IMPORTED_MODULE_2__.appendFileSync)(envFile, `${key}=${value}${os__WEBPACK_IMPORTED_MODULE_4__.EOL}`);
-  process__WEBPACK_IMPORTED_MODULE_6__.env[key] = value;
-}
-
-function setLinuxUlimits() {
-  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .startGroup */ .Oh)('setup-fortran-conda: Configure Linux Environment');
-  const ulimitCmd =
-    'ulimit -c unlimited -d unlimited -f unlimited -m unlimited -s unlimited -t unlimited -v unlimited -x unlimited';
-  const script = `${process.env.RUNNER_TEMP}/ulimit.sh`;
-  (0,fs__WEBPACK_IMPORTED_MODULE_2__.appendFileSync)(script, `${ulimitCmd}${os__WEBPACK_IMPORTED_MODULE_4__.EOL}`);
-  (0,fs__WEBPACK_IMPORTED_MODULE_2__.appendFileSync)(process.env.GITHUB_ENV, `BASH_ENV=${script}${os__WEBPACK_IMPORTED_MODULE_4__.EOL}`);
-  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)('ulimit settings exported to BASH_ENV');
-  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .endGroup */ .N4)();
-}
-
-async function getCondaPrefix(envName) {
-  let raw = '';
-  await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('conda', ['env', 'list', '--json'], {
-    silent: true,
-    listeners: { stdout: d => (raw += d.toString()) }
-  });
-
-  const { envs } = JSON.parse(raw);
-  for (const p of envs) {
-    if (p.endsWith(path__WEBPACK_IMPORTED_MODULE_5__.sep + envName) || p.endsWith('/' + envName)) return p;
-  }
-
-  throw new Error(`Unable to locate Conda environment "${envName}".`);
-}
 
 function normalizeVersion(version = '') {
   const v = version.trim().toLowerCase();
@@ -71,7 +226,10 @@ function normalizeVersion(version = '') {
     .replace(/\.tar\.gz$/, '');
 
   if (!/^\d+\.\d+-\d+$/.test(bare)) {
-    throw new Error(`AOMP compiler-version must be "latest" or major.minor-patch, for example "23.0-0"; got "${version}".`);
+    throw new Error(
+      'AOMP compiler-version must be "latest" or major.minor-patch, ' +
+        `for example "23.0-0"; got "${version}".`
+    );
   }
 
   return bare;
@@ -90,7 +248,7 @@ function compareAompVersions(a, b) {
 
 function httpsGetJson(url, redirects = 5) {
   return new Promise((resolve, reject) => {
-    const req = https__WEBPACK_IMPORTED_MODULE_7__.get(
+    const req = node_https__WEBPACK_IMPORTED_MODULE_4__.get(
       url,
       {
         headers: {
@@ -176,8 +334,8 @@ async function resolveAompRelease(requestedVersion = '') {
 
 function sha256File(file) {
   return new Promise((resolve, reject) => {
-    const hash = (0,crypto__WEBPACK_IMPORTED_MODULE_3__.createHash)('sha256');
-    const stream = (0,fs__WEBPACK_IMPORTED_MODULE_2__.createReadStream)(file);
+    const hash = (0,node_crypto__WEBPACK_IMPORTED_MODULE_2__.createHash)('sha256');
+    const stream = (0,node_fs__WEBPACK_IMPORTED_MODULE_3__.createReadStream)(file);
     stream.on('error', reject);
     stream.on('data', chunk => hash.update(chunk));
     stream.on('end', () => resolve(hash.digest('hex')));
@@ -199,13 +357,13 @@ async function verifyChecksum(file, version, expected) {
 }
 
 function findAompRoot(root, depth = 0) {
-  if ((0,fs__WEBPACK_IMPORTED_MODULE_2__.existsSync)((0,path__WEBPACK_IMPORTED_MODULE_5__.join)(root, 'bin', 'flang'))) return root;
+  if ((0,node_fs__WEBPACK_IMPORTED_MODULE_3__.existsSync)((0,node_path__WEBPACK_IMPORTED_MODULE_6__.join)(root, 'bin', 'flang'))) return root;
   if (depth >= 5) return '';
 
-  for (const entry of (0,fs__WEBPACK_IMPORTED_MODULE_2__.readdirSync)(root, { withFileTypes: true })) {
+  for (const entry of (0,node_fs__WEBPACK_IMPORTED_MODULE_3__.readdirSync)(root, { withFileTypes: true })) {
     if (!entry.isDirectory()) continue;
 
-    const candidate = (0,path__WEBPACK_IMPORTED_MODULE_5__.join)(root, entry.name);
+    const candidate = (0,node_path__WEBPACK_IMPORTED_MODULE_6__.join)(root, entry.name);
     const found = findAompRoot(candidate, depth + 1);
     if (found) return found;
   }
@@ -226,128 +384,163 @@ function prependPathList(paths, current = '') {
 }
 
 async function setup(version = '') {
-  if (process__WEBPACK_IMPORTED_MODULE_6__.platform !== 'linux') {
-    throw new Error('AOMP setup is only supported on Linux.');
-  }
+  (0,_common_js__WEBPACK_IMPORTED_MODULE_8__/* .assertLinux */ .b4)('AOMP setup is only supported on Linux.');
 
-  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .startGroup */ .Oh)('setup-fortran-conda: Install AOMP System Dependencies');
-  try {
-    await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('sudo', ['apt-get', 'update', '-y']);
-    await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('sudo', [
-      'apt-get',
-      'install',
-      '-y',
-      'ca-certificates',
-      'curl',
-      'tar',
-      'gzip',
-      'libstdc++6',
-      'libtinfo6',
-      'libxml2',
-      'libdrm2',
-      'zlib1g',
-      'python3'
-    ]);
-  } catch (err) {
-    throw new Error(`AOMP system dependency install failed: ${err.message}`);
-  }
-  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .endGroup */ .N4)();
+  await (0,_common_js__WEBPACK_IMPORTED_MODULE_8__/* .grouped */ .zD)(
+    'setup-fortran-conda: Install AOMP System Dependencies',
+    async () => {
+      try {
+        await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('sudo', ['apt-get', 'update', '-y']);
+        await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('sudo', [
+          'apt-get',
+          'install',
+          '-y',
+          'ca-certificates',
+          'curl',
+          'tar',
+          'gzip',
+          'libstdc++6',
+          'libtinfo6',
+          'libxml2',
+          'libdrm2',
+          'zlib1g',
+          'python3',
+        ]);
+      } catch (error) {
+        throw new Error(
+          `AOMP system dependency install failed: ${error.message}`
+        );
+      }
+    }
+  );
 
   const release = await resolveAompRelease(version);
-  const tarPath = (0,path__WEBPACK_IMPORTED_MODULE_5__.join)((0,os__WEBPACK_IMPORTED_MODULE_4__.tmpdir)(), `aomp-${release.version}.tar.gz`);
-  const extractDir = (0,path__WEBPACK_IMPORTED_MODULE_5__.join)(process.env.RUNNER_TEMP || (0,os__WEBPACK_IMPORTED_MODULE_4__.tmpdir)(), `setup-fortran-conda-aomp-${release.version}`);
+  const tarPath = (0,node_path__WEBPACK_IMPORTED_MODULE_6__.join)((0,node_os__WEBPACK_IMPORTED_MODULE_5__.tmpdir)(), `aomp-${release.version}.tar.gz`);
+  const extractDir = (0,node_path__WEBPACK_IMPORTED_MODULE_6__.join)(
+    process.env.RUNNER_TEMP || (0,node_os__WEBPACK_IMPORTED_MODULE_5__.tmpdir)(),
+    `setup-fortran-conda-aomp-${release.version}`
+  );
 
-  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .startGroup */ .Oh)('setup-fortran-conda: Download AOMP Binary Tarball');
-  try {
-    await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('curl', [
-      '--fail',
-      '--location',
-      '--connect-timeout',
-      '30',
-      '--retry',
-      '3',
-      '--retry-all-errors',
-      '--retry-delay',
-      '2',
-      '--output',
-      tarPath,
-      release.url
-    ]);
-    await verifyChecksum(tarPath, release.version, release.checksum);
-  } catch (err) {
-    throw new Error(`AOMP download failed: ${err.message}`);
-  }
-  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .endGroup */ .N4)();
+  await (0,_common_js__WEBPACK_IMPORTED_MODULE_8__/* .grouped */ .zD)(
+    'setup-fortran-conda: Download AOMP Binary Tarball',
+    async () => {
+      try {
+        await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('curl', [
+          '--fail',
+          '--location',
+          '--connect-timeout',
+          '30',
+          '--retry',
+          '3',
+          '--retry-all-errors',
+          '--retry-delay',
+          '2',
+          '--output',
+          tarPath,
+          release.url,
+        ]);
+        await verifyChecksum(tarPath, release.version, release.checksum);
+      } catch (error) {
+        throw new Error(`AOMP download failed: ${error.message}`);
+      }
+    }
+  );
 
-  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .startGroup */ .Oh)('setup-fortran-conda: Extract AOMP');
-  (0,fs__WEBPACK_IMPORTED_MODULE_2__.mkdirSync)(extractDir, { recursive: true });
-  try {
-    await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('tar', ['-xzf', tarPath, '-C', extractDir]);
-  } catch (err) {
-    throw new Error(`AOMP extraction failed: ${err.message}`);
-  }
-  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .endGroup */ .N4)();
+  await (0,_common_js__WEBPACK_IMPORTED_MODULE_8__/* .grouped */ .zD)('setup-fortran-conda: Extract AOMP', async () => {
+    (0,node_fs__WEBPACK_IMPORTED_MODULE_3__.mkdirSync)(extractDir, { recursive: true });
+    try {
+      await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('tar', ['-xzf', tarPath, '-C', extractDir]);
+    } catch (error) {
+      throw new Error(`AOMP extraction failed: ${error.message}`);
+    }
+  });
 
   const aompRoot = findAompRoot(extractDir);
   if (!aompRoot) {
     throw new Error(`Unable to locate AOMP installation root under ${extractDir}.`);
   }
 
-  const prefix = await getCondaPrefix('fortran');
-  const condaBin = (0,path__WEBPACK_IMPORTED_MODULE_5__.join)(prefix, 'bin');
-  const binPath = (0,path__WEBPACK_IMPORTED_MODULE_5__.join)(aompRoot, 'bin');
+  const prefix = await (0,_common_js__WEBPACK_IMPORTED_MODULE_8__/* .getCondaPrefix */ .s6)('fortran');
+  const condaBin = (0,node_path__WEBPACK_IMPORTED_MODULE_6__.join)(prefix, 'bin');
+  const binPath = (0,node_path__WEBPACK_IMPORTED_MODULE_6__.join)(aompRoot, 'bin');
 
-  const libPath = (0,path__WEBPACK_IMPORTED_MODULE_5__.join)(aompRoot, 'lib');
-  const lib64Path = (0,path__WEBPACK_IMPORTED_MODULE_5__.join)(aompRoot, 'lib64');
+  const libPath = (0,node_path__WEBPACK_IMPORTED_MODULE_6__.join)(aompRoot, 'lib');
+  const lib64Path = (0,node_path__WEBPACK_IMPORTED_MODULE_6__.join)(aompRoot, 'lib64');
   const ldLibraryPath = prependPathList(
-    [libPath, lib64Path].filter(p => (0,fs__WEBPACK_IMPORTED_MODULE_2__.existsSync)(p)),
-    process__WEBPACK_IMPORTED_MODULE_6__.env.LD_LIBRARY_PATH || ''
+    [libPath, lib64Path].filter(p => (0,node_fs__WEBPACK_IMPORTED_MODULE_3__.existsSync)(p)),
+    node_process__WEBPACK_IMPORTED_MODULE_7__.env.LD_LIBRARY_PATH || ''
   );
 
-  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .startGroup */ .Oh)('setup-fortran-conda: Configure Compiler Paths');
-  for (const p of [condaBin, binPath]) {
-    if ((0,fs__WEBPACK_IMPORTED_MODULE_2__.existsSync)(p)) {
-      (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .addPath */ .fM)(p);
-      (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)(`Added to PATH: ${p}`);
-    }
-  }
-  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .endGroup */ .N4)();
+  await (0,_common_js__WEBPACK_IMPORTED_MODULE_8__/* .addExistingPaths */ .Bf)([condaBin, binPath]);
 
-  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .startGroup */ .Oh)('setup-fortran-conda: Verify Compiler Commands');
-  await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('which', ['flang']);
-  await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('flang', ['--version']);
-  await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('which', ['clang']);
-  await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('clang', ['--version']);
-  await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('which', ['clang++']);
-  await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('clang++', ['--version']);
-  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .endGroup */ .N4)();
+  await (0,_common_js__WEBPACK_IMPORTED_MODULE_8__/* .verifyCommands */ .I6)([
+    { command: 'flang', args: ['--version'] },
+    { command: 'clang', args: ['--version'] },
+    { command: 'clang++', args: ['--version'] },
+  ]);
 
-  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .startGroup */ .Oh)('setup-fortran-conda: Export Compiler Environment');
-  const envVars = {
-    AOMP_HOME: aompRoot,
-    AOMP_ROOT: aompRoot,
-    AOMP_VERSION: release.version,
-    FC: 'flang',
-    CC: 'clang',
-    CXX: 'clang++',
-    FPM_FC: 'flang',
-    FPM_CC: 'clang',
-    FPM_CXX: 'clang++',
-    CMAKE_Fortran_COMPILER: 'flang',
-    CMAKE_C_COMPILER: 'clang',
-    CMAKE_CXX_COMPILER: 'clang++',
-    LD_LIBRARY_PATH: ldLibraryPath
-  };
+  await (0,_common_js__WEBPACK_IMPORTED_MODULE_8__/* .exportCompilerEnvironment */ .x7)(
+    (0,_common_js__WEBPACK_IMPORTED_MODULE_8__/* .compilerEnvironment */ .HD)('flang', 'clang', 'clang++', {
+      AOMP_HOME: aompRoot,
+      AOMP_ROOT: aompRoot,
+      AOMP_VERSION: release.version,
+      LD_LIBRARY_PATH: ldLibraryPath,
+    })
+  );
 
-  for (const [key, value] of Object.entries(envVars)) {
-    exportEnv(key, value);
-    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)(`Exported: ${key}=${value}`);
-  }
-  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .endGroup */ .N4)();
-
-  setLinuxUlimits();
+  await (0,_common_js__WEBPACK_IMPORTED_MODULE_8__/* .setLinuxUlimits */ .QK)();
 
   (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)('AOMP compiler setup complete');
+}
+
+
+/***/ }),
+
+/***/ 994:
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Bf: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_4__.Bf),
+/* harmony export */   EE: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_4__.EE),
+/* harmony export */   HD: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_4__.HD),
+/* harmony export */   I6: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_4__.I6),
+/* harmony export */   MA: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_4__.MA),
+/* harmony export */   QK: () => (/* binding */ setLinuxUlimits),
+/* harmony export */   Qv: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_4__.Qv),
+/* harmony export */   b4: () => (/* binding */ assertLinux),
+/* harmony export */   pI: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_4__.pI),
+/* harmony export */   s6: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_4__.s6),
+/* harmony export */   x7: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_4__.x7),
+/* harmony export */   zD: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_4__.zD)
+/* harmony export */ });
+/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3360);
+/* harmony import */ var node_fs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3024);
+/* harmony import */ var node_os__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(8161);
+/* harmony import */ var node_path__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(6760);
+/* harmony import */ var _common_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(7174);
+
+
+
+
+
+
+
+
+function assertLinux(
+  message = 'This setup script is only supported on Linux.'
+) {
+  (0,_common_js__WEBPACK_IMPORTED_MODULE_4__/* .assertPlatform */ .G6)('linux', message);
+}
+
+async function setLinuxUlimits() {
+  await (0,_common_js__WEBPACK_IMPORTED_MODULE_4__/* .grouped */ .zD)('setup-fortran-conda: Configure Linux Environment', async () => {
+    const command =
+      'ulimit -c unlimited -d unlimited -f unlimited -m unlimited -s unlimited -t unlimited -v unlimited -x unlimited';
+    const script = (0,node_path__WEBPACK_IMPORTED_MODULE_3__.join)(process.env.RUNNER_TEMP, 'ulimit.sh');
+    (0,node_fs__WEBPACK_IMPORTED_MODULE_1__.appendFileSync)(script, `${command}${node_os__WEBPACK_IMPORTED_MODULE_2__.EOL}`);
+    (0,node_fs__WEBPACK_IMPORTED_MODULE_1__.appendFileSync)(process.env.GITHUB_ENV, `BASH_ENV=${script}${node_os__WEBPACK_IMPORTED_MODULE_2__.EOL}`);
+    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)('ulimit settings exported to BASH_ENV');
+  });
 }
 
 

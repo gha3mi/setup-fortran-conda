@@ -9,6 +9,7 @@ A GitHub Action that sets up a Fortran development environment using Conda where
     - [Ubuntu](#ubuntu)
     - [macOS](#macos)
     - [Windows](#windows)
+    - [MPI Toolchains](#mpi-toolchains)
   - [Simple Usage](#simple-usage)
   - [✅ CI Status](#-ci-status)
   - [📋 Workflow Example](#-workflow-example)
@@ -57,11 +58,22 @@ The selected Fortran compiler is installed along with the corresponding C and C+
 | lfortran         | clang      | clang++      |
 | flang, flang-new | clang-cl   | clang-cl     |
 
+### MPI Toolchains
+
+| Platform | Fortran Compiler | MPI |
+| -------- | ---------------- | --- |
+| Ubuntu   | gfortran         | MPICH, Open MPI |
+| macOS    | gfortran         | MPICH, Open MPI |
+| Ubuntu   | ifx              | Intel MPI |
+| Windows  | ifx              | Intel MPI |
+| Ubuntu   | nvfortran        | NVIDIA HPC-X |
+
 **The following environment variables are automatically set:**
 
 * `FC`, `CC`, `CXX`
 * `FPM_FC`, `FPM_CC`, `FPM_CXX`
 * `CMAKE_Fortran_COMPILER`, `CMAKE_C_COMPILER`, `CMAKE_CXX_COMPILER`
+* When MPI is enabled: `MPIFC`, `MPIF90`, `MPIF77`, `MPICC`, `MPICXX`, `MPIEXEC`, `MPIEXEC_NUMPROC_FLAG`, `MPI_HOME`
 
 ## Simple Usage
 
@@ -163,6 +175,7 @@ This example automates Fortran CI/CD:
 * 📦 **Fortran compiler setup**:
 
   * Supports: `gfortran`, `ifx`, `lfortran`, `flang-new`, `nvfortran`, `aocc`, `aomp`
+  * Optional validated MPI toolchains using MPICH, Open MPI, Intel MPI, or NVIDIA HPC-X
 
 * 🖥️ **Cross-platform testing**:
 
@@ -229,8 +242,11 @@ Extra generator options can be passed as a one-line string with `dependency-grap
 | Job Name                     | Description                                                      |
 | ---------------------------- | ---------------------------------------------------------------- |
 | `test_fpm`                   | Run `fpm` tests (debug + release) for each OS/compiler           |
+| `test_mpi_fpm`               | Run fpm MPI tests for supported OS/compiler/MPI toolchains       |
 | `test_cmake`                 | Run CMake/Ninja builds and tests                                 |
+| `test_mpi_cmake`             | Run CMake MPI builds and two-rank tests                          |
 | `test_meson`                 | Run Meson builds and tests                                       |
+| `test_mpi_meson`             | Run Meson MPI builds and two-rank tests                          |
 | `doc_ford`                   | Build and deploy FORD-generated docs                             |
 | `doc_doxygen`                | Build and deploy Doxygen-generated docs                          |
 | `status_fpm`                 | Generate `STATUS.md` with fpm test results                       |
@@ -515,33 +531,50 @@ If `compiler-version` is set to an empty string `""` or `latest`, the latest ver
 
 ### MPI Support
 
-MPI-based tests can be executed using fpm with the mpifort. This is currently supported on Linux and macOS runners. The following example job sets up the environment and runs parallel MPI tests:
-
 ```yml
 test_mpi_fpm:
-  name: ${{ matrix.os }}_${{ matrix.compiler }}_mpi_fpm
+  name: ${{ matrix.os }}_${{ matrix.compiler }}_${{ matrix.mpi }}_fpm
   runs-on: ${{ matrix.os }}
   strategy:
     fail-fast: false
     matrix:
       include:
-      - {os: ubuntu-latest, compiler: mpifort, compiler-version: "", extra-packages: ""}
-      - {os: macos-latest,  compiler: mpifort, compiler-version: "", extra-packages: ""}
+      - {os: ubuntu-latest, compiler: gfortran, mpi: mpich}
+      - {os: ubuntu-latest, compiler: gfortran, mpi: openmpi}
+      - {os: macos-latest,  compiler: gfortran, mpi: mpich}
+      - {os: macos-latest,  compiler: gfortran, mpi: openmpi}
+      - {os: ubuntu-latest, compiler: ifx, mpi: intelmpi}
+      - {os: windows-latest, compiler: ifx, mpi: intelmpi, fpm-version: 0.12.0}
+      - {os: ubuntu-latest, compiler: nvfortran, mpi: hpcx}
 
   steps:
-    - name: Setup Fortran
+    - name: Setup Fortran and MPI
       uses: gha3mi/setup-fortran-conda@latest
       with:
         compiler: ${{ matrix.compiler }}
-        compiler-version: ${{ matrix.compiler-version }}
-        extra-packages: ${{ matrix.extra-packages }}
+        mpi: ${{ matrix.mpi }}
+        fpm-version: ${{ matrix.fpm-version }}
 
-    - name: fpm test (debug)
-      run: fpm test --target mpi_hello --compiler ${{ matrix.compiler }} --profile debug --flag "-cpp -DUSE_MPI" --runner "mpirun -np 4" --verbose
-
-    - name: fpm test (release)
-      run: fpm test --target mpi_hello --compiler ${{ matrix.compiler }} --profile release --flag "-cpp -DUSE_MPI" --runner "mpirun -np 4" --verbose
+    - name: Run an fpm project that declares dependencies.mpi
+      shell: bash
+      run: >
+        fpm run --compiler "$FPM_FC"
+        --runner "$MPIEXEC"
+        --runner-args=" $MPIEXEC_NUMPROC_FLAG 2"
+        --verbose
 ```
+
+For current fpm projects, declare MPI in `fpm.toml`:
+
+```toml
+[dependencies]
+mpi = "*"
+```
+
+For CMake, use `find_package(MPI REQUIRED COMPONENTS Fortran)` and link `MPI::MPI_Fortran`. For Meson, use `dependency('mpi', language: 'fortran')`.
+
+The action checks the wrapper's underlying compiler, detects the available `mpi_f08`, `mpi`, and `mpif.h` bindings, and runs a two-rank program before setup succeeds. Unsupported compiler/MPI/platform combinations fail with the supported alternatives.
+
 
 ## 🚀 Release Automation
 

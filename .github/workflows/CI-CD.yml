@@ -9,7 +9,7 @@ on:
     paths-ignore: ['README.md','CHANGELOG.md','VERSION','LICENSE']
   workflow_dispatch:
   schedule:
-    - cron: "0 3 * * MON,WED,FRI,SUN"
+    - cron: "0 10 * * SAT"
 
 permissions:
   contents: write

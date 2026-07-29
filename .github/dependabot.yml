@@ -8,10 +8,14 @@ updates:
   - package-ecosystem: "github-actions"
     directory: "/"         # Looks in .github/workflows and root for 'uses:' statements
     schedule:
-      interval: "daily"
+      interval: "weekly"
+      day: "friday"
+      time: "04:00"
 
   # npm dependencies declared in package.json and package-lock.json
   - package-ecosystem: "npm"
     directory: "/"         # Looks for package.json and package-lock.json in root
     schedule:
-      interval: "daily"
+      interval: "weekly"
+      day: "friday"
+      time: "05:00"

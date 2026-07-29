@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+      name="description"
+      content="Generate or update a README table from CI matrix results."
+    >
+    <title>README table — setup-fortran-conda</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="syntax.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#content">Skip to content</a>
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand" href="index.html">setup-fortran-conda</a>
+        <nav aria-label="Primary">
+          <a href="index.html">Start</a>
+          <a href="toolchains.html">Compilers</a>
+          <a href="mpi.html">MPI</a>
+          <a href="ford.html">FORD</a>
+          <a href="doxygen.html">Doxygen</a>
+          <a href="fortitude.html">Fortitude</a>
+          <a class="active" href="readme-table.html">CI Table</a>
+          <a href="dependency-graphs.html">Dependencies</a>
+          <a href="status-badges.html">Badges</a>
+        </nav>
+        <a class="github-link" href="https://github.com/gha3mi/setup-fortran-conda">GitHub</a>
+      </div>
+    </header>
+
+    <main id="content" class="content">
+      <header class="page-header">
+        <h1>README table</h1>
+        <p>
+          Aggregate compiler, MPI and build-tool metadata from matrix jobs into
+          a CI table. Inject the table between README markers or create a pull
+          request containing the update.
+        </p>
+      </header>
+
+      <section>
+        <h2>Inputs</h2>
+        <div
+          class="table-wrap"
+          role="region"
+          aria-label="README table inputs"
+          tabindex="0"
+        >
+          <table class="input-table">
+            <thead>
+              <tr>
+                <th>Input</th>
+                <th>Default</th>
+                <th>Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr data-input="generate-status-table" data-default="false">
+                <td><code>generate-status-table</code></td>
+                <td><code>false</code></td>
+                <td>Generate the README CI table</td>
+              </tr>
+              <tr data-input="update-readme-table" data-default="false">
+                <td><code>update-readme-table</code></td>
+                <td><code>false</code></td>
+                <td>Update the README CI table through a pull request</td>
+              </tr>
+              <tr data-input="update-readme-user-name" data-default="">
+                <td><code>update-readme-user-name</code></td>
+                <td>empty</td>
+                <td>Git author name</td>
+              </tr>
+              <tr data-input="update-readme-user-email" data-default="">
+                <td><code>update-readme-user-email</code></td>
+                <td>empty</td>
+                <td>Git author email</td>
+              </tr>
+              <tr data-input="update-readme-token" data-default="">
+                <td><code>update-readme-token</code></td>
+                <td>empty</td>
+                <td>Token used to create the pull request</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section>
+        <h2>Job-name suffixes</h2>
+        <p data-job-suffixes="_cmake _fpm _meson">
+          The final underscore-separated segment of each tested job name
+          identifies the table column. Supported suffixes are
+          <code>_fpm</code>, <code>_cmake</code> and <code>_meson</code>.
+        </p>
+        <pre><code class="language-yaml">test_fpm:
+  name: ${{ matrix.os }}_${{ matrix.compiler }}_fpm
+  runs-on: ${{ matrix.os }}
+  strategy:
+    fail-fast: false
+    matrix:
+      include:
+      - {os: ubuntu-latest, compiler: gfortran}
+
+test_mpi_cmake:
+  name: ${{ matrix.os }}_${{ matrix.compiler }}_${{ matrix.mpi }}_cmake
+  runs-on: ${{ matrix.os }}
+  strategy:
+    fail-fast: false
+    matrix:
+      include:
+      - {os: ubuntu-latest, compiler: gfortran, mpi: mpich}
+
+test_mpi_meson:
+  name: ${{ matrix.os }}_${{ matrix.compiler }}_${{ matrix.mpi }}_meson
+  runs-on: ${{ matrix.os }}
+  strategy:
+    fail-fast: false
+    matrix:
+      include:
+      - {os: ubuntu-latest, compiler: gfortran, mpi: openmpi}</code></pre>
+      </section>
+
+      <section>
+        <h2>README markers</h2>
+        <p>
+          Add these markers to <code>README.md</code>; the generated CI table
+          is inserted between them.
+        </p>
+        <pre><code>&lt;!-- STATUS:setup-fortran-conda:START --&gt;
+&lt;!-- STATUS:setup-fortran-conda:END --&gt;</code></pre>
+      </section>
+
+      <section>
+        <h2>Update through a pull request</h2>
+        <pre><code class="language-yaml">update_readme_table:
+  if: ${{ always() }}
+  name: Update README.md status table
+  needs: [test_fpm, test_cmake, test_meson]
+  runs-on: ubuntu-latest
+  steps:
+    - name: Update README status
+      uses: gha3mi/setup-fortran-conda@latest
+      with:
+        update-readme-table: true
+        update-readme-token: ${{ secrets.GH_PAT }}
+        update-readme-user-name: "Your Name"
+        update-readme-user-email: "you@example.com"</code></pre>
+      </section>
+
+    </main>
+
+  </body>
+</html>

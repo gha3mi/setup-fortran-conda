@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+      name="description"
+      content="Install supported MPI toolchains and use them with fpm, CMake or Meson."
+    >
+    <title>MPI — setup-fortran-conda</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="syntax.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#content">Skip to content</a>
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand" href="index.html">setup-fortran-conda</a>
+        <nav aria-label="Primary">
+          <a href="index.html">Start</a>
+          <a href="toolchains.html">Compilers</a>
+          <a class="active" href="mpi.html">MPI</a>
+          <a href="ford.html">FORD</a>
+          <a href="doxygen.html">Doxygen</a>
+          <a href="fortitude.html">Fortitude</a>
+          <a href="readme-table.html">CI Table</a>
+          <a href="dependency-graphs.html">Dependencies</a>
+          <a href="status-badges.html">Badges</a>
+        </nav>
+        <a class="github-link" href="https://github.com/gha3mi/setup-fortran-conda">GitHub</a>
+      </div>
+    </header>
+
+    <main id="content" class="content">
+      <header class="page-header">
+        <h1>MPI</h1>
+        <p>
+          Install MPICH, Open MPI, Intel MPI or HPC-X for supported compiler
+          and runner combinations. Use exported compiler wrappers and launcher
+          settings with fpm, CMake or Meson.
+        </p>
+      </header>
+
+      <section>
+        <h2>Supported combinations</h2>
+        <div
+          class="table-wrap"
+          role="region"
+          aria-label="Supported MPI combinations"
+          tabindex="0"
+        >
+          <table class="support-table">
+            <thead>
+              <tr>
+                <th>Runner</th>
+                <th><code>compiler</code></th>
+                <th><code>mpi</code></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                data-mpi-platform="lin"
+                data-mpi-compiler="gfortran"
+                data-mpi="mpich openmpi"
+              >
+                <td>Ubuntu</td>
+                <td><code>gfortran</code></td>
+                <td><code>mpich</code>, <code>openmpi</code></td>
+              </tr>
+              <tr
+                data-mpi-platform="lin"
+                data-mpi-compiler="ifx"
+                data-mpi="intelmpi"
+              >
+                <td>Ubuntu</td>
+                <td><code>ifx</code></td>
+                <td><code>intelmpi</code></td>
+              </tr>
+              <tr
+                data-mpi-platform="lin"
+                data-mpi-compiler="nvfortran"
+                data-mpi="hpcx"
+              >
+                <td>Ubuntu</td>
+                <td><code>nvfortran</code></td>
+                <td><code>hpcx</code></td>
+              </tr>
+              <tr
+                data-mpi-platform="mac"
+                data-mpi-compiler="gfortran"
+                data-mpi="mpich openmpi"
+              >
+                <td>macOS</td>
+                <td><code>gfortran</code></td>
+                <td><code>mpich</code>, <code>openmpi</code></td>
+              </tr>
+              <tr
+                data-mpi-platform="win"
+                data-mpi-compiler="ifx"
+                data-mpi="intelmpi"
+              >
+                <td>Windows</td>
+                <td><code>ifx</code></td>
+                <td><code>intelmpi</code></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section>
+        <h2>Inputs</h2>
+        <div
+          class="table-wrap"
+          role="region"
+          aria-label="MPI inputs"
+          tabindex="0"
+        >
+          <table class="input-table">
+            <thead>
+              <tr>
+                <th>Input</th>
+                <th>Default</th>
+                <th>Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr data-input="mpi" data-default="none">
+                <td><code>mpi</code></td>
+                <td><code>none</code></td>
+                <td>
+                  <code>none</code>, <code>mpich</code>,
+                  <code>openmpi</code>, <code>intelmpi</code>,
+                  <code>hpcx</code>
+                </td>
+              </tr>
+              <tr data-input="mpi-version" data-default="">
+                <td><code>mpi-version</code></td>
+                <td>empty</td>
+                <td>
+                  Version, <code>latest</code>, or empty; requires
+                  <code>mpi</code>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section>
+        <h2>Exported environment</h2>
+        <div
+          class="variable-panel"
+          data-environment="mpi"
+          data-variables="MPIEXEC MPIEXEC_NUMPROC_FLAG MPICC MPICXX MPIF77 MPIF90 MPIFC MPI_HOME"
+        >
+          <code>MPIFC</code>, <code>MPIF90</code>,
+          <code>MPIF77</code>, <code>MPICC</code>,
+          <code>MPICXX</code>, <code>MPIEXEC</code>,
+          <code>MPIEXEC_NUMPROC_FLAG</code>, <code>MPI_HOME</code>
+        </div>
+      </section>
+
+      <section>
+        <h2>fpm</h2>
+        <p><code>fpm</code> and the selected MPI toolchain are installed.</p>
+        <pre><code class="language-yaml">test_mpi_fpm:
+  name: ${{ matrix.os }}_${{ matrix.compiler }}_${{ matrix.mpi }}_fpm
+  runs-on: ${{ matrix.os }}
+  strategy:
+    fail-fast: false
+    matrix:
+      include:
+      - {os: ubuntu-latest, compiler: gfortran, compiler-version: "", mpi: openmpi, mpi-version: ""}
+  steps:
+    - name: setup-fortran-conda
+      uses: gha3mi/setup-fortran-conda@latest
+      with:
+        compiler: ${{ matrix.compiler }}
+        compiler-version: ${{ matrix.compiler-version }}
+        mpi: ${{ matrix.mpi }}
+        mpi-version: ${{ matrix.mpi-version }}
+
+    - name: fpm MPI test
+      run: fpm test --compiler "${{ env.MPIFC }}" --runner "${{ env.MPIEXEC }}" --runner-args=" ${{ env.MPIEXEC_NUMPROC_FLAG }} 2" --verbose</code></pre>
+      </section>
+
+      <section>
+        <h2>CMake</h2>
+        <p>
+          <code>CMake</code>, <code>Ninja</code> and the selected MPI
+          toolchain are installed.
+        </p>
+        <pre><code class="language-yaml">test_mpi_cmake:
+  name: ${{ matrix.os }}_${{ matrix.compiler }}_${{ matrix.mpi }}_cmake
+  runs-on: ${{ matrix.os }}
+  strategy:
+    fail-fast: false
+    matrix:
+      include:
+      - {os: ubuntu-latest, compiler: gfortran, compiler-version: "", mpi: mpich, mpi-version: ""}
+  steps:
+    - name: setup-fortran-conda
+      uses: gha3mi/setup-fortran-conda@latest
+      with:
+        compiler: ${{ matrix.compiler }}
+        compiler-version: ${{ matrix.compiler-version }}
+        mpi: ${{ matrix.mpi }}
+        mpi-version: ${{ matrix.mpi-version }}
+
+    - name: CMake MPI test
+      run: |
+        cmake -S . -B build -G Ninja -DCMAKE_Fortran_COMPILER="${{ env.MPIFC }}" -DMPIEXEC_EXECUTABLE="${{ env.MPIEXEC }}"
+        cmake --build build --verbose
+        ctest --test-dir build --output-on-failure -VV</code></pre>
+      </section>
+
+      <section>
+        <h2>Meson</h2>
+        <p>
+          <code>Meson</code>, <code>Ninja</code> and the selected MPI
+          toolchain are installed.
+        </p>
+        <pre><code class="language-yaml">test_mpi_meson:
+  name: ${{ matrix.os }}_${{ matrix.compiler }}_${{ matrix.mpi }}_meson
+  runs-on: ${{ matrix.os }}
+  strategy:
+    fail-fast: false
+    matrix:
+      include:
+      - {os: ubuntu-latest, compiler: gfortran, compiler-version: "", mpi: openmpi, mpi-version: ""}
+  steps:
+    - name: setup-fortran-conda
+      uses: gha3mi/setup-fortran-conda@latest
+      with:
+        compiler: ${{ matrix.compiler }}
+        compiler-version: ${{ matrix.compiler-version }}
+        mpi: ${{ matrix.mpi }}
+        mpi-version: ${{ matrix.mpi-version }}
+
+    - name: Meson MPI test
+      run: |
+        meson setup build --buildtype release --backend=ninja -Dfortran_args=-DUSE_MPI
+        meson compile -C build --verbose
+        meson test -C build --verbose</code></pre>
+      </section>
+
+    </main>
+
+  </body>
+</html>

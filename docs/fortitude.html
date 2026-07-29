@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+      name="description"
+      content="Install and run Fortitude with configurable checks."
+    >
+    <title>Fortitude — setup-fortran-conda</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="syntax.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#content">Skip to content</a>
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand" href="index.html">setup-fortran-conda</a>
+        <nav aria-label="Primary">
+          <a href="index.html">Start</a>
+          <a href="toolchains.html">Compilers</a>
+          <a href="mpi.html">MPI</a>
+          <a href="ford.html">FORD</a>
+          <a href="doxygen.html">Doxygen</a>
+          <a class="active" href="fortitude.html">Fortitude</a>
+          <a href="readme-table.html">CI Table</a>
+          <a href="dependency-graphs.html">Dependencies</a>
+          <a href="status-badges.html">Badges</a>
+        </nav>
+        <a class="github-link" href="https://github.com/gha3mi/setup-fortran-conda">GitHub</a>
+      </div>
+    </header>
+
+    <main id="content" class="content">
+      <header class="page-header">
+        <h1>Fortitude</h1>
+        <p>
+          Install <code>fortitude-lint</code> in the action environment and run
+          Fortitude checks with configurable command-line settings.
+        </p>
+      </header>
+
+      <section>
+        <h2>Inputs</h2>
+        <div
+          class="table-wrap"
+          role="region"
+          aria-label="Fortitude inputs"
+          tabindex="0"
+        >
+          <table class="input-table">
+            <thead>
+              <tr>
+                <th>Input</th>
+                <th>Default</th>
+                <th>Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr data-input="fortitude-check" data-default="false">
+                <td><code>fortitude-check</code></td>
+                <td><code>false</code></td>
+                <td>Run Fortitude</td>
+              </tr>
+              <tr
+                data-input="fortitude-settings"
+                data-default="--output-format github"
+              >
+                <td><code>fortitude-settings</code></td>
+                <td><code>--output-format github</code></td>
+                <td>Fortitude command-line options</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section>
+        <h2>Usage</h2>
+        <p>
+          Enabling Fortitude installs
+          <a href="https://github.com/PlasmaFAIR/fortitude"><code>fortitude-lint</code></a>.
+          A separate installation step is not required.
+        </p>
+        <pre><code class="language-yaml">linter_fortitude:
+  name: Run Fortitude Linter
+  runs-on: ubuntu-latest
+  steps:
+    - name: Run Fortitude Linter
+      uses: gha3mi/setup-fortran-conda@latest
+      with:
+        fortitude-check: true
+        fortitude-settings: "--output-format github"</code></pre>
+      </section>
+    </main>
+
+  </body>
+</html>

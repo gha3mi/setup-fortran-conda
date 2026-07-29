@@ -102,6 +102,7 @@
 <li><a href="#ubuntu">Ubuntu</a></li>
 <li><a href="#macos">macOS</a></li>
 <li><a href="#windows">Windows</a></li>
+<li><a href="#mpi-toolchains">MPI Toolchains</a></li>
 </ul>
 </li>
 <li><a href="#simple-usage">Simple Usage</a></li>
@@ -227,11 +228,49 @@
 </tr>
 </tbody>
 </table>
+<h3>MPI Toolchains</h3>
+<table>
+<thead>
+<tr>
+<th>Platform</th>
+<th>Fortran Compiler</th>
+<th>MPI</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ubuntu</td>
+<td>gfortran</td>
+<td>MPICH, Open MPI</td>
+</tr>
+<tr>
+<td>macOS</td>
+<td>gfortran</td>
+<td>MPICH, Open MPI</td>
+</tr>
+<tr>
+<td>Ubuntu</td>
+<td>ifx</td>
+<td>Intel MPI</td>
+</tr>
+<tr>
+<td>Windows</td>
+<td>ifx</td>
+<td>Intel MPI</td>
+</tr>
+<tr>
+<td>Ubuntu</td>
+<td>nvfortran</td>
+<td>NVIDIA HPC-X</td>
+</tr>
+</tbody>
+</table>
 <p><strong>The following environment variables are automatically set:</strong></p>
 <ul>
 <li><code>FC</code>, <code>CC</code>, <code>CXX</code></li>
 <li><code>FPM_FC</code>, <code>FPM_CC</code>, <code>FPM_CXX</code></li>
 <li><code>CMAKE_Fortran_COMPILER</code>, <code>CMAKE_C_COMPILER</code>, <code>CMAKE_CXX_COMPILER</code></li>
+<li>When MPI is enabled: <code>MPIFC</code>, <code>MPIF90</code>, <code>MPIF77</code>, <code>MPICC</code>, <code>MPICXX</code>, <code>MPIEXEC</code>, <code>MPIEXEC_NUMPROC_FLAG</code>, <code>MPIEXEC_PREFLAGS</code>, <code>MPIEXEC_POSTFLAGS</code>, <code>MPI_HOME</code></li>
 </ul>
 <h2>Simple Usage</h2>
 <div class="codehilite"><pre><span></span><code><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Setup Fortran Conda CI/CD</span>
@@ -432,6 +471,9 @@ To keep your <code>main</code> branch clean, consider using a separate branch (e
 <p>Supports: <code>gfortran</code>, <code>ifx</code>, <code>lfortran</code>, <code>flang-new</code>, <code>nvfortran</code>, <code>aocc</code>, <code>aomp</code></p>
 </li>
 <li>
+<p>Optional validated MPI toolchains using MPICH, Open MPI, Intel MPI, or NVIDIA HPC-X</p>
+</li>
+<li>
 <p>🖥️ <strong>Cross-platform testing</strong>:</p>
 </li>
 <li>
@@ -519,12 +561,24 @@ To keep your <code>main</code> branch clean, consider using a separate branch (e
 <td>Run <code>fpm</code> tests (debug + release) for each OS/compiler</td>
 </tr>
 <tr>
+<td><code>test_mpi_fpm</code></td>
+<td>Run fpm MPI tests for supported OS/compiler/MPI toolchains</td>
+</tr>
+<tr>
 <td><code>test_cmake</code></td>
 <td>Run CMake/Ninja builds and tests</td>
 </tr>
 <tr>
+<td><code>test_mpi_cmake</code></td>
+<td>Run CMake MPI builds and two-rank tests</td>
+</tr>
+<tr>
 <td><code>test_meson</code></td>
 <td>Run Meson builds and tests</td>
+</tr>
+<tr>
+<td><code>test_mpi_meson</code></td>
+<td>Run Meson MPI builds and two-rank tests</td>
 </tr>
 <tr>
 <td><code>doc_ford</code></td>
@@ -834,32 +888,44 @@ To keep your <code>main</code> branch clean, consider using a separate branch (e
 
 <p>If <code>compiler-version</code> is set to an empty string <code>""</code> or <code>latest</code>, the latest version will be installed.</p>
 <h3>MPI Support</h3>
-<p>MPI-based tests can be executed using fpm with the mpifort. This is currently supported on Linux and macOS runners. The following example job sets up the environment and runs parallel MPI tests:</p>
 <div class="codehilite"><pre><span></span><code>test_mpi_fpm:
-<span class="w">  </span>name:<span class="w"> </span><span class="cp">${</span><span class="p">{</span> <span class="n">matrix</span><span class="o">.</span><span class="n">os</span> <span class="cp">}</span>}_<span class="cp">${</span><span class="p">{</span> <span class="n">matrix</span><span class="o">.</span><span class="n">compiler</span> <span class="cp">}</span>}_mpi_fpm
+<span class="w">  </span>name:<span class="w"> </span><span class="cp">${</span><span class="p">{</span> <span class="n">matrix</span><span class="o">.</span><span class="n">os</span> <span class="cp">}</span>}_<span class="cp">${</span><span class="p">{</span> <span class="n">matrix</span><span class="o">.</span><span class="n">compiler</span> <span class="cp">}</span>}_<span class="cp">${</span><span class="p">{</span> <span class="n">matrix</span><span class="o">.</span><span class="n">mpi</span> <span class="cp">}</span>}_fpm
 <span class="w">  </span>runs-on:<span class="w"> </span><span class="cp">${</span><span class="p">{</span> <span class="n">matrix</span><span class="o">.</span><span class="n">os</span> <span class="cp">}</span>}
 <span class="w">  </span>strategy:
 <span class="w">    </span>fail-fast:<span class="w"> </span>false
 <span class="w">    </span>matrix:
 <span class="w">      </span>include:
-<span class="w">      </span>-<span class="w"> </span>{os:<span class="w"> </span>ubuntu-latest,<span class="w"> </span>compiler:<span class="w"> </span>mpifort,<span class="w"> </span>compiler-version:<span class="w"> </span>&quot;&quot;,<span class="w"> </span>extra-packages:<span class="w"> </span>&quot;&quot;}
-<span class="w">      </span>-<span class="w"> </span>{os:<span class="w"> </span>macos-latest,<span class="w">  </span>compiler:<span class="w"> </span>mpifort,<span class="w"> </span>compiler-version:<span class="w"> </span>&quot;&quot;,<span class="w"> </span>extra-packages:<span class="w"> </span>&quot;&quot;}
+<span class="w">      </span>-<span class="w"> </span>{os:<span class="w"> </span>ubuntu-latest,<span class="w"> </span>compiler:<span class="w"> </span>gfortran,<span class="w"> </span>mpi:<span class="w"> </span>mpich}
+<span class="w">      </span>-<span class="w"> </span>{os:<span class="w"> </span>ubuntu-latest,<span class="w"> </span>compiler:<span class="w"> </span>gfortran,<span class="w"> </span>mpi:<span class="w"> </span>openmpi}
+<span class="w">      </span>-<span class="w"> </span>{os:<span class="w"> </span>macos-latest,<span class="w">  </span>compiler:<span class="w"> </span>gfortran,<span class="w"> </span>mpi:<span class="w"> </span>mpich}
+<span class="w">      </span>-<span class="w"> </span>{os:<span class="w"> </span>macos-latest,<span class="w">  </span>compiler:<span class="w"> </span>gfortran,<span class="w"> </span>mpi:<span class="w"> </span>openmpi}
+<span class="w">      </span>-<span class="w"> </span>{os:<span class="w"> </span>ubuntu-latest,<span class="w"> </span>compiler:<span class="w"> </span>ifx,<span class="w"> </span>mpi:<span class="w"> </span>intelmpi}
+<span class="w">      </span>-<span class="w"> </span>{os:<span class="w"> </span>windows-latest,<span class="w"> </span>compiler:<span class="w"> </span>ifx,<span class="w"> </span>mpi:<span class="w"> </span>intelmpi}
+<span class="w">      </span>-<span class="w"> </span>{os:<span class="w"> </span>ubuntu-latest,<span class="w"> </span>compiler:<span class="w"> </span>nvfortran,<span class="w"> </span>mpi:<span class="w"> </span>hpcx}
 
 <span class="w">  </span>steps:
-<span class="w">    </span>-<span class="w"> </span>name:<span class="w"> </span>Setup<span class="w"> </span>Fortran
+<span class="w">    </span>-<span class="w"> </span>name:<span class="w"> </span>Setup<span class="w"> </span>Fortran<span class="w"> </span>and<span class="w"> </span>MPI
 <span class="w">      </span>uses:<span class="w"> </span>gha3mi/setup-fortran-conda@latest
 <span class="w">      </span>with:
 <span class="w">        </span>compiler:<span class="w"> </span><span class="cp">${</span><span class="p">{</span> <span class="n">matrix</span><span class="o">.</span><span class="n">compiler</span> <span class="cp">}</span>}
-<span class="w">        </span>compiler-version:<span class="w"> </span><span class="cp">${</span><span class="p">{</span> <span class="n">matrix</span><span class="o">.</span><span class="n">compiler</span><span class="o">-</span><span class="n">version</span> <span class="cp">}</span>}
-<span class="w">        </span>extra-packages:<span class="w"> </span><span class="cp">${</span><span class="p">{</span> <span class="n">matrix</span><span class="o">.</span><span class="n">extra</span><span class="o">-</span><span class="n">packages</span> <span class="cp">}</span>}
+<span class="w">        </span>mpi:<span class="w"> </span><span class="cp">${</span><span class="p">{</span> <span class="n">matrix</span><span class="o">.</span><span class="n">mpi</span> <span class="cp">}</span>}
 
-<span class="w">    </span>-<span class="w"> </span>name:<span class="w"> </span>fpm<span class="w"> </span>test<span class="w"> </span>(debug)
-<span class="w">      </span>run:<span class="w"> </span>fpm<span class="w"> </span>test<span class="w"> </span>--target<span class="w"> </span>mpi_hello<span class="w"> </span>--compiler<span class="w"> </span><span class="cp">${</span><span class="p">{</span> <span class="n">matrix</span><span class="o">.</span><span class="n">compiler</span> <span class="cp">}</span>}<span class="w"> </span>--profile<span class="w"> </span>debug<span class="w"> </span>--flag<span class="w"> </span>&quot;-cpp<span class="w"> </span>-DUSE_MPI&quot;<span class="w"> </span>--runner<span class="w"> </span>&quot;mpirun<span class="w"> </span>-np<span class="w"> </span>4&quot;<span class="w"> </span>--verbose
-
-<span class="w">    </span>-<span class="w"> </span>name:<span class="w"> </span>fpm<span class="w"> </span>test<span class="w"> </span>(release)
-<span class="w">      </span>run:<span class="w"> </span>fpm<span class="w"> </span>test<span class="w"> </span>--target<span class="w"> </span>mpi_hello<span class="w"> </span>--compiler<span class="w"> </span><span class="cp">${</span><span class="p">{</span> <span class="n">matrix</span><span class="o">.</span><span class="n">compiler</span> <span class="cp">}</span>}<span class="w"> </span>--profile<span class="w"> </span>release<span class="w"> </span>--flag<span class="w"> </span>&quot;-cpp<span class="w"> </span>-DUSE_MPI&quot;<span class="w"> </span>--runner<span class="w"> </span>&quot;mpirun<span class="w"> </span>-np<span class="w"> </span>4&quot;<span class="w"> </span>--verbose
+<span class="w">    </span>-<span class="w"> </span>name:<span class="w"> </span>Run<span class="w"> </span>an<span class="w"> </span>fpm<span class="w"> </span>project<span class="w"> </span>that<span class="w"> </span>declares<span class="w"> </span>dependencies.mpi
+<span class="w">      </span>shell:<span class="w"> </span>bash
+<span class="w">      </span>run:<span class="w"> </span>&gt;
+<span class="w">        </span>fpm<span class="w"> </span>run<span class="w"> </span>--compiler<span class="w"> </span>&quot;<span class="nv">$FPM_FC</span>&quot;
+<span class="w">        </span>--runner<span class="w"> </span>&quot;<span class="nv">$MPIEXEC</span>&quot;
+<span class="w">        </span>--runner-args=&quot;<span class="w"> </span><span class="nv">$MPIEXEC_NUMPROC_FLAG</span><span class="w"> </span>2&quot;
+<span class="w">        </span>--verbose
 </code></pre></div>
 
+<p>For current fpm projects, declare MPI in <code>fpm.toml</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">[dependencies]</span>
+<span class="n">mpi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;*&quot;</span>
+</code></pre></div>
+
+<p>For CMake, use <code>find_package(MPI REQUIRED COMPONENTS Fortran)</code> and link <code>MPI::MPI_Fortran</code>. For Meson, use <code>dependency('mpi', language: 'fortran')</code>.</p>
+<p>The action checks the wrapper's underlying compiler, detects the available <code>mpi_f08</code>, <code>mpi</code>, and <code>mpif.h</code> bindings, and runs a two-rank program before setup succeeds. Unsupported compiler/MPI/platform combinations fail with the supported alternatives.</p>
 <h2>🚀 Release Automation</h2>
 <p>This project includes a Bash script for automating GitHub releases.</p>
 <div class="codehilite"><pre><span></span><code>curl -L https://raw.githubusercontent.com/gha3mi/setup-fortran-conda/main/release.sh -o release.sh
@@ -965,7 +1031,7 @@ To keep your <code>main</code> branch clean, consider using a separate branch (e
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2026-07-29T10:44:57.820055+0000             </p>
+ on 2026-07-29T11:52:46.482991+0000             </p>
           </div>
         </div>
         <br>

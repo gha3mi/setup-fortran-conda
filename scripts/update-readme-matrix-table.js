@@ -169,10 +169,10 @@ async function main() {
         const status = statusEmoji(j);
         const mpi = m?.mpi?.enabled
             ? escapeCell(m?.mpi?.implementation || m?.mpi?.requested || 'Unknown')
-            : '—';
+            : '';
         const mpiVersion = m?.mpi?.enabled
             ? cleanValue(m?.mpi?.actual_version || 'Unknown')
-            : '—';
+            : '';
 
         const key = keyOf(osCombined, compiler, compilerVersion, mpi, mpiVersion);
 
@@ -236,7 +236,7 @@ async function main() {
             `\`${escapeCell(r.compiler)}\``,
             r.compilerVersion || 'Unknown',
             ...(hasMpi
-                ? [r.mpi === '—' ? '—' : `\`${escapeCell(r.mpi)}\``, r.mpiVersion || 'Unknown']
+                ? [r.mpi ? `\`${escapeCell(r.mpi)}\`` : '', r.mpiVersion]
                 : []),
             ...tools.map((t) => r[t] || '—'),
         ];

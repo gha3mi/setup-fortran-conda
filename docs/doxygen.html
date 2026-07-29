@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+      name="description"
+      content="Install Doxygen, build project documentation and deploy it."
+    >
+    <title>Doxygen — setup-fortran-conda</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="syntax.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#content">Skip to content</a>
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand" href="index.html">setup-fortran-conda</a>
+        <nav aria-label="Primary">
+          <a href="index.html">Start</a>
+          <a href="toolchains.html">Compilers</a>
+          <a href="mpi.html">MPI</a>
+          <a href="ford.html">FORD</a>
+          <a class="active" href="doxygen.html">Doxygen</a>
+          <a href="fortitude.html">Fortitude</a>
+          <a href="readme-table.html">CI Table</a>
+          <a href="dependency-graphs.html">Dependencies</a>
+          <a href="status-badges.html">Badges</a>
+        </nav>
+        <a class="github-link" href="https://github.com/gha3mi/setup-fortran-conda">GitHub</a>
+      </div>
+    </header>
+
+    <main id="content" class="content">
+      <header class="page-header">
+        <h1>Doxygen</h1>
+        <p>
+          Install Doxygen and Graphviz, build project documentation from the
+          configured Doxyfile and deploy the generated output to the selected
+          branch.
+        </p>
+      </header>
+
+      <section>
+        <h2>Inputs</h2>
+        <div
+          class="table-wrap"
+          role="region"
+          aria-label="Doxygen inputs"
+          tabindex="0"
+        >
+          <table class="input-table">
+            <thead>
+              <tr>
+                <th>Input</th>
+                <th>Default</th>
+                <th>Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr data-input="generate-doc-doxygen" data-default="false">
+                <td><code>generate-doc-doxygen</code></td>
+                <td><code>false</code></td>
+                <td>Build and deploy Doxygen documentation</td>
+              </tr>
+              <tr data-input="doxygen-config" data-default="Doxyfile">
+                <td><code>doxygen-config</code></td>
+                <td><code>Doxyfile</code></td>
+                <td>Doxygen configuration path</td>
+              </tr>
+              <tr data-input="doxygen-branch" data-default="gh-pages-doxygen">
+                <td><code>doxygen-branch</code></td>
+                <td><code>gh-pages-doxygen</code></td>
+                <td>Deployment branch</td>
+              </tr>
+              <tr data-input="doxygen-working-directory" data-default=".">
+                <td><code>doxygen-working-directory</code></td>
+                <td><code>.</code></td>
+                <td>Doxygen working directory</td>
+              </tr>
+              <tr
+                data-input="doxygen-output-directory"
+                data-default="doc/doxygen"
+              >
+                <td><code>doxygen-output-directory</code></td>
+                <td><code>doc/doxygen</code></td>
+                <td>Generated documentation directory</td>
+              </tr>
+              <tr
+                data-input="doxygen-target-folder"
+                data-default="doc/doxygen"
+              >
+                <td><code>doxygen-target-folder</code></td>
+                <td><code>doc/doxygen</code></td>
+                <td>Deployment target folder</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section>
+        <h2>Usage</h2>
+        <p>
+          Enabling Doxygen installs
+          <a href="https://github.com/doxygen/doxygen"><code>Doxygen</code></a>
+          and <code>Graphviz</code>.
+        </p>
+        <pre><code class="language-yaml">doc_doxygen:
+  name: Generate Doxygen Documentation
+  runs-on: ubuntu-latest
+  permissions:
+    contents: write
+  steps:
+    - name: Setup and Generate Doxygen Documentation
+      uses: gha3mi/setup-fortran-conda@latest
+      with:
+        compiler: gfortran
+        generate-doc-doxygen: true
+        doxygen-working-directory: .
+        doxygen-config: Doxyfile
+        doxygen-output-directory: doc/doxygen
+        doxygen-branch: gh-pages-doxygen
+        doxygen-target-folder: doc/doxygen</code></pre>
+      </section>
+    </main>
+
+  </body>
+</html>

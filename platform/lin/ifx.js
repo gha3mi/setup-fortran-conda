@@ -1,143 +1,52 @@
-import { startGroup, endGroup, addPath, info } from '@actions/core';
-import { exec as _exec } from '@actions/exec';
-import { sep, join } from 'path';
-import { appendFileSync, existsSync } from 'fs';
-import { EOL } from 'os';
-import { env, platform } from 'process';
+import { info } from '@actions/core';
+import { join } from 'node:path';
+import {
+  addExistingPaths,
+  assertLinux,
+  compilerEnvironment,
+  exportCompilerEnvironment,
+  exportProcessEnvironment,
+  getCondaPrefix,
+  installCondaPackages,
+  setLinuxUlimits,
+  showCondaEnvironment,
+  verifyCommands,
+} from './common.js';
 
-// Export a key=value pair to GitHub Actions' environment and current process.env
-function exportEnv(key, value) {
-  const envFile = process.env.GITHUB_ENV;
-  if (!envFile) throw new Error('GITHUB_ENV not defined');
-  appendFileSync(envFile, `${key}=${value}${EOL}`);
-  env[key] = value;
-}
+const INTEL_CHANNEL = 'https://software.repos.intel.com/python/conda/';
 
-// Resolve the absolute path of a named conda environment
-async function getCondaPrefix(envName) {
-  let raw = '';
-  await _exec('conda', ['env', 'list', '--json'], {
-    silent: true,
-    listeners: { stdout: d => (raw += d.toString()) }
-  });
-
-  const { envs } = JSON.parse(raw);
-  for (const p of envs) {
-    if (p.endsWith(sep + envName) || p.endsWith('/' + envName)) return p;
-  }
-
-  throw new Error(`Unable to locate Conda environment "${envName}".`);
-}
-
-// Optional: Set unlimited ulimits for Linux
-function setLinuxUlimits() {
-  startGroup('setup-fortran-conda: Configure Linux Environment');
-  const ulimitCmd =
-    'ulimit -c unlimited -d unlimited -f unlimited -m unlimited -s unlimited -t unlimited -v unlimited -x unlimited';
-  const script = `${process.env.RUNNER_TEMP}/ulimit.sh`;
-  appendFileSync(script, `${ulimitCmd}${EOL}`);
-  appendFileSync(process.env.GITHUB_ENV, `BASH_ENV=${script}${EOL}`);
-  info('ulimit settings exported to BASH_ENV');
-  endGroup();
-}
-
-// Main setup function
 export async function setup(version = '') {
-  if (platform !== 'linux') {
-    throw new Error('This setup script is only supported on Linux.');
-  }
+  assertLinux();
 
-  // Define Conda packages
   const packages = [
     version ? `ifx_linux-64=${version}` : 'ifx_linux-64',
     version ? `intel-fortran-rt=${version}` : 'intel-fortran-rt',
     version ? `dpcpp-cpp-rt=${version}` : 'dpcpp-cpp-rt',
     version ? `dpcpp_linux-64=${version}` : 'dpcpp_linux-64',
     version ? `intel-sycl-rt=${version}` : 'intel-sycl-rt',
-    'llvm-openmp'
+    'llvm-openmp',
   ];
+  await installCondaPackages(packages, {
+    channels: [INTEL_CHANNEL, 'conda-forge'],
+  });
+  await showCondaEnvironment();
 
-  // Install required compilers and tools via Conda
-  startGroup('setup-fortran-conda: Install Conda Packages');
-  try {
-    await _exec('conda', [
-      'install',
-      '--yes',
-      '--name',
-      'fortran',
-      ...packages,
-      '-c', 'https://software.repos.intel.com/python/conda/',
-      '-c', 'conda-forge'
-    ]);
-    info('Conda packages installed');
-  } catch (err) {
-    throw new Error(`Conda install failed: ${err.message}`);
-  }
-  endGroup();
+  const prefix = await getCondaPrefix();
+  await addExistingPaths([join(prefix, 'bin')]);
+  await verifyCommands([
+    { command: 'ifx', args: ['--version'] },
+    { command: 'icx', args: ['--version'] },
+  ]);
 
-  // Conda environment information
-  startGroup('setup-fortran-conda: Show Conda Environment');
-  await _exec('conda', ['info']);
-  await _exec('conda', ['list', '--name', 'fortran']);
-  endGroup();
+  await exportCompilerEnvironment(
+    compilerEnvironment('ifx', 'icx', 'icx', {
+      LD_LIBRARY_PATH: [join(prefix, 'lib'), process.env.LD_LIBRARY_PATH || '']
+        .filter(Boolean)
+        .join(':'),
+    })
+  );
+  await setLinuxUlimits();
+  await exportProcessEnvironment();
 
-  // Add Conda bin path to PATH
-  const prefix = await getCondaPrefix('fortran');
-  const binPath = join(prefix, 'bin');
-
-  startGroup('setup-fortran-conda: Configure Compiler Paths');
-  if (existsSync(binPath)) {
-    addPath(binPath);
-    info(`Added to PATH: ${binPath}`);
-  }
-  endGroup();
-
-  // Verify that the compilers are installed and working
-  startGroup('setup-fortran-conda: Verify Compiler Commands');
-  await _exec('which', ['ifx']);
-  await _exec('ifx', ['--version']);
-  await _exec('which', ['icx']);
-  await _exec('icx', ['--version']);
-  endGroup();
-
-  // Export compiler-related environment variables
-  startGroup('setup-fortran-conda: Export Compiler Environment');
-  const envVars = {
-    FC: 'ifx',
-    CC: 'icx',
-    CXX: 'icx',
-    FPM_FC: 'ifx',
-    FPM_CC: 'icx',
-    FPM_CXX: 'icx',
-    CMAKE_Fortran_COMPILER: 'ifx',
-    CMAKE_C_COMPILER: 'icx',
-    CMAKE_CXX_COMPILER: 'icx',
-    LD_LIBRARY_PATH: [join(prefix, 'lib'), env.LD_LIBRARY_PATH || ''].filter(Boolean).join(':')
-  };
-
-  for (const [key, value] of Object.entries(envVars)) {
-    exportEnv(key, value);
-    info(`Exported: ${key}=${value}`);
-  }
-  endGroup();
-
-  setLinuxUlimits();
-
-  // Export all env variables to GITHUB_ENV and process.env
-  startGroup('setup-fortran-conda: Export Process Environment');
-  for (const [key, value] of Object.entries(env)) {
-    if (typeof value === 'string') {
-      try {
-        process.env[key] = value;
-        appendFileSync(process.env.GITHUB_ENV, `${key}=${value}${EOL}`);
-        info(`Exported: ${key}`);
-      } catch (err) {
-        info(`⚠️ Failed to export: ${key} (${err.message})`);
-      }
-    }
-  }
-  endGroup();
-
-  // Final success message
   info('✅ compiler setup complete');
 }

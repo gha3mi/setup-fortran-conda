@@ -9,7 +9,7 @@ on:
     paths-ignore: ['README.md','CHANGELOG.md','VERSION','LICENSE']
   workflow_dispatch:
   schedule:
-    - cron: "0 3 * * MON,WED,FRI,SUN"
+    - cron: "0 10 * * SAT"
 
 permissions:
   contents: write
@@ -48,35 +48,46 @@ jobs:
           fpm-version: ${{ matrix.fpm-version }}
 
       - name: fpm test (debug)
-        run: fpm test --compiler ${{ env.FPM_FC }} --target check --profile debug --verbose
+        run: |
+          fpm test --target check --compiler ${{ env.FPM_FC }} --profile debug --verbose
 
       - name: fpm test (release)
-        run: fpm test --compiler ${{ env.FPM_FC }} --target check --profile release --verbose
+        run: |
+          fpm test --target check --compiler ${{ env.FPM_FC }} --profile release --verbose
 
-  # test_mpi_fpm:
-  #   if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
-  #   name: ${{ matrix.os }}_${{ matrix.compiler }}_mpi_fpm
-  #   runs-on: ${{ matrix.os }}
-  #   strategy:
-  #     fail-fast: false
-  #     matrix:
-  #       include:
-  #       - {os: ubuntu-latest, compiler: mpifort, compiler-version: "", extra-packages: ""}
-  #       - {os: macos-latest,  compiler: mpifort, compiler-version: "", extra-packages: ""}
+  test_mpi_fpm:
+    if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
+    name: ${{ matrix.os }}_${{ matrix.compiler }}_${{ matrix.mpi }}_fpm
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - {os: ubuntu-latest,  compiler: gfortran,   compiler-version: "", mpi: mpich,    mpi-version: ""}
+        - {os: ubuntu-latest,  compiler: gfortran,   compiler-version: "", mpi: openmpi,  mpi-version: ""}
+        - {os: macos-latest,   compiler: gfortran,   compiler-version: "", mpi: mpich,    mpi-version: ""}
+        - {os: macos-latest,   compiler: gfortran,   compiler-version: "", mpi: openmpi,  mpi-version: ""}
+        - {os: ubuntu-latest,  compiler: ifx,        compiler-version: "", mpi: intelmpi, mpi-version: ""}
+        - {os: windows-latest, compiler: ifx,        compiler-version: "", mpi: intelmpi, mpi-version: "", fpm-version: "0.12.0"}
+        - {os: ubuntu-latest,  compiler: nvfortran,  compiler-version: "", mpi: hpcx,     mpi-version: ""}
 
-  #   steps:
-  #     - name: Setup Fortran
-  #       uses: gha3mi/setup-fortran-conda@main
-  #       with:
-  #         compiler: ${{ matrix.compiler }}
-  #         compiler-version: ${{ matrix.compiler-version }}
-  #         extra-packages: ${{ matrix.extra-packages }}
+    steps:
+      - name: Setup Fortran and MPI
+        uses: gha3mi/setup-fortran-conda@main
+        with:
+          compiler: ${{ matrix.compiler }}
+          compiler-version: ${{ matrix.compiler-version }}
+          mpi: ${{ matrix.mpi }}
+          mpi-version: ${{ matrix.mpi-version }}
+          fpm-version: ${{ matrix.fpm-version }}
 
-  #     - name: fpm test (debug)
-  #       run: fpm test --target mpi_hello --compiler ${{ matrix.compiler }} --profile debug --flag "-cpp -DUSE_MPI" --runner "mpirun -np 4" --verbose
+      - name: fpm MPI test (debug)
+        run: |
+          fpm test --target mpi_hello --profile debug --compiler "${{ env.MPIFC }}" --flag "-DUSE_MPI" --runner "${{ env.MPIEXEC }}" --runner-args=" ${{ env.MPIEXEC_NUMPROC_FLAG }} 2" --verbose
 
-  #     - name: fpm test (release)
-  #       run: fpm test --target mpi_hello --compiler ${{ matrix.compiler }} --profile release --flag "-cpp -DUSE_MPI" --runner "mpirun -np 4" --verbose
+      - name: fpm MPI test (release)
+        run: |
+          fpm test --target mpi_hello --profile release --compiler "${{ env.MPIFC }}" --flag "-DUSE_MPI" --runner "${{ env.MPIEXEC }}" --runner-args=" ${{ env.MPIEXEC_NUMPROC_FLAG }} 2" --verbose
 
   test_cmake:
     if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
@@ -120,6 +131,43 @@ jobs:
           cmake --build build/release --config Release --verbose
           ctest --test-dir build/release --output-on-failure -VV
 
+  test_mpi_cmake:
+    if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
+    name: ${{ matrix.os }}_${{ matrix.compiler }}_${{ matrix.mpi }}_cmake
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - {os: ubuntu-latest,  compiler: gfortran,   compiler-version: "", mpi: mpich,    mpi-version: ""}
+        - {os: ubuntu-latest,  compiler: gfortran,   compiler-version: "", mpi: openmpi,  mpi-version: ""}
+        - {os: macos-latest,   compiler: gfortran,   compiler-version: "", mpi: mpich,    mpi-version: ""}
+        - {os: macos-latest,   compiler: gfortran,   compiler-version: "", mpi: openmpi,  mpi-version: ""}
+        - {os: ubuntu-latest,  compiler: ifx,        compiler-version: "", mpi: intelmpi, mpi-version: ""}
+        - {os: windows-latest, compiler: ifx,        compiler-version: "", mpi: intelmpi, mpi-version: ""}
+        - {os: ubuntu-latest,  compiler: nvfortran,  compiler-version: "", mpi: hpcx,     mpi-version: ""}
+
+    steps:
+      - name: Setup Fortran and MPI
+        uses: gha3mi/setup-fortran-conda@main
+        with:
+          compiler: ${{ matrix.compiler }}
+          compiler-version: ${{ matrix.compiler-version }}
+          mpi: ${{ matrix.mpi }}
+          mpi-version: ${{ matrix.mpi-version }}
+
+      - name: CMake MPI test (debug)
+        run: |
+          cmake -S . -B build/mpi/cmake/debug -DCMAKE_BUILD_TYPE=Debug -DCMAKE_Fortran_COMPILER="${{ env.MPIFC }}" -DMPIEXEC_EXECUTABLE="${{ env.MPIEXEC }}" -DENABLE_MPI=ON -G Ninja
+          cmake --build build/mpi/cmake/debug --config Debug --verbose
+          ctest --test-dir build/mpi/cmake/debug --output-on-failure -VV
+
+      - name: CMake MPI test (release)
+        run: |
+          cmake -S . -B build/mpi/cmake/release -DCMAKE_BUILD_TYPE=Release -DCMAKE_Fortran_COMPILER="${{ env.MPIFC }}" -DMPIEXEC_EXECUTABLE="${{ env.MPIEXEC }}" -DENABLE_MPI=ON -G Ninja
+          cmake --build build/mpi/cmake/release --config Release --verbose
+          ctest --test-dir build/mpi/cmake/release --output-on-failure -VV
+
   test_meson:
     if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
     name: ${{ matrix.os }}_${{ matrix.compiler }}_meson
@@ -159,6 +207,43 @@ jobs:
           meson compile -C build/meson/release --verbose
           meson test -C build/meson/release --verbose
 
+  test_mpi_meson:
+    if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
+    name: ${{ matrix.os }}_${{ matrix.compiler }}_${{ matrix.mpi }}_meson
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - {os: ubuntu-latest,  compiler: gfortran,   compiler-version: "", mpi: mpich,    mpi-version: ""}
+        - {os: ubuntu-latest,  compiler: gfortran,   compiler-version: "", mpi: openmpi,  mpi-version: ""}
+        - {os: macos-latest,   compiler: gfortran,   compiler-version: "", mpi: mpich,    mpi-version: ""}
+        - {os: macos-latest,   compiler: gfortran,   compiler-version: "", mpi: openmpi,  mpi-version: ""}
+        - {os: ubuntu-latest,  compiler: ifx,        compiler-version: "", mpi: intelmpi, mpi-version: ""}
+        - {os: windows-latest, compiler: ifx,        compiler-version: "", mpi: intelmpi, mpi-version: ""}
+        - {os: ubuntu-latest,  compiler: nvfortran,  compiler-version: "", mpi: hpcx,     mpi-version: ""}
+
+    steps:
+      - name: Setup Fortran and MPI
+        uses: gha3mi/setup-fortran-conda@main
+        with:
+          compiler: ${{ matrix.compiler }}
+          compiler-version: ${{ matrix.compiler-version }}
+          mpi: ${{ matrix.mpi }}
+          mpi-version: ${{ matrix.mpi-version }}
+
+      - name: Meson MPI test (debug)
+        run: |
+          meson setup build/mpi/meson/debug . --buildtype debug --backend=ninja -Dfortran_args=-DUSE_MPI
+          meson compile -C build/mpi/meson/debug --verbose
+          meson test -C build/mpi/meson/debug --verbose
+
+      - name: Meson MPI test (release)
+        run: |
+          meson setup build/mpi/meson/release . --buildtype release --backend=ninja -Dfortran_args=-DUSE_MPI
+          meson compile -C build/mpi/meson/release --verbose
+          meson test -C build/mpi/meson/release --verbose
+
   doc_ford:
     if: ${{ (github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule') && !contains(github.event.head_commit.message, '[skip ci]') }}
     name: Generate FORD Documentation
@@ -194,8 +279,7 @@ jobs:
   status_fpm:
     if: ${{ always() && (github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule') && !contains(github.event.head_commit.message, '[skip ci]') }}
     name: Generate STATUS.md
-    # needs: [test_fpm, test_mpi_fpm]
-    needs: [test_fpm]
+    needs: [test_fpm, test_mpi_fpm]
     runs-on: ubuntu-latest
     steps:
       - name: Generate summary
@@ -206,7 +290,7 @@ jobs:
   status_cmake:
     if: ${{ always() && (github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule') && !contains(github.event.head_commit.message, '[skip ci]') }}
     name: Generate STATUS.md
-    needs: [test_cmake]
+    needs: [test_cmake, test_mpi_cmake]
     runs-on: ubuntu-latest
     steps:
       - name: Generate summary
@@ -217,7 +301,7 @@ jobs:
   status_meson:
     if: ${{ always() && (github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule') && !contains(github.event.head_commit.message, '[skip ci]') }}
     name: Generate STATUS.md
-    needs: [test_meson]
+    needs: [test_meson, test_mpi_meson]
     runs-on: ubuntu-latest
     steps:
       - name: Generate summary
@@ -228,8 +312,7 @@ jobs:
   update_readme_table:
     if: ${{ always() && (github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule') && github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, '[skip ci]') }}
     name: Update README.md status table
-    # needs: [test_fpm, test_mpi_fpm, test_cmake, test_meson]
-    needs: [test_fpm, test_cmake, test_meson]
+    needs: [test_fpm, test_mpi_fpm, test_cmake, test_mpi_cmake, test_meson, test_mpi_meson]
     runs-on: ubuntu-latest
     steps:
       - name: Update README status

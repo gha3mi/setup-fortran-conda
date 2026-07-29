@@ -144,11 +144,13 @@ async function main() {
         if (TOOL_ORDER.includes(tool)) usedTools.add(tool);
     }
     const tools = TOOL_ORDER.filter((t) => usedTools.has(t));
+    const hasMpi = metas.some((meta) => meta?.mpi?.enabled === true);
 
     const matrix = new Map();
 
-    function keyOf(os, compiler, version) {
-        return `${os}||${compiler}||${version}`;
+    function keyOf(os, compiler, version, mpi, mpiVersion) {
+        const base = `${os}||${compiler}||${version}`;
+        return hasMpi ? `${base}||${mpi}||${mpiVersion}` : base;
     }
 
     for (const m of metas) {
@@ -165,11 +167,17 @@ async function main() {
         const compilerVersion = cleanValue(m?.compiler?.actual_version || 'Unknown');
         const toolVersion = cleanValue(m?.tools?.[tool]?.version || 'Unknown');
         const status = statusEmoji(j);
+        const mpi = m?.mpi?.enabled
+            ? escapeCell(m?.mpi?.implementation || m?.mpi?.requested || 'Unknown')
+            : 'none';
+        const mpiVersion = m?.mpi?.enabled
+            ? cleanValue(m?.mpi?.actual_version || 'Unknown')
+            : '—';
 
-        const key = keyOf(osCombined, compiler, compilerVersion);
+        const key = keyOf(osCombined, compiler, compilerVersion, mpi, mpiVersion);
 
         if (!matrix.has(key)) {
-            const base = { os: osCombined, compiler, compilerVersion };
+            const base = { os: osCombined, compiler, compilerVersion, mpi, mpiVersion };
             for (const t of tools) base[t] = '—';
             matrix.set(key, base);
         }
@@ -197,11 +205,26 @@ async function main() {
         const compCmp = String(a.compiler).localeCompare(String(b.compiler), undefined, { numeric: true });
         if (compCmp !== 0) return compCmp;
 
-        return String(a.compilerVersion).localeCompare(String(b.compilerVersion), undefined, { numeric: true });
+        const versionCmp = String(a.compilerVersion).localeCompare(String(b.compilerVersion), undefined, { numeric: true });
+        if (versionCmp !== 0) return versionCmp;
+
+        return String(a.mpi).localeCompare(String(b.mpi), undefined, { numeric: true });
     });
 
-    const header = ['OS', 'Compiler', 'Version', ...tools];
-    const align = ['---', '---', '---:', ...tools.map(() => ':---:')];
+    const header = [
+        'OS',
+        'Compiler',
+        'Version',
+        ...(hasMpi ? ['MPI', 'MPI Version'] : []),
+        ...tools,
+    ];
+    const align = [
+        '---',
+        '---',
+        '---:',
+        ...(hasMpi ? ['---', '---:'] : []),
+        ...tools.map(() => ':---:'),
+    ];
 
     const lines = [];
     lines.push(`| ${header.join(' | ')} |`);
@@ -212,6 +235,7 @@ async function main() {
             r.os || '-',
             `\`${escapeCell(r.compiler)}\``,
             r.compilerVersion || 'Unknown',
+            ...(hasMpi ? [`\`${escapeCell(r.mpi)}\``, r.mpiVersion || 'Unknown'] : []),
             ...tools.map((t) => r[t] || '—'),
         ];
         lines.push(`| ${cells.join(' | ')} |`);

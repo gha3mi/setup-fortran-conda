@@ -1,0 +1,105 @@
+name: Distribution bundle
+
+on:
+  push:
+    branches: [main, dev]
+    paths:
+      - "index.js"
+      - "extra.js"
+      - "platform/**"
+      - "mpi/**"
+      - "package.json"
+      - "package-lock.json"
+      - "action.yml"
+      - "scripts/check-dist.js"
+      - "dist/**"
+      - ".github/workflows/dist.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "index.js"
+      - "extra.js"
+      - "platform/**"
+      - "mpi/**"
+      - "package.json"
+      - "package-lock.json"
+      - "action.yml"
+      - "scripts/check-dist.js"
+      - "dist/**"
+      - ".github/workflows/dist.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Verify committed dist
+    if: github.event_name != 'pull_request' || github.event.pull_request.user.login != 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7.0.1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6.4.0
+        with:
+          node-version: "24"
+          package-manager-cache: false
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Verify distribution bundle
+        run: npm run check-dist
+
+  update-dependabot:
+    name: Rebuild dist for Dependabot
+    if: github.event_name == 'pull_request' && github.event.pull_request.user.login == 'dependabot[bot]'
+    permissions:
+      actions: write
+      contents: write
+    runs-on: ubuntu-latest
+    concurrency:
+      group: dist-${{ github.event.pull_request.number }}
+      cancel-in-progress: true
+    steps:
+      - name: Checkout Dependabot branch
+        uses: actions/checkout@v7.0.1
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.ref }}
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6.4.0
+        with:
+          node-version: "24"
+          package-manager-cache: false
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Rebuild distribution bundle
+        run: npm run build
+
+      - name: Commit updated distribution bundle
+        env:
+          DEPENDABOT_BRANCH: ${{ github.event.pull_request.head.ref }}
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          git add --all dist
+          if git diff --cached --quiet; then
+            echo "dist/ is already synchronized."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "build: refresh dist [dependabot skip]"
+          gh auth setup-git
+          git push origin "HEAD:${DEPENDABOT_BRANCH}"
+          # GITHUB_TOKEN pushes do not trigger another pull_request run.
+          # workflow_dispatch is the supported exception, so verify the new head explicitly.
+          gh workflow run dist.yml --ref "${DEPENDABOT_BRANCH}"

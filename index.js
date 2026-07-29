@@ -4,6 +4,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import os from 'node:os';
 import https from 'node:https';
+import { assertMpiSupported, setupMpi } from './mpi/support.js';
 
 function nowIso() {
   return new Date().toISOString();
@@ -229,8 +230,12 @@ async function findCurrentJob(token) {
   if (!candidates.length) return null;
 
   const compiler = (process.env.INPUT_COMPILER || '').toLowerCase();
-  const byCompiler = candidates.find((j) => typeof j.name === 'string' && j.name.includes(compiler));
-  return byCompiler || candidates.sort((a, b) => String(b.started_at).localeCompare(String(a.started_at)))[0];
+  const mpi = (process.env.INPUT_MPI || 'none').toLowerCase();
+  const byToolchain = candidates.find((j) => {
+    if (typeof j.name !== 'string' || !j.name.includes(compiler)) return false;
+    return mpi === 'none' || j.name.includes(mpi);
+  });
+  return byToolchain || candidates.sort((a, b) => String(b.started_at).localeCompare(String(a.started_at)))[0];
 }
 
 function inferToolFromJobName(jobName) {
@@ -247,6 +252,9 @@ async function run() {
   const platformInput = (process.env.INPUT_PLATFORM || '').toLowerCase();
   const extrasInput = process.env.INPUT_EXTRA_PACKAGES || '';
   const fpmVersion = process.env.INPUT_FPM_VERSION || '';
+  const mpi = (process.env.INPUT_MPI || 'none').trim().toLowerCase() || 'none';
+  const rawMpiVersion = (process.env.INPUT_MPI_VERSION || '').trim();
+  const mpiVersion = rawMpiVersion.toLowerCase() === 'latest' ? '' : rawMpiVersion;
 
   const token = process.env.GITHUB_TOKEN || process.env.GH_TOKEN || '';
   let jobInfo = null;
@@ -254,7 +262,7 @@ async function run() {
   const osInfo = await detectOSInfo();
 
   const metaBase = {
-    schema_version: 1,
+    schema_version: 2,
     repo: process.env.GITHUB_REPOSITORY || '',
     run_id: Number(process.env.GITHUB_RUN_ID || 0),
     created_at: nowIso(),
@@ -274,6 +282,19 @@ async function run() {
       actual_version: 'Unknown',
       raw_first_line: 'Unknown',
     },
+    mpi: {
+      enabled: mpi !== 'none',
+      requested: mpi,
+      requested_version: mpiVersion === '' ? 'latest' : mpiVersion,
+      implementation: mpi === 'none' ? 'none' : mpi,
+      actual_version: mpi === 'none' ? '' : 'Unknown',
+      root: '',
+      wrappers: {},
+      launcher: {},
+      bindings: {},
+      backend_compiler: '',
+      validated: false,
+    },
     tool: '',
     tools: {},
     error: '',
@@ -285,6 +306,16 @@ async function run() {
   let metaPath = path.join(tempDir, `setup-fortran-conda-meta-${fallbackSuffix}.json`);
 
   try {
+    if (compiler === 'mpifort') {
+      throw new Error(
+        'compiler=mpifort is no longer supported because mpifort is an MPI wrapper, not a compiler. ' +
+          'Use compiler=gfortran and mpi=mpich.'
+      );
+    }
+    if (mpi === 'none' && rawMpiVersion) {
+      throw new Error('mpi-version requires an MPI implementation selected with the mpi input.');
+    }
+
     const osKey =
       platformInput.includes('ubuntu') || platformInput.includes('linux')
         ? 'lin'
@@ -294,6 +325,7 @@ async function run() {
             ? 'mac'
             : undefined;
     if (!osKey) throw new Error(`Unsupported platform: ${platformInput}`);
+    if (mpi !== 'none') assertMpiSupported(osKey, compiler, mpi);
 
     const { installExtras } = await import('./extra.js');
     const extras = extrasInput
@@ -304,6 +336,25 @@ async function run() {
 
     const { setup } = await import(`./platform/${osKey}/${compiler}.js`);
     await setup(versionRequested);
+
+    if (mpi !== 'none') {
+      const mpiDescriptor = await setupMpi({
+        osKey,
+        compiler,
+        compilerVersion: versionRequested,
+        implementation: mpi,
+        mpiVersion,
+      });
+
+      metaBase.mpi.implementation = mpiDescriptor.implementation;
+      metaBase.mpi.actual_version = mpiDescriptor.version;
+      metaBase.mpi.root = mpiDescriptor.root;
+      metaBase.mpi.wrappers = mpiDescriptor.wrappers;
+      metaBase.mpi.launcher = mpiDescriptor.launcher;
+      metaBase.mpi.bindings = mpiDescriptor.bindings;
+      metaBase.mpi.backend_compiler = mpiDescriptor.backendCompiler;
+      metaBase.mpi.validated = mpiDescriptor.validated;
+    }
 
     jobInfo = await findCurrentJob(token);
     if (jobInfo?.id) {
@@ -325,19 +376,27 @@ async function run() {
       if (tv != null) metaBase.tools[metaBase.tool] = { version: tv };
     }
 
-    await summary
-      .addTable([
-        ['OS', 'OS Version', 'Compiler', 'Version', 'Tool', 'Tool Version'],
-        [
-          metaBase.runner.os_family || metaBase.runner.os,
-          metaBase.runner.os_version || metaBase.runner.os_label,
-          compiler,
-          metaBase.compiler.actual_version,
-          metaBase.tool || '-',
-          metaBase.tool ? (metaBase.tools?.[metaBase.tool]?.version || 'Unknown') : '-',
-        ],
-      ])
-      .write();
+    const summaryHeader = ['OS', 'OS Version', 'Compiler', 'Version'];
+    const summaryRow = [
+      metaBase.runner.os_family || metaBase.runner.os,
+      metaBase.runner.os_version || metaBase.runner.os_label,
+      compiler,
+      metaBase.compiler.actual_version,
+    ];
+    if (metaBase.mpi.enabled) {
+      summaryHeader.push('MPI', 'MPI Version');
+      summaryRow.push(
+        metaBase.mpi.implementation,
+        metaBase.mpi.actual_version
+      );
+    }
+    summaryHeader.push('Tool', 'Tool Version');
+    summaryRow.push(
+      metaBase.tool || '-',
+      metaBase.tool ? (metaBase.tools?.[metaBase.tool]?.version || 'Unknown') : '-'
+    );
+
+    await summary.addTable([summaryHeader, summaryRow]).write();
   } catch (err) {
     fatalError = err;
     metaBase.error = err?.message ? String(err.message) : String(err);

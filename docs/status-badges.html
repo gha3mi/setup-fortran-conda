@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+      name="description"
+      content="Generate and deploy fpm, CMake and Meson status files."
+    >
+    <title>Status badges — setup-fortran-conda</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="syntax.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#content">Skip to content</a>
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand" href="index.html">setup-fortran-conda</a>
+        <nav aria-label="Primary">
+          <a href="index.html">Start</a>
+          <a href="toolchains.html">Compilers</a>
+          <a href="mpi.html">MPI</a>
+          <a href="ford.html">FORD</a>
+          <a href="doxygen.html">Doxygen</a>
+          <a href="fortitude.html">Fortitude</a>
+          <a href="readme-table.html">CI Table</a>
+          <a href="dependency-graphs.html">Dependencies</a>
+          <a class="active" href="status-badges.html">Badges</a>
+        </nav>
+        <a class="github-link" href="https://github.com/gha3mi/setup-fortran-conda">GitHub</a>
+      </div>
+    </header>
+
+    <main id="content" class="content">
+      <header class="page-header">
+        <h1>Status badges</h1>
+        <p>
+          Collect fpm, CMake and Meson matrix-job results into separate
+          <code>STATUS.md</code> files and deploy them to dedicated branches
+          for status badges.
+        </p>
+      </header>
+
+      <section>
+        <h2>Inputs</h2>
+        <div
+          class="table-wrap"
+          role="region"
+          aria-label="Status badge inputs"
+          tabindex="0"
+        >
+          <table class="input-table">
+            <thead>
+              <tr>
+                <th>Input</th>
+                <th>Default</th>
+                <th>Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr data-input="generate-status-fpm" data-default="false">
+                <td><code>generate-status-fpm</code></td>
+                <td><code>false</code></td>
+                <td>Generate and deploy fpm status</td>
+              </tr>
+              <tr data-input="generate-status-cmake" data-default="false">
+                <td><code>generate-status-cmake</code></td>
+                <td><code>false</code></td>
+                <td>Generate and deploy CMake status</td>
+              </tr>
+              <tr data-input="generate-status-meson" data-default="false">
+                <td><code>generate-status-meson</code></td>
+                <td><code>false</code></td>
+                <td>Generate and deploy Meson status</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section>
+        <h2>Required job names</h2>
+        <p data-job-suffixes="_cmake _fpm _meson">
+          Tested job names must end in <code>_fpm</code>,
+          <code>_cmake</code> or <code>_meson</code>. Each status generator
+          selects jobs by this suffix.
+        </p>
+        <pre><code class="language-yaml">test_fpm:
+  name: ${{ matrix.os }}_${{ matrix.compiler }}_fpm
+  runs-on: ${{ matrix.os }}
+  strategy:
+    fail-fast: false
+    matrix:
+      include:
+      - {os: ubuntu-latest, compiler: gfortran}
+
+test_cmake:
+  name: ${{ matrix.os }}_${{ matrix.compiler }}_cmake
+  runs-on: ${{ matrix.os }}
+  strategy:
+    fail-fast: false
+    matrix:
+      include:
+      - {os: ubuntu-latest, compiler: gfortran}
+
+test_meson:
+  name: ${{ matrix.os }}_${{ matrix.compiler }}_meson
+  runs-on: ${{ matrix.os }}
+  strategy:
+    fail-fast: false
+    matrix:
+      include:
+      - {os: ubuntu-latest, compiler: gfortran}</code></pre>
+      </section>
+
+      <section>
+        <h2>Generate badges</h2>
+        <pre><code class="language-yaml">status_fpm:
+  if: ${{ always() }}
+  name: Generate fpm STATUS.md
+  needs: [test_fpm]
+  runs-on: ubuntu-latest
+  permissions:
+    contents: write
+  steps:
+    - name: Generate fpm summary
+      uses: gha3mi/setup-fortran-conda@latest
+      with:
+        generate-status-fpm: true
+
+status_cmake:
+  if: ${{ always() }}
+  name: Generate CMake STATUS.md
+  needs: [test_cmake]
+  runs-on: ubuntu-latest
+  permissions:
+    contents: write
+  steps:
+    - name: Generate CMake summary
+      uses: gha3mi/setup-fortran-conda@latest
+      with:
+        generate-status-cmake: true
+
+status_meson:
+  if: ${{ always() }}
+  name: Generate Meson STATUS.md
+  needs: [test_meson]
+  runs-on: ubuntu-latest
+  permissions:
+    contents: write
+  steps:
+    - name: Generate Meson summary
+      uses: gha3mi/setup-fortran-conda@latest
+      with:
+        generate-status-meson: true</code></pre>
+      </section>
+
+    </main>
+
+  </body>
+</html>

@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+      name="description"
+      content="User documentation for the setup-fortran-conda GitHub Action."
+    >
+    <title>setup-fortran-conda</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="syntax.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#content">Skip to content</a>
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand" href="index.html">setup-fortran-conda</a>
+        <nav aria-label="Primary">
+          <a class="active" href="index.html">Start</a>
+          <a href="toolchains.html">Compilers</a>
+          <a href="mpi.html">MPI</a>
+          <a href="ford.html">FORD</a>
+          <a href="doxygen.html">Doxygen</a>
+          <a href="fortitude.html">Fortitude</a>
+          <a href="readme-table.html">CI Table</a>
+          <a href="dependency-graphs.html">Dependencies</a>
+          <a href="status-badges.html">Badges</a>
+        </nav>
+        <a class="github-link" href="https://github.com/gha3mi/setup-fortran-conda">GitHub</a>
+      </div>
+    </header>
+
+    <main id="content" class="content">
+      <section class="hero">
+        <h1>setup-fortran-conda</h1>
+        <p>
+          Configure supported Fortran toolchains with matching C and C++
+          compilers on Ubuntu, macOS and Windows. Install fpm, CMake, Ninja,
+          Meson and pkg-config with optional MPI and additional Conda packages.
+          Generate FORD or Doxygen documentation, status badges, README CI
+          tables and dependency graphs or run Fortitude.
+        </p>
+      </section>
+
+      <section>
+        <h2>Quick start</h2>
+        <p>
+          The action checks out the repository by default. No separate
+          checkout step is required.
+        </p>
+        <pre><code class="language-yaml">name: test
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: gha3mi/setup-fortran-conda@latest
+        with:
+          compiler: gfortran
+
+      - run: fpm test</code></pre>
+        <p>
+          Compiler setup includes <code>fpm</code>, <code>CMake</code>,
+          <code>Ninja</code>, <code>Meson</code> and
+          <code>pkg-config</code>.
+        </p>
+      </section>
+
+      <section>
+        <h2>Features</h2>
+        <div class="cards">
+          <a class="card" href="toolchains.html">
+            <h3>Compilers and builds</h3>
+            <p>Supported compilers, versions, packages, fpm, CMake and Meson.</p>
+          </a>
+          <a class="card" href="mpi.html">
+            <h3>MPI</h3>
+            <p>Supported MPI combinations, variables and build-tool usage.</p>
+          </a>
+          <a class="card" href="ford.html">
+            <h3>FORD</h3>
+            <p>Generate and deploy FORD documentation.</p>
+          </a>
+          <a class="card" href="doxygen.html">
+            <h3>Doxygen</h3>
+            <p>Generate and deploy Doxygen documentation.</p>
+          </a>
+          <a class="card" href="status-badges.html">
+            <h3>Status badges</h3>
+            <p>Generate fpm, CMake and Meson status files.</p>
+          </a>
+          <a class="card" href="readme-table.html">
+            <h3>README table</h3>
+            <p>Generate a compiler, MPI and build-tool matrix.</p>
+          </a>
+          <a class="card" href="dependency-graphs.html">
+            <h3>Dependency graphs</h3>
+            <p>Generate fpm package or Fortran module graphs.</p>
+          </a>
+          <a class="card" href="fortitude.html">
+            <h3>Fortitude</h3>
+            <p>Install and run the Fortitude Fortran linter.</p>
+          </a>
+        </div>
+      </section>
+    </main>
+
+  </body>
+</html>

@@ -1,57 +1,31 @@
-import { startGroup, endGroup, addPath, info, warning } from '@actions/core';
+import { info, warning } from '@actions/core';
 import { exec as _exec } from '@actions/exec';
-import { sep, join } from 'path';
+import { createHash } from 'node:crypto';
 import {
-  appendFileSync,
   chmodSync,
   createReadStream,
   existsSync,
   mkdirSync,
   readdirSync,
-  writeFileSync
-} from 'fs';
-import { createHash } from 'crypto';
-import { EOL, tmpdir } from 'os';
-import { env, platform } from 'process';
-import https from 'https';
+  writeFileSync,
+} from 'node:fs';
+import https from 'node:https';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { env } from 'node:process';
+import {
+  addExistingPaths,
+  assertLinux,
+  compilerEnvironment,
+  exportCompilerEnvironment,
+  exportProcessEnvironment,
+  getCondaPrefix,
+  grouped,
+  setLinuxUlimits,
+  verifyCommands,
+} from './common.js';
 
 const AOCC_DOWNLOAD_PAGE = 'https://www.amd.com/en/developer/aocc.html';
-
-// Export a key=value pair to GITHUB_ENV and process.env
-function exportEnv(key, value) {
-  const envFile = process.env.GITHUB_ENV;
-  if (!envFile) throw new Error('GITHUB_ENV not defined');
-  appendFileSync(envFile, `${key}=${value}${EOL}`);
-  env[key] = value;
-}
-
-// Resolve the absolute path of a named conda environment
-async function getCondaPrefix(envName) {
-  let raw = '';
-  await _exec('conda', ['env', 'list', '--json'], {
-    silent: true,
-    listeners: { stdout: d => (raw += d.toString()) }
-  });
-
-  const { envs } = JSON.parse(raw);
-  for (const p of envs) {
-    if (p.endsWith(sep + envName) || p.endsWith('/' + envName)) return p;
-  }
-
-  throw new Error(`Unable to locate Conda environment "${envName}".`);
-}
-
-// Optional: Set unlimited ulimits for Linux
-function setLinuxUlimits() {
-  startGroup('setup-fortran-conda: Configure Linux Environment');
-  const ulimitCmd =
-    'ulimit -c unlimited -d unlimited -f unlimited -m unlimited -s unlimited -t unlimited -v unlimited -x unlimited';
-  const script = `${process.env.RUNNER_TEMP}/ulimit.sh`;
-  appendFileSync(script, `${ulimitCmd}${EOL}`);
-  appendFileSync(process.env.GITHUB_ENV, `BASH_ENV=${script}${EOL}`);
-  info('ulimit settings exported to BASH_ENV');
-  endGroup();
-}
 
 function normalizeVersion(version = '') {
   const v = version.trim().toLowerCase();
@@ -64,7 +38,10 @@ function normalizeVersion(version = '') {
   const normalized = /^\d+\.\d+$/.test(bare) ? `${bare}.0` : bare;
 
   if (!/^\d+\.\d+\.\d+$/.test(normalized)) {
-    throw new Error(`AOCC compiler-version must be "latest", major.minor, or major.minor.patch; got "${version}".`);
+    throw new Error(
+      'AOCC compiler-version must be "latest", major.minor, or ' +
+        `major.minor.patch; got "${version}".`
+    );
   }
 
   return normalized;
@@ -72,7 +49,10 @@ function normalizeVersion(version = '') {
 
 function aoccDebUrl(version) {
   const [major, minor] = version.split('.');
-  return `https://download.amd.com/developer/eula/aocc/aocc-${major}-${minor}/aocc-compiler-${version}_1_amd64.deb`;
+  return (
+    'https://download.amd.com/developer/eula/aocc/' +
+    `aocc-${major}-${minor}/aocc-compiler-${version}_1_amd64.deb`
+  );
 }
 
 function escapeRegExp(s) {
@@ -187,8 +167,18 @@ function parseAoccDebReleases(html) {
     const context = html.slice(start, end);
     const afterFilename = html.slice(match.index + filename.length, end);
 
-    const directUrl = context.match(new RegExp(`https://download\\.amd\\.com[^"'\\s<>]*${escapeRegExp(filename)}`, 'i'));
-    const href = context.match(new RegExp(`href=["']([^"']*${escapeRegExp(filename)}[^"']*)["']`, 'i'));
+    const directUrl = context.match(
+      new RegExp(
+        `https://download\\.amd\\.com[^"'\\s<>]*${escapeRegExp(filename)}`,
+        'i'
+      )
+    );
+    const href = context.match(
+      new RegExp(
+        `href=["']([^"']*${escapeRegExp(filename)}[^"']*)["']`,
+        'i'
+      )
+    );
     const hrefUrl = resolvedDownloadHref(href?.[1], filename);
     const url = directUrl
       ? decodeHtml(directUrl[0])
@@ -371,69 +361,80 @@ function createAoccWrappers(binPath) {
 
 // Main setup function
 export async function setup(version = '') {
-  if (platform !== 'linux') {
-    throw new Error('This setup script is only supported on Linux.');
-  }
+  assertLinux();
 
-  startGroup('setup-fortran-conda: Install AOCC System Dependencies');
-  try {
-    await _exec('sudo', ['apt-get', 'update', '-y']);
-    await _exec('sudo', [
-      'apt-get',
-      'install',
-      '-y',
-      'ca-certificates',
-      'curl',
-      'libstdc++6',
-      'libncurses-dev',
-      'zlib1g',
-      'libxml2',
-      'libquadmath0',
-      'python3'
-    ]);
-  } catch (err) {
-    throw new Error(`AOCC system dependency install failed: ${err.message}`);
-  }
-  endGroup();
+  await grouped(
+    'setup-fortran-conda: Install AOCC System Dependencies',
+    async () => {
+      try {
+        await _exec('sudo', ['apt-get', 'update', '-y']);
+        await _exec('sudo', [
+          'apt-get',
+          'install',
+          '-y',
+          'ca-certificates',
+          'curl',
+          'libstdc++6',
+          'libncurses-dev',
+          'zlib1g',
+          'libxml2',
+          'libquadmath0',
+          'python3',
+        ]);
+      } catch (error) {
+        throw new Error(
+          `AOCC system dependency install failed: ${error.message}`
+        );
+      }
+    }
+  );
 
   const release = await resolveAoccRelease(version);
   version = release.version;
   const debPath = join(tmpdir(), `aocc-compiler-${version}_1_amd64.deb`);
 
-  startGroup('setup-fortran-conda: Download AOCC Debian Package');
-  try {
-    await _exec('curl', [
-      '--http1.1',
-      '--fail',
-      '--location',
-      '--connect-timeout',
-      '30',
-      '--retry',
-      '3',
-      '--retry-all-errors',
-      '--retry-delay',
-      '2',
-      '--output',
-      debPath,
-      release.url
-    ]);
-    await verifyChecksum(debPath, version, release.checksum);
-  } catch (err) {
-    throw new Error(`AOCC download failed: ${err.message}`);
-  }
-  endGroup();
-
-  startGroup('setup-fortran-conda: Install AOCC Debian Package');
-  try {
-    const exitCode = await _exec('sudo', ['dpkg', '-i', debPath], { ignoreReturnCode: true });
-    if (exitCode !== 0) {
-      await _exec('sudo', ['apt-get', 'install', '-f', '-y']);
+  await grouped(
+    'setup-fortran-conda: Download AOCC Debian Package',
+    async () => {
+      try {
+        await _exec('curl', [
+          '--http1.1',
+          '--fail',
+          '--location',
+          '--connect-timeout',
+          '30',
+          '--retry',
+          '3',
+          '--retry-all-errors',
+          '--retry-delay',
+          '2',
+          '--output',
+          debPath,
+          release.url,
+        ]);
+        await verifyChecksum(debPath, version, release.checksum);
+      } catch (error) {
+        throw new Error(`AOCC download failed: ${error.message}`);
+      }
     }
-    info('AOCC Debian package installed');
-  } catch (err) {
-    throw new Error(`AOCC install failed: ${err.message}`);
-  }
-  endGroup();
+  );
+
+  await grouped(
+    'setup-fortran-conda: Install AOCC Debian Package',
+    async () => {
+      try {
+        const exitCode = await _exec('sudo', ['dpkg', '-i', debPath], {
+          ignoreReturnCode: true,
+        });
+        if (exitCode !== 0) {
+          await _exec('sudo', ['apt-get', 'install', '-f', '-y']);
+        }
+        info('AOCC Debian package installed');
+      } catch (error) {
+        throw new Error(`AOCC install failed: ${error.message}`);
+      }
+    }
+  );
 
   const prefix = await getCondaPrefix('fortran');
   const condaBin = join(prefix, 'bin');
@@ -448,68 +449,30 @@ export async function setup(version = '') {
     throw new Error(`Unable to locate AOCC environment script: ${setenvPath}`);
   }
 
-  startGroup('setup-fortran-conda: Configure Compiler Paths');
   await sourceAoccEnvironment(setenvPath);
-
-  for (const p of [condaBin, binPath, wrapperDir]) {
-    if (existsSync(p)) {
-      addPath(p);
-      info(`Added to PATH: ${p}`);
-    }
-  }
-  endGroup();
+  await addExistingPaths([condaBin, binPath, wrapperDir]);
 
   const ldLibraryPath = prependPathList(
     [libPath, lib32Path].filter(p => existsSync(p)),
     env.LD_LIBRARY_PATH || ''
   );
 
-  startGroup('setup-fortran-conda: Verify Compiler Commands');
-  await _exec('which', ['amdflang']);
-  await _exec('amdflang', ['--version']);
-  await _exec('which', ['amdclang']);
-  await _exec('amdclang', ['-v']);
-  await _exec('which', ['amdclang++']);
-  await _exec('amdclang++', ['--version']);
-  endGroup();
+  await verifyCommands([
+    { command: 'amdflang', args: ['--version'] },
+    { command: 'amdclang', args: ['-v'] },
+    { command: 'amdclang++', args: ['--version'] },
+  ]);
 
-  startGroup('setup-fortran-conda: Export Compiler Environment');
-  const envVars = {
-    AOCC_HOME: aoccRoot,
-    AOCC_ROOT: aoccRoot,
-    FC: 'amdflang',
-    CC: 'amdclang',
-    CXX: 'amdclang++',
-    FPM_FC: 'amdflang',
-    FPM_CC: 'amdclang',
-    FPM_CXX: 'amdclang++',
-    CMAKE_Fortran_COMPILER: 'amdflang',
-    CMAKE_C_COMPILER: 'amdclang',
-    CMAKE_CXX_COMPILER: 'amdclang++',
-    LD_LIBRARY_PATH: ldLibraryPath
-  };
+  await exportCompilerEnvironment(
+    compilerEnvironment('amdflang', 'amdclang', 'amdclang++', {
+      AOCC_HOME: aoccRoot,
+      AOCC_ROOT: aoccRoot,
+      LD_LIBRARY_PATH: ldLibraryPath,
+    })
+  );
 
-  for (const [key, value] of Object.entries(envVars)) {
-    exportEnv(key, value);
-    info(`Exported: ${key}=${value}`);
-  }
-  endGroup();
-
-  setLinuxUlimits();
-
-  startGroup('setup-fortran-conda: Export Process Environment');
-  for (const [key, value] of Object.entries(env)) {
-    if (typeof value === 'string') {
-      try {
-        process.env[key] = value;
-        appendFileSync(process.env.GITHUB_ENV, `${key}=${value}${EOL}`);
-        info(`Exported: ${key}`);
-      } catch (err) {
-        info(`⚠️ Failed to export: ${key} (${err.message})`);
-      }
-    }
-  }
-  endGroup();
+  await setLinuxUlimits();
+  await exportProcessEnvironment();
 
   info('✅ compiler setup complete');
 }

@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+      name="description"
+      content="Supported compilers and build-tool usage for setup-fortran-conda."
+    >
+    <title>Compilers and builds — setup-fortran-conda</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="syntax.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#content">Skip to content</a>
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand" href="index.html">setup-fortran-conda</a>
+        <nav aria-label="Primary">
+          <a href="index.html">Start</a>
+          <a class="active" href="toolchains.html">Compilers</a>
+          <a href="mpi.html">MPI</a>
+          <a href="ford.html">FORD</a>
+          <a href="doxygen.html">Doxygen</a>
+          <a href="fortitude.html">Fortitude</a>
+          <a href="readme-table.html">CI Table</a>
+          <a href="dependency-graphs.html">Dependencies</a>
+          <a href="status-badges.html">Badges</a>
+        </nav>
+        <a class="github-link" href="https://github.com/gha3mi/setup-fortran-conda">GitHub</a>
+      </div>
+    </header>
+
+    <main
+      id="content"
+      class="content"
+      data-default-tools="cmake fpm meson ninja pkg-config"
+    >
+      <header class="page-header">
+        <h1>Compilers and builds</h1>
+        <p>
+          Install a supported Fortran compiler with matching C and C++
+          compilers on Ubuntu, macOS or Windows. Select compiler and fpm
+          versions, add Conda packages and build with fpm, CMake or Meson.
+        </p>
+      </header>
+
+      <section>
+        <h2>Supported compilers</h2>
+        <div
+          class="table-wrap"
+          role="region"
+          aria-label="Supported compilers"
+          tabindex="0"
+        >
+          <table class="support-table">
+            <thead>
+              <tr>
+                <th>Runner</th>
+                <th><code>compiler</code></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                data-compiler-platform="lin"
+                data-compilers="aocc aomp flang flang-new gfortran ifx lfortran nvfortran"
+              >
+                <td>Ubuntu</td>
+                <td>
+                  <code>gfortran</code>, <code>ifx</code>,
+                  <code>lfortran</code>, <code>flang</code>,
+                  <code>flang-new</code>, <code>nvfortran</code>,
+                  <code>aocc</code>, <code>aomp</code>
+                </td>
+              </tr>
+              <tr
+                data-compiler-platform="mac"
+                data-compilers="gfortran lfortran"
+              >
+                <td>macOS</td>
+                <td><code>gfortran</code>, <code>lfortran</code></td>
+              </tr>
+              <tr
+                data-compiler-platform="win"
+                data-compilers="flang flang-new gfortran ifx lfortran"
+              >
+                <td>Windows</td>
+                <td>
+                  <code>gfortran</code>, <code>ifx</code>,
+                  <code>lfortran</code>, <code>flang</code>,
+                  <code>flang-new</code>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section>
+        <h2>Inputs</h2>
+        <div
+          class="table-wrap"
+          role="region"
+          aria-label="Compiler and build inputs"
+          tabindex="0"
+        >
+          <table class="input-table">
+            <thead>
+              <tr>
+                <th>Input</th>
+                <th>Default</th>
+                <th>Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr data-input="compiler" data-default="">
+                <td><code>compiler</code></td>
+                <td>empty</td>
+                <td>
+                  <code>gfortran</code>, <code>ifx</code>,
+                  <code>lfortran</code>, <code>flang</code>,
+                  <code>flang-new</code>, <code>nvfortran</code>,
+                  <code>aocc</code>, <code>aomp</code>
+                </td>
+              </tr>
+              <tr data-input="compiler-version" data-default="">
+                <td><code>compiler-version</code></td>
+                <td>empty</td>
+                <td>Version, <code>latest</code>, or empty</td>
+              </tr>
+              <tr data-input="platform" data-default="">
+                <td><code>platform</code></td>
+                <td>empty</td>
+                <td>
+                  Empty uses the runner OS;
+                  <code>ubuntu-latest</code>,
+                  <code>windows-latest</code>,
+                  <code>macos-latest</code>
+                </td>
+              </tr>
+              <tr data-input="extra-packages" data-default="">
+                <td><code>extra-packages</code></td>
+                <td>empty</td>
+                <td>Space- or comma-separated Conda packages</td>
+              </tr>
+              <tr data-input="fpm-version" data-default="">
+                <td><code>fpm-version</code></td>
+                <td>empty</td>
+                <td>Version, <code>latest</code>, or empty</td>
+              </tr>
+              <tr data-input="checkout-repo" data-default="true">
+                <td><code>checkout-repo</code></td>
+                <td><code>true</code></td>
+                <td><code>true</code> or <code>false</code></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section>
+        <h2>Exported environment</h2>
+        <div
+          class="variable-panel"
+          data-environment="compiler"
+          data-variables="CC CMAKE_CXX_COMPILER CMAKE_C_COMPILER CMAKE_Fortran_COMPILER CXX FC FPM_CC FPM_CXX FPM_FC"
+        >
+          <code>FC</code>, <code>CC</code>, <code>CXX</code>,
+          <code>FPM_FC</code>, <code>FPM_CC</code>,
+          <code>FPM_CXX</code>,
+          <code>CMAKE_Fortran_COMPILER</code>,
+          <code>CMAKE_C_COMPILER</code>,
+          <code>CMAKE_CXX_COMPILER</code>
+        </div>
+      </section>
+
+      <section>
+        <h2>fpm</h2>
+        <p><code>fpm</code> is installed by default.</p>
+        <pre><code class="language-yaml">test_fpm:
+  name: ${{ matrix.os }}_${{ matrix.compiler }}_fpm
+  runs-on: ${{ matrix.os }}
+  strategy:
+    fail-fast: false
+    matrix:
+      include:
+      - {os: ubuntu-latest, compiler: gfortran, compiler-version: "", fpm-version: "", extra-packages: ""}
+  steps:
+    - name: setup-fortran-conda
+      uses: gha3mi/setup-fortran-conda@latest
+      with:
+        compiler: ${{ matrix.compiler }}
+        compiler-version: ${{ matrix.compiler-version }}
+        fpm-version: ${{ matrix.fpm-version }}
+        extra-packages: ${{ matrix.extra-packages }}
+
+    - name: fpm test
+      run: fpm test --compiler "${{ env.FPM_FC }}" --profile release --verbose</code></pre>
+      </section>
+
+      <section>
+        <h2>CMake</h2>
+        <p>
+          <code>CMake</code>, <code>Ninja</code> and
+          <code>pkg-config</code> are installed by default.
+        </p>
+        <pre><code class="language-yaml">test_cmake:
+  name: ${{ matrix.os }}_${{ matrix.compiler }}_cmake
+  runs-on: ${{ matrix.os }}
+  strategy:
+    fail-fast: false
+    matrix:
+      include:
+      - {os: ubuntu-latest, compiler: gfortran, compiler-version: "", extra-packages: ""}
+  steps:
+    - name: setup-fortran-conda
+      uses: gha3mi/setup-fortran-conda@latest
+      with:
+        compiler: ${{ matrix.compiler }}
+        compiler-version: ${{ matrix.compiler-version }}
+        extra-packages: ${{ matrix.extra-packages }}
+
+    - name: CMake test
+      run: |
+        cmake -S . -B build -G Ninja -DCMAKE_Fortran_COMPILER="${{ env.CMAKE_Fortran_COMPILER }}"
+        cmake --build build --verbose
+        ctest --test-dir build --output-on-failure -VV</code></pre>
+      </section>
+
+      <section>
+        <h2>Meson</h2>
+        <p>
+          <code>Meson</code>, <code>Ninja</code> and
+          <code>pkg-config</code> are installed by default.
+        </p>
+        <pre><code class="language-yaml">test_meson:
+  name: ${{ matrix.os }}_${{ matrix.compiler }}_meson
+  runs-on: ${{ matrix.os }}
+  strategy:
+    fail-fast: false
+    matrix:
+      include:
+      - {os: ubuntu-latest, compiler: gfortran, compiler-version: "", extra-packages: ""}
+  steps:
+    - name: setup-fortran-conda
+      uses: gha3mi/setup-fortran-conda@latest
+      with:
+        compiler: ${{ matrix.compiler }}
+        compiler-version: ${{ matrix.compiler-version }}
+        extra-packages: ${{ matrix.extra-packages }}
+
+    - name: Meson test
+      run: |
+        meson setup build --buildtype release --backend=ninja
+        meson compile -C build --verbose
+        meson test -C build --verbose</code></pre>
+      </section>
+
+    </main>
+
+  </body>
+</html>

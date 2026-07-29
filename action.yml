@@ -1,5 +1,5 @@
 name: Setup Fortran with Conda
-description: Installs Fortran compilers and extra packages using Conda or vendor packages. Optionally builds docs and updates README status/dependency graphs.
+description: Installs Fortran compilers, matching MPI toolchains, and extra packages using Conda or vendor packages. Optionally builds docs and updates README status/dependency graphs.
 author: Seyed Ali Ghasemi
 branding:
   icon: 'check'
@@ -7,11 +7,19 @@ branding:
 
 inputs:
   compiler:
-    description: "Fortran compiler to install (gfortran, ifx, lfortran, flang, flang-new, nvfortran, aocc, aomp, mpifort)"
+    description: "Fortran compiler to install (gfortran, ifx, lfortran, flang, flang-new, nvfortran, aocc, aomp)"
     required: false
     default: ""
   compiler-version:
     description: "compiler version"
+    required: false
+    default: ""
+  mpi:
+    description: "MPI implementation to install (none, mpich, openmpi, intelmpi, hpcx)"
+    required: false
+    default: "none"
+  mpi-version:
+    description: "MPI implementation version. Empty means latest or the compiler-bundled version."
     required: false
     default: ""
   platform:
@@ -173,6 +181,7 @@ runs:
       if: >-
         ${{
           inputs.compiler != '' ||
+          inputs.mpi != 'none' ||
           inputs.generate-doc-ford == 'true' ||
           inputs.generate-doc-doxygen == 'true' ||
           inputs.update-readme-dependencies != 'false' ||
@@ -186,12 +195,14 @@ runs:
 
     - name: Run Fortran compiler setup script
       id: setup_fortran
-      if: ${{ inputs.compiler != '' || inputs.update-readme-dependencies != 'false' }}
+      if: ${{ inputs.compiler != '' || inputs.mpi != 'none' || inputs.update-readme-dependencies != 'false' }}
       shell: bash
-      run: node "${{ github.action_path }}/index.js"
+      run: node "${{ github.action_path }}/dist/index.js"
       env:
         INPUT_COMPILER: ${{ inputs.compiler != '' && inputs.compiler || 'gfortran' }}
         INPUT_COMPILER_VERSION: ${{ inputs.compiler-version }}
+        INPUT_MPI: ${{ inputs.mpi }}
+        INPUT_MPI_VERSION: ${{ inputs.mpi-version }}
         INPUT_PLATFORM: ${{ inputs.platform != '' && inputs.platform || runner.os }}
         INPUT_EXTRA_PACKAGES: ${{ inputs.extra-packages }}
         INPUT_FPM_VERSION: ${{ inputs.fpm-version }}
@@ -201,7 +212,7 @@ runs:
       if: >-
         ${{
           always() &&
-          inputs.compiler != '' &&
+          (inputs.compiler != '' || inputs.mpi != 'none') &&
           inputs.fortitude-check != 'true' &&
           inputs.generate-doc-ford != 'true' &&
           inputs.generate-doc-doxygen != 'true' &&

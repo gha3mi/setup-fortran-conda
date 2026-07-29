@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+      name="description"
+      content="Install FORD, build project documentation and deploy it."
+    >
+    <title>FORD — setup-fortran-conda</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="syntax.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#content">Skip to content</a>
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand" href="index.html">setup-fortran-conda</a>
+        <nav aria-label="Primary">
+          <a href="index.html">Start</a>
+          <a href="toolchains.html">Compilers</a>
+          <a href="mpi.html">MPI</a>
+          <a class="active" href="ford.html">FORD</a>
+          <a href="doxygen.html">Doxygen</a>
+          <a href="fortitude.html">Fortitude</a>
+          <a href="readme-table.html">CI Table</a>
+          <a href="dependency-graphs.html">Dependencies</a>
+          <a href="status-badges.html">Badges</a>
+        </nav>
+        <a class="github-link" href="https://github.com/gha3mi/setup-fortran-conda">GitHub</a>
+      </div>
+    </header>
+
+    <main id="content" class="content">
+      <header class="page-header">
+        <h1>FORD</h1>
+        <p>
+          Install FORD, Graphviz and pip, build project documentation from the
+          configured input file and deploy the generated output to the selected
+          branch.
+        </p>
+      </header>
+
+      <section>
+        <h2>Inputs</h2>
+        <div
+          class="table-wrap"
+          role="region"
+          aria-label="FORD inputs"
+          tabindex="0"
+        >
+          <table class="input-table">
+            <thead>
+              <tr>
+                <th>Input</th>
+                <th>Default</th>
+                <th>Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr data-input="generate-doc-ford" data-default="false">
+                <td><code>generate-doc-ford</code></td>
+                <td><code>false</code></td>
+                <td>Build and deploy FORD documentation</td>
+              </tr>
+              <tr data-input="ford-config" data-default="README.md">
+                <td><code>ford-config</code></td>
+                <td><code>README.md</code></td>
+                <td>FORD configuration path</td>
+              </tr>
+              <tr data-input="ford-branch" data-default="gh-pages-ford">
+                <td><code>ford-branch</code></td>
+                <td><code>gh-pages-ford</code></td>
+                <td>Deployment branch</td>
+              </tr>
+              <tr data-input="ford-working-directory" data-default=".">
+                <td><code>ford-working-directory</code></td>
+                <td><code>.</code></td>
+                <td>FORD working directory</td>
+              </tr>
+              <tr data-input="ford-output-directory" data-default="doc/ford">
+                <td><code>ford-output-directory</code></td>
+                <td><code>doc/ford</code></td>
+                <td>Generated documentation directory</td>
+              </tr>
+              <tr data-input="ford-target-folder" data-default="doc/ford">
+                <td><code>ford-target-folder</code></td>
+                <td><code>doc/ford</code></td>
+                <td>Deployment target folder</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section>
+        <h2>Usage</h2>
+        <p>
+          Enabling FORD installs
+          <a href="https://github.com/Fortran-FOSS-Programmers/ford"><code>FORD</code></a>,
+          <code>Graphviz</code> and <code>pip</code>.
+        </p>
+        <pre><code class="language-yaml">doc_ford:
+  name: Generate FORD Documentation
+  runs-on: ubuntu-latest
+  permissions:
+    contents: write
+  steps:
+    - name: Setup and Generate FORD Documentation
+      uses: gha3mi/setup-fortran-conda@latest
+      with:
+        compiler: gfortran
+        generate-doc-ford: true
+        ford-working-directory: .
+        ford-config: README.md
+        ford-output-directory: doc/ford
+        ford-branch: gh-pages-ford
+        ford-target-folder: doc/ford</code></pre>
+      </section>
+    </main>
+
+  </body>
+</html>

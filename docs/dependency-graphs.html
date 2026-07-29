@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+      name="description"
+      content="Generate fpm package or module dependency graphs in README."
+    >
+    <title>Dependency graphs — setup-fortran-conda</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="syntax.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#content">Skip to content</a>
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand" href="index.html">setup-fortran-conda</a>
+        <nav aria-label="Primary">
+          <a href="index.html">Start</a>
+          <a href="toolchains.html">Compilers</a>
+          <a href="mpi.html">MPI</a>
+          <a href="ford.html">FORD</a>
+          <a href="doxygen.html">Doxygen</a>
+          <a href="fortitude.html">Fortitude</a>
+          <a href="readme-table.html">CI Table</a>
+          <a class="active" href="dependency-graphs.html">Dependencies</a>
+          <a href="status-badges.html">Badges</a>
+        </nav>
+        <a class="github-link" href="https://github.com/gha3mi/setup-fortran-conda">GitHub</a>
+      </div>
+    </header>
+
+    <main id="content" class="content">
+      <header class="page-header">
+        <h1>Dependency graphs</h1>
+        <p>
+          Install <code>fpm-deps</code> or <code>fpm-modules</code> on Linux,
+          generate a package or Fortran module dependency graph and update the
+          selected README through a pull request.
+        </p>
+      </header>
+
+      <section>
+        <h2>Inputs</h2>
+        <div
+          class="table-wrap"
+          role="region"
+          aria-label="Dependency graph inputs"
+          tabindex="0"
+        >
+          <table class="input-table">
+            <thead>
+              <tr>
+                <th>Input</th>
+                <th>Default</th>
+                <th>Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr data-input="update-readme-dependencies" data-default="false">
+                <td><code>update-readme-dependencies</code></td>
+                <td><code>false</code></td>
+                <td>
+                  <code>false</code>, <code>fpm-deps</code> or
+                  <code>fpm-modules</code>
+                </td>
+              </tr>
+              <tr
+                data-input="dependency-graph-working-directory"
+                data-default="."
+              >
+                <td><code>dependency-graph-working-directory</code></td>
+                <td><code>.</code></td>
+                <td>Project directory</td>
+              </tr>
+              <tr
+                data-input="dependency-graph-readme-file"
+                data-default="README.md"
+              >
+                <td><code>dependency-graph-readme-file</code></td>
+                <td><code>README.md</code></td>
+                <td>README file relative to the project directory</td>
+              </tr>
+              <tr data-input="dependency-graph-options" data-default="">
+                <td><code>dependency-graph-options</code></td>
+                <td>empty</td>
+                <td>Additional generator options</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section>
+        <h2>fpm package graph</h2>
+        <p>
+          The action installs
+          <a href="https://github.com/ivan-pi/fpm-deps"><code>fpm-deps</code></a>.
+          <code>fpm</code> and <code>git</code> are already available.
+        </p>
+        <pre><code class="language-yaml">update_readme_fpm_deps:
+  name: Update README fpm dependency graph
+  runs-on: ubuntu-latest
+  steps:
+    - name: Update fpm dependency graph
+      uses: gha3mi/setup-fortran-conda@latest
+      with:
+        update-readme-dependencies: fpm-deps
+        dependency-graph-working-directory: .
+        dependency-graph-readme-file: README.md
+        update-readme-token: ${{ secrets.GH_PAT }}
+        update-readme-user-name: "Your Name"
+        update-readme-user-email: "you@example.com"</code></pre>
+      </section>
+
+      <section>
+        <h2>Fortran module graph</h2>
+        <p>
+          The action installs
+          <a href="https://github.com/davidpfister/fpm-modules"><code>fpm-modules</code></a>.
+          <code>fpm</code> and <code>git</code> are already available.
+        </p>
+        <pre><code class="language-yaml">update_readme_fpm_modules:
+  name: Update README module dependency graph
+  runs-on: ubuntu-latest
+  steps:
+    - name: Update module dependency graph
+      uses: gha3mi/setup-fortran-conda@latest
+      with:
+        update-readme-dependencies: fpm-modules
+        dependency-graph-working-directory: .
+        dependency-graph-readme-file: README.md
+        dependency-graph-options: "-x fpm,daglib"
+        update-readme-token: ${{ secrets.GH_PAT }}
+        update-readme-user-name: "Your Name"
+        update-readme-user-email: "you@example.com"</code></pre>
+      </section>
+
+      <section>
+        <h2>README markers</h2>
+        <p>
+          Add the matching marker pair to <code>README.md</code>; the selected
+          dependency graph is inserted between them.
+        </p>
+        <h3>fpm package graph</h3>
+        <pre><code>&lt;!-- FPM-DEPS:setup-fortran-conda:START --&gt;
+&lt;!-- FPM-DEPS:setup-fortran-conda:END --&gt;</code></pre>
+        <h3>Fortran module graph</h3>
+        <pre><code>&lt;!-- FPM-MODULES:setup-fortran-conda:START --&gt;
+&lt;!-- FPM-MODULES:setup-fortran-conda:END --&gt;</code></pre>
+      </section>
+
+    </main>
+
+  </body>
+</html>

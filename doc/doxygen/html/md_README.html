@@ -730,7 +730,7 @@ MPI Support</h3>
 <div class="line">      - {os: macos-latest,  compiler: gfortran, mpi: mpich}</div>
 <div class="line">      - {os: macos-latest,  compiler: gfortran, mpi: openmpi}</div>
 <div class="line">      - {os: ubuntu-latest, compiler: ifx, mpi: intelmpi}</div>
-<div class="line">      - {os: windows-latest, compiler: ifx, mpi: intelmpi}</div>
+<div class="line">      - {os: windows-latest, compiler: ifx, mpi: intelmpi, fpm-version: 0.12.0}</div>
 <div class="line">      - {os: ubuntu-latest, compiler: nvfortran, mpi: hpcx}</div>
 <div class="line"> </div>
 <div class="line">  steps:</div>
@@ -739,6 +739,7 @@ MPI Support</h3>
 <div class="line">      with:</div>
 <div class="line">        compiler: ${{ matrix.compiler }}</div>
 <div class="line">        mpi: ${{ matrix.mpi }}</div>
+<div class="line">        fpm-version: ${{ matrix.fpm-version }}</div>
 <div class="line"> </div>
 <div class="line">    - name: Run an fpm project that declares dependencies.mpi</div>
 <div class="line">      shell: bash</div>

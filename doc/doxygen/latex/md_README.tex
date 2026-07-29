@@ -595,7 +595,7 @@ If {\ttfamily compiler-\/version} is set to an empty string {\ttfamily "{}"{}} o
 \DoxyCodeLine{\ \ \ \ \ \ -\/\ \{os:\ macos-\/latest,\ \ compiler:\ gfortran,\ mpi:\ mpich\}}
 \DoxyCodeLine{\ \ \ \ \ \ -\/\ \{os:\ macos-\/latest,\ \ compiler:\ gfortran,\ mpi:\ openmpi\}}
 \DoxyCodeLine{\ \ \ \ \ \ -\/\ \{os:\ ubuntu-\/latest,\ compiler:\ ifx,\ mpi:\ intelmpi\}}
-\DoxyCodeLine{\ \ \ \ \ \ -\/\ \{os:\ windows-\/latest,\ compiler:\ ifx,\ mpi:\ intelmpi\}}
+\DoxyCodeLine{\ \ \ \ \ \ -\/\ \{os:\ windows-\/latest,\ compiler:\ ifx,\ mpi:\ intelmpi,\ fpm-\/version:\ 0.12.0\}}
 \DoxyCodeLine{\ \ \ \ \ \ -\/\ \{os:\ ubuntu-\/latest,\ compiler:\ nvfortran,\ mpi:\ hpcx\}}
 \DoxyCodeLine{}
 \DoxyCodeLine{\ \ steps:}
@@ -604,6 +604,7 @@ If {\ttfamily compiler-\/version} is set to an empty string {\ttfamily "{}"{}} o
 \DoxyCodeLine{\ \ \ \ \ \ with:}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ compiler:\ \$\{\{\ matrix.compiler\ \}\}}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ mpi:\ \$\{\{\ matrix.mpi\ \}\}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ fpm-\/version:\ \$\{\{\ matrix.fpm-\/version\ \}\}}
 \DoxyCodeLine{}
 \DoxyCodeLine{\ \ \ \ -\/\ name:\ Run\ an\ fpm\ project\ that\ declares\ dependencies.mpi}
 \DoxyCodeLine{\ \ \ \ \ \ shell:\ bash}

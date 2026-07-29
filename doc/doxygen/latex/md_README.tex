@@ -610,7 +610,7 @@ If {\ttfamily compiler-\/version} is set to an empty string {\ttfamily "{}"{}} o
 \DoxyCodeLine{\ \ \ \ \ \ run:\ >}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ fpm\ run\ -\/-\/compiler\ "{}\$FPM\_FC"{}}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ -\/-\/runner\ "{}\$MPIEXEC"{}}
-\DoxyCodeLine{\ \ \ \ \ \ \ \ -\/-\/runner-\/args="{}\ \$MPIEXEC\_NUMPROC\_FLAG\ 2"{}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ -\/-\/runner-\/args="{}\$MPIEXEC\_PREFLAGS\ \$MPIEXEC\_NUMPROC\_FLAG\ 2\ \$MPIEXEC\_POSTFLAGS"{}}
 \DoxyCodeLine{\ \ \ \ \ \ \ \ -\/-\/verbose}
 
 \end{DoxyCode}

@@ -18,7 +18,7 @@ export async function setup(version = '') {
 
   const packages = [
     version ? `gfortran=${version}` : 'gfortran',
-    version ? `gcc_linux-64=${version}` : 'gcc_linux-64',
+    version ? `gcc=${version}` : 'gcc',
     version ? `gxx=${version}` : 'gxx',
     'binutils',
   ];

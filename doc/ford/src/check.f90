@@ -1,5 +1,5 @@
 program check
-   use main
+   use hello
    implicit none
    call say_hello()
 end program

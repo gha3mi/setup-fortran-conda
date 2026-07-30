@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 4.4.1)
 project(fortran_hello LANGUAGES Fortran C)
 
 enable_testing()
@@ -40,9 +40,6 @@ if(ENABLE_MPI)
 
   add_test(
     NAME mpi_hello
-    COMMAND
-      ${MPIEXEC_EXECUTABLE}
-      ${MPIEXEC_NUMPROC_FLAG} 2
-      $<TARGET_FILE:mpi_hello>
+    COMMAND ${MPIEXEC_EXECUTABLE} ${MPIEXEC_NUMPROC_FLAG} 2 $<TARGET_FILE:mpi_hello>
   )
 endif()

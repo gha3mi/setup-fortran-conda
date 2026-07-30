@@ -1,3 +1,50 @@
+## [v0.18.0](https://github.com/gha3mi/setup-fortran-conda/compare/v0.17.1...v0.18.0) - 2026-07-30
+
+
+### Features
+
+* feat: add MPI toolchain support ([4cf6839f](https://github.com/gha3mi/setup-fortran-conda/commit/4cf6839fb21b4d9064a1b225237dd38f4dcffefd)) by [@gha3mi](https://github.com/gha3mi)
+* feat: include MPI in generated status tables ([40ebfda1](https://github.com/gha3mi/setup-fortran-conda/commit/40ebfda104f2688167835a4c673c6a284f49470a)) by [@gha3mi](https://github.com/gha3mi)
+
+### Fixes
+
+* fix: show em dash for non-MPI table rows ([1f8660a6](https://github.com/gha3mi/setup-fortran-conda/commit/1f8660a611c1d12af6f8d198dfd0fc48e86c3054)) by [@gha3mi](https://github.com/gha3mi)
+* fix: leave non-MPI table cells empty ([03c2f84f](https://github.com/gha3mi/setup-fortran-conda/commit/03c2f84fcc7807012802baff8d7869e06f7ac7bb)) by [@gha3mi](https://github.com/gha3mi)
+* fix: report Intel MPI version correctly on Windows ([a88116c0](https://github.com/gha3mi/setup-fortran-conda/commit/a88116c0c307a21c3681ecf37034216358acc488)) by [@gha3mi](https://github.com/gha3mi)
+* fix: detect active HPC-X version ([afcca64c](https://github.com/gha3mi/setup-fortran-conda/commit/afcca64c21f9290ac495e910df2ff88951bdb212)) by [@gha3mi](https://github.com/gha3mi)
+* fix: install latest GCC suite on Linux ([daaa5aec](https://github.com/gha3mi/setup-fortran-conda/commit/daaa5aeca53950b100cdd5877f811f599e3cad68)) by [@gha3mi](https://github.com/gha3mi)
+
+### Others
+
+* chore(deps): bump actions/checkout from 7.0.0 to 7.0.1 (#189) ([6fd68f98](https://github.com/gha3mi/setup-fortran-conda/commit/6fd68f987b1df295b889ef50c991ce8c52529448)) by [@dependabot[bot]](https://github.com/dependabot[bot])
+* chore: remove unused scripts ([50f7d2b8](https://github.com/gha3mi/setup-fortran-conda/commit/50f7d2b8f0b56f593f7c9c1336ed49a006151b4c)) by [@gha3mi](https://github.com/gha3mi)
+* refactor: migrate action runtime to dist ([14ab03a7](https://github.com/gha3mi/setup-fortran-conda/commit/14ab03a7d0cc5d3c2c4cfd1323f081428cb7b7d7)) by [@gha3mi](https://github.com/gha3mi)
+* ci: schedule dependency updates and full matrix weekly ([faae94f5](https://github.com/gha3mi/setup-fortran-conda/commit/faae94f5a564b279e3425d594cfe29c6e48d7eb9)) by [@gha3mi](https://github.com/gha3mi)
+* refactor: unify platform setup implementations ([fd366bc8](https://github.com/gha3mi/setup-fortran-conda/commit/fd366bc83a67fec791e404189d2a2ae67610acc9)) by [@gha3mi](https://github.com/gha3mi)
+* test: add portable MPI build coverage ([4653635b](https://github.com/gha3mi/setup-fortran-conda/commit/4653635b43f90fb12437243b15cf5c9f44c451a7)) by [@gha3mi](https://github.com/gha3mi)
+* ci: test MPI toolchain matrix ([877134ee](https://github.com/gha3mi/setup-fortran-conda/commit/877134ee5d056883ab70d50d39af4a7a1bd6e2c9)) by [@gha3mi](https://github.com/gha3mi)
+* docs: document MPI toolchain support ([5f4f0b0a](https://github.com/gha3mi/setup-fortran-conda/commit/5f4f0b0aed5a325e1c2950dbf52cb56244d05b24)) by [@gha3mi](https://github.com/gha3mi)
+* docs: scope Doxygen inputs to Fortran sources ([57bcd1b1](https://github.com/gha3mi/setup-fortran-conda/commit/57bcd1b14096bd847dacdf21775906cf0498b39c)) by [@gha3mi](https://github.com/gha3mi)
+* build: regenerate action distribution ([c8ed5eba](https://github.com/gha3mi/setup-fortran-conda/commit/c8ed5ebad8475d4d2f82a57e15aa4e69f8679e75)) by [@gha3mi](https://github.com/gha3mi)
+* docs: add user guide and simplify README ([f8339f53](https://github.com/gha3mi/setup-fortran-conda/commit/f8339f53c47c8a871b098812ace3cf2a0be1cf4d)) by [@gha3mi](https://github.com/gha3mi)
+* ci: use main action version ([857957d2](https://github.com/gha3mi/setup-fortran-conda/commit/857957d299eec9d2bb5430a47054a87d260a93dc)) by [@gha3mi](https://github.com/gha3mi)
+* Merge branch 'dev' ([abca5113](https://github.com/gha3mi/setup-fortran-conda/commit/abca51137e77c98b9587b39added42443355128b)) by [@gha3mi](https://github.com/gha3mi)
+* chore(deps): bump actions/configure-pages from 5 to 6 (#191) ([c31dac96](https://github.com/gha3mi/setup-fortran-conda/commit/c31dac96bda1ddedcf2e31c8715af166660504fa)) by [@dependabot[bot]](https://github.com/dependabot[bot])
+* chore(deps): bump actions/deploy-pages from 4 to 5 (#192) ([5c42ebd3](https://github.com/gha3mi/setup-fortran-conda/commit/5c42ebd3a96f6095cb8831cb28e9af3c00c2c5ff)) by [@dependabot[bot]](https://github.com/dependabot[bot])
+* chore(deps): bump actions/setup-node from 6.4.0 to 7.0.0 (#194) ([e082d774](https://github.com/gha3mi/setup-fortran-conda/commit/e082d774bbc0186cf97deaac0142d802d92b5b5b)) by [@dependabot[bot]](https://github.com/dependabot[bot])
+* chore(deps): bump actions/upload-pages-artifact from 4 to 5 (#193) ([9a86fd29](https://github.com/gha3mi/setup-fortran-conda/commit/9a86fd294be4ded725bfa6d903f98afc35b84cda)) by [@dependabot[bot]](https://github.com/dependabot[bot])
+* Update README.md status table [ci skip] (#190) ([b0eb46b8](https://github.com/gha3mi/setup-fortran-conda/commit/b0eb46b88861c5451dc35e8a080506f0840d258f)) by [@gha3mi](https://github.com/gha3mi)
+* Update README.md status table [ci skip] (#197) ([f3e5d2e2](https://github.com/gha3mi/setup-fortran-conda/commit/f3e5d2e2ce81aaf174625400a041ed511fd234ea)) by [@gha3mi](https://github.com/gha3mi)
+
+
+### Contributors
+- [@dependabot[bot]](https://github.com/dependabot[bot])
+- [@gha3mi](https://github.com/gha3mi)
+
+
+
+Full Changelog: [v0.17.1...v0.18.0](https://github.com/gha3mi/setup-fortran-conda/compare/v0.17.1...v0.18.0)
+
 ## [v0.17.1](https://github.com/gha3mi/setup-fortran-conda/compare/v0.17.0...v0.17.1) - 2026-07-19
 
 

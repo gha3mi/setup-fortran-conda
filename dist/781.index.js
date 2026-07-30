@@ -28,6 +28,15 @@ export const modules = {
 
 
 const AOCC_DOWNLOAD_PAGE = 'https://www.amd.com/en/developer/aocc.html';
+const AOCC_SHELL_ENVIRONMENT = Object.freeze([
+  'PATH',
+  'LD_LIBRARY_PATH',
+  'LIBRARY_PATH',
+  'COMPILER_PATH',
+  'CPATH',
+  'C_INCLUDE_PATH',
+  'CPLUS_INCLUDE_PATH',
+]);
 
 function normalizeVersion(version = '') {
   const v = version.trim().toLowerCase();
@@ -265,17 +274,41 @@ function resolveAoccRoot(version) {
 
 async function sourceAoccEnvironment(setenvPath) {
   let raw = '';
-  await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('bash', ['-c', `source "${setenvPath}" >/dev/null && env -0`], {
-    silent: true,
-    listeners: { stdout: d => (raw += d.toString()) }
-  });
+  const command = [
+    'set -e',
+    'source "$1" >/dev/null',
+    `for name in ${AOCC_SHELL_ENVIRONMENT.join(' ')}; do`,
+    '  if [[ -v $name ]]; then',
+    '    printf \'%s=%s\\0\' "$name" "${!name}"',
+    '  fi',
+    'done',
+  ].join('\n');
+  await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)(
+    'bash',
+    ['-c', command, 'setup-fortran-conda', setenvPath],
+    {
+      silent: true,
+      listeners: {
+        stdout: (data) => {
+          raw += data.toString();
+        },
+      },
+    }
+  );
 
+  const values = {};
   for (const pair of raw.split('\0')) {
     if (!pair) continue;
     const idx = pair.indexOf('=');
     if (idx <= 0) continue;
-    node_process__WEBPACK_IMPORTED_MODULE_7__.env[pair.slice(0, idx)] = pair.slice(idx + 1);
+
+    const key = pair.slice(0, idx);
+    if (!AOCC_SHELL_ENVIRONMENT.includes(key)) continue;
+    const value = pair.slice(idx + 1);
+    node_process__WEBPACK_IMPORTED_MODULE_7__.env[key] = value;
+    values[key] = value;
   }
+  return values;
 }
 
 function prependPathList(paths, current = '') {
@@ -464,12 +497,17 @@ async function setup(version = '') {
     throw new Error(`Unable to locate AOCC environment script: ${setenvPath}`);
   }
 
-  await sourceAoccEnvironment(setenvPath);
+  const sourcedEnvironment = await sourceAoccEnvironment(setenvPath);
   await (0,_common_js__WEBPACK_IMPORTED_MODULE_8__/* .addExistingPaths */ .Bf)([condaBin, binPath, wrapperDir]);
 
   const ldLibraryPath = prependPathList(
     [libPath, lib32Path].filter(p => (0,node_fs__WEBPACK_IMPORTED_MODULE_3__.existsSync)(p)),
-    node_process__WEBPACK_IMPORTED_MODULE_7__.env.LD_LIBRARY_PATH || ''
+    sourcedEnvironment.LD_LIBRARY_PATH || node_process__WEBPACK_IMPORTED_MODULE_7__.env.LD_LIBRARY_PATH || ''
+  );
+  const compilerPaths = Object.fromEntries(
+    Object.entries(sourcedEnvironment).filter(
+      ([key]) => key !== 'PATH' && key !== 'LD_LIBRARY_PATH'
+    )
   );
 
   await (0,_common_js__WEBPACK_IMPORTED_MODULE_8__/* .verifyCommands */ .I6)([
@@ -480,6 +518,7 @@ async function setup(version = '') {
 
   await (0,_common_js__WEBPACK_IMPORTED_MODULE_8__/* .exportCompilerEnvironment */ .x7)(
     (0,_common_js__WEBPACK_IMPORTED_MODULE_8__/* .compilerEnvironment */ .HD)('amdflang', 'amdclang', 'amdclang++', {
+      ...compilerPaths,
       AOCC_HOME: aoccRoot,
       AOCC_ROOT: aoccRoot,
       LD_LIBRARY_PATH: ldLibraryPath,
@@ -487,7 +526,6 @@ async function setup(version = '') {
   );
 
   await (0,_common_js__WEBPACK_IMPORTED_MODULE_8__/* .setLinuxUlimits */ .QK)();
-  await (0,_common_js__WEBPACK_IMPORTED_MODULE_8__/* .exportProcessEnvironment */ .pI)();
 
   (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)('✅ compiler setup complete');
 }
@@ -507,7 +545,6 @@ async function setup(version = '') {
 /* harmony export */   QK: () => (/* binding */ setLinuxUlimits),
 /* harmony export */   Qv: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_4__.Qv),
 /* harmony export */   b4: () => (/* binding */ assertLinux),
-/* harmony export */   pI: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_4__.pI),
 /* harmony export */   s6: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_4__.s6),
 /* harmony export */   x7: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_4__.x7),
 /* harmony export */   zD: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_4__.zD)
@@ -537,7 +574,7 @@ async function setLinuxUlimits() {
       'ulimit -c unlimited -d unlimited -f unlimited -m unlimited -s unlimited -t unlimited -v unlimited -x unlimited';
     const script = (0,node_path__WEBPACK_IMPORTED_MODULE_3__.join)(process.env.RUNNER_TEMP, 'ulimit.sh');
     (0,node_fs__WEBPACK_IMPORTED_MODULE_1__.appendFileSync)(script, `${command}${node_os__WEBPACK_IMPORTED_MODULE_2__.EOL}`);
-    (0,node_fs__WEBPACK_IMPORTED_MODULE_1__.appendFileSync)(process.env.GITHUB_ENV, `BASH_ENV=${script}${node_os__WEBPACK_IMPORTED_MODULE_2__.EOL}`);
+    (0,_common_js__WEBPACK_IMPORTED_MODULE_4__/* .exportEnv */ .EE)('BASH_ENV', script);
     (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)('ulimit settings exported to BASH_ENV');
   });
 }

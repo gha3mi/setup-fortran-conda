@@ -8,7 +8,6 @@ import {
   compilerEnvironment,
   exportCompilerEnvironment,
   exportEnv,
-  exportProcessEnvironment,
   getCondaPrefix,
   grouped,
   initializeMsvcEnvironment,
@@ -104,7 +103,6 @@ export async function setup(version = '') {
       CMAKE_LINKER: 'lld',
     })
   );
-  await exportProcessEnvironment({ warningPrefix: '' });
 
   info('✅ compiler setup complete');
 }

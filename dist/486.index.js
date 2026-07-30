@@ -13,7 +13,6 @@ export const modules = {
 /* harmony export */   Qv: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_2__.Qv),
 /* harmony export */   eI: () => (/* binding */ assertMacOs),
 /* harmony export */   gT: () => (/* binding */ setMacOsSdkRoot),
-/* harmony export */   pI: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_2__.pI),
 /* harmony export */   s6: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_2__.s6),
 /* harmony export */   x7: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_2__.x7),
 /* harmony export */   zD: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_2__.zD)
@@ -173,7 +172,6 @@ async function setup(version = '') {
   await (0,_common_js__WEBPACK_IMPORTED_MODULE_4__/* .exportCompilerEnvironment */ .x7)(
     (0,_common_js__WEBPACK_IMPORTED_MODULE_4__/* .compilerEnvironment */ .HD)('gfortran', c, cxx)
   );
-  await (0,_common_js__WEBPACK_IMPORTED_MODULE_4__/* .exportProcessEnvironment */ .pI)({ warningPrefix: '' });
 
   (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)('✅ compiler setup complete');
 }

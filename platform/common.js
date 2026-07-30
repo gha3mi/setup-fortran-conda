@@ -1,15 +1,17 @@
-import { addPath, endGroup, info, startGroup } from '@actions/core';
-import { exec as run } from '@actions/exec';
 import {
-  appendFileSync,
-  copyFileSync,
-  existsSync,
-  mkdirSync,
-} from 'node:fs';
-import { EOL } from 'node:os';
+  addPath,
+  endGroup,
+  exportVariable,
+  info,
+  startGroup,
+} from '@actions/core';
+import { exec as run } from '@actions/exec';
+import { copyFileSync, existsSync, mkdirSync } from 'node:fs';
 import { delimiter, join, sep } from 'node:path';
 
 export const TOOLS_ENVIRONMENT = 'fortran';
+
+const RESERVED_ENVIRONMENT_NAME = /^(?:GITHUB_|RUNNER_)/i;
 
 export function assertPlatform(expected, message) {
   if (process.platform !== expected) {
@@ -27,12 +29,23 @@ export async function grouped(name, operation) {
 }
 
 export function exportEnv(key, value) {
-  const envFile = process.env.GITHUB_ENV;
-  if (!envFile) throw new Error('GITHUB_ENV not defined');
+  if (value == null) return;
+
+  const name = String(key);
+  const upperName = name.toUpperCase();
+  if (!/^[A-Za-z_][A-Za-z0-9_]*$/.test(name)) {
+    throw new Error(`Invalid environment variable name: ${name}`);
+  }
+  if (
+    RESERVED_ENVIRONMENT_NAME.test(name) ||
+    upperName === 'NODE_OPTIONS'
+  ) {
+    throw new Error(`Refusing to export reserved environment variable: ${name}`);
+  }
+  if (!process.env.GITHUB_ENV) throw new Error('GITHUB_ENV not defined');
 
   const normalized = String(value);
-  appendFileSync(envFile, `${key}=${normalized}${EOL}`);
-  process.env[key] = normalized;
+  exportVariable(name, normalized);
 }
 
 export function compilerEnvironment(fortran, c, cxx, extra = {}) {
@@ -54,23 +67,7 @@ export async function exportCompilerEnvironment(values) {
   await grouped('setup-fortran-conda: Export Compiler Environment', async () => {
     for (const [key, value] of Object.entries(values)) {
       exportEnv(key, value);
-      info(`Exported: ${key}=${value}`);
-    }
-  });
-}
-
-export async function exportProcessEnvironment({ warningPrefix = '⚠️ ' } = {}) {
-  await grouped('setup-fortran-conda: Export Process Environment', async () => {
-    for (const [key, value] of Object.entries(process.env)) {
-      if (typeof value !== 'string') continue;
-
-      try {
-        process.env[key] = value;
-        appendFileSync(process.env.GITHUB_ENV, `${key}=${value}${EOL}`);
-        info(`Exported: ${key}`);
-      } catch (error) {
-        info(`${warningPrefix}Failed to export: ${key} (${error.message})`);
-      }
+      info(`Exported: ${key}`);
     }
   });
 }
@@ -229,7 +226,7 @@ export async function exportCondaEnvironment() {
     for (const [key, value] of Object.entries(environment)) {
       if (!value) continue;
       exportEnv(key, value);
-      info(`Exported: ${key}=${value}`);
+      info(`Exported: ${key}`);
     }
   });
 }

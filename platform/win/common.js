@@ -6,6 +6,14 @@ import { assertPlatform, exportEnv, grouped } from '../common.js';
 
 export * from '../common.js';
 
+const MSVC_ENVIRONMENT_VARIABLES = Object.freeze([
+  'PATH',
+  'TMP',
+  'INCLUDE',
+  'LIB',
+  'LIBPATH',
+]);
+
 export function assertWindows() {
   assertPlatform('win32', 'This setup script is only supported on Windows.');
 }
@@ -71,7 +79,10 @@ export async function initializeMsvcEnvironment() {
     'setup-fortran-conda: Initialize MSVC Environment',
     async () => {
       let captured = '';
-      const exitCode = await run('cmd.exe', ['/c', vcvars, '&&', 'set'], {
+      const command =
+        `call "${vcvars}" >nul && ` +
+        '(set PATH&set TMP&set INCLUDE&set LIB&set LIBPATH)';
+      const exitCode = await run('cmd.exe', ['/d', '/c', command], {
         silent: true,
         ignoreReturnCode: true,
         listeners: {
@@ -95,16 +106,30 @@ export async function initializeMsvcEnvironment() {
   );
 
   await grouped('setup-fortran-conda: Export MSVC Environment', async () => {
-    let exportedCount = 0;
-    for (const line of output.split('\n')) {
-      const [key, ...rest] = line.trim().split('=');
-      if (!key || rest.length === 0) continue;
+    const values = new Map();
+    for (const rawLine of output.split(/\r?\n/)) {
+      const line = rawLine.trim();
+      const separator = line.indexOf('=');
+      if (separator <= 0) continue;
 
-      exportEnv(key, rest.join('='));
-      info(`Exported: ${key}`);
-      exportedCount += 1;
+      const key = line.slice(0, separator).toUpperCase();
+      if (!MSVC_ENVIRONMENT_VARIABLES.includes(key)) continue;
+      values.set(key, line.slice(separator + 1));
     }
-    info(`MSVC environment loaded with ${exportedCount} variables`);
+
+    for (const required of MSVC_ENVIRONMENT_VARIABLES) {
+      if (!values.get(required)) {
+        throw new Error(`vcvars64.bat did not define ${required}`);
+      }
+    }
+
+    for (const key of MSVC_ENVIRONMENT_VARIABLES) {
+      const value = values.get(key);
+      if (value == null) continue;
+      exportEnv(key, value);
+      info(`Exported: ${key}`);
+    }
+    info(`MSVC environment loaded with ${values.size} variables`);
   });
 }
 

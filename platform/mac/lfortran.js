@@ -5,7 +5,6 @@ import {
   assertMacOs,
   compilerEnvironment,
   exportCompilerEnvironment,
-  exportProcessEnvironment,
   getCondaPrefix,
   installCondaPackages,
   setMacOsSdkRoot,
@@ -50,7 +49,6 @@ export async function setup(version = '') {
       LFORTRAN_LINKER: 'clang',
     })
   );
-  await exportProcessEnvironment();
 
   info('✅ compiler setup complete');
 }

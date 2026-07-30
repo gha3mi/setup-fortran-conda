@@ -5,7 +5,6 @@ import {
   assertLinux,
   compilerEnvironment,
   exportCompilerEnvironment,
-  exportProcessEnvironment,
   getCondaPrefix,
   installCondaPackages,
   setLinuxUlimits,
@@ -46,7 +45,6 @@ export async function setup(version = '') {
     })
   );
   await setLinuxUlimits();
-  await exportProcessEnvironment();
 
   info('✅ compiler setup complete');
 }

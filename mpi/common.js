@@ -1,8 +1,10 @@
 import { addPath, endGroup, info, startGroup } from '@actions/core';
 import { exec as _exec } from '@actions/exec';
-import { appendFileSync, existsSync } from 'node:fs';
-import { EOL } from 'node:os';
+import { existsSync } from 'node:fs';
 import { basename, join, sep } from 'node:path';
+import { exportEnv } from '../platform/common.js';
+
+export { exportEnv };
 
 const DEFAULT_WRAPPERS = Object.freeze({
   fortran: 'mpifort',
@@ -22,21 +24,6 @@ export async function grouped(name, operation) {
   } finally {
     endGroup();
   }
-}
-
-export function exportEnv(key, value) {
-  if (value == null) return;
-
-  const envFile = process.env.GITHUB_ENV;
-  if (!envFile) throw new Error('GITHUB_ENV not defined');
-
-  const normalized = String(value);
-  if (/[\r\n]/.test(normalized)) {
-    throw new Error(`Cannot export multiline MPI environment variable ${key}.`);
-  }
-
-  appendFileSync(envFile, `${key}=${normalized}${EOL}`);
-  process.env[key] = normalized;
 }
 
 export async function execCapture(command, args = []) {
@@ -219,7 +206,7 @@ export function exportMpiEnvironment(descriptor) {
   return grouped('setup-fortran-conda: Export MPI Environment', async () => {
     for (const [key, value] of Object.entries(values)) {
       exportEnv(key, value);
-      info(`Exported: ${key}=${value}`);
+      info(`Exported: ${key}`);
     }
   });
 }

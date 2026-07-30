@@ -5,7 +5,6 @@ import {
   assertWindows,
   compilerEnvironment,
   exportCompilerEnvironment,
-  exportProcessEnvironment,
   getCondaPrefix,
   initializeMsvcEnvironment,
   installCondaPackages,
@@ -55,7 +54,6 @@ export async function setup(version = '') {
         .join(';'),
     })
   );
-  await exportProcessEnvironment({ warningPrefix: '' });
 
   info('✅ compiler setup complete');
 }

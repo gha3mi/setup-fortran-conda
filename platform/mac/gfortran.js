@@ -12,7 +12,6 @@ import {
   assertMacOs,
   compilerEnvironment,
   exportCompilerEnvironment,
-  exportProcessEnvironment,
   getCondaPrefix,
   grouped,
   installCondaPackages,
@@ -124,7 +123,6 @@ export async function setup(version = '') {
   await exportCompilerEnvironment(
     compilerEnvironment('gfortran', c, cxx)
   );
-  await exportProcessEnvironment({ warningPrefix: '' });
 
   info('✅ compiler setup complete');
 }

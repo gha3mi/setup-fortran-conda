@@ -18,7 +18,6 @@ import {
   assertLinux,
   compilerEnvironment,
   exportCompilerEnvironment,
-  exportProcessEnvironment,
   getCondaPrefix,
   grouped,
   setLinuxUlimits,
@@ -26,6 +25,15 @@ import {
 } from './common.js';
 
 const AOCC_DOWNLOAD_PAGE = 'https://www.amd.com/en/developer/aocc.html';
+const AOCC_SHELL_ENVIRONMENT = Object.freeze([
+  'PATH',
+  'LD_LIBRARY_PATH',
+  'LIBRARY_PATH',
+  'COMPILER_PATH',
+  'CPATH',
+  'C_INCLUDE_PATH',
+  'CPLUS_INCLUDE_PATH',
+]);
 
 function normalizeVersion(version = '') {
   const v = version.trim().toLowerCase();
@@ -263,17 +271,41 @@ function resolveAoccRoot(version) {
 
 async function sourceAoccEnvironment(setenvPath) {
   let raw = '';
-  await _exec('bash', ['-c', `source "${setenvPath}" >/dev/null && env -0`], {
-    silent: true,
-    listeners: { stdout: d => (raw += d.toString()) }
-  });
+  const command = [
+    'set -e',
+    'source "$1" >/dev/null',
+    `for name in ${AOCC_SHELL_ENVIRONMENT.join(' ')}; do`,
+    '  if [[ -v $name ]]; then',
+    '    printf \'%s=%s\\0\' "$name" "${!name}"',
+    '  fi',
+    'done',
+  ].join('\n');
+  await _exec(
+    'bash',
+    ['-c', command, 'setup-fortran-conda', setenvPath],
+    {
+      silent: true,
+      listeners: {
+        stdout: (data) => {
+          raw += data.toString();
+        },
+      },
+    }
+  );
 
+  const values = {};
   for (const pair of raw.split('\0')) {
     if (!pair) continue;
     const idx = pair.indexOf('=');
     if (idx <= 0) continue;
-    env[pair.slice(0, idx)] = pair.slice(idx + 1);
+
+    const key = pair.slice(0, idx);
+    if (!AOCC_SHELL_ENVIRONMENT.includes(key)) continue;
+    const value = pair.slice(idx + 1);
+    env[key] = value;
+    values[key] = value;
   }
+  return values;
 }
 
 function prependPathList(paths, current = '') {
@@ -462,12 +494,17 @@ export async function setup(version = '') {
     throw new Error(`Unable to locate AOCC environment script: ${setenvPath}`);
   }
 
-  await sourceAoccEnvironment(setenvPath);
+  const sourcedEnvironment = await sourceAoccEnvironment(setenvPath);
   await addExistingPaths([condaBin, binPath, wrapperDir]);
 
   const ldLibraryPath = prependPathList(
     [libPath, lib32Path].filter(p => existsSync(p)),
-    env.LD_LIBRARY_PATH || ''
+    sourcedEnvironment.LD_LIBRARY_PATH || env.LD_LIBRARY_PATH || ''
+  );
+  const compilerPaths = Object.fromEntries(
+    Object.entries(sourcedEnvironment).filter(
+      ([key]) => key !== 'PATH' && key !== 'LD_LIBRARY_PATH'
+    )
   );
 
   await verifyCommands([
@@ -478,6 +515,7 @@ export async function setup(version = '') {
 
   await exportCompilerEnvironment(
     compilerEnvironment('amdflang', 'amdclang', 'amdclang++', {
+      ...compilerPaths,
       AOCC_HOME: aoccRoot,
       AOCC_ROOT: aoccRoot,
       LD_LIBRARY_PATH: ldLibraryPath,
@@ -485,7 +523,6 @@ export async function setup(version = '') {
   );
 
   await setLinuxUlimits();
-  await exportProcessEnvironment();
 
   info('✅ compiler setup complete');
 }

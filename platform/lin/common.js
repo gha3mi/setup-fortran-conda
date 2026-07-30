@@ -2,7 +2,7 @@ import { info } from '@actions/core';
 import { appendFileSync } from 'node:fs';
 import { EOL } from 'node:os';
 import { join } from 'node:path';
-import { assertPlatform, grouped } from '../common.js';
+import { assertPlatform, exportEnv, grouped } from '../common.js';
 
 export * from '../common.js';
 
@@ -18,7 +18,7 @@ export async function setLinuxUlimits() {
       'ulimit -c unlimited -d unlimited -f unlimited -m unlimited -s unlimited -t unlimited -v unlimited -x unlimited';
     const script = join(process.env.RUNNER_TEMP, 'ulimit.sh');
     appendFileSync(script, `${command}${EOL}`);
-    appendFileSync(process.env.GITHUB_ENV, `BASH_ENV=${script}${EOL}`);
+    exportEnv('BASH_ENV', script);
     info('ulimit settings exported to BASH_ENV');
   });
 }

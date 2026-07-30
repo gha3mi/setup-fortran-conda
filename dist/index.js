@@ -28376,6 +28376,7 @@ module.exports = __WEBPACK_EXTERNAL_createRequire(import.meta.url)("util");
 __nccwpck_require__.d(__webpack_exports__, {
   fM: () => (/* binding */ addPath),
   N4: () => (/* binding */ endGroup),
+  dN: () => (/* binding */ exportVariable),
   pq: () => (/* binding */ info),
   C1: () => (/* binding */ setFailed),
   uH: () => (/* binding */ setOutput),
@@ -28384,7 +28385,7 @@ __nccwpck_require__.d(__webpack_exports__, {
   $e: () => (/* binding */ warning)
 });
 
-// UNUSED EXPORTS: ExitCode, debug, error, exportVariable, getBooleanInput, getIDToken, getInput, getMultilineInput, getState, group, isDebug, markdownSummary, notice, platform, saveState, setCommandEcho, setSecret, toPlatformPath, toPosixPath, toWin32Path
+// UNUSED EXPORTS: ExitCode, debug, error, getBooleanInput, getIDToken, getInput, getMultilineInput, getState, group, isDebug, markdownSummary, notice, platform, saveState, setCommandEcho, setSecret, toPlatformPath, toPosixPath, toWin32Path
 
 // EXTERNAL MODULE: external "os"
 var external_os_ = __nccwpck_require__(857);
@@ -29925,13 +29926,13 @@ var ExitCode;
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function exportVariable(name, val) {
-    const convertedVal = toCommandValue(val);
+    const convertedVal = utils_toCommandValue(val);
     process.env[name] = convertedVal;
     const filePath = process.env['GITHUB_ENV'] || '';
     if (filePath) {
-        return issueFileCommand('ENV', prepareKeyValueMessage(name, val));
+        return file_command_issueFileCommand('ENV', file_command_prepareKeyValueMessage(name, val));
     }
-    issueCommand('set-env', { name }, convertedVal);
+    command_issueCommand('set-env', { name }, convertedVal);
 }
 /**
  * Registers a secret which will get masked from logs
@@ -31369,7 +31370,6 @@ function getExecOutput(commandLine, args, options) {
 /* harmony export */   MA: () => (/* binding */ installCondaPackages),
 /* harmony export */   Qv: () => (/* binding */ showCondaEnvironment),
 /* harmony export */   ZN: () => (/* binding */ exportCondaEnvironment),
-/* harmony export */   pI: () => (/* binding */ exportProcessEnvironment),
 /* harmony export */   s6: () => (/* binding */ getCondaPrefix),
 /* harmony export */   x7: () => (/* binding */ exportCompilerEnvironment),
 /* harmony export */   zD: () => (/* binding */ grouped)
@@ -31377,15 +31377,15 @@ function getExecOutput(commandLine, args, options) {
 /* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(3360);
 /* harmony import */ var _actions_exec__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(2876);
 /* harmony import */ var node_fs__WEBPACK_IMPORTED_MODULE_2__ = __nccwpck_require__(3024);
-/* harmony import */ var node_os__WEBPACK_IMPORTED_MODULE_3__ = __nccwpck_require__(8161);
-/* harmony import */ var node_path__WEBPACK_IMPORTED_MODULE_4__ = __nccwpck_require__(6760);
-
+/* harmony import */ var node_path__WEBPACK_IMPORTED_MODULE_3__ = __nccwpck_require__(6760);
 
 
 
 
 
 const TOOLS_ENVIRONMENT = 'fortran';
+
+const RESERVED_ENVIRONMENT_NAME = /^(?:GITHUB_|RUNNER_)/i;
 
 function assertPlatform(expected, message) {
   if (process.platform !== expected) {
@@ -31403,12 +31403,23 @@ async function grouped(name, operation) {
 }
 
 function exportEnv(key, value) {
-  const envFile = process.env.GITHUB_ENV;
-  if (!envFile) throw new Error('GITHUB_ENV not defined');
+  if (value == null) return;
+
+  const name = String(key);
+  const upperName = name.toUpperCase();
+  if (!/^[A-Za-z_][A-Za-z0-9_]*$/.test(name)) {
+    throw new Error(`Invalid environment variable name: ${name}`);
+  }
+  if (
+    RESERVED_ENVIRONMENT_NAME.test(name) ||
+    upperName === 'NODE_OPTIONS'
+  ) {
+    throw new Error(`Refusing to export reserved environment variable: ${name}`);
+  }
+  if (!process.env.GITHUB_ENV) throw new Error('GITHUB_ENV not defined');
 
   const normalized = String(value);
-  (0,node_fs__WEBPACK_IMPORTED_MODULE_2__.appendFileSync)(envFile, `${key}=${normalized}${node_os__WEBPACK_IMPORTED_MODULE_3__.EOL}`);
-  process.env[key] = normalized;
+  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .exportVariable */ .dN)(name, normalized);
 }
 
 function compilerEnvironment(fortran, c, cxx, extra = {}) {
@@ -31430,23 +31441,7 @@ async function exportCompilerEnvironment(values) {
   await grouped('setup-fortran-conda: Export Compiler Environment', async () => {
     for (const [key, value] of Object.entries(values)) {
       exportEnv(key, value);
-      (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)(`Exported: ${key}=${value}`);
-    }
-  });
-}
-
-async function exportProcessEnvironment({ warningPrefix = '⚠️ ' } = {}) {
-  await grouped('setup-fortran-conda: Export Process Environment', async () => {
-    for (const [key, value] of Object.entries(process.env)) {
-      if (typeof value !== 'string') continue;
-
-      try {
-        process.env[key] = value;
-        (0,node_fs__WEBPACK_IMPORTED_MODULE_2__.appendFileSync)(process.env.GITHUB_ENV, `${key}=${value}${node_os__WEBPACK_IMPORTED_MODULE_3__.EOL}`);
-        (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)(`Exported: ${key}`);
-      } catch (error) {
-        (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)(`${warningPrefix}Failed to export: ${key} (${error.message})`);
-      }
+      (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)(`Exported: ${key}`);
     }
   });
 }
@@ -31468,7 +31463,7 @@ async function getCondaPrefix(
   const { envs = [] } = JSON.parse(output);
   const prefix = envs.find(
     (candidate) =>
-      candidate.endsWith(node_path__WEBPACK_IMPORTED_MODULE_4__.sep + envName) || candidate.endsWith('/' + envName)
+      candidate.endsWith(node_path__WEBPACK_IMPORTED_MODULE_3__.sep + envName) || candidate.endsWith('/' + envName)
   );
 
   if (!prefix && required) {
@@ -31481,7 +31476,7 @@ function prependEnvironmentPaths(paths, current = '') {
   const values = [
     ...paths,
     ...String(current)
-      .split(node_path__WEBPACK_IMPORTED_MODULE_4__.delimiter)
+      .split(node_path__WEBPACK_IMPORTED_MODULE_3__.delimiter)
       .filter(Boolean),
   ];
   const seen = new Set();
@@ -31493,27 +31488,27 @@ function prependEnvironmentPaths(paths, current = '') {
       seen.add(key);
       return true;
     })
-    .join(node_path__WEBPACK_IMPORTED_MODULE_4__.delimiter);
+    .join(node_path__WEBPACK_IMPORTED_MODULE_3__.delimiter);
 }
 
 function createWindowsBlasAliases(prefix) {
-  const libraryDir = (0,node_path__WEBPACK_IMPORTED_MODULE_4__.join)(prefix, 'Library', 'lib');
-  const blas = (0,node_path__WEBPACK_IMPORTED_MODULE_4__.join)(libraryDir, 'blas.lib');
-  const lapack = (0,node_path__WEBPACK_IMPORTED_MODULE_4__.join)(libraryDir, 'lapack.lib');
+  const libraryDir = (0,node_path__WEBPACK_IMPORTED_MODULE_3__.join)(prefix, 'Library', 'lib');
+  const blas = (0,node_path__WEBPACK_IMPORTED_MODULE_3__.join)(libraryDir, 'blas.lib');
+  const lapack = (0,node_path__WEBPACK_IMPORTED_MODULE_3__.join)(libraryDir, 'lapack.lib');
   if ((0,node_fs__WEBPACK_IMPORTED_MODULE_2__.existsSync)(blas) && (0,node_fs__WEBPACK_IMPORTED_MODULE_2__.existsSync)(lapack)) return '';
 
   const provider = [
-    (0,node_path__WEBPACK_IMPORTED_MODULE_4__.join)(libraryDir, 'openblas.lib'),
-    (0,node_path__WEBPACK_IMPORTED_MODULE_4__.join)(libraryDir, 'mkl_rt.lib'),
+    (0,node_path__WEBPACK_IMPORTED_MODULE_3__.join)(libraryDir, 'openblas.lib'),
+    (0,node_path__WEBPACK_IMPORTED_MODULE_3__.join)(libraryDir, 'mkl_rt.lib'),
   ].find((path) => (0,node_fs__WEBPACK_IMPORTED_MODULE_2__.existsSync)(path));
   if (!provider) return '';
 
-  const aliasDir = (0,node_path__WEBPACK_IMPORTED_MODULE_4__.join)(libraryDir, 'setup-fortran-conda');
+  const aliasDir = (0,node_path__WEBPACK_IMPORTED_MODULE_3__.join)(libraryDir, 'setup-fortran-conda');
   (0,node_fs__WEBPACK_IMPORTED_MODULE_2__.mkdirSync)(aliasDir, { recursive: true });
-  (0,node_fs__WEBPACK_IMPORTED_MODULE_2__.copyFileSync)((0,node_fs__WEBPACK_IMPORTED_MODULE_2__.existsSync)(blas) ? blas : provider, (0,node_path__WEBPACK_IMPORTED_MODULE_4__.join)(aliasDir, 'blas.lib'));
+  (0,node_fs__WEBPACK_IMPORTED_MODULE_2__.copyFileSync)((0,node_fs__WEBPACK_IMPORTED_MODULE_2__.existsSync)(blas) ? blas : provider, (0,node_path__WEBPACK_IMPORTED_MODULE_3__.join)(aliasDir, 'blas.lib'));
   (0,node_fs__WEBPACK_IMPORTED_MODULE_2__.copyFileSync)(
     (0,node_fs__WEBPACK_IMPORTED_MODULE_2__.existsSync)(lapack) ? lapack : provider,
-    (0,node_path__WEBPACK_IMPORTED_MODULE_4__.join)(aliasDir, 'lapack.lib')
+    (0,node_path__WEBPACK_IMPORTED_MODULE_3__.join)(aliasDir, 'lapack.lib')
   );
   (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)(`Created Windows BLAS/LAPACK aliases from ${provider}`);
   return aliasDir;
@@ -31528,34 +31523,34 @@ async function exportCondaEnvironment() {
       windows
         ? [
             blasAliasPath,
-            (0,node_path__WEBPACK_IMPORTED_MODULE_4__.join)(prefix, 'Library', 'lib'),
-            (0,node_path__WEBPACK_IMPORTED_MODULE_4__.join)(prefix, 'lib'),
+            (0,node_path__WEBPACK_IMPORTED_MODULE_3__.join)(prefix, 'Library', 'lib'),
+            (0,node_path__WEBPACK_IMPORTED_MODULE_3__.join)(prefix, 'lib'),
           ]
-        : [(0,node_path__WEBPACK_IMPORTED_MODULE_4__.join)(prefix, 'lib')]
+        : [(0,node_path__WEBPACK_IMPORTED_MODULE_3__.join)(prefix, 'lib')]
     ).filter((path) => (0,node_fs__WEBPACK_IMPORTED_MODULE_2__.existsSync)(path));
     const includePaths = (
       windows
         ? [
-            (0,node_path__WEBPACK_IMPORTED_MODULE_4__.join)(prefix, 'opt', 'compiler', 'include', 'intel64'),
-            (0,node_path__WEBPACK_IMPORTED_MODULE_4__.join)(prefix, 'Library', 'include'),
+            (0,node_path__WEBPACK_IMPORTED_MODULE_3__.join)(prefix, 'opt', 'compiler', 'include', 'intel64'),
+            (0,node_path__WEBPACK_IMPORTED_MODULE_3__.join)(prefix, 'Library', 'include'),
           ]
-        : [(0,node_path__WEBPACK_IMPORTED_MODULE_4__.join)(prefix, 'include')]
+        : [(0,node_path__WEBPACK_IMPORTED_MODULE_3__.join)(prefix, 'include')]
     ).filter((path) => (0,node_fs__WEBPACK_IMPORTED_MODULE_2__.existsSync)(path));
     const pkgConfigPaths = (
       windows
         ? [
-            (0,node_path__WEBPACK_IMPORTED_MODULE_4__.join)(prefix, 'Library', 'lib', 'pkgconfig'),
-            (0,node_path__WEBPACK_IMPORTED_MODULE_4__.join)(prefix, 'Library', 'share', 'pkgconfig'),
-            (0,node_path__WEBPACK_IMPORTED_MODULE_4__.join)(prefix, 'lib', 'pkgconfig'),
-            (0,node_path__WEBPACK_IMPORTED_MODULE_4__.join)(prefix, 'share', 'pkgconfig'),
+            (0,node_path__WEBPACK_IMPORTED_MODULE_3__.join)(prefix, 'Library', 'lib', 'pkgconfig'),
+            (0,node_path__WEBPACK_IMPORTED_MODULE_3__.join)(prefix, 'Library', 'share', 'pkgconfig'),
+            (0,node_path__WEBPACK_IMPORTED_MODULE_3__.join)(prefix, 'lib', 'pkgconfig'),
+            (0,node_path__WEBPACK_IMPORTED_MODULE_3__.join)(prefix, 'share', 'pkgconfig'),
           ]
         : [
-            (0,node_path__WEBPACK_IMPORTED_MODULE_4__.join)(prefix, 'lib', 'pkgconfig'),
-            (0,node_path__WEBPACK_IMPORTED_MODULE_4__.join)(prefix, 'share', 'pkgconfig'),
+            (0,node_path__WEBPACK_IMPORTED_MODULE_3__.join)(prefix, 'lib', 'pkgconfig'),
+            (0,node_path__WEBPACK_IMPORTED_MODULE_3__.join)(prefix, 'share', 'pkgconfig'),
           ]
     ).filter((path) => (0,node_fs__WEBPACK_IMPORTED_MODULE_2__.existsSync)(path));
     const cmakePrefixes = windows
-      ? [(0,node_path__WEBPACK_IMPORTED_MODULE_4__.join)(prefix, 'Library'), prefix]
+      ? [(0,node_path__WEBPACK_IMPORTED_MODULE_3__.join)(prefix, 'Library'), prefix]
       : [prefix];
 
     const environment = {
@@ -31594,9 +31589,9 @@ async function exportCondaEnvironment() {
     }
 
     const mklRuntime = [
-      (0,node_path__WEBPACK_IMPORTED_MODULE_4__.join)(prefix, 'lib', 'libmkl_rt.so'),
-      (0,node_path__WEBPACK_IMPORTED_MODULE_4__.join)(prefix, 'lib', 'libmkl_rt.dylib'),
-      (0,node_path__WEBPACK_IMPORTED_MODULE_4__.join)(prefix, 'Library', 'lib', 'mkl_rt.lib'),
+      (0,node_path__WEBPACK_IMPORTED_MODULE_3__.join)(prefix, 'lib', 'libmkl_rt.so'),
+      (0,node_path__WEBPACK_IMPORTED_MODULE_3__.join)(prefix, 'lib', 'libmkl_rt.dylib'),
+      (0,node_path__WEBPACK_IMPORTED_MODULE_3__.join)(prefix, 'Library', 'lib', 'mkl_rt.lib'),
     ].some((path) => (0,node_fs__WEBPACK_IMPORTED_MODULE_2__.existsSync)(path));
     if (mklRuntime && !process.env.MKL_INTERFACE_LAYER) {
       environment.MKL_INTERFACE_LAYER = 'LP64,GNU';
@@ -31605,7 +31600,7 @@ async function exportCondaEnvironment() {
     for (const [key, value] of Object.entries(environment)) {
       if (!value) continue;
       exportEnv(key, value);
-      (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)(`Exported: ${key}=${value}`);
+      (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)(`Exported: ${key}`);
     }
   });
 }
@@ -31857,7 +31852,11 @@ var external_node_os_ = __nccwpck_require__(8161);
 var external_node_https_ = __nccwpck_require__(4708);
 // EXTERNAL MODULE: external "node:fs"
 var external_node_fs_ = __nccwpck_require__(3024);
+// EXTERNAL MODULE: ./platform/common.js
+var common = __nccwpck_require__(7174);
 ;// CONCATENATED MODULE: ./mpi/common.js
+
+
 
 
 
@@ -31882,21 +31881,6 @@ async function grouped(name, operation) {
   } finally {
     (0,core/* endGroup */.N4)();
   }
-}
-
-function exportEnv(key, value) {
-  if (value == null) return;
-
-  const envFile = process.env.GITHUB_ENV;
-  if (!envFile) throw new Error('GITHUB_ENV not defined');
-
-  const normalized = String(value);
-  if (/[\r\n]/.test(normalized)) {
-    throw new Error(`Cannot export multiline MPI environment variable ${key}.`);
-  }
-
-  (0,external_node_fs_.appendFileSync)(envFile, `${key}=${normalized}${external_node_os_.EOL}`);
-  process.env[key] = normalized;
 }
 
 async function execCapture(command, args = []) {
@@ -32078,8 +32062,8 @@ function exportMpiEnvironment(descriptor) {
 
   return grouped('setup-fortran-conda: Export MPI Environment', async () => {
     for (const [key, value] of Object.entries(values)) {
-      exportEnv(key, value);
-      (0,core/* info */.pq)(`Exported: ${key}=${value}`);
+      (0,common/* exportEnv */.EE)(key, value);
+      (0,core/* info */.pq)(`Exported: ${key}`);
     }
   });
 }
@@ -32789,8 +32773,6 @@ async function setupMpi({
   return validated;
 }
 
-// EXTERNAL MODULE: ./platform/common.js
-var common = __nccwpck_require__(7174);
 ;// CONCATENATED MODULE: ./index.js
 
 

@@ -16,7 +16,6 @@ export const modules = {
 /* harmony export */   RB: () => (/* binding */ windowsCondaPaths),
 /* harmony export */   lM: () => (/* binding */ initializeMsvcEnvironment),
 /* harmony export */   oB: () => (/* binding */ assertWindows),
-/* harmony export */   pI: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_4__.pI),
 /* harmony export */   s6: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_4__.s6),
 /* harmony export */   x7: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_4__.x7),
 /* harmony export */   zD: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_4__.zD)
@@ -33,6 +32,14 @@ export const modules = {
 
 
 
+
+const MSVC_ENVIRONMENT_VARIABLES = Object.freeze([
+  'PATH',
+  'TMP',
+  'INCLUDE',
+  'LIB',
+  'LIBPATH',
+]);
 
 function assertWindows() {
   (0,_common_js__WEBPACK_IMPORTED_MODULE_4__/* .assertPlatform */ .G6)('win32', 'This setup script is only supported on Windows.');
@@ -99,7 +106,10 @@ async function initializeMsvcEnvironment() {
     'setup-fortran-conda: Initialize MSVC Environment',
     async () => {
       let captured = '';
-      const exitCode = await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('cmd.exe', ['/c', vcvars, '&&', 'set'], {
+      const command =
+        `call "${vcvars}" >nul && ` +
+        '(set PATH&set TMP&set INCLUDE&set LIB&set LIBPATH)';
+      const exitCode = await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('cmd.exe', ['/d', '/c', command], {
         silent: true,
         ignoreReturnCode: true,
         listeners: {
@@ -123,16 +133,30 @@ async function initializeMsvcEnvironment() {
   );
 
   await (0,_common_js__WEBPACK_IMPORTED_MODULE_4__/* .grouped */ .zD)('setup-fortran-conda: Export MSVC Environment', async () => {
-    let exportedCount = 0;
-    for (const line of output.split('\n')) {
-      const [key, ...rest] = line.trim().split('=');
-      if (!key || rest.length === 0) continue;
+    const values = new Map();
+    for (const rawLine of output.split(/\r?\n/)) {
+      const line = rawLine.trim();
+      const separator = line.indexOf('=');
+      if (separator <= 0) continue;
 
-      (0,_common_js__WEBPACK_IMPORTED_MODULE_4__/* .exportEnv */ .EE)(key, rest.join('='));
-      (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)(`Exported: ${key}`);
-      exportedCount += 1;
+      const key = line.slice(0, separator).toUpperCase();
+      if (!MSVC_ENVIRONMENT_VARIABLES.includes(key)) continue;
+      values.set(key, line.slice(separator + 1));
     }
-    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)(`MSVC environment loaded with ${exportedCount} variables`);
+
+    for (const required of MSVC_ENVIRONMENT_VARIABLES) {
+      if (!values.get(required)) {
+        throw new Error(`vcvars64.bat did not define ${required}`);
+      }
+    }
+
+    for (const key of MSVC_ENVIRONMENT_VARIABLES) {
+      const value = values.get(key);
+      if (value == null) continue;
+      (0,_common_js__WEBPACK_IMPORTED_MODULE_4__/* .exportEnv */ .EE)(key, value);
+      (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)(`Exported: ${key}`);
+    }
+    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)(`MSVC environment loaded with ${values.size} variables`);
   });
 }
 
@@ -202,7 +226,6 @@ async function setup(version = '') {
         .join(';'),
     })
   );
-  await (0,_common_js__WEBPACK_IMPORTED_MODULE_2__/* .exportProcessEnvironment */ .pI)({ warningPrefix: '' });
 
   (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)('✅ compiler setup complete');
 }

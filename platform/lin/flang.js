@@ -6,7 +6,6 @@ import {
   compilerEnvironment,
   exportCompilerEnvironment,
   exportEnv,
-  exportProcessEnvironment,
   getCondaPrefix,
   installCondaPackages,
   setLinuxUlimits,
@@ -35,7 +34,7 @@ export async function setup(version = '') {
     .filter(Boolean)
     .join(':');
   exportEnv('LD_LIBRARY_PATH', ldLibraryPath);
-  info(`Set LD_LIBRARY_PATH → ${ldLibraryPath}`);
+  info('Exported: LD_LIBRARY_PATH');
 
   await verifyCommands([
     { command: 'flang', args: ['--version'] },
@@ -48,7 +47,6 @@ export async function setup(version = '') {
     })
   );
   await setLinuxUlimits();
-  await exportProcessEnvironment();
 
   info('✅ compiler setup complete');
 }

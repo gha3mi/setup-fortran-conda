@@ -82,6 +82,7 @@ subsequent workflow steps.
 - [Overview](https://gha3mi.github.io/setup-fortran-conda/)
 - [Compilers and builds](https://gha3mi.github.io/setup-fortran-conda/toolchains.html)
 - [MPI toolchains](https://gha3mi.github.io/setup-fortran-conda/mpi.html)
+- [BLAS/LAPACK](https://gha3mi.github.io/setup-fortran-conda/blas-lapack.html)
 - [FORD documentation](https://gha3mi.github.io/setup-fortran-conda/ford.html)
 - [Doxygen documentation](https://gha3mi.github.io/setup-fortran-conda/doxygen.html)
 - [Fortitude linting](https://gha3mi.github.io/setup-fortran-conda/fortitude.html)

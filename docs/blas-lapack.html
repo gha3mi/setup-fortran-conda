@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+      name="description"
+      content="Install and use tested BLAS and LAPACK implementations with setup-fortran-conda."
+    >
+    <title>BLAS/LAPACK — setup-fortran-conda</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="syntax.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#content">Skip to content</a>
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand" href="index.html">setup-fortran-conda</a>
+        <nav aria-label="Primary">
+          <a href="index.html">Start</a>
+          <a href="toolchains.html">Compilers</a>
+          <a href="mpi.html">MPI</a>
+          <a class="active" href="blas-lapack.html">BLAS/LAPACK</a>
+          <a href="ford.html">FORD</a>
+          <a href="doxygen.html">Doxygen</a>
+          <a href="fortitude.html">Fortitude</a>
+          <a href="readme-table.html">CI Table</a>
+          <a href="dependency-graphs.html">Dependencies</a>
+          <a href="status-badges.html">Badges</a>
+        </nav>
+        <a class="github-link" href="https://github.com/gha3mi/setup-fortran-conda">GitHub</a>
+      </div>
+    </header>
+
+    <main id="content" class="content">
+      <header class="page-header">
+        <h1>BLAS/LAPACK</h1>
+        <p>
+          Install tested Netlib, OpenBLAS, oneMKL or Accelerate implementations
+          from Conda packages. Select an implementation with
+          <code>extra-packages</code> and link Fortran projects with fpm,
+          CMake or Meson.
+        </p>
+      </header>
+
+      <section>
+        <h2>Tested combinations</h2>
+        <div
+          class="table-wrap"
+          role="region"
+          aria-label="Tested BLAS and LAPACK combinations"
+          tabindex="0"
+        >
+          <table class="support-table compiler-table">
+            <thead>
+              <tr>
+                <th>Runner</th>
+                <th><code>compiler</code></th>
+                <th>Implementation</th>
+                <th>Build tools</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>ubuntu-latest</code></td>
+                <td>
+                  <code>gfortran</code>, <code>ifx</code>,
+                  <code>flang</code>, <code>flang-new</code>,
+                  <code>nvfortran</code>, <code>aocc</code>,
+                  <code>aomp</code>
+                </td>
+                <td>Netlib, OpenBLAS, oneMKL</td>
+                <td>fpm, CMake, Meson</td>
+              </tr>
+              <tr>
+                <td><code>ubuntu-latest</code></td>
+                <td><code>lfortran</code></td>
+                <td>oneMKL</td>
+                <td>fpm 0.12.0, CMake</td>
+              </tr>
+              <tr>
+                <td><code>macos-latest</code></td>
+                <td><code>gfortran</code></td>
+                <td>Netlib, OpenBLAS, Accelerate</td>
+                <td>fpm, CMake, Meson</td>
+              </tr>
+              <tr>
+                <td><code>macos-26-intel</code></td>
+                <td><code>gfortran</code></td>
+                <td>oneMKL</td>
+                <td>fpm, CMake, Meson</td>
+              </tr>
+              <tr>
+                <td><code>macos-26-intel</code></td>
+                <td><code>lfortran</code></td>
+                <td>oneMKL</td>
+                <td>fpm 0.12.0, CMake</td>
+              </tr>
+              <tr>
+                <td><code>windows-latest</code></td>
+                <td>
+                  <code>gfortran</code>, <code>flang</code>,
+                  <code>flang-new</code>
+                </td>
+                <td>Netlib, OpenBLAS, oneMKL</td>
+                <td>fpm, CMake, Meson</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section>
+        <h2>Implementations</h2>
+        <p>
+          The <code>backend</code> field shown in the examples is a matrix
+          label. The <code>extra-packages</code> input selects the package
+          implementation.
+        </p>
+        <div
+          class="table-wrap"
+          role="region"
+          aria-label="BLAS and LAPACK package implementations"
+          tabindex="0"
+        >
+          <table class="support-table">
+            <thead>
+              <tr>
+                <th>Implementation</th>
+                <th>Runner</th>
+                <th><code>extra-packages</code></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Netlib</td>
+                <td>Ubuntu, macOS, Windows</td>
+                <td><code>blas-devel=*=*_netlib</code></td>
+              </tr>
+              <tr>
+                <td>OpenBLAS</td>
+                <td>Ubuntu, macOS, Windows</td>
+                <td><code>blas-devel=*=*_openblas</code></td>
+              </tr>
+              <tr>
+                <td>oneMKL</td>
+                <td>Ubuntu, Intel macOS, Windows</td>
+                <td><code>blas-devel=*=*_mkl</code></td>
+              </tr>
+              <tr>
+                <td>Accelerate</td>
+                <td>macOS</td>
+                <td><code>blas-devel=*=*_accelerate</code></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section>
+        <h2>Inputs</h2>
+        <div
+          class="table-wrap"
+          role="region"
+          aria-label="BLAS and LAPACK inputs"
+          tabindex="0"
+        >
+          <table class="input-table">
+            <thead>
+              <tr>
+                <th>Input</th>
+                <th>Default</th>
+                <th>Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr data-input="compiler" data-default="">
+                <td><code>compiler</code></td>
+                <td>empty</td>
+                <td><a href="toolchains.html">Supported compiler</a></td>
+              </tr>
+              <tr data-input="extra-packages" data-default="">
+                <td><code>extra-packages</code></td>
+                <td>empty</td>
+                <td>One implementation package from the table above</td>
+              </tr>
+              <tr data-input="fpm-version" data-default="">
+                <td><code>fpm-version</code></td>
+                <td>empty</td>
+                <td>
+                  Version, <code>latest</code> or empty; tested
+                  <code>lfortran</code> combinations use <code>0.12.0</code>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section>
+        <h2>Permissions</h2>
+        <p>
+          Compiler setup reads Actions job metadata and checks out the
+          repository by default.
+        </p>
+        <pre><code class="language-yaml">permissions:
+  actions: read
+  contents: read</code></pre>
+      </section>
+
+      <section>
+        <h2>Package environment</h2>
+        <p>
+          Package discovery and linker paths are exported automatically. No
+          workflow environment block is required for the tested configurations.
+        </p>
+        <div
+          class="table-wrap"
+          role="region"
+          aria-label="BLAS and LAPACK package environment"
+          tabindex="0"
+        >
+          <table class="support-table">
+            <thead>
+              <tr>
+                <th>Scope</th>
+                <th>Exported variables</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>All runners</td>
+                <td>
+                  <code>LIBRARY_PATH</code>,
+                  <code>CMAKE_LIBRARY_PATH</code>,
+                  <code>CMAKE_PREFIX_PATH</code>,
+                  <code>PKG_CONFIG_PATH</code>
+                </td>
+              </tr>
+              <tr>
+                <td>Ubuntu</td>
+                <td><code>LD_LIBRARY_PATH</code></td>
+              </tr>
+              <tr>
+                <td>Windows</td>
+                <td><code>LIB</code>, <code>INCLUDE</code></td>
+              </tr>
+              <tr>
+                <td>oneMKL</td>
+                <td>
+                  <code>MKL_INTERFACE_LAYER=LP64,GNU</code> when the variable
+                  is not already set
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section>
+        <h2>fpm</h2>
+        <p>
+          <code>fpm</code> is installed by default. Add
+          <code>link = ["lapack", "blas"]</code> to the relevant executable or
+          test target.
+        </p>
+        <pre><code class="language-yaml">test_fpm:
+  name: ${{ matrix.os }}_${{ matrix.compiler }}_${{ matrix.backend }}_fpm
+  runs-on: ${{ matrix.os }}
+  strategy:
+    fail-fast: false
+    matrix:
+      include:
+      - {os: ubuntu-latest, compiler: gfortran, backend: openblas, extra-packages: "blas-devel=*=*_openblas", fpm-version: ""}
+  steps:
+    - name: setup-fortran-conda
+      uses: gha3mi/setup-fortran-conda@latest
+      with:
+        compiler: ${{ matrix.compiler }}
+        extra-packages: ${{ matrix.extra-packages }}
+        fpm-version: ${{ matrix.fpm-version }}
+
+    - name: fpm BLAS/LAPACK test
+      run: fpm test --compiler "${{ env.FPM_FC }}" --profile release --verbose</code></pre>
+      </section>
+
+      <section>
+        <h2>CMake</h2>
+        <p>
+          <code>CMake</code> and <code>Ninja</code> are installed by default.
+          Locate the <code>lapack</code> and <code>blas</code> libraries and
+          link both to the target.
+        </p>
+        <pre><code class="language-yaml">test_cmake:
+  name: ${{ matrix.os }}_${{ matrix.compiler }}_${{ matrix.backend }}_cmake
+  runs-on: ${{ matrix.os }}
+  strategy:
+    fail-fast: false
+    matrix:
+      include:
+      - {os: windows-latest, compiler: flang-new, backend: mkl, extra-packages: "blas-devel=*=*_mkl"}
+  steps:
+    - name: setup-fortran-conda
+      uses: gha3mi/setup-fortran-conda@latest
+      with:
+        compiler: ${{ matrix.compiler }}
+        extra-packages: ${{ matrix.extra-packages }}
+
+    - name: CMake BLAS/LAPACK test
+      run: |
+        cmake -S . -B build -G Ninja -DCMAKE_Fortran_COMPILER="${{ env.CMAKE_Fortran_COMPILER }}"
+        cmake --build build --verbose
+        ctest --test-dir build --output-on-failure --no-tests=error -VV</code></pre>
+      </section>
+
+      <section>
+        <h2>Meson</h2>
+        <p>
+          <code>Meson</code> and <code>Ninja</code> are installed by default.
+          Link the target with <code>-llapack</code> and
+          <code>-lblas</code>.
+        </p>
+        <pre><code class="language-yaml">test_meson:
+  name: ${{ matrix.os }}_${{ matrix.compiler }}_${{ matrix.backend }}_meson
+  runs-on: ${{ matrix.os }}
+  strategy:
+    fail-fast: false
+    matrix:
+      include:
+      - {os: macos-latest, compiler: gfortran, backend: accelerate, extra-packages: "blas-devel=*=*_accelerate"}
+  steps:
+    - name: setup-fortran-conda
+      uses: gha3mi/setup-fortran-conda@latest
+      with:
+        compiler: ${{ matrix.compiler }}
+        extra-packages: ${{ matrix.extra-packages }}
+
+    - name: Meson BLAS/LAPACK test
+      run: |
+        meson setup build --buildtype release --backend=ninja
+        meson compile -C build --verbose
+        meson test -C build --verbose</code></pre>
+      </section>
+
+    </main>
+
+  </body>
+</html>

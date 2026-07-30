@@ -66,7 +66,7 @@
               <tr data-input="ford-config" data-default="README.md">
                 <td><code>ford-config</code></td>
                 <td><code>README.md</code></td>
-                <td>FORD configuration path</td>
+                <td>Configuration file relative to the working directory</td>
               </tr>
               <tr data-input="ford-branch" data-default="gh-pages-ford">
                 <td><code>ford-branch</code></td>
@@ -76,12 +76,12 @@
               <tr data-input="ford-working-directory" data-default=".">
                 <td><code>ford-working-directory</code></td>
                 <td><code>.</code></td>
-                <td>FORD working directory</td>
+                <td>Working directory relative to the repository root</td>
               </tr>
               <tr data-input="ford-output-directory" data-default="doc/ford">
                 <td><code>ford-output-directory</code></td>
                 <td><code>doc/ford</code></td>
-                <td>Generated documentation directory</td>
+                <td>Generated directory relative to the repository root</td>
               </tr>
               <tr data-input="ford-target-folder" data-default="doc/ford">
                 <td><code>ford-target-folder</code></td>
@@ -99,6 +99,8 @@
           Enabling FORD installs
           <a href="https://github.com/Fortran-FOSS-Programmers/ford"><code>FORD</code></a>,
           <code>Graphviz</code> and <code>pip</code>.
+          The FORD configuration must generate its output in
+          <code>ford-output-directory</code>.
         </p>
         <pre><code class="language-yaml">doc_ford:
   name: Generate FORD Documentation

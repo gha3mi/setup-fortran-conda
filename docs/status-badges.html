@@ -115,10 +115,14 @@ test_meson:
 
       <section>
         <h2>Generate badges</h2>
+        <p>
+          Each status job must need every non-MPI and MPI job selected by its
+          suffix.
+        </p>
         <pre><code class="language-yaml">status_fpm:
   if: ${{ always() }}
   name: Generate fpm STATUS.md
-  needs: [test_fpm]
+  needs: [test_fpm, test_mpi_fpm]
   runs-on: ubuntu-latest
   permissions:
     contents: write
@@ -131,7 +135,7 @@ test_meson:
 status_cmake:
   if: ${{ always() }}
   name: Generate CMake STATUS.md
-  needs: [test_cmake]
+  needs: [test_cmake, test_mpi_cmake]
   runs-on: ubuntu-latest
   permissions:
     contents: write
@@ -144,7 +148,7 @@ status_cmake:
 status_meson:
   if: ${{ always() }}
   name: Generate Meson STATUS.md
-  needs: [test_meson]
+  needs: [test_meson, test_mpi_meson]
   runs-on: ubuntu-latest
   permissions:
     contents: write

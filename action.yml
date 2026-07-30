@@ -1,5 +1,5 @@
-name: Setup Fortran with Conda
-description: Installs Fortran compilers, matching MPI toolchains, and extra packages using Conda or vendor packages. Optionally builds docs and updates README status/dependency graphs.
+name: setup-fortran-conda
+description: Installs Fortran compilers, matching MPI toolchains and extra packages using Conda or vendor packages. Optionally builds docs and updates README status/dependency graphs.
 author: Seyed Ali Ghasemi
 branding:
   icon: 'check'
@@ -19,7 +19,7 @@ inputs:
     required: false
     default: "none"
   mpi-version:
-    description: "MPI implementation version. Empty means latest or the compiler-bundled version."
+    description: "MPI version. Empty or latest selects the newest available version. HPC-X uses the version bundled with NVIDIA HPC SDK."
     required: false
     default: ""
   platform:
@@ -44,7 +44,7 @@ inputs:
     required: false
     default: "false"
   ford-config:
-    description: "Path to FORD config file (e.g., README.md or ford.md)"
+    description: "FORD configuration file relative to ford-working-directory"
     required: false
     default: "README.md"
   ford-branch:
@@ -56,11 +56,11 @@ inputs:
     required: false
     default: "."
   ford-output-directory:
-    description: "Path to generated FORD documentation (used by deployment)"
+    description: "Generated FORD directory relative to the repository root"
     required: false
     default: "doc/ford"
   ford-target-folder:
-    description: "Target folder in repo for deployed FORD docs (used only if branch is main or master)"
+    description: "Target folder on the FORD deployment branch"
     required: false
     default: "doc/ford"
 
@@ -69,7 +69,7 @@ inputs:
     required: false
     default: "false"
   doxygen-config:
-    description: "Path to Doxygen config file (e.g., Doxyfile)"
+    description: "Doxygen configuration file relative to doxygen-working-directory"
     required: false
     default: "Doxyfile"
   doxygen-branch:
@@ -81,11 +81,11 @@ inputs:
     required: false
     default: "."
   doxygen-output-directory:
-    description: "Path to generated Doxygen documentation (used by deployment)"
+    description: "Generated Doxygen directory relative to the repository root"
     required: false
     default: "doc/doxygen"
   doxygen-target-folder:
-    description: "Target folder in repo for deployed Doxygen docs (used only if branch is main or master)"
+    description: "Target folder on the Doxygen deployment branch"
     required: false
     default: "doc/doxygen"
 
@@ -132,7 +132,7 @@ inputs:
     required: false
     default: "."
   dependency-graph-readme-file:
-    description: "README file to update with the dependency graph"
+    description: "README file relative to the repository root"
     required: false
     default: "README.md"
   dependency-graph-options:

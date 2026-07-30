@@ -80,16 +80,35 @@
               >
                 <td><code>dependency-graph-readme-file</code></td>
                 <td><code>README.md</code></td>
-                <td>README file relative to the project directory</td>
+                <td>README file relative to the repository root</td>
               </tr>
               <tr data-input="dependency-graph-options" data-default="">
                 <td><code>dependency-graph-options</code></td>
                 <td>empty</td>
                 <td>Additional generator options</td>
               </tr>
+              <tr data-input="update-readme-user-name" data-default="">
+                <td><code>update-readme-user-name</code></td>
+                <td>empty</td>
+                <td>Required Git author name</td>
+              </tr>
+              <tr data-input="update-readme-user-email" data-default="">
+                <td><code>update-readme-user-email</code></td>
+                <td>empty</td>
+                <td>Required Git author email</td>
+              </tr>
+              <tr data-input="update-readme-token" data-default="">
+                <td><code>update-readme-token</code></td>
+                <td>empty</td>
+                <td>Required token for the pull request</td>
+              </tr>
             </tbody>
           </table>
         </div>
+        <p>
+          The token requires repository contents and pull-request write
+          permissions.
+        </p>
       </section>
 
       <section>

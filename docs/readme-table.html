@@ -71,21 +71,25 @@
               <tr data-input="update-readme-user-name" data-default="">
                 <td><code>update-readme-user-name</code></td>
                 <td>empty</td>
-                <td>Git author name</td>
+                <td>Required Git author name for an update pull request</td>
               </tr>
               <tr data-input="update-readme-user-email" data-default="">
                 <td><code>update-readme-user-email</code></td>
                 <td>empty</td>
-                <td>Git author email</td>
+                <td>Required Git author email for an update pull request</td>
               </tr>
               <tr data-input="update-readme-token" data-default="">
                 <td><code>update-readme-token</code></td>
                 <td>empty</td>
-                <td>Token used to create the pull request</td>
+                <td>Required token for an update pull request</td>
               </tr>
             </tbody>
           </table>
         </div>
+        <p>
+          The token requires repository contents and pull-request write
+          permissions.
+        </p>
       </section>
 
       <section>
@@ -138,7 +142,7 @@ test_mpi_meson:
         <pre><code class="language-yaml">update_readme_table:
   if: ${{ always() }}
   name: Update README.md status table
-  needs: [test_fpm, test_cmake, test_meson]
+  needs: [test_fpm, test_mpi_fpm, test_cmake, test_mpi_cmake, test_meson, test_mpi_meson]
   runs-on: ubuntu-latest
   steps:
     - name: Update README status

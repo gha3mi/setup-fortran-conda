@@ -83,4 +83,4 @@ jobs:
 ## Related
 
 - [fortran-lang/setup-fortran](https://github.com/fortran-lang/setup-fortran)
-- [Fortran Discourse announcement](https://fortran-lang.discourse.group/t/github-action-setup-fortran-with-conda/9869/)
+- [Fortran Discourse](https://fortran-lang.discourse.group/t/github-action-setup-fortran-with-conda/9869/)

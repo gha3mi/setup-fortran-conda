@@ -8,7 +8,7 @@ linting and repository status automation. Inspired by
 
 ## Quick start
 
-The action checks out the repository and installs `fpm`, CMake, Ninja, Meson
+The action checks out the repository and installs `fpm`, `CMake`, `Ninja`, `Meson`
 and `pkg-config` by default.
 
 ```yaml

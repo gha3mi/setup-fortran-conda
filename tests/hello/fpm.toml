@@ -1,19 +1,24 @@
-name = "test"
+name = "hello-test"
+
 [build]
-auto-executables = true
-auto-tests = true
-auto-examples = true
+auto-executables = false
+auto-tests = false
+auto-examples = false
 module-naming = false
-external-modules = ["mpi_f08"]
+
 [install]
 library = false
 test = false
+
 [fortran]
 implicit-typing = false
 implicit-external = false
 source-form = "free"
-[preprocess]
-[preprocess.cpp]
+
+[[test]]
+name = "check"
+source-dir = "test"
+main = "check.f90"
 
 [extra.ford]
 project             = "test"
@@ -21,8 +26,11 @@ project_github      = "https://github.com/gha3mi/setup-fortran-conda"
 author              = "Seyed Ali Ghasemi"
 email               = "info@gha3mi.com"
 github              = "https://github.com/gha3mi"
-src_dir             = ["src", "test"]
-output_dir          = "doc/ford"
+src_dir             = [
+  "src",
+  "test",
+]
+output_dir          = "../../doc/ford"
 source              = true
 incl_src            = true
 graph               = true

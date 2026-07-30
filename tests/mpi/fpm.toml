@@ -1,0 +1,22 @@
+name = "mpi-test"
+
+[build]
+auto-executables = false
+auto-tests = false
+auto-examples = false
+module-naming = false
+external-modules = ["mpi_f08"]
+
+[install]
+library = false
+test = false
+
+[fortran]
+implicit-typing = false
+implicit-external = false
+source-form = "free"
+
+[[test]]
+name = "mpi_hello"
+source-dir = "test"
+main = "check.f90"

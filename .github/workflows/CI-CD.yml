@@ -48,10 +48,12 @@ jobs:
           fpm-version: ${{ matrix.fpm-version }}
 
       - name: fpm test (debug)
+        working-directory: tests/hello
         run: |
           fpm test --target check --compiler ${{ env.FPM_FC }} --profile debug --verbose
 
       - name: fpm test (release)
+        working-directory: tests/hello
         run: |
           fpm test --target check --compiler ${{ env.FPM_FC }} --profile release --verbose
 
@@ -82,12 +84,14 @@ jobs:
           fpm-version: ${{ matrix.fpm-version }}
 
       - name: fpm MPI test (debug)
+        working-directory: tests/mpi
         run: |
-          fpm test --target mpi_hello --profile debug --compiler "${{ env.MPIFC }}" --flag "-DUSE_MPI" --runner "${{ env.MPIEXEC }}" --runner-args=" ${{ env.MPIEXEC_NUMPROC_FLAG }} 2" --verbose
+          fpm test --target mpi_hello --profile debug --compiler "${{ env.MPIFC }}" --runner "${{ env.MPIEXEC }}" --runner-args=" ${{ env.MPIEXEC_NUMPROC_FLAG }} 2" --verbose
 
       - name: fpm MPI test (release)
+        working-directory: tests/mpi
         run: |
-          fpm test --target mpi_hello --profile release --compiler "${{ env.MPIFC }}" --flag "-DUSE_MPI" --runner "${{ env.MPIEXEC }}" --runner-args=" ${{ env.MPIEXEC_NUMPROC_FLAG }} 2" --verbose
+          fpm test --target mpi_hello --profile release --compiler "${{ env.MPIFC }}" --runner "${{ env.MPIEXEC }}" --runner-args=" ${{ env.MPIEXEC_NUMPROC_FLAG }} 2" --verbose
 
   test_cmake:
     if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
@@ -120,16 +124,18 @@ jobs:
           extra-packages: ${{ matrix.extra-packages }}
 
       - name: cmake test (debug)
+        working-directory: tests/hello
         run: |
           cmake -S . -B build/debug -DCMAKE_BUILD_TYPE=Debug -DCMAKE_Fortran_COMPILER=${{ env.CMAKE_Fortran_COMPILER }} -G Ninja
           cmake --build build/debug --config Debug --verbose
-          ctest --test-dir build/debug --output-on-failure -VV
+          ctest --test-dir build/debug --output-on-failure --no-tests=error -VV
 
       - name: cmake test (release)
+        working-directory: tests/hello
         run: |
           cmake -S . -B build/release -DCMAKE_BUILD_TYPE=Release -DCMAKE_Fortran_COMPILER=${{ env.CMAKE_Fortran_COMPILER }} -G Ninja
           cmake --build build/release --config Release --verbose
-          ctest --test-dir build/release --output-on-failure -VV
+          ctest --test-dir build/release --output-on-failure --no-tests=error -VV
 
   test_mpi_cmake:
     if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
@@ -157,16 +163,18 @@ jobs:
           mpi-version: ${{ matrix.mpi-version }}
 
       - name: CMake MPI test (debug)
+        working-directory: tests/mpi
         run: |
-          cmake -S . -B build/mpi/cmake/debug -DCMAKE_BUILD_TYPE=Debug -DCMAKE_Fortran_COMPILER="${{ env.MPIFC }}" -DMPIEXEC_EXECUTABLE="${{ env.MPIEXEC }}" -DENABLE_MPI=ON -G Ninja
-          cmake --build build/mpi/cmake/debug --config Debug --verbose
-          ctest --test-dir build/mpi/cmake/debug --output-on-failure -VV
+          cmake -S . -B build/debug -DCMAKE_BUILD_TYPE=Debug -DCMAKE_Fortran_COMPILER="${{ env.MPIFC }}" -DMPIEXEC_EXECUTABLE="${{ env.MPIEXEC }}" -G Ninja
+          cmake --build build/debug --config Debug --verbose
+          ctest --test-dir build/debug --output-on-failure --no-tests=error -VV
 
       - name: CMake MPI test (release)
+        working-directory: tests/mpi
         run: |
-          cmake -S . -B build/mpi/cmake/release -DCMAKE_BUILD_TYPE=Release -DCMAKE_Fortran_COMPILER="${{ env.MPIFC }}" -DMPIEXEC_EXECUTABLE="${{ env.MPIEXEC }}" -DENABLE_MPI=ON -G Ninja
-          cmake --build build/mpi/cmake/release --config Release --verbose
-          ctest --test-dir build/mpi/cmake/release --output-on-failure -VV
+          cmake -S . -B build/release -DCMAKE_BUILD_TYPE=Release -DCMAKE_Fortran_COMPILER="${{ env.MPIFC }}" -DMPIEXEC_EXECUTABLE="${{ env.MPIEXEC }}" -G Ninja
+          cmake --build build/release --config Release --verbose
+          ctest --test-dir build/release --output-on-failure --no-tests=error -VV
 
   test_meson:
     if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
@@ -196,16 +204,18 @@ jobs:
           extra-packages: ${{ matrix.extra-packages }}
 
       - name: meson test (debug)
+        working-directory: tests/hello
         run: |
-          meson setup --wipe build/meson/debug --buildtype debug --backend=ninja
-          meson compile -C build/meson/debug --verbose
-          meson test -C build/meson/debug --verbose
+          meson setup build/debug . --buildtype debug --backend=ninja
+          meson compile -C build/debug --verbose
+          meson test -C build/debug --verbose
 
       - name: meson test (release)
+        working-directory: tests/hello
         run: |
-          meson setup --wipe build/meson/release --buildtype release --backend=ninja
-          meson compile -C build/meson/release --verbose
-          meson test -C build/meson/release --verbose
+          meson setup build/release . --buildtype release --backend=ninja
+          meson compile -C build/release --verbose
+          meson test -C build/release --verbose
 
   test_mpi_meson:
     if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
@@ -233,16 +243,18 @@ jobs:
           mpi-version: ${{ matrix.mpi-version }}
 
       - name: Meson MPI test (debug)
+        working-directory: tests/mpi
         run: |
-          meson setup build/mpi/meson/debug . --buildtype debug --backend=ninja -Dfortran_args=-DUSE_MPI
-          meson compile -C build/mpi/meson/debug --verbose
-          meson test -C build/mpi/meson/debug --verbose
+          meson setup build/debug . --buildtype debug --backend=ninja
+          meson compile -C build/debug --verbose
+          meson test -C build/debug --verbose
 
       - name: Meson MPI test (release)
+        working-directory: tests/mpi
         run: |
-          meson setup build/mpi/meson/release . --buildtype release --backend=ninja -Dfortran_args=-DUSE_MPI
-          meson compile -C build/mpi/meson/release --verbose
-          meson test -C build/mpi/meson/release --verbose
+          meson setup build/release . --buildtype release --backend=ninja
+          meson compile -C build/release --verbose
+          meson test -C build/release --verbose
 
   doc_ford:
     if: ${{ (github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule') && !contains(github.event.head_commit.message, '[skip ci]') }}
@@ -254,7 +266,7 @@ jobs:
         with:
           compiler: gfortran
           generate-doc-ford: true
-          ford-working-directory: .
+          ford-working-directory: tests/hello
           ford-config: README.md
           ford-output-directory: doc/ford
           ford-branch: gh-pages-ford
@@ -270,7 +282,7 @@ jobs:
         with:
           compiler: gfortran
           generate-doc-doxygen: true
-          doxygen-working-directory: .
+          doxygen-working-directory: tests/hello
           doxygen-config: Doxyfile
           doxygen-output-directory: doc/doxygen
           doxygen-branch: gh-pages-doxygen
@@ -332,4 +344,4 @@ jobs:
         uses: gha3mi/setup-fortran-conda@main
         with:
           fortitude-check: true
-          fortitude-settings: "--output-format github"
+          fortitude-settings: "--config-file tests/hello/fpm.toml --output-format github tests/hello"

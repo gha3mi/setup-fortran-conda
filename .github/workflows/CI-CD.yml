@@ -3,10 +3,10 @@ name: Setup Fortran Conda CI/CD
 on:
   push:
     branches: [main, dev]
-    paths-ignore: ['README.md','CHANGELOG.md','VERSION','LICENSE']
+    paths-ignore: ['README.md','CHANGELOG.md','RELEASING.md','VERSION','LICENSE','docs/**']
   pull_request:
     branches: [main]
-    paths-ignore: ['README.md','CHANGELOG.md','VERSION','LICENSE']
+    paths-ignore: ['README.md','CHANGELOG.md','RELEASING.md','VERSION','LICENSE','docs/**']
   workflow_dispatch:
   schedule:
     - cron: "0 10 * * SAT"

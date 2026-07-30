@@ -1,3 +1,27 @@
+## [v0.18.1](https://github.com/gha3mi/setup-fortran-conda/compare/v0.18.0...v0.18.1) - 2026-07-30
+
+
+### Others
+
+* docs: clarify configuration and aggregation requirements ([e856005e](https://github.com/gha3mi/setup-fortran-conda/commit/e856005e8f7730a7087cf4558fca73d88dba864c)) by [@gha3mi](https://github.com/gha3mi)
+* docs: fix formatting in Quick start section of README.md ([bcecea95](https://github.com/gha3mi/setup-fortran-conda/commit/bcecea95dfb1c7e011bddea438e461847e8a3858)) by [@gha3mi](https://github.com/gha3mi)
+* docs: update link text in README.md ([b98a8380](https://github.com/gha3mi/setup-fortran-conda/commit/b98a83809bdabcc3ad30df1306491a05c7cea710)) by [@gha3mi](https://github.com/gha3mi)
+* docs: update copyright year in LICENSE file to 2026 ([b7cce7e3](https://github.com/gha3mi/setup-fortran-conda/commit/b7cce7e3490a3957104fab7a5371f96fe562d6e0)) by [@gha3mi](https://github.com/gha3mi)
+* docs: document compiler toolchains ([a8e939fd](https://github.com/gha3mi/setup-fortran-conda/commit/a8e939fd783151754ef207c8dcd24b14d6b7db7f)) by [@gha3mi](https://github.com/gha3mi)
+* ci: skip CI for documentation changes ([2a1d9833](https://github.com/gha3mi/setup-fortran-conda/commit/2a1d98331774cf4477f3706d8fa9601b46138500)) by [@gha3mi](https://github.com/gha3mi)
+* docs: add badges and refine action metadata ([7b736a8c](https://github.com/gha3mi/setup-fortran-conda/commit/7b736a8cfefe4240380e02dcccce9e23f224b539)) by [@gha3mi](https://github.com/gha3mi)
+* docs: document workflow permissions ([94085ea3](https://github.com/gha3mi/setup-fortran-conda/commit/94085ea389022f37b81b9556a0707c1f8b02d830)) by [@gha3mi](https://github.com/gha3mi)
+* refactor: simplify Meson build configuration ([39bf0419](https://github.com/gha3mi/setup-fortran-conda/commit/39bf0419e2c0b6a122985e2ff18321f1744f11db)) by [@gha3mi](https://github.com/gha3mi)
+* refactor: simplify CMake build configuration ([356860f4](https://github.com/gha3mi/setup-fortran-conda/commit/356860f49f8089f2f26b4b5bc4d075b1441ee605)) by [@gha3mi](https://github.com/gha3mi)
+
+
+### Contributors
+- [@gha3mi](https://github.com/gha3mi)
+
+
+
+Full Changelog: [v0.18.0...v0.18.1](https://github.com/gha3mi/setup-fortran-conda/compare/v0.18.0...v0.18.1)
+
 ## [v0.18.0](https://github.com/gha3mi/setup-fortran-conda/compare/v0.17.1...v0.18.0) - 2026-07-30
 
 

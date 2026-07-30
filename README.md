@@ -1,5 +1,12 @@
 # setup-fortran-conda
 
+[![GitHub Marketplace](https://img.shields.io/badge/Marketplace-setup--fortran--conda-blue?logo=github)](https://github.com/marketplace/actions/setup-fortran-conda)
+[![CI](https://github.com/gha3mi/setup-fortran-conda/actions/workflows/CI-CD.yml/badge.svg?branch=main)](https://github.com/gha3mi/setup-fortran-conda/actions/workflows/CI-CD.yml)
+[![Distribution](https://github.com/gha3mi/setup-fortran-conda/actions/workflows/dist.yml/badge.svg?branch=main)](https://github.com/gha3mi/setup-fortran-conda/actions/workflows/dist.yml)
+[![Documentation](https://github.com/gha3mi/setup-fortran-conda/actions/workflows/docs.yml/badge.svg?branch=main)](https://gha3mi.github.io/setup-fortran-conda/)
+[![Release](https://img.shields.io/github/v/release/gha3mi/setup-fortran-conda?sort=semver)](https://github.com/gha3mi/setup-fortran-conda/releases/latest)
+[![License](https://img.shields.io/github/license/gha3mi/setup-fortran-conda)](LICENSE)
+
 Configure supported Fortran toolchains with matching C and C++ compilers on
 Ubuntu, macOS and Windows. The action also installs build tools and supports
 optional MPI toolchains, additional Conda packages, documentation generation,

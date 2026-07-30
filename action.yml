@@ -1,5 +1,5 @@
 name: setup-fortran-conda
-description: Installs Fortran compilers, matching MPI toolchains and extra packages using Conda or vendor packages. Optionally builds docs and updates README status/dependency graphs.
+description: Configures Fortran, C, C++, MPI and build tools on Ubuntu, macOS and Windows using Conda or vendor packages.
 author: Seyed Ali Ghasemi
 branding:
   icon: 'check'

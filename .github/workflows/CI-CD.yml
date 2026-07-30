@@ -40,7 +40,7 @@ jobs:
 
     steps:
       - name: Setup Fortran
-        uses: gha3mi/setup-fortran-conda@main
+        uses: gha3mi/setup-fortran-conda@dev
         with:
           compiler: ${{ matrix.compiler }}
           compiler-version: ${{ matrix.compiler-version }}
@@ -75,7 +75,7 @@ jobs:
 
     steps:
       - name: Setup Fortran and MPI
-        uses: gha3mi/setup-fortran-conda@main
+        uses: gha3mi/setup-fortran-conda@dev
         with:
           compiler: ${{ matrix.compiler }}
           compiler-version: ${{ matrix.compiler-version }}
@@ -117,7 +117,7 @@ jobs:
 
     steps:
       - name: Setup Fortran
-        uses: gha3mi/setup-fortran-conda@main
+        uses: gha3mi/setup-fortran-conda@dev
         with:
           compiler: ${{ matrix.compiler }}
           compiler-version: ${{ matrix.compiler-version }}
@@ -155,7 +155,7 @@ jobs:
 
     steps:
       - name: Setup Fortran and MPI
-        uses: gha3mi/setup-fortran-conda@main
+        uses: gha3mi/setup-fortran-conda@dev
         with:
           compiler: ${{ matrix.compiler }}
           compiler-version: ${{ matrix.compiler-version }}
@@ -197,7 +197,7 @@ jobs:
 
     steps:
       - name: Setup Fortran
-        uses: gha3mi/setup-fortran-conda@main
+        uses: gha3mi/setup-fortran-conda@dev
         with:
           compiler: ${{ matrix.compiler }}
           compiler-version: ${{ matrix.compiler-version }}
@@ -235,7 +235,7 @@ jobs:
 
     steps:
       - name: Setup Fortran and MPI
-        uses: gha3mi/setup-fortran-conda@main
+        uses: gha3mi/setup-fortran-conda@dev
         with:
           compiler: ${{ matrix.compiler }}
           compiler-version: ${{ matrix.compiler-version }}
@@ -262,7 +262,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Setup and Generate FORD Documentation
-        uses: gha3mi/setup-fortran-conda@main
+        uses: gha3mi/setup-fortran-conda@dev
         with:
           compiler: gfortran
           generate-doc-ford: true
@@ -278,7 +278,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Setup and Generate Doxygen Documentation
-        uses: gha3mi/setup-fortran-conda@main
+        uses: gha3mi/setup-fortran-conda@dev
         with:
           compiler: gfortran
           generate-doc-doxygen: true
@@ -295,7 +295,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Generate summary
-        uses: gha3mi/setup-fortran-conda@main
+        uses: gha3mi/setup-fortran-conda@dev
         with:
           generate-status-fpm: true
 
@@ -306,7 +306,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Generate summary
-        uses: gha3mi/setup-fortran-conda@main
+        uses: gha3mi/setup-fortran-conda@dev
         with:
           generate-status-cmake: true
 
@@ -317,7 +317,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Generate summary
-        uses: gha3mi/setup-fortran-conda@main
+        uses: gha3mi/setup-fortran-conda@dev
         with:
           generate-status-meson: true
 
@@ -328,7 +328,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Update README status
-        uses: gha3mi/setup-fortran-conda@main
+        uses: gha3mi/setup-fortran-conda@dev
         with:
           update-readme-table: true
           update-readme-token: ${{ secrets.GH_PAT }}   # Update with your GitHub personal access token
@@ -341,7 +341,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Run Fortitude Linter
-        uses: gha3mi/setup-fortran-conda@main
+        uses: gha3mi/setup-fortran-conda@dev
         with:
           fortitude-check: true
           fortitude-settings: "--config-file tests/hello/fpm.toml --output-format github tests/hello"

@@ -56,6 +56,9 @@ on: [push, pull_request]
 jobs:
   test:
     runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
     steps:
       - uses: gha3mi/setup-fortran-conda@latest
         with:

@@ -86,9 +86,30 @@
             </tbody>
           </table>
         </div>
+      </section>
+
+      <section>
+        <h2>Permissions</h2>
         <p>
-          The token requires repository contents and pull-request write
-          permissions.
+          Generating the table reads workflow jobs and checks out the
+          repository.
+        </p>
+        <pre><code class="language-yaml">permissions:
+  actions: read
+  contents: read</code></pre>
+        <p>
+          Updating the table through a pull request also writes a branch and
+          creates or updates the pull request. The token supplied through
+          <code>update-readme-token</code> requires repository contents and
+          pull-request write access.
+        </p>
+        <pre><code class="language-yaml">permissions:
+  actions: read
+  contents: write
+  pull-requests: write</code></pre>
+        <p>
+          When <code>github.token</code> is supplied, the repository must also
+          allow GitHub Actions to create pull requests.
         </p>
       </section>
 
@@ -144,6 +165,10 @@ test_mpi_meson:
   name: Update README.md status table
   needs: [test_fpm, test_mpi_fpm, test_cmake, test_mpi_cmake, test_meson, test_mpi_meson]
   runs-on: ubuntu-latest
+  permissions:
+    actions: read
+    contents: write
+    pull-requests: write
   steps:
     - name: Update README status
       uses: gha3mi/setup-fortran-conda@latest

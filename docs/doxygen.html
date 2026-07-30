@@ -100,6 +100,17 @@
       </section>
 
       <section>
+        <h2>Permissions</h2>
+        <p>
+          Doxygen reads Actions job metadata and writes the generated
+          documentation to the selected deployment branch.
+        </p>
+        <pre><code class="language-yaml">permissions:
+  actions: read
+  contents: write</code></pre>
+      </section>
+
+      <section>
         <h2>Usage</h2>
         <p>
           Enabling Doxygen installs
@@ -112,6 +123,7 @@
   name: Generate Doxygen Documentation
   runs-on: ubuntu-latest
   permissions:
+    actions: read
     contents: write
   steps:
     - name: Setup and Generate Doxygen Documentation

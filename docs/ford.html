@@ -94,6 +94,17 @@
       </section>
 
       <section>
+        <h2>Permissions</h2>
+        <p>
+          FORD reads Actions job metadata and writes the generated
+          documentation to the selected deployment branch.
+        </p>
+        <pre><code class="language-yaml">permissions:
+  actions: read
+  contents: write</code></pre>
+      </section>
+
+      <section>
         <h2>Usage</h2>
         <p>
           Enabling FORD installs
@@ -106,6 +117,7 @@
   name: Generate FORD Documentation
   runs-on: ubuntu-latest
   permissions:
+    actions: read
     contents: write
   steps:
     - name: Setup and Generate FORD Documentation

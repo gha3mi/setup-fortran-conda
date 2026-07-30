@@ -105,9 +105,24 @@
             </tbody>
           </table>
         </div>
+      </section>
+
+      <section>
+        <h2>Permissions</h2>
         <p>
-          The token requires repository contents and pull-request write
-          permissions.
+          Dependency graph generation reads Actions job metadata. Updating the
+          selected README writes a branch and creates or updates a pull
+          request. The token supplied through
+          <code>update-readme-token</code> requires repository contents and
+          pull-request write access.
+        </p>
+        <pre><code class="language-yaml">permissions:
+  actions: read
+  contents: write
+  pull-requests: write</code></pre>
+        <p>
+          When <code>github.token</code> is supplied, the repository must also
+          allow GitHub Actions to create pull requests.
         </p>
       </section>
 
@@ -121,6 +136,10 @@
         <pre><code class="language-yaml">update_readme_fpm_deps:
   name: Update README fpm dependency graph
   runs-on: ubuntu-latest
+  permissions:
+    actions: read
+    contents: write
+    pull-requests: write
   steps:
     - name: Update fpm dependency graph
       uses: gha3mi/setup-fortran-conda@latest
@@ -143,6 +162,10 @@
         <pre><code class="language-yaml">update_readme_fpm_modules:
   name: Update README module dependency graph
   runs-on: ubuntu-latest
+  permissions:
+    actions: read
+    contents: write
+    pull-requests: write
   steps:
     - name: Update module dependency graph
       uses: gha3mi/setup-fortran-conda@latest

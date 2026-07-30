@@ -264,6 +264,17 @@
       </section>
 
       <section>
+        <h2>Permissions</h2>
+        <p>
+          Compiler setup reads Actions job metadata and checks out the
+          repository by default.
+        </p>
+        <pre><code class="language-yaml">permissions:
+  actions: read
+  contents: read</code></pre>
+      </section>
+
+      <section>
         <h2>Exported environment</h2>
         <div
           class="variable-panel"

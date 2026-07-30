@@ -79,6 +79,17 @@
       </section>
 
       <section>
+        <h2>Permissions</h2>
+        <p>
+          Status generation reads workflow jobs and writes each generated
+          <code>STATUS.md</code> file to its status branch.
+        </p>
+        <pre><code class="language-yaml">permissions:
+  actions: read
+  contents: write</code></pre>
+      </section>
+
+      <section>
         <h2>Required job names</h2>
         <p data-job-suffixes="_cmake _fpm _meson">
           Tested job names must end in <code>_fpm</code>,
@@ -125,6 +136,7 @@ test_meson:
   needs: [test_fpm, test_mpi_fpm]
   runs-on: ubuntu-latest
   permissions:
+    actions: read
     contents: write
   steps:
     - name: Generate fpm summary
@@ -138,6 +150,7 @@ status_cmake:
   needs: [test_cmake, test_mpi_cmake]
   runs-on: ubuntu-latest
   permissions:
+    actions: read
     contents: write
   steps:
     - name: Generate CMake summary
@@ -151,6 +164,7 @@ status_meson:
   needs: [test_meson, test_mpi_meson]
   runs-on: ubuntu-latest
   permissions:
+    actions: read
     contents: write
   steps:
     - name: Generate Meson summary

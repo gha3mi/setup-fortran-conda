@@ -99,7 +99,7 @@ optional MPI toolchains, additional Conda packages, documentation generation,
 linting and repository status automation. Inspired by
 <a href="https://degenerateconic.com/conda-plus-fortran.html">Conda + Fortran</a>.</p>
 <h2>Quick start</h2>
-<p>The action checks out the repository and installs <code>fpm</code>, CMake, Ninja, Meson
+<p>The action checks out the repository and installs <code>fpm</code>, <code>CMake</code>, <code>Ninja</code>, <code>Meson</code>
 and <code>pkg-config</code> by default.</p>
 <div class="codehilite"><pre><span></span><code><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">test</span>
 
@@ -116,6 +116,130 @@ and <code>pkg-config</code> by default.</p>
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fpm test --compiler &quot;${{ env.FPM_FC }}&quot;</span>
 </code></pre></div>
 
+<h2>Compiler environment</h2>
+<p>The action configures the following matching Fortran, C and C++ compilers.</p>
+<table>
+<thead>
+<tr>
+<th>Runner</th>
+<th>Fortran</th>
+<th>C</th>
+<th>C++</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ubuntu</td>
+<td><a href="https://anaconda.org/conda-forge/gfortran">GNU Fortran</a></td>
+<td><a href="https://anaconda.org/conda-forge/gcc">GNU C</a></td>
+<td><a href="https://anaconda.org/conda-forge/gxx">GNU C++</a></td>
+</tr>
+<tr>
+<td>Ubuntu</td>
+<td><a href="https://www.intel.com/content/www/us/en/developer/tools/oneapi/fortran-compiler-download.html">Intel Fortran</a></td>
+<td><a href="https://www.intel.com/content/www/us/en/developer/tools/oneapi/dpc-compiler-download.html">Intel oneAPI DPC++/C++</a></td>
+<td><a href="https://www.intel.com/content/www/us/en/developer/tools/oneapi/dpc-compiler-download.html">Intel oneAPI DPC++/C++</a></td>
+</tr>
+<tr>
+<td>Ubuntu</td>
+<td><a href="https://anaconda.org/conda-forge/lfortran">LFortran</a></td>
+<td><a href="https://anaconda.org/conda-forge/clangxx">Clang</a></td>
+<td><a href="https://anaconda.org/conda-forge/clangxx">Clang</a></td>
+</tr>
+<tr>
+<td>Ubuntu</td>
+<td><a href="https://anaconda.org/conda-forge/flang">LLVM Flang</a></td>
+<td><a href="https://anaconda.org/conda-forge/clangxx">Clang</a></td>
+<td><a href="https://anaconda.org/conda-forge/clangxx">Clang</a></td>
+</tr>
+<tr>
+<td>Ubuntu</td>
+<td><a href="https://developer.nvidia.com/hpc-sdk/downloads">NVIDIA HPC SDK Fortran</a></td>
+<td><a href="https://developer.nvidia.com/hpc-sdk/downloads">NVIDIA HPC SDK C</a></td>
+<td><a href="https://developer.nvidia.com/hpc-sdk/downloads">NVIDIA HPC SDK C++</a></td>
+</tr>
+<tr>
+<td>Ubuntu</td>
+<td><a href="https://www.amd.com/en/developer/aocc.html">AOCC (Flang)</a></td>
+<td><a href="https://www.amd.com/en/developer/aocc.html">AOCC (Clang)</a></td>
+<td><a href="https://www.amd.com/en/developer/aocc.html">AOCC (Clang)</a></td>
+</tr>
+<tr>
+<td>Ubuntu</td>
+<td><a href="https://github.com/ROCm/aomp/releases">AOMP (Flang)</a></td>
+<td><a href="https://github.com/ROCm/aomp/releases">AOMP (Clang)</a></td>
+<td><a href="https://github.com/ROCm/aomp/releases">AOMP (Clang)</a></td>
+</tr>
+<tr>
+<td>macOS</td>
+<td><a href="https://anaconda.org/conda-forge/gfortran">GNU Fortran</a></td>
+<td><a href="https://formulae.brew.sh/formula/gcc">GNU C</a></td>
+<td><a href="https://formulae.brew.sh/formula/gcc">GNU C++</a></td>
+</tr>
+<tr>
+<td>macOS</td>
+<td><a href="https://anaconda.org/conda-forge/lfortran">LFortran</a></td>
+<td><a href="https://anaconda.org/conda-forge/clangxx">Clang</a></td>
+<td><a href="https://anaconda.org/conda-forge/clangxx">Clang</a></td>
+</tr>
+<tr>
+<td>Windows</td>
+<td><a href="https://anaconda.org/conda-forge/gfortran">GNU Fortran</a></td>
+<td><a href="https://anaconda.org/conda-forge/gcc">GNU C</a></td>
+<td><a href="https://anaconda.org/conda-forge/gxx">GNU C++</a></td>
+</tr>
+<tr>
+<td>Windows</td>
+<td><a href="https://www.intel.com/content/www/us/en/developer/tools/oneapi/fortran-compiler-download.html">Intel Fortran</a></td>
+<td><a href="https://www.intel.com/content/www/us/en/developer/tools/oneapi/dpc-compiler-download.html">Intel oneAPI DPC++/C++</a></td>
+<td><a href="https://www.intel.com/content/www/us/en/developer/tools/oneapi/dpc-compiler-download.html">Intel oneAPI DPC++/C++</a></td>
+</tr>
+<tr>
+<td>Windows</td>
+<td><a href="https://anaconda.org/conda-forge/lfortran">LFortran</a></td>
+<td><a href="https://anaconda.org/conda-forge/clangxx">Clang</a></td>
+<td><a href="https://anaconda.org/conda-forge/clangxx">Clang</a></td>
+</tr>
+<tr>
+<td>Windows</td>
+<td><a href="https://anaconda.org/conda-forge/flang">LLVM Flang</a></td>
+<td><a href="https://anaconda.org/conda-forge/clang">Clang</a></td>
+<td><a href="https://anaconda.org/conda-forge/clang">Clang</a></td>
+</tr>
+</tbody>
+</table>
+<p>The selected compiler commands are exported as environment variables for
+subsequent workflow steps.</p>
+<table>
+<thead>
+<tr>
+<th>Language</th>
+<th>General</th>
+<th>fpm</th>
+<th>CMake</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fortran</td>
+<td><code>FC</code></td>
+<td><code>FPM_FC</code></td>
+<td><code>CMAKE_Fortran_COMPILER</code></td>
+</tr>
+<tr>
+<td>C</td>
+<td><code>CC</code></td>
+<td><code>FPM_CC</code></td>
+<td><code>CMAKE_C_COMPILER</code></td>
+</tr>
+<tr>
+<td>C++</td>
+<td><code>CXX</code></td>
+<td><code>FPM_CXX</code></td>
+<td><code>CMAKE_CXX_COMPILER</code></td>
+</tr>
+</tbody>
+</table>
 <h2>Documentation</h2>
 <ul>
 <li><a href="https://gha3mi.github.io/setup-fortran-conda/">Overview</a></li>
@@ -364,8 +488,10 @@ and <code>pkg-config</code> by default.</p>
 </ul>
 <h2>Related</h2>
 <ul>
+<li><a href="https://fortran-lang.discourse.group/t/github-action-setup-fortran-with-conda/9869/">Fortran Discourse</a></li>
+<li><a href="https://docs.github.com/en/actions">GitHub Actions documentation</a></li>
+<li><a href="https://github.com/gha3mi/setup-fortran-conda/blob/main/.github/workflows/CI-CD.yml">CI/CD workflow</a></li>
 <li><a href="https://github.com/fortran-lang/setup-fortran">fortran-lang/setup-fortran</a></li>
-<li><a href="https://fortran-lang.discourse.group/t/github-action-setup-fortran-with-conda/9869/">Fortran Discourse announcement</a></li>
 </ul>
         </div>
           <div class="col-md-4">
@@ -438,7 +564,7 @@ and <code>pkg-config</code> by default.</p>
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2026-07-30T00:26:22.898478+0000             </p>
+ on 2026-07-30T06:26:29.505298+0000             </p>
           </div>
         </div>
         <br>

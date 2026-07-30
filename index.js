@@ -5,6 +5,7 @@ import path from 'node:path';
 import os from 'node:os';
 import https from 'node:https';
 import { assertMpiSupported, setupMpi } from './mpi/support.js';
+import { exportCondaEnvironment } from './platform/common.js';
 
 function nowIso() {
   return new Date().toISOString();
@@ -336,6 +337,7 @@ async function run() {
 
     const { setup } = await import(`./platform/${osKey}/${compiler}.js`);
     await setup(versionRequested);
+    await exportCondaEnvironment();
 
     if (mpi !== 'none') {
       const mpiDescriptor = await setupMpi({

@@ -1,21 +1,21 @@
-import { exec as _exec } from '@actions/exec';
-import { startGroup, endGroup } from '@actions/core';
+import { installCondaPackages } from './platform/common.js';
 
 export async function installExtras(env = 'fortran', extras = [], fpmVersion = '') {
   const v = (fpmVersion || '').trim().toLowerCase();
-  const fpmPkg = (!v || v === 'latest') ? 'fpm' : `fpm=${v}`;
-  const pkgs = [fpmPkg,'pkg-config', 'cmake', 'ninja', 'meson', ...extras.map(p => p.trim()).filter(Boolean)];
-  if (!pkgs.length) return;
+  const fpmPkg = !v || v === 'latest' ? 'fpm' : `fpm=${v}`;
+  const packages = [
+    fpmPkg,
+    'pkg-config',
+    'cmake',
+    'ninja',
+    'meson',
+    ...extras.map((packageName) => packageName.trim()).filter(Boolean),
+  ];
+  if (!packages.length) return;
 
-  startGroup('setup-fortran-conda: Install Extra Packages');
-  await _exec('conda', [
-    'install',
-    '--yes',
-    '--name',
-    env,
-    '-c',
-    'conda-forge',
-    ...pkgs
-  ]);
-  endGroup();
+  await installCondaPackages(packages, {
+    envName: env,
+    successMessage: 'Extra packages installed',
+    errorMessage: 'Extra package installation failed',
+  });
 }

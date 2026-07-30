@@ -43,7 +43,14 @@ export async function setup(version = '') {
 
   await exportCompilerEnvironment(
     compilerEnvironment('ifx', 'icx', 'icx', {
-      INCLUDE: [join(prefix, 'Library', 'include'), process.env.INCLUDE || '']
+      INCLUDE: [
+        join(prefix, 'opt', 'compiler', 'include', 'intel64'),
+        join(prefix, 'Library', 'include'),
+        process.env.INCLUDE || '',
+      ]
+        .filter(Boolean)
+        .join(';'),
+      LIB: [join(prefix, 'Library', 'lib'), process.env.LIB || '']
         .filter(Boolean)
         .join(';'),
     })

@@ -31354,6 +31354,348 @@ function getExecOutput(commandLine, args, options) {
 }
 //# sourceMappingURL=exec.js.map
 
+/***/ }),
+
+/***/ 7174:
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __nccwpck_require__) => {
+
+/* harmony export */ __nccwpck_require__.d(__webpack_exports__, {
+/* harmony export */   Aq: () => (/* binding */ TOOLS_ENVIRONMENT),
+/* harmony export */   Bf: () => (/* binding */ addExistingPaths),
+/* harmony export */   EE: () => (/* binding */ exportEnv),
+/* harmony export */   G6: () => (/* binding */ assertPlatform),
+/* harmony export */   HD: () => (/* binding */ compilerEnvironment),
+/* harmony export */   I6: () => (/* binding */ verifyCommands),
+/* harmony export */   MA: () => (/* binding */ installCondaPackages),
+/* harmony export */   Qv: () => (/* binding */ showCondaEnvironment),
+/* harmony export */   ZN: () => (/* binding */ exportCondaEnvironment),
+/* harmony export */   pI: () => (/* binding */ exportProcessEnvironment),
+/* harmony export */   s6: () => (/* binding */ getCondaPrefix),
+/* harmony export */   x7: () => (/* binding */ exportCompilerEnvironment),
+/* harmony export */   zD: () => (/* binding */ grouped)
+/* harmony export */ });
+/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(3360);
+/* harmony import */ var _actions_exec__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(2876);
+/* harmony import */ var node_fs__WEBPACK_IMPORTED_MODULE_2__ = __nccwpck_require__(3024);
+/* harmony import */ var node_os__WEBPACK_IMPORTED_MODULE_3__ = __nccwpck_require__(8161);
+/* harmony import */ var node_path__WEBPACK_IMPORTED_MODULE_4__ = __nccwpck_require__(6760);
+
+
+
+
+
+
+const TOOLS_ENVIRONMENT = 'fortran';
+
+function assertPlatform(expected, message) {
+  if (process.platform !== expected) {
+    throw new Error(message);
+  }
+}
+
+async function grouped(name, operation) {
+  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .startGroup */ .Oh)(name);
+  try {
+    return await operation();
+  } finally {
+    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .endGroup */ .N4)();
+  }
+}
+
+function exportEnv(key, value) {
+  const envFile = process.env.GITHUB_ENV;
+  if (!envFile) throw new Error('GITHUB_ENV not defined');
+
+  const normalized = String(value);
+  (0,node_fs__WEBPACK_IMPORTED_MODULE_2__.appendFileSync)(envFile, `${key}=${normalized}${node_os__WEBPACK_IMPORTED_MODULE_3__.EOL}`);
+  process.env[key] = normalized;
+}
+
+function compilerEnvironment(fortran, c, cxx, extra = {}) {
+  return {
+    FC: fortran,
+    CC: c,
+    CXX: cxx,
+    FPM_FC: fortran,
+    FPM_CC: c,
+    FPM_CXX: cxx,
+    CMAKE_Fortran_COMPILER: fortran,
+    CMAKE_C_COMPILER: c,
+    CMAKE_CXX_COMPILER: cxx,
+    ...extra,
+  };
+}
+
+async function exportCompilerEnvironment(values) {
+  await grouped('setup-fortran-conda: Export Compiler Environment', async () => {
+    for (const [key, value] of Object.entries(values)) {
+      exportEnv(key, value);
+      (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)(`Exported: ${key}=${value}`);
+    }
+  });
+}
+
+async function exportProcessEnvironment({ warningPrefix = '⚠️ ' } = {}) {
+  await grouped('setup-fortran-conda: Export Process Environment', async () => {
+    for (const [key, value] of Object.entries(process.env)) {
+      if (typeof value !== 'string') continue;
+
+      try {
+        process.env[key] = value;
+        (0,node_fs__WEBPACK_IMPORTED_MODULE_2__.appendFileSync)(process.env.GITHUB_ENV, `${key}=${value}${node_os__WEBPACK_IMPORTED_MODULE_3__.EOL}`);
+        (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)(`Exported: ${key}`);
+      } catch (error) {
+        (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)(`${warningPrefix}Failed to export: ${key} (${error.message})`);
+      }
+    }
+  });
+}
+
+async function getCondaPrefix(
+  envName = TOOLS_ENVIRONMENT,
+  required = true
+) {
+  let output = '';
+  await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('conda', ['env', 'list', '--json'], {
+    silent: true,
+    listeners: {
+      stdout: (data) => {
+        output += data.toString();
+      },
+    },
+  });
+
+  const { envs = [] } = JSON.parse(output);
+  const prefix = envs.find(
+    (candidate) =>
+      candidate.endsWith(node_path__WEBPACK_IMPORTED_MODULE_4__.sep + envName) || candidate.endsWith('/' + envName)
+  );
+
+  if (!prefix && required) {
+    throw new Error(`Unable to locate Conda environment "${envName}".`);
+  }
+  return prefix || '';
+}
+
+function prependEnvironmentPaths(paths, current = '') {
+  const values = [
+    ...paths,
+    ...String(current)
+      .split(node_path__WEBPACK_IMPORTED_MODULE_4__.delimiter)
+      .filter(Boolean),
+  ];
+  const seen = new Set();
+
+  return values
+    .filter((value) => {
+      const key = process.platform === 'win32' ? value.toLowerCase() : value;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    })
+    .join(node_path__WEBPACK_IMPORTED_MODULE_4__.delimiter);
+}
+
+function createWindowsBlasAliases(prefix) {
+  const libraryDir = (0,node_path__WEBPACK_IMPORTED_MODULE_4__.join)(prefix, 'Library', 'lib');
+  const blas = (0,node_path__WEBPACK_IMPORTED_MODULE_4__.join)(libraryDir, 'blas.lib');
+  const lapack = (0,node_path__WEBPACK_IMPORTED_MODULE_4__.join)(libraryDir, 'lapack.lib');
+  if ((0,node_fs__WEBPACK_IMPORTED_MODULE_2__.existsSync)(blas) && (0,node_fs__WEBPACK_IMPORTED_MODULE_2__.existsSync)(lapack)) return '';
+
+  const provider = [
+    (0,node_path__WEBPACK_IMPORTED_MODULE_4__.join)(libraryDir, 'openblas.lib'),
+    (0,node_path__WEBPACK_IMPORTED_MODULE_4__.join)(libraryDir, 'mkl_rt.lib'),
+  ].find((path) => (0,node_fs__WEBPACK_IMPORTED_MODULE_2__.existsSync)(path));
+  if (!provider) return '';
+
+  const aliasDir = (0,node_path__WEBPACK_IMPORTED_MODULE_4__.join)(libraryDir, 'setup-fortran-conda');
+  (0,node_fs__WEBPACK_IMPORTED_MODULE_2__.mkdirSync)(aliasDir, { recursive: true });
+  (0,node_fs__WEBPACK_IMPORTED_MODULE_2__.copyFileSync)((0,node_fs__WEBPACK_IMPORTED_MODULE_2__.existsSync)(blas) ? blas : provider, (0,node_path__WEBPACK_IMPORTED_MODULE_4__.join)(aliasDir, 'blas.lib'));
+  (0,node_fs__WEBPACK_IMPORTED_MODULE_2__.copyFileSync)(
+    (0,node_fs__WEBPACK_IMPORTED_MODULE_2__.existsSync)(lapack) ? lapack : provider,
+    (0,node_path__WEBPACK_IMPORTED_MODULE_4__.join)(aliasDir, 'lapack.lib')
+  );
+  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)(`Created Windows BLAS/LAPACK aliases from ${provider}`);
+  return aliasDir;
+}
+
+async function exportCondaEnvironment() {
+  await grouped('setup-fortran-conda: Configure Conda Environment', async () => {
+    const prefix = await getCondaPrefix();
+    const windows = process.platform === 'win32';
+    const blasAliasPath = windows ? createWindowsBlasAliases(prefix) : '';
+    const libraryPaths = (
+      windows
+        ? [
+            blasAliasPath,
+            (0,node_path__WEBPACK_IMPORTED_MODULE_4__.join)(prefix, 'Library', 'lib'),
+            (0,node_path__WEBPACK_IMPORTED_MODULE_4__.join)(prefix, 'lib'),
+          ]
+        : [(0,node_path__WEBPACK_IMPORTED_MODULE_4__.join)(prefix, 'lib')]
+    ).filter((path) => (0,node_fs__WEBPACK_IMPORTED_MODULE_2__.existsSync)(path));
+    const includePaths = (
+      windows
+        ? [
+            (0,node_path__WEBPACK_IMPORTED_MODULE_4__.join)(prefix, 'opt', 'compiler', 'include', 'intel64'),
+            (0,node_path__WEBPACK_IMPORTED_MODULE_4__.join)(prefix, 'Library', 'include'),
+          ]
+        : [(0,node_path__WEBPACK_IMPORTED_MODULE_4__.join)(prefix, 'include')]
+    ).filter((path) => (0,node_fs__WEBPACK_IMPORTED_MODULE_2__.existsSync)(path));
+    const pkgConfigPaths = (
+      windows
+        ? [
+            (0,node_path__WEBPACK_IMPORTED_MODULE_4__.join)(prefix, 'Library', 'lib', 'pkgconfig'),
+            (0,node_path__WEBPACK_IMPORTED_MODULE_4__.join)(prefix, 'Library', 'share', 'pkgconfig'),
+            (0,node_path__WEBPACK_IMPORTED_MODULE_4__.join)(prefix, 'lib', 'pkgconfig'),
+            (0,node_path__WEBPACK_IMPORTED_MODULE_4__.join)(prefix, 'share', 'pkgconfig'),
+          ]
+        : [
+            (0,node_path__WEBPACK_IMPORTED_MODULE_4__.join)(prefix, 'lib', 'pkgconfig'),
+            (0,node_path__WEBPACK_IMPORTED_MODULE_4__.join)(prefix, 'share', 'pkgconfig'),
+          ]
+    ).filter((path) => (0,node_fs__WEBPACK_IMPORTED_MODULE_2__.existsSync)(path));
+    const cmakePrefixes = windows
+      ? [(0,node_path__WEBPACK_IMPORTED_MODULE_4__.join)(prefix, 'Library'), prefix]
+      : [prefix];
+
+    const environment = {
+      LIBRARY_PATH: prependEnvironmentPaths(
+        libraryPaths,
+        process.env.LIBRARY_PATH
+      ),
+      CMAKE_LIBRARY_PATH: prependEnvironmentPaths(
+        libraryPaths,
+        process.env.CMAKE_LIBRARY_PATH
+      ),
+      CMAKE_PREFIX_PATH: prependEnvironmentPaths(
+        cmakePrefixes,
+        process.env.CMAKE_PREFIX_PATH
+      ),
+      PKG_CONFIG_PATH: prependEnvironmentPaths(
+        pkgConfigPaths,
+        process.env.PKG_CONFIG_PATH
+      ),
+    };
+
+    if (process.platform === 'linux') {
+      environment.LD_LIBRARY_PATH = prependEnvironmentPaths(
+        libraryPaths,
+        process.env.LD_LIBRARY_PATH
+      );
+    } else if (windows) {
+      environment.LIB = prependEnvironmentPaths(
+        libraryPaths,
+        process.env.LIB
+      );
+      environment.INCLUDE = prependEnvironmentPaths(
+        includePaths,
+        process.env.INCLUDE
+      );
+    }
+
+    const mklRuntime = [
+      (0,node_path__WEBPACK_IMPORTED_MODULE_4__.join)(prefix, 'lib', 'libmkl_rt.so'),
+      (0,node_path__WEBPACK_IMPORTED_MODULE_4__.join)(prefix, 'lib', 'libmkl_rt.dylib'),
+      (0,node_path__WEBPACK_IMPORTED_MODULE_4__.join)(prefix, 'Library', 'lib', 'mkl_rt.lib'),
+    ].some((path) => (0,node_fs__WEBPACK_IMPORTED_MODULE_2__.existsSync)(path));
+    if (mklRuntime && !process.env.MKL_INTERFACE_LAYER) {
+      environment.MKL_INTERFACE_LAYER = 'LP64,GNU';
+    }
+
+    for (const [key, value] of Object.entries(environment)) {
+      if (!value) continue;
+      exportEnv(key, value);
+      (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)(`Exported: ${key}=${value}`);
+    }
+  });
+}
+
+function isTransientCondaError(output) {
+  return /CondaHTTPError|HTTP\s+(?:403|408|429|5\d\d)\b|ConnectionError|Connection reset|Temporary failure|timed? out/i.test(
+    output
+  );
+}
+
+async function installCondaPackages(
+  packages,
+  {
+    envName = TOOLS_ENVIRONMENT,
+    channels = ['conda-forge'],
+    command = 'install',
+    commandOptions = [],
+    successMessage = 'Conda packages installed',
+    errorMessage = 'Conda install failed',
+  } = {}
+) {
+  await grouped('setup-fortran-conda: Install Conda Packages', async () => {
+    const args = [
+      command,
+      ...commandOptions,
+      '--yes',
+      '--name',
+      envName,
+      ...packages,
+    ];
+    for (const channel of channels) args.push('-c', channel);
+
+    for (let attempt = 1; attempt <= 2; attempt += 1) {
+      let output = '';
+      const capture = (data) => {
+        output = (output + data.toString()).slice(-32768);
+      };
+
+      try {
+        await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('conda', args, {
+          listeners: {
+            stdout: capture,
+            stderr: capture,
+          },
+        });
+        (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)(successMessage);
+        return;
+      } catch (error) {
+        if (attempt === 2 || !isTransientCondaError(output)) {
+          throw new Error(`${errorMessage}: ${error.message}`);
+        }
+        (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)('Transient Conda network error; retrying installation');
+      }
+    }
+  });
+}
+
+async function showCondaEnvironment(envNames = [TOOLS_ENVIRONMENT]) {
+  await grouped('setup-fortran-conda: Show Conda Environment', async () => {
+    await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('conda', ['info']);
+    for (const envName of envNames) {
+      await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('conda', ['list', '--name', envName]);
+    }
+  });
+}
+
+async function addExistingPaths(paths, { log = true } = {}) {
+  await grouped('setup-fortran-conda: Configure Compiler Paths', async () => {
+    for (const path of paths) {
+      if (!path || !(0,node_fs__WEBPACK_IMPORTED_MODULE_2__.existsSync)(path)) continue;
+
+      (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .addPath */ .fM)(path);
+      if (log) (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)(`Added to PATH: ${path}`);
+    }
+  });
+}
+
+async function verifyCommands(commands, lookup) {
+  const lookupCommand =
+    lookup || (process.platform === 'win32' ? 'where' : 'which');
+
+  await grouped('setup-fortran-conda: Verify Compiler Commands', async () => {
+    for (const { command, args } of commands) {
+      await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)(lookupCommand, [command]);
+      if (args) await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)(command, args);
+    }
+  });
+}
+
+
 /***/ })
 
 /******/ });
@@ -32447,7 +32789,10 @@ async function setupMpi({
   return validated;
 }
 
+// EXTERNAL MODULE: ./platform/common.js
+var common = __nccwpck_require__(7174);
 ;// CONCATENATED MODULE: ./index.js
+
 
 
 
@@ -32786,6 +33131,7 @@ async function run() {
 
     const { setup } = await __nccwpck_require__(9439)(`./${osKey}/${compiler}.js`);
     await setup(versionRequested);
+    await (0,common/* exportCondaEnvironment */.ZN)();
 
     if (mpi !== 'none') {
       const mpiDescriptor = await setupMpi({

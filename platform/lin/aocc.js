@@ -328,6 +328,19 @@ while [[ $# -gt 0 ]]; do
       args+=("-module" "\${1#-J}")
       shift
       ;;
+    -MD)
+      shift
+      ;;
+    -MQ|-MF)
+      if [[ $# -lt 2 ]]; then
+        echo "amdflang wrapper: $1 requires an argument" >&2
+        exit 1
+      fi
+      shift 2
+      ;;
+    -MQ*|-MF*)
+      shift
+      ;;
     *)
       args+=("$1")
       shift

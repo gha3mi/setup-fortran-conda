@@ -1,8 +1,13 @@
 import { addPath, endGroup, info, startGroup } from '@actions/core';
 import { exec as run } from '@actions/exec';
-import { appendFileSync, existsSync } from 'node:fs';
+import {
+  appendFileSync,
+  copyFileSync,
+  existsSync,
+  mkdirSync,
+} from 'node:fs';
 import { EOL } from 'node:os';
-import { sep } from 'node:path';
+import { delimiter, join, sep } from 'node:path';
 
 export const TOOLS_ENVIRONMENT = 'fortran';
 
@@ -96,6 +101,145 @@ export async function getCondaPrefix(
   return prefix || '';
 }
 
+function prependEnvironmentPaths(paths, current = '') {
+  const values = [
+    ...paths,
+    ...String(current)
+      .split(delimiter)
+      .filter(Boolean),
+  ];
+  const seen = new Set();
+
+  return values
+    .filter((value) => {
+      const key = process.platform === 'win32' ? value.toLowerCase() : value;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    })
+    .join(delimiter);
+}
+
+function createWindowsBlasAliases(prefix) {
+  const libraryDir = join(prefix, 'Library', 'lib');
+  const blas = join(libraryDir, 'blas.lib');
+  const lapack = join(libraryDir, 'lapack.lib');
+  if (existsSync(blas) && existsSync(lapack)) return '';
+
+  const provider = [
+    join(libraryDir, 'openblas.lib'),
+    join(libraryDir, 'mkl_rt.lib'),
+  ].find((path) => existsSync(path));
+  if (!provider) return '';
+
+  const aliasDir = join(libraryDir, 'setup-fortran-conda');
+  mkdirSync(aliasDir, { recursive: true });
+  copyFileSync(existsSync(blas) ? blas : provider, join(aliasDir, 'blas.lib'));
+  copyFileSync(
+    existsSync(lapack) ? lapack : provider,
+    join(aliasDir, 'lapack.lib')
+  );
+  info(`Created Windows BLAS/LAPACK aliases from ${provider}`);
+  return aliasDir;
+}
+
+export async function exportCondaEnvironment() {
+  await grouped('setup-fortran-conda: Configure Conda Environment', async () => {
+    const prefix = await getCondaPrefix();
+    const windows = process.platform === 'win32';
+    const blasAliasPath = windows ? createWindowsBlasAliases(prefix) : '';
+    const libraryPaths = (
+      windows
+        ? [
+            blasAliasPath,
+            join(prefix, 'Library', 'lib'),
+            join(prefix, 'lib'),
+          ]
+        : [join(prefix, 'lib')]
+    ).filter((path) => existsSync(path));
+    const includePaths = (
+      windows
+        ? [
+            join(prefix, 'opt', 'compiler', 'include', 'intel64'),
+            join(prefix, 'Library', 'include'),
+          ]
+        : [join(prefix, 'include')]
+    ).filter((path) => existsSync(path));
+    const pkgConfigPaths = (
+      windows
+        ? [
+            join(prefix, 'Library', 'lib', 'pkgconfig'),
+            join(prefix, 'Library', 'share', 'pkgconfig'),
+            join(prefix, 'lib', 'pkgconfig'),
+            join(prefix, 'share', 'pkgconfig'),
+          ]
+        : [
+            join(prefix, 'lib', 'pkgconfig'),
+            join(prefix, 'share', 'pkgconfig'),
+          ]
+    ).filter((path) => existsSync(path));
+    const cmakePrefixes = windows
+      ? [join(prefix, 'Library'), prefix]
+      : [prefix];
+
+    const environment = {
+      LIBRARY_PATH: prependEnvironmentPaths(
+        libraryPaths,
+        process.env.LIBRARY_PATH
+      ),
+      CMAKE_LIBRARY_PATH: prependEnvironmentPaths(
+        libraryPaths,
+        process.env.CMAKE_LIBRARY_PATH
+      ),
+      CMAKE_PREFIX_PATH: prependEnvironmentPaths(
+        cmakePrefixes,
+        process.env.CMAKE_PREFIX_PATH
+      ),
+      PKG_CONFIG_PATH: prependEnvironmentPaths(
+        pkgConfigPaths,
+        process.env.PKG_CONFIG_PATH
+      ),
+    };
+
+    if (process.platform === 'linux') {
+      environment.LD_LIBRARY_PATH = prependEnvironmentPaths(
+        libraryPaths,
+        process.env.LD_LIBRARY_PATH
+      );
+    } else if (windows) {
+      environment.LIB = prependEnvironmentPaths(
+        libraryPaths,
+        process.env.LIB
+      );
+      environment.INCLUDE = prependEnvironmentPaths(
+        includePaths,
+        process.env.INCLUDE
+      );
+    }
+
+    const mklRuntime = [
+      join(prefix, 'lib', 'libmkl_rt.so'),
+      join(prefix, 'lib', 'libmkl_rt.dylib'),
+      join(prefix, 'Library', 'lib', 'mkl_rt.lib'),
+    ].some((path) => existsSync(path));
+    if (mklRuntime && !process.env.MKL_INTERFACE_LAYER) {
+      environment.MKL_INTERFACE_LAYER = 'LP64,GNU';
+    }
+
+    for (const [key, value] of Object.entries(environment)) {
+      if (!value) continue;
+      exportEnv(key, value);
+      info(`Exported: ${key}=${value}`);
+    }
+  });
+}
+
+function isTransientCondaError(output) {
+  return /CondaHTTPError|HTTP\s+(?:403|408|429|5\d\d)\b|ConnectionError|Connection reset|Temporary failure|timed? out/i.test(
+    output
+  );
+}
+
 export async function installCondaPackages(
   packages,
   {
@@ -108,21 +252,37 @@ export async function installCondaPackages(
   } = {}
 ) {
   await grouped('setup-fortran-conda: Install Conda Packages', async () => {
-    try {
-      const args = [
-        command,
-        ...commandOptions,
-        '--yes',
-        '--name',
-        envName,
-        ...packages,
-      ];
-      for (const channel of channels) args.push('-c', channel);
+    const args = [
+      command,
+      ...commandOptions,
+      '--yes',
+      '--name',
+      envName,
+      ...packages,
+    ];
+    for (const channel of channels) args.push('-c', channel);
 
-      await run('conda', args);
-      info(successMessage);
-    } catch (error) {
-      throw new Error(`${errorMessage}: ${error.message}`);
+    for (let attempt = 1; attempt <= 2; attempt += 1) {
+      let output = '';
+      const capture = (data) => {
+        output = (output + data.toString()).slice(-32768);
+      };
+
+      try {
+        await run('conda', args, {
+          listeners: {
+            stdout: capture,
+            stderr: capture,
+          },
+        });
+        info(successMessage);
+        return;
+      } catch (error) {
+        if (attempt === 2 || !isTransientCondaError(output)) {
+          throw new Error(`${errorMessage}: ${error.message}`);
+        }
+        info('Transient Conda network error; retrying installation');
+      }
     }
   });
 }

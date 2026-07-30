@@ -21,11 +21,29 @@ import {
   verifyCommands,
 } from './common.js';
 
-function detectHomebrewGcc() {
-  const versions = readdirSync('/opt/homebrew/bin')
+async function detectHomebrewGcc() {
+  let prefix = '';
+  await run('brew', ['--prefix'], {
+    silent: true,
+    listeners: {
+      stdout: (data) => {
+        prefix += data.toString();
+      },
+    },
+  });
+
+  const bin = join(prefix.trim(), 'bin');
+  if (!existsSync(bin)) {
+    throw new Error(`Homebrew bin directory not found: ${bin}`);
+  }
+
+  const versions = readdirSync(bin)
     .filter((name) => name.startsWith('gcc-'))
     .map((name) => Number.parseInt(name.replace('gcc-', ''), 10))
     .filter(Number.isFinite);
+  if (!versions.length) {
+    throw new Error(`No versioned Homebrew gcc executable found in ${bin}`);
+  }
   return `gcc-${Math.max(...versions)}`;
 }
 
@@ -44,17 +62,23 @@ function filesNamed(root, name, depth = 0) {
   return matches;
 }
 
-function normalizeCondaGfortranRpaths(prefix) {
+function configureCondaGfortranRpath(prefix) {
+  const libraryPath = join(prefix, 'lib');
   let changed = 0;
-  for (const path of filesNamed(join(prefix, 'lib', 'gcc'), 'conda.specs')) {
+
+  for (const path of filesNamed(join(prefix, 'lib', 'gcc'), 'specs')) {
     const content = readFileSync(path, 'utf8');
-    const updated = content.replace(/(\*darwin_rpaths:\r?\n)[^\r\n]*/, '$1');
+    const updated = content.replace(
+      /(\*darwin_rpaths:\r?\n)[^\r\n]*/,
+      (_, header) => `${header}%{!static:-rpath ${libraryPath}}`
+    );
     if (updated === content) continue;
 
     writeFileSync(path, updated);
     changed += 1;
   }
-  info(`Normalized macOS gfortran RPATH specs in ${changed} files`);
+
+  info(`Configured macOS gfortran RPATH in ${changed} GCC specs file(s)`);
 }
 
 async function installHomebrewGcc(version) {
@@ -69,7 +93,7 @@ async function installHomebrewGcc(version) {
 
       await run('brew', ['install', 'gcc'], { silent: true });
       info('Homebrew latest gcc installed');
-      const c = detectHomebrewGcc();
+      const c = await detectHomebrewGcc();
       return { c, cxx: c.replace('gcc', 'g++') };
     } catch (error) {
       throw new Error(`Homebrew gcc install failed: ${error.message}`);
@@ -88,7 +112,7 @@ export async function setup(version = '') {
   await showCondaEnvironment();
 
   const prefix = await getCondaPrefix();
-  normalizeCondaGfortranRpaths(prefix);
+  configureCondaGfortranRpath(prefix);
   await addExistingPaths([join(prefix, 'bin')], { log: false });
   await setMacOsSdkRoot();
 

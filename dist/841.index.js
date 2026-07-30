@@ -8,29 +8,29 @@ export const modules = {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   installExtras: () => (/* binding */ installExtras)
 /* harmony export */ });
-/* harmony import */ var _actions_exec__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2876);
-/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3360);
-
+/* harmony import */ var _platform_common_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7174);
 
 
 async function installExtras(env = 'fortran', extras = [], fpmVersion = '') {
   const v = (fpmVersion || '').trim().toLowerCase();
-  const fpmPkg = (!v || v === 'latest') ? 'fpm' : `fpm=${v}`;
-  const pkgs = [fpmPkg,'pkg-config', 'cmake', 'ninja', 'meson', ...extras.map(p => p.trim()).filter(Boolean)];
-  if (!pkgs.length) return;
+  const fpmPkg = !v || v === 'latest' ? 'fpm' : `fpm=${v}`;
+  const packages = [
+    fpmPkg,
+    'pkg-config',
+    'cmake',
+    'ninja',
+    'meson',
+    ...extras.map((packageName) => packageName.trim()).filter(Boolean),
+  ];
+  if (!packages.length) return;
 
-  (0,_actions_core__WEBPACK_IMPORTED_MODULE_1__/* .startGroup */ .Oh)('setup-fortran-conda: Install Extra Packages');
-  await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_0__/* .exec */ .m)('conda', [
-    'install',
-    '--yes',
-    '--name',
-    env,
-    '-c',
-    'conda-forge',
-    ...pkgs
-  ]);
-  (0,_actions_core__WEBPACK_IMPORTED_MODULE_1__/* .endGroup */ .N4)();
+  await (0,_platform_common_js__WEBPACK_IMPORTED_MODULE_0__/* .installCondaPackages */ .MA)(packages, {
+    envName: env,
+    successMessage: 'Extra packages installed',
+    errorMessage: 'Extra package installation failed',
+  });
 }
+
 
 /***/ })
 

@@ -31588,15 +31588,6 @@ async function exportCondaEnvironment() {
       );
     }
 
-    const mklRuntime = [
-      (0,node_path__WEBPACK_IMPORTED_MODULE_3__.join)(prefix, 'lib', 'libmkl_rt.so'),
-      (0,node_path__WEBPACK_IMPORTED_MODULE_3__.join)(prefix, 'lib', 'libmkl_rt.dylib'),
-      (0,node_path__WEBPACK_IMPORTED_MODULE_3__.join)(prefix, 'Library', 'lib', 'mkl_rt.lib'),
-    ].some((path) => (0,node_fs__WEBPACK_IMPORTED_MODULE_2__.existsSync)(path));
-    if (mklRuntime && !process.env.MKL_INTERFACE_LAYER) {
-      environment.MKL_INTERFACE_LAYER = 'LP64,GNU';
-    }
-
     for (const [key, value] of Object.entries(environment)) {
       if (!value) continue;
       exportEnv(key, value);

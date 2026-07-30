@@ -245,16 +245,14 @@
                 <td>Windows</td>
                 <td><code>LIB</code>, <code>INCLUDE</code></td>
               </tr>
-              <tr>
-                <td>oneMKL</td>
-                <td>
-                  <code>MKL_INTERFACE_LAYER=LP64,GNU</code> when the variable
-                  is not already set
-                </td>
-              </tr>
             </tbody>
           </table>
         </div>
+        <p>
+          <code>MKL_INTERFACE_LAYER</code> is not set by the action. oneMKL
+          uses its default LP64 interface unless the workflow or application
+          selects another supported interface.
+        </p>
       </section>
 
       <section>

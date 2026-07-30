@@ -214,15 +214,6 @@ export async function exportCondaEnvironment() {
       );
     }
 
-    const mklRuntime = [
-      join(prefix, 'lib', 'libmkl_rt.so'),
-      join(prefix, 'lib', 'libmkl_rt.dylib'),
-      join(prefix, 'Library', 'lib', 'mkl_rt.lib'),
-    ].some((path) => existsSync(path));
-    if (mklRuntime && !process.env.MKL_INTERFACE_LAYER) {
-      environment.MKL_INTERFACE_LAYER = 'LP64,GNU';
-    }
-
     for (const [key, value] of Object.entries(environment)) {
       if (!value) continue;
       exportEnv(key, value);

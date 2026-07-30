@@ -340,6 +340,10 @@ td:first-child {
   min-width: 560px;
 }
 
+.compiler-table {
+  min-width: 900px;
+}
+
 .support-table th:first-child,
 .support-table td:first-child {
   width: 22%;

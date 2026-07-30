@@ -27,6 +27,49 @@ jobs:
       - run: fpm test --compiler "${{ env.FPM_FC }}"
 ```
 
+## Compiler environment
+
+The action configures the following matching Fortran, C and C++ compilers.
+
+| Runner | Fortran | C | C++ |
+| --- | --- | --- | --- |
+| Ubuntu | [GNU Fortran][conda-gfortran] | [GNU C][conda-gcc] | [GNU C++][conda-gxx] |
+| Ubuntu | [Intel Fortran][intel-ifx] | [Intel oneAPI DPC++/C++][intel-icx] | [Intel oneAPI DPC++/C++][intel-icx] |
+| Ubuntu | [LFortran][conda-lfortran] | [Clang][conda-clangxx] | [Clang][conda-clangxx] |
+| Ubuntu | [LLVM Flang][conda-flang] | [Clang][conda-clangxx] | [Clang][conda-clangxx] |
+| Ubuntu | [NVIDIA HPC SDK Fortran][nvidia-hpc-sdk] | [NVIDIA HPC SDK C][nvidia-hpc-sdk] | [NVIDIA HPC SDK C++][nvidia-hpc-sdk] |
+| Ubuntu | [AOCC (Flang)][amd-aocc] | [AOCC (Clang)][amd-aocc] | [AOCC (Clang)][amd-aocc] |
+| Ubuntu | [AOMP (Flang)][amd-aomp] | [AOMP (Clang)][amd-aomp] | [AOMP (Clang)][amd-aomp] |
+| macOS | [GNU Fortran][conda-gfortran] | [GNU C][homebrew-gcc] | [GNU C++][homebrew-gcc] |
+| macOS | [LFortran][conda-lfortran] | [Clang][conda-clangxx] | [Clang][conda-clangxx] |
+| Windows | [GNU Fortran][conda-gfortran] | [GNU C][conda-gcc] | [GNU C++][conda-gxx] |
+| Windows | [Intel Fortran][intel-ifx] | [Intel oneAPI DPC++/C++][intel-icx] | [Intel oneAPI DPC++/C++][intel-icx] |
+| Windows | [LFortran][conda-lfortran] | [Clang][conda-clangxx] | [Clang][conda-clangxx] |
+| Windows | [LLVM Flang][conda-flang] | [Clang][conda-clang] | [Clang][conda-clang] |
+
+[conda-gfortran]: https://anaconda.org/conda-forge/gfortran
+[conda-gcc]: https://anaconda.org/conda-forge/gcc
+[conda-gxx]: https://anaconda.org/conda-forge/gxx
+[conda-lfortran]: https://anaconda.org/conda-forge/lfortran
+[conda-flang]: https://anaconda.org/conda-forge/flang
+[conda-clang]: https://anaconda.org/conda-forge/clang
+[conda-clangxx]: https://anaconda.org/conda-forge/clangxx
+[intel-ifx]: https://www.intel.com/content/www/us/en/developer/tools/oneapi/fortran-compiler-download.html
+[intel-icx]: https://www.intel.com/content/www/us/en/developer/tools/oneapi/dpc-compiler-download.html
+[nvidia-hpc-sdk]: https://developer.nvidia.com/hpc-sdk/downloads
+[amd-aocc]: https://www.amd.com/en/developer/aocc.html
+[amd-aomp]: https://github.com/ROCm/aomp/releases
+[homebrew-gcc]: https://formulae.brew.sh/formula/gcc
+
+The selected compiler commands are exported as environment variables for
+subsequent workflow steps.
+
+| Language | General | fpm | CMake |
+| --- | --- | --- | --- |
+| Fortran | `FC` | `FPM_FC` | `CMAKE_Fortran_COMPILER` |
+| C | `CC` | `FPM_CC` | `CMAKE_C_COMPILER` |
+| C++ | `CXX` | `FPM_CXX` | `CMAKE_CXX_COMPILER` |
+
 ## Documentation
 
 - [Overview](https://gha3mi.github.io/setup-fortran-conda/)
@@ -82,5 +125,7 @@ jobs:
 
 ## Related
 
-- [fortran-lang/setup-fortran](https://github.com/fortran-lang/setup-fortran)
 - [Fortran Discourse](https://fortran-lang.discourse.group/t/github-action-setup-fortran-with-conda/9869/)
+- [GitHub Actions documentation](https://docs.github.com/en/actions)
+- [CI/CD workflow](https://github.com/gha3mi/setup-fortran-conda/blob/main/.github/workflows/CI-CD.yml)
+- [fortran-lang/setup-fortran](https://github.com/fortran-lang/setup-fortran)

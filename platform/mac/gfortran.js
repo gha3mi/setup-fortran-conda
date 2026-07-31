@@ -1,11 +1,6 @@
 import { info } from '@actions/core';
 import { exec as run } from '@actions/exec';
-import {
-  existsSync,
-  readFileSync,
-  readdirSync,
-  writeFileSync,
-} from 'node:fs';
+import { existsSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import {
   addExistingPaths,
@@ -46,38 +41,33 @@ async function detectHomebrewGcc() {
   return `gcc-${Math.max(...versions)}`;
 }
 
-function filesNamed(root, name, depth = 0) {
-  if (!existsSync(root) || depth > 3) return [];
+function hasCondaGccSpecs(root) {
+  if (!existsSync(root)) return false;
 
-  const matches = [];
-  for (const entry of readdirSync(root, { withFileTypes: true })) {
-    const path = join(root, entry.name);
-    if (entry.isDirectory()) {
-      matches.push(...filesNamed(path, name, depth + 1));
-    } else if (entry.isFile() && entry.name === name) {
-      matches.push(path);
-    }
-  }
-  return matches;
+  return readdirSync(root, { withFileTypes: true }).some((entry) => {
+    if (entry.isFile()) return entry.name === 'conda.specs';
+    return (
+      entry.isDirectory() &&
+      hasCondaGccSpecs(join(root, entry.name))
+    );
+  });
 }
 
-function configureCondaGfortranRpath(prefix) {
-  const libraryPath = join(prefix, 'lib');
-  let changed = 0;
+function prependFlag(flag, current = '') {
+  const value = String(current).trim();
+  if (value.split(/\s+/).includes(flag)) return value;
+  return [flag, value].filter(Boolean).join(' ');
+}
 
-  for (const path of filesNamed(join(prefix, 'lib', 'gcc'), 'specs')) {
-    const content = readFileSync(path, 'utf8');
-    const updated = content.replace(
-      /(\*darwin_rpaths:\r?\n)[^\r\n]*/,
-      (_, header) => `${header}%{!static:-rpath ${libraryPath}}`
-    );
-    if (updated === content) continue;
+function condaGfortranEnvironment(prefix) {
+  if (!hasCondaGccSpecs(join(prefix, 'lib', 'gcc'))) return {};
 
-    writeFileSync(path, updated);
-    changed += 1;
-  }
-
-  info(`Configured macOS gfortran RPATH in ${changed} GCC specs file(s)`);
+  const flag = '-nodefaultrpaths';
+  info('Using Conda gfortran RPATH without duplicate GCC defaults');
+  return {
+    FFLAGS: prependFlag(flag, process.env.FFLAGS),
+    FPM_LDFLAGS: prependFlag(flag, process.env.FPM_LDFLAGS),
+  };
 }
 
 async function installHomebrewGcc(version) {
@@ -111,7 +101,6 @@ export async function setup(version = '') {
   await showCondaEnvironment();
 
   const prefix = await getCondaPrefix();
-  configureCondaGfortranRpath(prefix);
   await addExistingPaths([join(prefix, 'bin')], { log: false });
   await setMacOsSdkRoot();
 
@@ -121,7 +110,12 @@ export async function setup(version = '') {
     { command: cxx, args: ['--version'] },
   ]);
   await exportCompilerEnvironment(
-    compilerEnvironment('gfortran', c, cxx)
+    compilerEnvironment(
+      'gfortran',
+      c,
+      cxx,
+      condaGfortranEnvironment(prefix)
+    )
   );
 
   info('✅ compiler setup complete');

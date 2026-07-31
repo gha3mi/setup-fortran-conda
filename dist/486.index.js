@@ -95,38 +95,33 @@ async function detectHomebrewGcc() {
   return `gcc-${Math.max(...versions)}`;
 }
 
-function filesNamed(root, name, depth = 0) {
-  if (!(0,node_fs__WEBPACK_IMPORTED_MODULE_2__.existsSync)(root) || depth > 3) return [];
+function hasCondaGccSpecs(root) {
+  if (!(0,node_fs__WEBPACK_IMPORTED_MODULE_2__.existsSync)(root)) return false;
 
-  const matches = [];
-  for (const entry of (0,node_fs__WEBPACK_IMPORTED_MODULE_2__.readdirSync)(root, { withFileTypes: true })) {
-    const path = (0,node_path__WEBPACK_IMPORTED_MODULE_3__.join)(root, entry.name);
-    if (entry.isDirectory()) {
-      matches.push(...filesNamed(path, name, depth + 1));
-    } else if (entry.isFile() && entry.name === name) {
-      matches.push(path);
-    }
-  }
-  return matches;
+  return (0,node_fs__WEBPACK_IMPORTED_MODULE_2__.readdirSync)(root, { withFileTypes: true }).some((entry) => {
+    if (entry.isFile()) return entry.name === 'conda.specs';
+    return (
+      entry.isDirectory() &&
+      hasCondaGccSpecs((0,node_path__WEBPACK_IMPORTED_MODULE_3__.join)(root, entry.name))
+    );
+  });
 }
 
-function configureCondaGfortranRpath(prefix) {
-  const libraryPath = (0,node_path__WEBPACK_IMPORTED_MODULE_3__.join)(prefix, 'lib');
-  let changed = 0;
+function prependFlag(flag, current = '') {
+  const value = String(current).trim();
+  if (value.split(/\s+/).includes(flag)) return value;
+  return [flag, value].filter(Boolean).join(' ');
+}
 
-  for (const path of filesNamed((0,node_path__WEBPACK_IMPORTED_MODULE_3__.join)(prefix, 'lib', 'gcc'), 'specs')) {
-    const content = (0,node_fs__WEBPACK_IMPORTED_MODULE_2__.readFileSync)(path, 'utf8');
-    const updated = content.replace(
-      /(\*darwin_rpaths:\r?\n)[^\r\n]*/,
-      (_, header) => `${header}%{!static:-rpath ${libraryPath}}`
-    );
-    if (updated === content) continue;
+function condaGfortranEnvironment(prefix) {
+  if (!hasCondaGccSpecs((0,node_path__WEBPACK_IMPORTED_MODULE_3__.join)(prefix, 'lib', 'gcc'))) return {};
 
-    (0,node_fs__WEBPACK_IMPORTED_MODULE_2__.writeFileSync)(path, updated);
-    changed += 1;
-  }
-
-  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)(`Configured macOS gfortran RPATH in ${changed} GCC specs file(s)`);
+  const flag = '-nodefaultrpaths';
+  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)('Using Conda gfortran RPATH without duplicate GCC defaults');
+  return {
+    FFLAGS: prependFlag(flag, process.env.FFLAGS),
+    FPM_LDFLAGS: prependFlag(flag, process.env.FPM_LDFLAGS),
+  };
 }
 
 async function installHomebrewGcc(version) {
@@ -160,7 +155,6 @@ async function setup(version = '') {
   await (0,_common_js__WEBPACK_IMPORTED_MODULE_4__/* .showCondaEnvironment */ .Qv)();
 
   const prefix = await (0,_common_js__WEBPACK_IMPORTED_MODULE_4__/* .getCondaPrefix */ .s6)();
-  configureCondaGfortranRpath(prefix);
   await (0,_common_js__WEBPACK_IMPORTED_MODULE_4__/* .addExistingPaths */ .Bf)([(0,node_path__WEBPACK_IMPORTED_MODULE_3__.join)(prefix, 'bin')], { log: false });
   await (0,_common_js__WEBPACK_IMPORTED_MODULE_4__/* .setMacOsSdkRoot */ .gT)();
 
@@ -170,7 +164,12 @@ async function setup(version = '') {
     { command: cxx, args: ['--version'] },
   ]);
   await (0,_common_js__WEBPACK_IMPORTED_MODULE_4__/* .exportCompilerEnvironment */ .x7)(
-    (0,_common_js__WEBPACK_IMPORTED_MODULE_4__/* .compilerEnvironment */ .HD)('gfortran', c, cxx)
+    (0,_common_js__WEBPACK_IMPORTED_MODULE_4__/* .compilerEnvironment */ .HD)(
+      'gfortran',
+      c,
+      cxx,
+      condaGfortranEnvironment(prefix)
+    )
   );
 
   (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)('✅ compiler setup complete');

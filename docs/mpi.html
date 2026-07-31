@@ -252,7 +252,7 @@
 
     - name: Meson MPI test
       run: |
-        meson setup build --buildtype release --backend=ninja -Dfortran_args=-DUSE_MPI
+        meson setup build --buildtype release --backend=ninja
         meson compile -C build --verbose
         meson test -C build --verbose</code></pre>
       </section>

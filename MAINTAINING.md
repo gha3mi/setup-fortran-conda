@@ -12,7 +12,7 @@
 | `src/` | Action source code |
 | `dist/` | Generated action bundle committed to Git |
 | `tests/javascript/` | JavaScript tests |
-| `tests/` | Fortran, MPI and BLAS/LAPACK test projects |
+| `tests/` | Fortran, MPI, BLAS/LAPACK and MPI+BLAS/LAPACK test projects |
 | `docs/` | GitHub Pages documentation |
 | `scripts/` | Repository maintenance scripts |
 

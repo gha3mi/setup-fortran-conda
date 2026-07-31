@@ -36,9 +36,9 @@
       <header class="page-header">
         <h1>README table</h1>
         <p>
-          Aggregate compiler, MPI and build-tool metadata from matrix jobs into
-          a CI table. Inject the table between README markers or create a pull
-          request containing the update.
+          Aggregate compiler, MPI, BLAS/LAPACK and build-tool metadata from
+          matrix jobs into a CI table. Inject the table between README markers
+          or create a pull request containing the update.
         </p>
       </header>
 
@@ -164,7 +164,7 @@ test_mpi_meson:
         <pre><code class="language-yaml">update_readme_table:
   if: ${{ always() }}
   name: Update README.md status table
-  needs: [test_fpm, test_mpi_fpm, test_cmake, test_mpi_cmake, test_meson, test_mpi_meson]
+  needs: [test_fpm, test_mpi_fpm, test_blas_fpm, test_mpi_blas_fpm, test_cmake, test_mpi_cmake, test_blas_cmake, test_mpi_blas_cmake, test_meson, test_mpi_meson, test_blas_meson, test_mpi_blas_meson]
   runs-on: ubuntu-latest
   permissions:
     actions: read

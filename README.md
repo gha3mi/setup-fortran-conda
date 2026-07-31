@@ -9,8 +9,9 @@
 
 Configure supported Fortran toolchains with matching C and C++ compilers on
 Ubuntu, macOS and Windows. The action also installs build tools and supports
-optional MPI toolchains, additional Conda packages, documentation generation,
-linting and repository status automation. Inspired by
+optional MPI toolchains, BLAS/LAPACK implementations, additional Conda
+packages, documentation generation, linting and repository status automation.
+Inspired by
 [Conda + Fortran](https://degenerateconic.com/conda-plus-fortran.html).
 
 ## Quick start

@@ -32008,23 +32008,47 @@ function getErrorMessage(error) {
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __nccwpck_require__) => {
 
 /* harmony export */ __nccwpck_require__.d(__webpack_exports__, {
-/* harmony export */   F: () => (/* binding */ requestWorkflowJobs),
-/* harmony export */   r: () => (/* binding */ requestGitHubJson)
+/* harmony export */   FJ: () => (/* binding */ requestWorkflowJobs),
+/* harmony export */   rw: () => (/* binding */ requestGitHubJson)
 /* harmony export */ });
+/* unused harmony export isTransientGitHubRequestError */
+/* harmony import */ var _errors_js__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(7507);
 /* harmony import */ var _http_js__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(5312);
 
 
+
 const GITHUB_API_VERSION = '2022-11-28';
+const GITHUB_REQUEST_ATTEMPTS = 4;
+const GITHUB_RETRY_DELAY_MS = 2_000;
 const USER_AGENT = 'setup-fortran-conda';
+const TRANSIENT_HTTP_STATUSES = new Set([408, 425, 429]);
+
+function isTransientGitHubRequestError(error) {
+  const statusCode = Number(error?.statusCode);
+  if (!Number.isInteger(statusCode)) {
+    return true;
+  }
+
+  return statusCode >= 500 || TRANSIENT_HTTP_STATUSES.has(statusCode);
+}
 
 function requestGitHubJson(url, token = '') {
-  return (0,_http_js__WEBPACK_IMPORTED_MODULE_0__/* .requestJson */ .S)(url, {
+  return (0,_http_js__WEBPACK_IMPORTED_MODULE_0__/* .requestJson */ .SS)(url, {
+    attempts: GITHUB_REQUEST_ATTEMPTS,
     headers: {
       'User-Agent': USER_AGENT,
       Accept: 'application/vnd.github+json',
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
       'X-GitHub-Api-Version': GITHUB_API_VERSION,
     },
+    onRetry(error, attempt) {
+      console.warn(
+        `GitHub API request failed (${(0,_errors_js__WEBPACK_IMPORTED_MODULE_1__/* .getErrorMessage */ .u)(error)}); ` +
+          `retrying (${attempt + 1}/${GITHUB_REQUEST_ATTEMPTS}).`,
+      );
+    },
+    retryDelay: GITHUB_RETRY_DELAY_MS,
+    shouldRetry: isTransientGitHubRequestError,
   });
 }
 
@@ -32074,9 +32098,11 @@ async function requestWorkflowJobs({
 
 // EXPORTS
 __nccwpck_require__.d(__webpack_exports__, {
-  S: () => (/* binding */ requestJson),
-  d: () => (/* binding */ requestTextWithRetries)
+  SS: () => (/* binding */ requestJson),
+  dE: () => (/* binding */ requestTextWithRetries)
 });
+
+// UNUSED EXPORTS: HttpResponseError, retryOperation
 
 ;// CONCATENATED MODULE: external "node:https"
 const external_node_https_namespaceObject = __WEBPACK_EXTERNAL_createRequire(import.meta.url)("node:https");
@@ -32088,6 +32114,14 @@ var errors = __nccwpck_require__(7507);
 
 const DEFAULT_REDIRECT_LIMIT = 5;
 const DEFAULT_TIMEOUT_MS = 60_000;
+
+class HttpResponseError extends Error {
+  constructor(url, statusCode) {
+    super(`Request to ${url} failed with HTTP ${statusCode}.`);
+    this.name = 'HttpResponseError';
+    this.statusCode = statusCode;
+  }
+}
 
 function delay(milliseconds) {
   return new Promise((resolve) => setTimeout(resolve, milliseconds));
@@ -32145,9 +32179,7 @@ function requestText(
 
         if (statusCode < 200 || statusCode >= 300) {
           response.resume();
-          reject(
-            new Error(`Request to ${url} failed with HTTP ${statusCode}.`),
-          );
+          reject(new HttpResponseError(url, statusCode));
           return;
         }
 
@@ -32167,33 +32199,59 @@ function requestText(
   });
 }
 
-async function requestTextWithRetries(
-  url,
-  { attempts = 3, onRetry, retryDelay = 1_000, ...requestOptions } = {},
+async function retryOperation(
+  operation,
+  { attempts = 3, onRetry, retryDelay = 1_000, shouldRetry = () => true } = {},
 ) {
+  if (typeof operation !== 'function') {
+    throw new Error('Retry operation must be a function.');
+  }
   if (!Number.isInteger(attempts) || attempts < 1) {
     throw new Error('HTTP request attempts must be a positive integer.');
+  }
+  if (!Number.isFinite(retryDelay) || retryDelay < 0) {
+    throw new Error('Retry delay must be a non-negative number.');
   }
 
   let lastError;
 
   for (let attempt = 1; attempt <= attempts; attempt += 1) {
     try {
-      return await requestText(url, requestOptions);
+      return await operation();
     } catch (error) {
       lastError = error;
-      if (attempt < attempts) {
-        await onRetry?.(error, attempt);
-        await delay(retryDelay);
+      if (attempt >= attempts || !(await shouldRetry(error, attempt))) {
+        throw error;
       }
+
+      await onRetry?.(error, attempt);
+      await delay(retryDelay);
     }
   }
 
   throw lastError;
 }
 
+function requestTextWithRetries(
+  url,
+  {
+    attempts = 3,
+    onRetry,
+    retryDelay = 1_000,
+    shouldRetry,
+    ...requestOptions
+  } = {},
+) {
+  return retryOperation(() => requestText(url, requestOptions), {
+    attempts,
+    onRetry,
+    retryDelay,
+    shouldRetry,
+  });
+}
+
 async function requestJson(url, options = {}) {
-  const body = await requestText(url, options);
+  const body = await requestTextWithRetries(url, options);
 
   try {
     return JSON.parse(body);
@@ -32460,7 +32518,8 @@ const TOOL_ORDER = Object.freeze(['fpm', 'cmake', 'meson']);
 
 function inferToolFromJobName(jobName, { minimumParts = 3 } = {}) {
   const parts = String(jobName || '').split('_');
-  return parts.length >= minimumParts ? parts.at(-1) : '';
+  const tool = parts.at(-1);
+  return parts.length >= minimumParts && TOOL_ORDER.includes(tool) ? tool : '';
 }
 
 function createMetadata(
@@ -32480,7 +32539,7 @@ function createMetadata(
     created_at: new Date().toISOString(),
     job: {
       id: null,
-      name: '',
+      name: environment.GITHUB_JOB || '',
       labels: [],
     },
     runner: {
@@ -32522,7 +32581,7 @@ function createMetadata(
       packages: {},
       validated: false,
     },
-    tool: '',
+    tool: inferToolFromJobName(environment.GITHUB_JOB, { minimumParts: 2 }),
     tools: {},
     error: '',
   };
@@ -32646,7 +32705,7 @@ async function findCurrentJob(token) {
     return null;
   }
 
-  const jobs = await (0,github/* requestWorkflowJobs */.F)({
+  const jobs = await (0,github/* requestWorkflowJobs */.FJ)({
     apiUrl,
     repository,
     runId,
@@ -33819,15 +33878,22 @@ async function main() {
   );
 
   try {
-    const job = await findCurrentJob(token);
-    if (job?.id) {
-      metadata.job.id = job.id;
-      metadata.job.name = job.name || '';
-      metadata.job.labels = job.labels || [];
-      metadata.tool = inferToolFromJobName(job.name);
-      metadataPath = external_node_path_.join(
-        temporaryDirectory,
-        `setup-fortran-conda-meta-${job.id}.json`,
+    try {
+      const job = await findCurrentJob(token);
+      if (job?.id) {
+        metadata.job.id = job.id;
+        metadata.job.name = job.name || metadata.job.name;
+        metadata.job.labels = job.labels || [];
+        metadata.tool = inferToolFromJobName(job.name) || metadata.tool;
+        metadataPath = external_node_path_.join(
+          temporaryDirectory,
+          `setup-fortran-conda-meta-${job.id}.json`,
+        );
+      }
+    } catch (error) {
+      (0,core/* warning */.$e)(
+        `Unable to resolve current workflow job metadata ` +
+          `(${(0,errors/* getErrorMessage */.u)(error)}); continuing with runner metadata.`,
       );
     }
 

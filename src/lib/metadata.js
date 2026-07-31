@@ -2,7 +2,8 @@ export const TOOL_ORDER = Object.freeze(['fpm', 'cmake', 'meson']);
 
 export function inferToolFromJobName(jobName, { minimumParts = 3 } = {}) {
   const parts = String(jobName || '').split('_');
-  return parts.length >= minimumParts ? parts.at(-1) : '';
+  const tool = parts.at(-1);
+  return parts.length >= minimumParts && TOOL_ORDER.includes(tool) ? tool : '';
 }
 
 export function createMetadata(
@@ -22,7 +23,7 @@ export function createMetadata(
     created_at: new Date().toISOString(),
     job: {
       id: null,
-      name: '',
+      name: environment.GITHUB_JOB || '',
       labels: [],
     },
     runner: {
@@ -64,7 +65,7 @@ export function createMetadata(
       packages: {},
       validated: false,
     },
-    tool: '',
+    tool: inferToolFromJobName(environment.GITHUB_JOB, { minimumParts: 2 }),
     tools: {},
     error: '',
   };

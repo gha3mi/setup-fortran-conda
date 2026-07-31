@@ -37,7 +37,7 @@ const AOMP_REPO_API = 'https://api.github.com/repos/ROCm/aomp/releases';
 
 function requestAompApi(url) {
   const token = process.env.GITHUB_TOKEN || process.env.GH_TOKEN || '';
-  return (0,_lib_github_js__WEBPACK_IMPORTED_MODULE_8__/* .requestGitHubJson */ .r)(url, token);
+  return (0,_lib_github_js__WEBPACK_IMPORTED_MODULE_8__/* .requestGitHubJson */ .rw)(url, token);
 }
 
 function normalizeAompVersion(version = '') {

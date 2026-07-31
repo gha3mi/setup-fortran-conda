@@ -4,6 +4,14 @@ import { getErrorMessage } from './errors.js';
 const DEFAULT_REDIRECT_LIMIT = 5;
 const DEFAULT_TIMEOUT_MS = 60_000;
 
+export class HttpResponseError extends Error {
+  constructor(url, statusCode) {
+    super(`Request to ${url} failed with HTTP ${statusCode}.`);
+    this.name = 'HttpResponseError';
+    this.statusCode = statusCode;
+  }
+}
+
 function delay(milliseconds) {
   return new Promise((resolve) => setTimeout(resolve, milliseconds));
 }
@@ -60,9 +68,7 @@ function requestText(
 
         if (statusCode < 200 || statusCode >= 300) {
           response.resume();
-          reject(
-            new Error(`Request to ${url} failed with HTTP ${statusCode}.`),
-          );
+          reject(new HttpResponseError(url, statusCode));
           return;
         }
 
@@ -82,33 +88,59 @@ function requestText(
   });
 }
 
-export async function requestTextWithRetries(
-  url,
-  { attempts = 3, onRetry, retryDelay = 1_000, ...requestOptions } = {},
+export async function retryOperation(
+  operation,
+  { attempts = 3, onRetry, retryDelay = 1_000, shouldRetry = () => true } = {},
 ) {
+  if (typeof operation !== 'function') {
+    throw new Error('Retry operation must be a function.');
+  }
   if (!Number.isInteger(attempts) || attempts < 1) {
     throw new Error('HTTP request attempts must be a positive integer.');
+  }
+  if (!Number.isFinite(retryDelay) || retryDelay < 0) {
+    throw new Error('Retry delay must be a non-negative number.');
   }
 
   let lastError;
 
   for (let attempt = 1; attempt <= attempts; attempt += 1) {
     try {
-      return await requestText(url, requestOptions);
+      return await operation();
     } catch (error) {
       lastError = error;
-      if (attempt < attempts) {
-        await onRetry?.(error, attempt);
-        await delay(retryDelay);
+      if (attempt >= attempts || !(await shouldRetry(error, attempt))) {
+        throw error;
       }
+
+      await onRetry?.(error, attempt);
+      await delay(retryDelay);
     }
   }
 
   throw lastError;
 }
 
+export function requestTextWithRetries(
+  url,
+  {
+    attempts = 3,
+    onRetry,
+    retryDelay = 1_000,
+    shouldRetry,
+    ...requestOptions
+  } = {},
+) {
+  return retryOperation(() => requestText(url, requestOptions), {
+    attempts,
+    onRetry,
+    retryDelay,
+    shouldRetry,
+  });
+}
+
 export async function requestJson(url, options = {}) {
-  const body = await requestText(url, options);
+  const body = await requestTextWithRetries(url, options);
 
   try {
     return JSON.parse(body);

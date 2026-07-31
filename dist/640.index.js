@@ -87,7 +87,7 @@ function resolveDownloadUrl(href, filename) {
 }
 
 function fetchAoccDownloadPage() {
-  return (0,_lib_http_js__WEBPACK_IMPORTED_MODULE_1__/* .requestTextWithRetries */ .d)(AOCC_DOWNLOAD_PAGE, {
+  return (0,_lib_http_js__WEBPACK_IMPORTED_MODULE_1__/* .requestTextWithRetries */ .dE)(AOCC_DOWNLOAD_PAGE, {
     attempts: 3,
     headers: {
       'User-Agent': 'setup-fortran-conda',

@@ -1,4 +1,4 @@
-import { setFailed, setOutput, summary } from '@actions/core';
+import { setFailed, setOutput, summary, warning } from '@actions/core';
 import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
@@ -91,15 +91,22 @@ async function main() {
   );
 
   try {
-    const job = await findCurrentJob(token);
-    if (job?.id) {
-      metadata.job.id = job.id;
-      metadata.job.name = job.name || '';
-      metadata.job.labels = job.labels || [];
-      metadata.tool = inferToolFromJobName(job.name);
-      metadataPath = path.join(
-        temporaryDirectory,
-        `setup-fortran-conda-meta-${job.id}.json`,
+    try {
+      const job = await findCurrentJob(token);
+      if (job?.id) {
+        metadata.job.id = job.id;
+        metadata.job.name = job.name || metadata.job.name;
+        metadata.job.labels = job.labels || [];
+        metadata.tool = inferToolFromJobName(job.name) || metadata.tool;
+        metadataPath = path.join(
+          temporaryDirectory,
+          `setup-fortran-conda-meta-${job.id}.json`,
+        );
+      }
+    } catch (error) {
+      warning(
+        `Unable to resolve current workflow job metadata ` +
+          `(${getErrorMessage(error)}); continuing with runner metadata.`,
       );
     }
 

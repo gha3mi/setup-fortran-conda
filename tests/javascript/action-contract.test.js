@@ -166,6 +166,7 @@ test('metadata keeps its public schema and MPI fields', () => {
     {
       GITHUB_REPOSITORY: 'owner/repository',
       GITHUB_RUN_ID: '42',
+      GITHUB_JOB: 'test_mpi_blas_fpm',
       RUNNER_OS: 'Linux',
       RUNNER_ARCH: 'X64',
       RUNNER_NAME: 'GitHub Actions 1',
@@ -176,6 +177,8 @@ test('metadata keeps its public schema and MPI fields', () => {
   assert.equal(metadata.schema_version, 3);
   assert.equal(metadata.repo, 'owner/repository');
   assert.equal(metadata.run_id, 42);
+  assert.equal(metadata.job.name, 'test_mpi_blas_fpm');
+  assert.equal(metadata.tool, 'fpm');
   assert.equal(metadata.compiler.requested_version, 'latest');
   assert.equal(metadata.compiler.enabled, true);
   assert.equal(metadata.mpi.enabled, true);
@@ -349,6 +352,18 @@ test('the composite action does not derive a compiler from BLAS input', async ()
   assert.ok(compilerEnvironmentLine);
   assert.doesNotMatch(compilerEnvironmentLine, /inputs\.blas/);
   assert.match(action, /INPUT_BLAS: \$\{\{ inputs\.blas \}\}/);
+});
+
+test('the composite action retries metadata artifact uploads once', async () => {
+  const action = await fs.readFile(
+    new URL('../../action.yml', import.meta.url),
+    'utf8',
+  );
+
+  assert.match(action, /id: upload_metadata/);
+  assert.match(action, /continue-on-error: true/);
+  assert.match(action, /steps\.upload_metadata\.outcome == 'failure'/);
+  assert.match(action, /overwrite: true/);
 });
 
 test('versioned Conda package specifications remain stable', () => {

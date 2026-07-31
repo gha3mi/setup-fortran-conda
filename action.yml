@@ -215,6 +215,7 @@ runs:
         GITHUB_TOKEN: ${{ github.token }}
 
     - name: Upload setup-fortran-conda metadata
+      id: upload_metadata
       if: >-
         ${{
           always() &&
@@ -226,10 +227,19 @@ runs:
           inputs.generate-status-table != 'true' &&
           inputs.update-readme-table != 'true'
         }}
+      continue-on-error: true
       uses: actions/upload-artifact@v7
       with:
         name: ${{ steps.setup_fortran.outputs.metadata-artifact-name }}
         path: ${{ steps.setup_fortran.outputs.metadata-path }}
+
+    - name: Retry setup-fortran-conda metadata upload
+      if: ${{ always() && steps.upload_metadata.outcome == 'failure' }}
+      uses: actions/upload-artifact@v7
+      with:
+        name: ${{ steps.setup_fortran.outputs.metadata-artifact-name }}
+        path: ${{ steps.setup_fortran.outputs.metadata-path }}
+        overwrite: true
 
     - name: Install and Run Fortitude Linter
       if: ${{ inputs.fortitude-check == 'true' }}

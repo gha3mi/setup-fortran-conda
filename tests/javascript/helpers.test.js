@@ -6,6 +6,8 @@ import { test } from 'node:test';
 import { isCommandNotFoundOutput } from '../../src/lib/diagnostics.js';
 import { prependPathEntries } from '../../src/lib/environment.js';
 import { getErrorMessage } from '../../src/lib/errors.js';
+import { isTransientGitHubRequestError } from '../../src/lib/github.js';
+import { HttpResponseError, retryOperation } from '../../src/lib/http.js';
 import { replaceMarkedSection } from '../../src/lib/markdown.js';
 import { inferToolFromJobName } from '../../src/lib/metadata.js';
 import {
@@ -49,12 +51,59 @@ test('job and command names use consistent normalization', () => {
     inferToolFromJobName('gfortran_fpm', { minimumParts: 2 }),
     'fpm',
   );
+  assert.equal(inferToolFromJobName('build_linux', { minimumParts: 2 }), '');
   assert.equal(normalizeCommandName('C:\\MPI\\mpiexec.exe'), 'mpiexec');
 });
 
 test('errors use one consistent message representation', () => {
   assert.equal(getErrorMessage(new Error('failed')), 'failed');
   assert.equal(getErrorMessage('failed'), 'failed');
+});
+
+test('GitHub requests retry transient errors but not permanent responses', async () => {
+  const transientError = new HttpResponseError('https://api.github.com', 502);
+  let attempts = 0;
+  const result = await retryOperation(
+    async () => {
+      attempts += 1;
+      if (attempts === 1) {
+        throw transientError;
+      }
+      return 'ok';
+    },
+    {
+      attempts: 3,
+      retryDelay: 0,
+      shouldRetry: isTransientGitHubRequestError,
+    },
+  );
+
+  assert.equal(result, 'ok');
+  assert.equal(attempts, 2);
+  assert.equal(
+    isTransientGitHubRequestError(
+      new HttpResponseError('https://api.github.com', 429),
+    ),
+    true,
+  );
+
+  attempts = 0;
+  await assert.rejects(
+    () =>
+      retryOperation(
+        async () => {
+          attempts += 1;
+          throw new HttpResponseError('https://api.github.com', 404);
+        },
+        {
+          attempts: 3,
+          retryDelay: 0,
+          shouldRetry: isTransientGitHubRequestError,
+        },
+      ),
+    /HTTP 404/,
+  );
+  assert.equal(attempts, 1);
 });
 
 test('missing commands use one consistent diagnostic check', () => {

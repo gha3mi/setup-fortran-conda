@@ -1,16 +1,38 @@
+import { getErrorMessage } from './errors.js';
 import { requestJson } from './http.js';
 
 const GITHUB_API_VERSION = '2022-11-28';
+const GITHUB_REQUEST_ATTEMPTS = 4;
+const GITHUB_RETRY_DELAY_MS = 2_000;
 const USER_AGENT = 'setup-fortran-conda';
+const TRANSIENT_HTTP_STATUSES = new Set([408, 425, 429]);
+
+export function isTransientGitHubRequestError(error) {
+  const statusCode = Number(error?.statusCode);
+  if (!Number.isInteger(statusCode)) {
+    return true;
+  }
+
+  return statusCode >= 500 || TRANSIENT_HTTP_STATUSES.has(statusCode);
+}
 
 export function requestGitHubJson(url, token = '') {
   return requestJson(url, {
+    attempts: GITHUB_REQUEST_ATTEMPTS,
     headers: {
       'User-Agent': USER_AGENT,
       Accept: 'application/vnd.github+json',
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
       'X-GitHub-Api-Version': GITHUB_API_VERSION,
     },
+    onRetry(error, attempt) {
+      console.warn(
+        `GitHub API request failed (${getErrorMessage(error)}); ` +
+          `retrying (${attempt + 1}/${GITHUB_REQUEST_ATTEMPTS}).`,
+      );
+    },
+    retryDelay: GITHUB_RETRY_DELAY_MS,
+    shouldRetry: isTransientGitHubRequestError,
   });
 }
 

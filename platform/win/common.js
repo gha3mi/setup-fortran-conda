@@ -79,10 +79,12 @@ export async function initializeMsvcEnvironment() {
     'setup-fortran-conda: Initialize MSVC Environment',
     async () => {
       let captured = '';
-      const command =
-        `call "${vcvars}" >nul && ` +
-        '(set PATH&set TMP&set INCLUDE&set LIB&set LIBPATH)';
-      const exitCode = await run('cmd.exe', ['/d', '/c', command], {
+      const args = ['/d', '/c', 'call', vcvars, '>nul'];
+      for (const name of MSVC_ENVIRONMENT_VARIABLES) {
+        args.push('&&', 'set', name);
+      }
+
+      const exitCode = await run('cmd.exe', args, {
         silent: true,
         ignoreReturnCode: true,
         listeners: {

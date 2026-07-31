@@ -3,10 +3,26 @@ name: Setup Fortran Conda CI/CD
 on:
   push:
     branches: [main, dev]
-    paths-ignore: ['README.md','CHANGELOG.md','RELEASING.md','VERSION','LICENSE','docs/**','.github/workflows/blas_lapack.yml','tests/blas_lapack/**']
+    paths:
+      - ".github/workflows/CI-CD.yml"
+      - "action.yml"
+      - "src/**"
+      - "dist/**"
+      - "package.json"
+      - "package-lock.json"
+      - "tests/hello/**"
+      - "tests/mpi/**"
   pull_request:
     branches: [main]
-    paths-ignore: ['README.md','CHANGELOG.md','RELEASING.md','VERSION','LICENSE','docs/**','.github/workflows/blas_lapack.yml','tests/blas_lapack/**']
+    paths:
+      - ".github/workflows/CI-CD.yml"
+      - "action.yml"
+      - "src/**"
+      - "dist/**"
+      - "package.json"
+      - "package-lock.json"
+      - "tests/hello/**"
+      - "tests/mpi/**"
   workflow_dispatch:
   schedule:
     - cron: "0 10 * * SAT"

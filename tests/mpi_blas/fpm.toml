@@ -1,0 +1,23 @@
+name = "mpi-blas-lapack-test"
+
+[build]
+auto-executables = false
+auto-tests = false
+auto-examples = false
+module-naming = false
+external-modules = ["mpi_f08"]
+
+[install]
+library = false
+test = false
+
+[fortran]
+implicit-typing = false
+implicit-external = false
+source-form = "free"
+
+[[test]]
+name = "mpi_blas_lapack"
+source-dir = "test"
+main = "check.f90"
+link = ["lapack", "blas"]

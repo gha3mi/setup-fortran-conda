@@ -306,7 +306,7 @@ runs:
         RUN_ID: ${{ github.run_id }}
       run: |
         echo "::group:: setup-fortran-conda: Generate FPM Status"
-        bash "${{ github.action_path }}/scripts/generate-status-fpm.sh"
+        bash "${{ github.action_path }}/src/scripts/generate-status-fpm.sh"
         echo "::endgroup::"
 
     - name: Deploy STATUS.md (test_fpm)
@@ -327,7 +327,7 @@ runs:
         RUN_ID: ${{ github.run_id }}
       run: |
         echo "::group:: setup-fortran-conda: Generate CMake Status"
-        bash "${{ github.action_path }}/scripts/generate-status-cmake.sh"
+        bash "${{ github.action_path }}/src/scripts/generate-status-cmake.sh"
         echo "::endgroup::"
 
     - name: Deploy STATUS.md (test_cmake)
@@ -348,7 +348,7 @@ runs:
         RUN_ID: ${{ github.run_id }}
       run: |
         echo "::group:: setup-fortran-conda: Generate Meson Status"
-        bash "${{ github.action_path }}/scripts/generate-status-meson.sh"
+        bash "${{ github.action_path }}/src/scripts/generate-status-meson.sh"
         echo "::endgroup::"
 
     - name: Deploy STATUS.md (test_meson)
@@ -379,7 +379,7 @@ runs:
       shell: bash
       run: |
         echo "::group:: setup-fortran-conda: Generate README Matrix"
-        node "${{ github.action_path }}/scripts/update-readme-matrix-table.js"
+        node "${{ github.action_path }}/src/scripts/update-readme-matrix-table.js"
         echo "::endgroup::"
       env:
         GITHUB_TOKEN: ${{ github.token }}
@@ -391,7 +391,7 @@ runs:
       shell: bash
       run: |
         echo "::group:: setup-fortran-conda: Update README Status"
-        node "${{ github.action_path }}/scripts/update-readme-matrix-table.js"
+        node "${{ github.action_path }}/src/scripts/update-readme-matrix-table.js"
         echo "::endgroup::"
       env:
         GITHUB_TOKEN: ${{ github.token }}
@@ -406,7 +406,7 @@ runs:
         conda activate fortran
 
         echo "::group:: setup-fortran-conda: Update README fpm Dependency Graph"
-        node "${{ github.action_path }}/scripts/update-readme-fpm-deps.js"
+        node "${{ github.action_path }}/src/scripts/update-readme-fpm-deps.js"
         echo "::endgroup::"
       env:
         DEPENDENCY_GRAPH_WORKING_DIRECTORY: ${{ inputs.dependency-graph-working-directory }}
@@ -421,7 +421,7 @@ runs:
         conda activate fortran
 
         echo "::group:: setup-fortran-conda: Update README Module Dependency Graph"
-        node "${{ github.action_path }}/scripts/update-readme-fpm-modules.js"
+        node "${{ github.action_path }}/src/scripts/update-readme-fpm-modules.js"
         echo "::endgroup::"
       env:
         DEPENDENCY_GRAPH_WORKING_DIRECTORY: ${{ inputs.dependency-graph-working-directory }}

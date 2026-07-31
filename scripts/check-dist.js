@@ -3,7 +3,7 @@ import { spawnSync } from 'node:child_process';
 const result = spawnSync(
   'git',
   ['status', '--short', '--untracked-files=all', '--', 'dist'],
-  { encoding: 'utf8' }
+  { encoding: 'utf8' },
 );
 
 if (result.error) {

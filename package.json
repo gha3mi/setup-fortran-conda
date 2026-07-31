@@ -6,15 +6,24 @@
   "main": "dist/index.js",
   "type": "module",
   "scripts": {
+    "build": "npm run clean:dist && ncc build src/index.js -o dist --license licenses.txt",
+    "check": "npm run format:check && npm run lint && npm test",
+    "check-dist": "npm run check && npm run build && node scripts/check-dist.js",
     "clean:dist": "node -e \"require('node:fs').rmSync('dist', { recursive: true, force: true })\"",
-    "build": "npm run clean:dist && ncc build index.js -o dist --license licenses.txt",
-    "check-dist": "npm run build && node scripts/check-dist.js"
+    "format": "prettier --write \"**/*.js\"",
+    "format:check": "prettier --check \"**/*.js\"",
+    "lint": "eslint .",
+    "test": "node --test \"tests/javascript/**/*.test.js\""
   },
   "dependencies": {
     "@actions/core": "^3.0.1",
     "@actions/exec": "^3.0.0"
   },
   "devDependencies": {
-    "@vercel/ncc": "0.44.1"
+    "@eslint/js": "10.0.1",
+    "@vercel/ncc": "0.44.1",
+    "eslint": "10.8.0",
+    "globals": "17.8.0",
+    "prettier": "3.9.6"
   }
 }

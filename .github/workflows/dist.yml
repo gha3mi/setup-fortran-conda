@@ -4,27 +4,31 @@ on:
   push:
     branches: [main, dev]
     paths:
-      - "index.js"
-      - "extra.js"
-      - "platform/**"
-      - "mpi/**"
+      - "src/**"
+      - "scripts/check-dist.js"
+      - "tests/javascript/**"
+      - "docs/**/*.js"
       - "package.json"
       - "package-lock.json"
+      - "eslint.config.js"
+      - ".prettierignore"
+      - ".prettierrc.json"
       - "action.yml"
-      - "scripts/check-dist.js"
       - "dist/**"
       - ".github/workflows/dist.yml"
   pull_request:
     branches: [main]
     paths:
-      - "index.js"
-      - "extra.js"
-      - "platform/**"
-      - "mpi/**"
+      - "src/**"
+      - "scripts/check-dist.js"
+      - "tests/javascript/**"
+      - "docs/**/*.js"
       - "package.json"
       - "package-lock.json"
+      - "eslint.config.js"
+      - ".prettierignore"
+      - ".prettierrc.json"
       - "action.yml"
-      - "scripts/check-dist.js"
       - "dist/**"
       - ".github/workflows/dist.yml"
   workflow_dispatch:

@@ -3,10 +3,10 @@ name: BLAS/LAPACK CI
 on:
   push:
     branches: [main, dev]
-    paths: ['.github/workflows/blas_lapack.yml','action.yml','index.js','extra.js','platform/**','dist/**','package.json','package-lock.json','tests/blas_lapack/**']
+    paths: ['.github/workflows/blas_lapack.yml','action.yml','src/**','dist/**','package.json','package-lock.json','tests/blas_lapack/**']
   pull_request:
     branches: [main]
-    paths: ['.github/workflows/blas_lapack.yml','action.yml','index.js','extra.js','platform/**','dist/**','package.json','package-lock.json','tests/blas_lapack/**']
+    paths: ['.github/workflows/blas_lapack.yml','action.yml','src/**','dist/**','package.json','package-lock.json','tests/blas_lapack/**']
   workflow_dispatch:
 
 permissions:

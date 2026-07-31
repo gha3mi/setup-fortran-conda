@@ -5,7 +5,7 @@ function escapeHtml(value) {
     .replaceAll('>', '&gt;');
 }
 
-function token(type, value) {
+function createToken(type, value) {
   return `<span class="syntax-${type}">${escapeHtml(value)}</span>`;
 }
 
@@ -14,10 +14,12 @@ function highlightValue(value) {
   let plain = '';
 
   function flushPlain() {
-    if (!plain) return;
+    if (!plain) {
+      return;
+    }
     output += escapeHtml(plain).replace(
       /\b(true|false|null|latest)\b/g,
-      '<span class="syntax-literal">$1</span>'
+      '<span class="syntax-literal">$1</span>',
     );
     plain = '';
   }
@@ -27,31 +29,31 @@ function highlightValue(value) {
 
     if (value.startsWith('${{', index)) {
       flushPlain();
-      const end = value.indexOf('}}', index + 3);
-      const stop = end < 0 ? value.length : end + 2;
-      output += token('expression', value.slice(index, stop));
-      index = stop - 1;
+      const expressionEnd = value.indexOf('}}', index + 3);
+      const tokenEnd = expressionEnd < 0 ? value.length : expressionEnd + 2;
+      output += createToken('expression', value.slice(index, tokenEnd));
+      index = tokenEnd - 1;
       continue;
     }
 
     if (character === '"' || character === "'") {
       flushPlain();
-      let stop = index + 1;
-      while (stop < value.length) {
-        if (value[stop] === character && value[stop - 1] !== '\\') {
-          stop += 1;
+      let tokenEnd = index + 1;
+      while (tokenEnd < value.length) {
+        if (value[tokenEnd] === character && value[tokenEnd - 1] !== '\\') {
+          tokenEnd += 1;
           break;
         }
-        stop += 1;
+        tokenEnd += 1;
       }
-      output += token('string', value.slice(index, stop));
-      index = stop - 1;
+      output += createToken('string', value.slice(index, tokenEnd));
+      index = tokenEnd - 1;
       continue;
     }
 
     if (character === '#') {
       flushPlain();
-      output += token('comment', value.slice(index));
+      output += createToken('comment', value.slice(index));
       break;
     }
 
@@ -66,19 +68,23 @@ function highlightYaml(source) {
   return source
     .split('\n')
     .map((line) => {
-      const key = line.match(/^(\s*(?:-\s+)?)([A-Za-z_][A-Za-z0-9_.-]*)(:)(.*)$/);
-      if (!key) return highlightValue(line);
+      const keyMatch = line.match(
+        /^(\s*(?:-\s+)?)([A-Za-z_][A-Za-z0-9_.-]*)(:)(.*)$/,
+      );
+      if (!keyMatch) {
+        return highlightValue(line);
+      }
 
       return (
-        escapeHtml(key[1]) +
-        token('key', key[2]) +
-        token('punctuation', key[3]) +
-        highlightValue(key[4])
+        escapeHtml(keyMatch[1]) +
+        createToken('key', keyMatch[2]) +
+        createToken('punctuation', keyMatch[3]) +
+        highlightValue(keyMatch[4])
       );
     })
     .join('\n');
 }
 
-for (const code of document.querySelectorAll('pre code.language-yaml')) {
-  code.innerHTML = highlightYaml(code.textContent);
+for (const codeBlock of document.querySelectorAll('pre code.language-yaml')) {
+  codeBlock.innerHTML = highlightYaml(codeBlock.textContent);
 }

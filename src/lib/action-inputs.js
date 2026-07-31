@@ -2,6 +2,10 @@ import { normalizeRequestedVersion } from './version.js';
 
 export function readActionInputs(environment = process.env) {
   const rawMpiVersion = String(environment.INPUT_MPI_VERSION || '').trim();
+  const blas =
+    environment.INPUT_BLAS === undefined
+      ? 'none'
+      : String(environment.INPUT_BLAS);
 
   return {
     compiler: String(environment.INPUT_COMPILER || '').toLowerCase(),
@@ -20,6 +24,7 @@ export function readActionInputs(environment = process.env) {
         .toLowerCase() || 'none',
     mpiVersion: normalizeRequestedVersion(rawMpiVersion),
     rawMpiVersion,
+    blas,
   };
 }
 

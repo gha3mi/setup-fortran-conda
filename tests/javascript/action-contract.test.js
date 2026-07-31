@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import fs from 'node:fs/promises';
 import { join } from 'node:path';
 import { test } from 'node:test';
 import { createExtraPackageSpecs } from '../../src/packages.js';
@@ -9,6 +10,12 @@ import {
 import { applyMpiDescriptor, createMetadata } from '../../src/lib/metadata.js';
 import { createMpiEnvironment } from '../../src/mpi/common.js';
 import { MPI_SUPPORT } from '../../src/mpi/support.js';
+import {
+  assertBlasSupported,
+  BLAS_IMPLEMENTATIONS,
+  createBlasPackageSpec,
+  validateBlasPackages,
+} from '../../src/blas/support.js';
 import {
   createCompilerEnvironment,
   createCondaPackageSpec,
@@ -117,21 +124,23 @@ test('action inputs preserve the documented defaults and normalization', () => {
     INPUT_COMPILER: 'GFORTRAN',
     INPUT_COMPILER_VERSION: ' latest ',
     INPUT_PLATFORM: 'Ubuntu-Latest',
-    INPUT_EXTRA_PACKAGES: 'fypp, openblas',
+    INPUT_EXTRA_PACKAGES: 'fypp, hdf5',
     INPUT_FPM_VERSION: '0.13.0',
     INPUT_MPI: ' OpenMPI ',
     INPUT_MPI_VERSION: ' latest ',
+    INPUT_BLAS: 'openblas',
   });
 
   assert.deepEqual(inputs, {
     compiler: 'gfortran',
     compilerVersion: '',
     platform: 'ubuntu-latest',
-    extraPackages: ['fypp', 'openblas'],
+    extraPackages: ['fypp', 'hdf5'],
     fpmVersion: '0.13.0',
     mpi: 'openmpi',
     mpiVersion: '',
     rawMpiVersion: 'latest',
+    blas: 'openblas',
   });
   assert.equal(resolveOperatingSystem(inputs.platform), 'linux');
   assert.equal(resolveOperatingSystem('windows-2025'), 'windows');
@@ -144,6 +153,7 @@ test('metadata keeps its public schema and MPI fields', () => {
     compilerVersion: '',
     mpi: 'openmpi',
     mpiVersion: '',
+    blas: 'openblas',
   };
   const metadata = createMetadata(
     inputs,
@@ -162,14 +172,17 @@ test('metadata keeps its public schema and MPI fields', () => {
     },
   );
 
-  assert.equal(metadata.schema_version, 2);
+  assert.equal(metadata.schema_version, 3);
   assert.equal(metadata.repo, 'owner/repository');
   assert.equal(metadata.run_id, 42);
   assert.equal(metadata.compiler.requested_version, 'latest');
+  assert.equal(metadata.compiler.enabled, true);
   assert.equal(metadata.mpi.enabled, true);
   assert.equal(metadata.mpi.implementation, 'openmpi');
   assert.equal(metadata.mpi.requested_version, 'latest');
   assert.deepEqual(metadata.mpi.bindings, {});
+  assert.equal(metadata.blas.enabled, true);
+  assert.equal(metadata.blas.implementation, 'openblas');
 
   applyMpiDescriptor(metadata, {
     implementation: 'openmpi',
@@ -196,6 +209,89 @@ test('metadata keeps its public schema and MPI fields', () => {
   });
 });
 
+test('BLAS input remains exact and uses an exact Conda provider selector', () => {
+  assert.deepEqual(BLAS_IMPLEMENTATIONS, [
+    'none',
+    'netlib',
+    'openblas',
+    'mkl',
+    'accelerate',
+  ]);
+  assert.equal(createBlasPackageSpec('none'), '');
+  assert.equal(createBlasPackageSpec('openblas'), 'blas-devel=*=*_openblas');
+  assert.doesNotThrow(() => assertBlasSupported('accelerate'));
+  assert.throws(() => assertBlasSupported('OpenBLAS'), /Unsupported/);
+  assert.throws(() => assertBlasSupported(' openblas '), /Unsupported/);
+});
+
+test('BLAS validation requires matching BLAS and LAPACK provider builds', () => {
+  const packages = [
+    { name: 'blas-devel', version: '3.11.0', build: '5_h1_openblas' },
+    { name: 'libblas', version: '3.11.0', build: '5_h2_openblas' },
+    { name: 'liblapack', version: '3.11.0', build: '5_h3_openblas' },
+  ];
+
+  assert.deepEqual(validateBlasPackages(packages, 'openblas'), {
+    'blas-devel': { version: '3.11.0', build: '5_h1_openblas' },
+    libblas: { version: '3.11.0', build: '5_h2_openblas' },
+    liblapack: { version: '3.11.0', build: '5_h3_openblas' },
+  });
+  assert.throws(
+    () => validateBlasPackages(packages, 'mkl'),
+    /expected an exact mkl provider/,
+  );
+});
+
+test('BLAS-only input does not select a compiler', () => {
+  const inputs = readActionInputs({
+    INPUT_BLAS: 'mkl',
+    INPUT_MPI: 'none',
+  });
+
+  assert.equal(inputs.compiler, '');
+  assert.equal(inputs.blas, 'mkl');
+
+  const metadata = createMetadata(
+    inputs,
+    { family: 'ubuntu', version: '24.04', label: 'ubuntu 24.04' },
+    {},
+  );
+  assert.equal(metadata.compiler.enabled, false);
+  assert.equal(metadata.compiler.requested, '');
+  assert.equal(metadata.compiler.actual_version, '');
+});
+
+test('metadata defaults an omitted BLAS input to none', () => {
+  const metadata = createMetadata(
+    {
+      compiler: 'gfortran',
+      compilerVersion: '',
+      mpi: 'none',
+      mpiVersion: '',
+    },
+    { family: 'ubuntu', version: '24.04', label: 'ubuntu 24.04' },
+    {},
+  );
+
+  assert.equal(metadata.blas.enabled, false);
+  assert.equal(metadata.blas.requested, 'none');
+  assert.equal(metadata.blas.implementation, 'none');
+});
+
+test('the composite action does not derive a compiler from BLAS input', async () => {
+  const action = await fs.readFile(
+    new URL('../../action.yml', import.meta.url),
+    'utf8',
+  );
+  const compilerEnvironmentLine = action
+    .split(/\r?\n/)
+    .find((line) => line.includes('INPUT_COMPILER:'));
+
+  assert.ok(compilerEnvironmentLine);
+  assert.doesNotMatch(compilerEnvironmentLine, /inputs\.blas/);
+  assert.match(action, /INPUT_BLAS: \$\{\{ inputs\.blas \}\}/);
+});
+
 test('versioned Conda package specifications remain stable', () => {
   assert.equal(createCondaPackageSpec('gfortran'), 'gfortran');
   assert.equal(createCondaPackageSpec('gfortran', '16.1.0'), 'gfortran=16.1.0');
@@ -211,6 +307,15 @@ test('default build tools and extra packages remain stable', () => {
     'fypp',
   ]);
   assert.equal(createExtraPackageSpecs([], 'latest')[0], 'fpm');
+  assert.deepEqual(createExtraPackageSpecs(['fypp'], '', 'mkl'), [
+    'fpm',
+    'pkg-config',
+    'cmake',
+    'ninja',
+    'meson',
+    'blas-devel=*=*_mkl',
+    'fypp',
+  ]);
 });
 
 test('Conda executable paths remain operating-system-specific', () => {

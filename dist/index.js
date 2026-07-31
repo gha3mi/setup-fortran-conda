@@ -31351,6 +31351,136 @@ function getExecOutput(commandLine, args, options) {
 
 /***/ }),
 
+/***/ 8110:
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __nccwpck_require__) => {
+
+/* harmony export */ __nccwpck_require__.d(__webpack_exports__, {
+/* harmony export */   Px: () => (/* binding */ assertBlasSupported),
+/* harmony export */   WV: () => (/* binding */ createBlasPackageSpec),
+/* harmony export */   z$: () => (/* binding */ inspectBlasInstallation)
+/* harmony export */ });
+/* unused harmony exports BLAS_IMPLEMENTATIONS, validateBlasPackages */
+/* harmony import */ var _lib_command_js__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(7819);
+/* harmony import */ var _lib_errors_js__WEBPACK_IMPORTED_MODULE_2__ = __nccwpck_require__(7507);
+/* harmony import */ var _compilers_common_js__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(9674);
+
+
+
+
+const BLAS_IMPLEMENTATIONS = Object.freeze([
+  'none',
+  'netlib',
+  'openblas',
+  'mkl',
+  'accelerate',
+]);
+
+const REQUIRED_BLAS_PACKAGES = Object.freeze([
+  'blas-devel',
+  'libblas',
+  'liblapack',
+]);
+
+function assertBlasSupported(implementation) {
+  if (!BLAS_IMPLEMENTATIONS.includes(implementation)) {
+    throw new Error(
+      `Unsupported BLAS/LAPACK implementation: ${implementation}. ` +
+        `Supported values: ${BLAS_IMPLEMENTATIONS.join(', ')}.`,
+    );
+  }
+}
+
+function createBlasPackageSpec(implementation) {
+  assertBlasSupported(implementation);
+  return implementation === 'none' ? '' : `blas-devel=*=*_${implementation}`;
+}
+
+function validateBlasPackages(packages, implementation) {
+  assertBlasSupported(implementation);
+  if (implementation === 'none') {
+    return {};
+  }
+  if (!Array.isArray(packages)) {
+    throw new Error('Unable to validate BLAS/LAPACK packages.');
+  }
+
+  const expectedBuildSuffix = `_${implementation}`;
+  const selectedPackages = {};
+
+  for (const packageName of REQUIRED_BLAS_PACKAGES) {
+    const installedPackage = packages.find(
+      (candidate) => candidate?.name === packageName,
+    );
+    if (!installedPackage) {
+      throw new Error(
+        `The requested ${implementation} implementation did not install ${packageName}.`,
+      );
+    }
+
+    const build = String(installedPackage.build || '');
+    if (!build.endsWith(expectedBuildSuffix)) {
+      throw new Error(
+        `${packageName} uses build "${build}", expected an exact ` +
+          `${implementation} provider build ending in "${expectedBuildSuffix}".`,
+      );
+    }
+
+    selectedPackages[packageName] = {
+      version: String(installedPackage.version || ''),
+      build,
+    };
+  }
+
+  return selectedPackages;
+}
+
+async function inspectBlasInstallation(
+  implementation,
+  environmentName = _compilers_common_js__WEBPACK_IMPORTED_MODULE_1__/* .TOOLS_ENVIRONMENT_NAME */ .uU,
+) {
+  const packageSpec = createBlasPackageSpec(implementation);
+  if (!packageSpec) {
+    return {
+      implementation,
+      packageSpec,
+      packages: {},
+      validated: false,
+    };
+  }
+
+  const result = await (0,_lib_command_js__WEBPACK_IMPORTED_MODULE_0__/* .captureCommand */ .g)('conda', [
+    'list',
+    '--name',
+    environmentName,
+    '--json',
+  ]);
+  if (result.exitCode !== 0) {
+    throw new Error(
+      `Unable to inspect BLAS/LAPACK packages: ${result.stderr || result.stdout}`,
+    );
+  }
+
+  let packages;
+  try {
+    packages = JSON.parse(result.stdout);
+  } catch (error) {
+    throw new Error(
+      `Unable to parse installed BLAS/LAPACK packages: ${(0,_lib_errors_js__WEBPACK_IMPORTED_MODULE_2__/* .getErrorMessage */ .u)(error)}`,
+      { cause: error },
+    );
+  }
+
+  return {
+    implementation,
+    packageSpec,
+    packages: validateBlasPackages(packages, implementation),
+    validated: true,
+  };
+}
+
+
+/***/ }),
+
 /***/ 9674:
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __nccwpck_require__) => {
 
@@ -31857,6 +31987,7 @@ function getErrorMessage(error) {
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __nccwpck_require__) => {
 
 /* harmony export */ __nccwpck_require__.d(__webpack_exports__, {
+/* harmony export */   F: () => (/* binding */ requestWorkflowJobs),
 /* harmony export */   r: () => (/* binding */ requestGitHubJson)
 /* harmony export */ });
 /* harmony import */ var _http_js__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(5312);
@@ -31874,6 +32005,43 @@ function requestGitHubJson(url, token = '') {
       'X-GitHub-Api-Version': GITHUB_API_VERSION,
     },
   });
+}
+
+async function requestWorkflowJobs({
+  apiUrl = 'https://api.github.com',
+  repository,
+  runId,
+  token = '',
+  request = requestGitHubJson,
+}) {
+  if (!repository || !runId) {
+    throw new Error('Repository and workflow run ID are required.');
+  }
+
+  const jobs = [];
+  const perPage = 100;
+
+  for (let page = 1; ; page += 1) {
+    const url = new URL(
+      `${apiUrl.replace(/\/$/, '')}/repos/${repository}/actions/runs/${runId}/jobs`,
+    );
+    url.searchParams.set('per_page', String(perPage));
+    url.searchParams.set('page', String(page));
+
+    const response = await request(url.toString(), token);
+    const pageJobs = Array.isArray(response.jobs) ? response.jobs : [];
+    jobs.push(...pageJobs);
+
+    const totalCount = Number(response.total_count);
+    if (
+      pageJobs.length < perPage ||
+      (Number.isFinite(totalCount) && jobs.length >= totalCount)
+    ) {
+      break;
+    }
+  }
+
+  return jobs;
 }
 
 
@@ -32224,6 +32392,10 @@ var lib_version = __nccwpck_require__(1018);
 
 function readActionInputs(environment = process.env) {
   const rawMpiVersion = String(environment.INPUT_MPI_VERSION || '').trim();
+  const blas =
+    environment.INPUT_BLAS === undefined
+      ? 'none'
+      : String(environment.INPUT_BLAS);
 
   return {
     compiler: String(environment.INPUT_COMPILER || '').toLowerCase(),
@@ -32242,6 +32414,7 @@ function readActionInputs(environment = process.env) {
         .toLowerCase() || 'none',
     mpiVersion: (0,lib_version/* normalizeRequestedVersion */.Wy)(rawMpiVersion),
     rawMpiVersion,
+    blas,
   };
 }
 
@@ -32274,10 +32447,13 @@ function createMetadata(
   operatingSystem,
   environment = process.env,
 ) {
+  const compilerEnabled = Boolean(inputs.compiler);
   const mpiEnabled = inputs.mpi !== 'none';
+  const requestedBlas = inputs.blas ?? 'none';
+  const blasEnabled = requestedBlas !== 'none';
 
   return {
-    schema_version: 2,
+    schema_version: 3,
     repo: environment.GITHUB_REPOSITORY || '',
     run_id: Number(environment.GITHUB_RUN_ID || 0),
     created_at: new Date().toISOString(),
@@ -32295,11 +32471,14 @@ function createMetadata(
       os_label: operatingSystem.label,
     },
     compiler: {
+      enabled: compilerEnabled,
       requested: inputs.compiler,
-      requested_version: inputs.compilerVersion || 'latest',
-      binary: environment.FC || inputs.compiler,
-      actual_version: 'Unknown',
-      raw_first_line: 'Unknown',
+      requested_version: compilerEnabled
+        ? inputs.compilerVersion || 'latest'
+        : '',
+      binary: compilerEnabled ? environment.FC || inputs.compiler : '',
+      actual_version: compilerEnabled ? 'Unknown' : '',
+      raw_first_line: compilerEnabled ? 'Unknown' : '',
     },
     mpi: {
       enabled: mpiEnabled,
@@ -32312,6 +32491,14 @@ function createMetadata(
       launcher: {},
       bindings: {},
       backend_compiler: '',
+      validated: false,
+    },
+    blas: {
+      enabled: blasEnabled,
+      requested: requestedBlas,
+      implementation: blasEnabled ? requestedBlas : 'none',
+      package_spec: '',
+      packages: {},
       validated: false,
     },
     tool: '',
@@ -32329,6 +32516,13 @@ function applyMpiDescriptor(metadata, descriptor) {
   metadata.mpi.bindings = descriptor.bindings;
   metadata.mpi.backend_compiler = descriptor.backendCompiler;
   metadata.mpi.validated = descriptor.validated;
+}
+
+function applyBlasDescriptor(metadata, descriptor) {
+  metadata.blas.implementation = descriptor.implementation;
+  metadata.blas.package_spec = descriptor.packageSpec;
+  metadata.blas.packages = descriptor.packages;
+  metadata.blas.validated = descriptor.validated;
 }
 
 // EXTERNAL MODULE: ./src/lib/command.js
@@ -32431,11 +32625,12 @@ async function findCurrentJob(token) {
     return null;
   }
 
-  const response = await (0,github/* requestGitHubJson */.r)(
-    `${apiUrl}/repos/${repository}/actions/runs/${runId}/jobs?per_page=100`,
+  const jobs = await (0,github/* requestWorkflowJobs */.F)({
+    apiUrl,
+    repository,
+    runId,
     token,
-  );
-  const jobs = Array.isArray(response.jobs) ? response.jobs : [];
+  });
   const matchingJobs = jobs.filter((job) =>
     runnerNamesMatch(runnerName, job.runner_name, job.runner_id),
   );
@@ -32450,11 +32645,18 @@ async function findCurrentJob(token) {
 
   const compiler = String(process.env.INPUT_COMPILER || '').toLowerCase();
   const mpi = String(process.env.INPUT_MPI || 'none').toLowerCase();
+  const blas = String(process.env.INPUT_BLAS || 'none');
   const matchingToolchain = candidates.find((job) => {
-    if (typeof job.name !== 'string' || !job.name.includes(compiler)) {
+    if (typeof job.name !== 'string') {
       return false;
     }
-    return mpi === 'none' || job.name.includes(mpi);
+    if (compiler && !job.name.includes(compiler)) {
+      return false;
+    }
+    if (mpi !== 'none' && !job.name.includes(mpi)) {
+      return false;
+    }
+    return blas === 'none' || job.name.includes(blas);
   });
 
   return (
@@ -33517,6 +33719,8 @@ async function setupMpi({
   return validated;
 }
 
+// EXTERNAL MODULE: ./src/blas/support.js
+var support = __nccwpck_require__(8110);
 ;// CONCATENATED MODULE: ./src/index.js
 
 
@@ -33530,18 +33734,27 @@ async function setupMpi({
 
 
 
+
 async function writeSummary(metadata) {
-  const header = ['OS', 'OS Version', 'Compiler', 'Version'];
+  const header = ['OS', 'OS Version'];
   const row = [
     metadata.runner.os_family || metadata.runner.os,
     metadata.runner.os_version || metadata.runner.os_label,
-    metadata.compiler.requested,
-    metadata.compiler.actual_version,
   ];
+
+  if (metadata.compiler.enabled) {
+    header.push('Compiler', 'Version');
+    row.push(metadata.compiler.requested, metadata.compiler.actual_version);
+  }
 
   if (metadata.mpi.enabled) {
     header.push('MPI', 'MPI Version');
     row.push(metadata.mpi.implementation, metadata.mpi.actual_version);
+  }
+
+  if (metadata.blas.enabled) {
+    header.push('BLAS/LAPACK');
+    row.push(metadata.blas.implementation);
   }
 
   const toolVersion = metadata.tool
@@ -33585,6 +33798,18 @@ async function main() {
   );
 
   try {
+    const job = await findCurrentJob(token);
+    if (job?.id) {
+      metadata.job.id = job.id;
+      metadata.job.name = job.name || '';
+      metadata.job.labels = job.labels || [];
+      metadata.tool = inferToolFromJobName(job.name);
+      metadataPath = external_node_path_.join(
+        temporaryDirectory,
+        `setup-fortran-conda-meta-${job.id}.json`,
+      );
+    }
+
     if (inputs.compiler === 'mpifort') {
       throw new Error(
         'compiler=mpifort is no longer supported because mpifort is an ' +
@@ -33596,6 +33821,7 @@ async function main() {
         'mpi-version requires an MPI implementation selected with the mpi input.',
       );
     }
+    (0,support/* assertBlasSupported */.Px)(inputs.blas);
 
     const operatingSystem = resolveOperatingSystem(inputs.platform);
     if (inputs.mpi !== 'none') {
@@ -33607,10 +33833,13 @@ async function main() {
       common/* TOOLS_ENVIRONMENT_NAME */.uU,
       inputs.extraPackages,
       inputs.fpmVersion,
+      inputs.blas,
     );
 
-    const { setup } = await __nccwpck_require__(9467)(`./${operatingSystem}/${inputs.compiler}.js`);
-    await setup(inputs.compilerVersion);
+    if (inputs.compiler) {
+      const { setup } = await __nccwpck_require__(9467)(`./${operatingSystem}/${inputs.compiler}.js`);
+      await setup(inputs.compilerVersion);
+    }
     await (0,common/* exportCondaEnvironment */.ZN)();
 
     if (inputs.mpi !== 'none') {
@@ -33624,26 +33853,21 @@ async function main() {
       applyMpiDescriptor(metadata, descriptor);
     }
 
-    const job = await findCurrentJob(token);
-    if (job?.id) {
-      metadata.job.id = job.id;
-      metadata.job.name = job.name || '';
-      metadata.job.labels = job.labels || [];
-      metadata.tool = inferToolFromJobName(job.name);
-      metadataPath = external_node_path_.join(
-        temporaryDirectory,
-        `setup-fortran-conda-meta-${job.id}.json`,
-      );
+    if (inputs.blas !== 'none') {
+      const descriptor = await (0,support/* inspectBlasInstallation */.z$)(inputs.blas);
+      applyBlasDescriptor(metadata, descriptor);
     }
 
-    const compilerBinary = process.env.FC || inputs.compiler;
-    const compilerVersion = await detectCompilerVersion(
-      compilerBinary,
-      inputs.compiler,
-    );
-    metadata.compiler.binary = compilerBinary;
-    metadata.compiler.actual_version = compilerVersion.actual_version;
-    metadata.compiler.raw_first_line = compilerVersion.raw_first_line;
+    if (inputs.compiler) {
+      const compilerBinary = process.env.FC || inputs.compiler;
+      const compilerVersion = await detectCompilerVersion(
+        compilerBinary,
+        inputs.compiler,
+      );
+      metadata.compiler.binary = compilerBinary;
+      metadata.compiler.actual_version = compilerVersion.actual_version;
+      metadata.compiler.raw_first_line = compilerVersion.raw_first_line;
+    }
 
     if (metadata.tool) {
       const toolVersion = await detectToolVersion(metadata.tool);

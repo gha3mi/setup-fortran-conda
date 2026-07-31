@@ -1,5 +1,5 @@
 import { captureCommand } from './command.js';
-import { requestGitHubJson } from './github.js';
+import { requestWorkflowJobs } from './github.js';
 import { firstLine } from './version.js';
 
 export async function detectOperatingSystem() {
@@ -93,11 +93,12 @@ export async function findCurrentJob(token) {
     return null;
   }
 
-  const response = await requestGitHubJson(
-    `${apiUrl}/repos/${repository}/actions/runs/${runId}/jobs?per_page=100`,
+  const jobs = await requestWorkflowJobs({
+    apiUrl,
+    repository,
+    runId,
     token,
-  );
-  const jobs = Array.isArray(response.jobs) ? response.jobs : [];
+  });
   const matchingJobs = jobs.filter((job) =>
     runnerNamesMatch(runnerName, job.runner_name, job.runner_id),
   );
@@ -112,11 +113,18 @@ export async function findCurrentJob(token) {
 
   const compiler = String(process.env.INPUT_COMPILER || '').toLowerCase();
   const mpi = String(process.env.INPUT_MPI || 'none').toLowerCase();
+  const blas = String(process.env.INPUT_BLAS || 'none');
   const matchingToolchain = candidates.find((job) => {
-    if (typeof job.name !== 'string' || !job.name.includes(compiler)) {
+    if (typeof job.name !== 'string') {
       return false;
     }
-    return mpi === 'none' || job.name.includes(mpi);
+    if (compiler && !job.name.includes(compiler)) {
+      return false;
+    }
+    if (mpi !== 'none' && !job.name.includes(mpi)) {
+      return false;
+    }
+    return blas === 'none' || job.name.includes(blas);
   });
 
   return (

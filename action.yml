@@ -1,5 +1,5 @@
 name: setup-fortran-conda
-description: Configures Fortran, C, C++, MPI and build tools on Ubuntu, macOS and Windows using Conda or vendor packages.
+description: Configures Fortran, C, C++, MPI, BLAS/LAPACK and build tools on Ubuntu, macOS and Windows.
 author: Seyed Ali Ghasemi
 branding:
   icon: 'check'
@@ -22,6 +22,10 @@ inputs:
     description: "MPI version. Empty or latest selects the newest available version. HPC-X uses the version bundled with NVIDIA HPC SDK."
     required: false
     default: ""
+  blas:
+    description: "BLAS/LAPACK implementation (none, netlib, openblas, mkl, accelerate)"
+    required: false
+    default: "none"
   platform:
     description: "Runner OS platform (ubuntu-latest, windows-latest, macos-latest)"
     required: false
@@ -182,6 +186,7 @@ runs:
         ${{
           inputs.compiler != '' ||
           inputs.mpi != 'none' ||
+          inputs.blas != 'none' ||
           inputs.generate-doc-ford == 'true' ||
           inputs.generate-doc-doxygen == 'true' ||
           inputs.update-readme-dependencies != 'false' ||
@@ -193,16 +198,17 @@ runs:
         activate-environment: fortran
         channels: conda-forge, defaults
 
-    - name: Run Fortran compiler setup script
+    - name: Run toolchain setup script
       id: setup_fortran
-      if: ${{ inputs.compiler != '' || inputs.mpi != 'none' || inputs.update-readme-dependencies != 'false' }}
+      if: ${{ inputs.compiler != '' || inputs.mpi != 'none' || inputs.blas != 'none' || inputs.update-readme-dependencies != 'false' }}
       shell: bash
       run: node "${{ github.action_path }}/dist/index.js"
       env:
-        INPUT_COMPILER: ${{ inputs.compiler != '' && inputs.compiler || 'gfortran' }}
+        INPUT_COMPILER: ${{ inputs.compiler != '' && inputs.compiler || ((inputs.mpi != 'none' || inputs.update-readme-dependencies != 'false') && 'gfortran' || '') }}
         INPUT_COMPILER_VERSION: ${{ inputs.compiler-version }}
         INPUT_MPI: ${{ inputs.mpi }}
         INPUT_MPI_VERSION: ${{ inputs.mpi-version }}
+        INPUT_BLAS: ${{ inputs.blas }}
         INPUT_PLATFORM: ${{ inputs.platform != '' && inputs.platform || runner.os }}
         INPUT_EXTRA_PACKAGES: ${{ inputs.extra-packages }}
         INPUT_FPM_VERSION: ${{ inputs.fpm-version }}
@@ -212,7 +218,7 @@ runs:
       if: >-
         ${{
           always() &&
-          (inputs.compiler != '' || inputs.mpi != 'none') &&
+          (inputs.compiler != '' || inputs.mpi != 'none' || inputs.blas != 'none') &&
           inputs.fortitude-check != 'true' &&
           inputs.generate-doc-ford != 'true' &&
           inputs.generate-doc-doxygen != 'true' &&
@@ -297,16 +303,30 @@ runs:
         clean: ${{ !contains('main master', inputs.doxygen-branch) }}
         commit-message: "Deploy Doxygen docs"
 
+    - name: Download setup-fortran-conda metadata artifacts
+      if: >-
+        ${{
+          inputs.generate-status-fpm == 'true' ||
+          inputs.generate-status-cmake == 'true' ||
+          inputs.generate-status-meson == 'true' ||
+          inputs.generate-status-table == 'true' ||
+          inputs.update-readme-table == 'true'
+        }}
+      uses: actions/download-artifact@v8
+      with:
+        pattern: setup-fortran-conda-meta-*
+        path: ${{ runner.temp }}/setup-fortran-conda-meta
+        merge-multiple: true
+
     - name: Generate STATUS.md for test_fpm
       if: ${{ inputs.generate-status-fpm == 'true' }}
       shell: bash
       env:
-        GH_TOKEN: ${{ github.token }}
-        REPO: ${{ github.repository }}
-        RUN_ID: ${{ github.run_id }}
+        GITHUB_TOKEN: ${{ github.token }}
+        SETUP_FORTRAN_CONDA_META_DIR: ${{ runner.temp }}/setup-fortran-conda-meta
       run: |
         echo "::group:: setup-fortran-conda: Generate FPM Status"
-        bash "${{ github.action_path }}/src/scripts/generate-status-fpm.sh"
+        node "${{ github.action_path }}/src/scripts/generate-status.js" fpm
         echo "::endgroup::"
 
     - name: Deploy STATUS.md (test_fpm)
@@ -322,12 +342,11 @@ runs:
       if: ${{ inputs.generate-status-cmake == 'true' }}
       shell: bash
       env:
-        GH_TOKEN: ${{ github.token }}
-        REPO: ${{ github.repository }}
-        RUN_ID: ${{ github.run_id }}
+        GITHUB_TOKEN: ${{ github.token }}
+        SETUP_FORTRAN_CONDA_META_DIR: ${{ runner.temp }}/setup-fortran-conda-meta
       run: |
         echo "::group:: setup-fortran-conda: Generate CMake Status"
-        bash "${{ github.action_path }}/src/scripts/generate-status-cmake.sh"
+        node "${{ github.action_path }}/src/scripts/generate-status.js" cmake
         echo "::endgroup::"
 
     - name: Deploy STATUS.md (test_cmake)
@@ -343,12 +362,11 @@ runs:
       if: ${{ inputs.generate-status-meson == 'true' }}
       shell: bash
       env:
-        GH_TOKEN: ${{ github.token }}
-        REPO: ${{ github.repository }}
-        RUN_ID: ${{ github.run_id }}
+        GITHUB_TOKEN: ${{ github.token }}
+        SETUP_FORTRAN_CONDA_META_DIR: ${{ runner.temp }}/setup-fortran-conda-meta
       run: |
         echo "::group:: setup-fortran-conda: Generate Meson Status"
-        bash "${{ github.action_path }}/src/scripts/generate-status-meson.sh"
+        node "${{ github.action_path }}/src/scripts/generate-status.js" meson
         echo "::endgroup::"
 
     - name: Deploy STATUS.md (test_meson)
@@ -365,14 +383,6 @@ runs:
       uses: actions/checkout@v7.0.1
       with:
         persist-credentials: false
-
-    - name: Download setup-fortran-conda metadata artifacts
-      if: ${{ inputs.generate-status-table == 'true' || inputs.update-readme-table == 'true' }}
-      uses: actions/download-artifact@v8
-      with:
-        pattern: setup-fortran-conda-meta-*
-        path: ${{ runner.temp }}/setup-fortran-conda-meta
-        merge-multiple: true
 
     - name: Generate and Inject CI Matrix into README (metadata-based)
       if: ${{ inputs.generate-status-table == 'true' }}

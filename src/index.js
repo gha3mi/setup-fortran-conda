@@ -8,6 +8,7 @@ import {
 } from './lib/action-inputs.js';
 import { getErrorMessage } from './lib/errors.js';
 import {
+  applyBlasDescriptor,
   applyMpiDescriptor,
   createMetadata,
   inferToolFromJobName,
@@ -19,22 +20,34 @@ import {
 } from './lib/tool-versions.js';
 import { assertMpiSupported, setupMpi } from './mpi/support.js';
 import {
+  assertBlasSupported,
+  inspectBlasInstallation,
+} from './blas/support.js';
+import {
   exportCondaEnvironment,
   TOOLS_ENVIRONMENT_NAME,
 } from './compilers/common.js';
 
 async function writeSummary(metadata) {
-  const header = ['OS', 'OS Version', 'Compiler', 'Version'];
+  const header = ['OS', 'OS Version'];
   const row = [
     metadata.runner.os_family || metadata.runner.os,
     metadata.runner.os_version || metadata.runner.os_label,
-    metadata.compiler.requested,
-    metadata.compiler.actual_version,
   ];
+
+  if (metadata.compiler.enabled) {
+    header.push('Compiler', 'Version');
+    row.push(metadata.compiler.requested, metadata.compiler.actual_version);
+  }
 
   if (metadata.mpi.enabled) {
     header.push('MPI', 'MPI Version');
     row.push(metadata.mpi.implementation, metadata.mpi.actual_version);
+  }
+
+  if (metadata.blas.enabled) {
+    header.push('BLAS/LAPACK');
+    row.push(metadata.blas.implementation);
   }
 
   const toolVersion = metadata.tool
@@ -78,6 +91,18 @@ async function main() {
   );
 
   try {
+    const job = await findCurrentJob(token);
+    if (job?.id) {
+      metadata.job.id = job.id;
+      metadata.job.name = job.name || '';
+      metadata.job.labels = job.labels || [];
+      metadata.tool = inferToolFromJobName(job.name);
+      metadataPath = path.join(
+        temporaryDirectory,
+        `setup-fortran-conda-meta-${job.id}.json`,
+      );
+    }
+
     if (inputs.compiler === 'mpifort') {
       throw new Error(
         'compiler=mpifort is no longer supported because mpifort is an ' +
@@ -89,6 +114,7 @@ async function main() {
         'mpi-version requires an MPI implementation selected with the mpi input.',
       );
     }
+    assertBlasSupported(inputs.blas);
 
     const operatingSystem = resolveOperatingSystem(inputs.platform);
     if (inputs.mpi !== 'none') {
@@ -100,12 +126,15 @@ async function main() {
       TOOLS_ENVIRONMENT_NAME,
       inputs.extraPackages,
       inputs.fpmVersion,
+      inputs.blas,
     );
 
-    const { setup } = await import(
-      `./compilers/${operatingSystem}/${inputs.compiler}.js`
-    );
-    await setup(inputs.compilerVersion);
+    if (inputs.compiler) {
+      const { setup } = await import(
+        `./compilers/${operatingSystem}/${inputs.compiler}.js`
+      );
+      await setup(inputs.compilerVersion);
+    }
     await exportCondaEnvironment();
 
     if (inputs.mpi !== 'none') {
@@ -119,26 +148,21 @@ async function main() {
       applyMpiDescriptor(metadata, descriptor);
     }
 
-    const job = await findCurrentJob(token);
-    if (job?.id) {
-      metadata.job.id = job.id;
-      metadata.job.name = job.name || '';
-      metadata.job.labels = job.labels || [];
-      metadata.tool = inferToolFromJobName(job.name);
-      metadataPath = path.join(
-        temporaryDirectory,
-        `setup-fortran-conda-meta-${job.id}.json`,
-      );
+    if (inputs.blas !== 'none') {
+      const descriptor = await inspectBlasInstallation(inputs.blas);
+      applyBlasDescriptor(metadata, descriptor);
     }
 
-    const compilerBinary = process.env.FC || inputs.compiler;
-    const compilerVersion = await detectCompilerVersion(
-      compilerBinary,
-      inputs.compiler,
-    );
-    metadata.compiler.binary = compilerBinary;
-    metadata.compiler.actual_version = compilerVersion.actual_version;
-    metadata.compiler.raw_first_line = compilerVersion.raw_first_line;
+    if (inputs.compiler) {
+      const compilerBinary = process.env.FC || inputs.compiler;
+      const compilerVersion = await detectCompilerVersion(
+        compilerBinary,
+        inputs.compiler,
+      );
+      metadata.compiler.binary = compilerBinary;
+      metadata.compiler.actual_version = compilerVersion.actual_version;
+      metadata.compiler.raw_first_line = compilerVersion.raw_first_line;
+    }
 
     if (metadata.tool) {
       const toolVersion = await detectToolVersion(metadata.tool);

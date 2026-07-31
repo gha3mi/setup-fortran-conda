@@ -1,5 +1,5 @@
 export const id = 25;
-export const ids = [25,917];
+export const ids = [25,917,302];
 export const modules = {
 
 /***/ 8025:
@@ -14,12 +14,12 @@ export const modules = {
 /* harmony import */ var node_fs_promises__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(1455);
 /* harmony import */ var node_os__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(8161);
 /* harmony import */ var node_path__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(6760);
-/* harmony import */ var _lib_checksum_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(3379);
-/* harmony import */ var _lib_environment_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(3775);
+/* harmony import */ var _lib_environment_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(3775);
 /* harmony import */ var _lib_errors_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(7507);
-/* harmony import */ var _lib_github_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(739);
+/* harmony import */ var _lib_github_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(739);
 /* harmony import */ var _lib_version_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(1018);
-/* harmony import */ var _common_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(917);
+/* harmony import */ var _common_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(917);
+/* harmony import */ var _install_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(3302);
 
 
 
@@ -36,8 +36,7 @@ export const modules = {
 const AOMP_REPO_API = 'https://api.github.com/repos/ROCm/aomp/releases';
 
 function requestAompApi(url) {
-  const token = process.env.GITHUB_TOKEN || process.env.GH_TOKEN || '';
-  return (0,_lib_github_js__WEBPACK_IMPORTED_MODULE_8__/* .requestGitHubJson */ .rw)(url, token);
+  return (0,_lib_github_js__WEBPACK_IMPORTED_MODULE_7__/* .requestGitHubJson */ .rw)(url, (0,_lib_github_js__WEBPACK_IMPORTED_MODULE_7__/* .getGitHubToken */ .lK)());
 }
 
 function normalizeAompVersion(version = '') {
@@ -140,9 +139,9 @@ function findAompRoot(directory, depth = 0) {
 }
 
 async function setup(version = '') {
-  (0,_common_js__WEBPACK_IMPORTED_MODULE_9__/* .assertLinux */ .b4)('AOMP setup is only supported on Linux.');
+  (0,_common_js__WEBPACK_IMPORTED_MODULE_8__/* .assertLinux */ .b4)('AOMP setup is only supported on Linux.');
 
-  await (0,_common_js__WEBPACK_IMPORTED_MODULE_9__/* .installAptPackages */ .wS)(
+  await (0,_install_js__WEBPACK_IMPORTED_MODULE_9__/* .installAptPackages */ .wS)(
     [
       'ca-certificates',
       'curl',
@@ -168,30 +167,22 @@ async function setup(version = '') {
     `setup-fortran-conda-aomp-${release.version}`,
   );
 
-  await (0,_common_js__WEBPACK_IMPORTED_MODULE_9__/* .runInGroup */ .Se)(
-    'setup-fortran-conda: Download AOMP Binary Tarball',
-    async () => {
-      try {
-        await (0,_common_js__WEBPACK_IMPORTED_MODULE_9__/* .downloadFile */ .PE)(release.url, archivePath, {
-          connectTimeout: 30,
-          retryCount: 3,
-          retryDelay: 2,
-        });
-        await (0,_lib_checksum_js__WEBPACK_IMPORTED_MODULE_6__/* .verifySha256 */ .n)({
-          file: archivePath,
-          product: 'AOMP',
-          version: release.version,
-          expected: release.checksum,
-        });
-      } catch (error) {
-        throw new Error(`AOMP download failed: ${(0,_lib_errors_js__WEBPACK_IMPORTED_MODULE_11__/* .getErrorMessage */ .u)(error)}`, {
-          cause: error,
-        });
-      }
+  await (0,_install_js__WEBPACK_IMPORTED_MODULE_9__/* .downloadVerifiedFile */ .P6)({
+    url: release.url,
+    destination: archivePath,
+    product: 'AOMP',
+    version: release.version,
+    checksum: release.checksum,
+    groupName: 'setup-fortran-conda: Download AOMP Binary Tarball',
+    errorMessage: 'AOMP download failed',
+    downloadOptions: {
+      connectTimeout: 30,
+      retryCount: 3,
+      retryDelay: 2,
     },
-  );
+  });
 
-  await (0,_common_js__WEBPACK_IMPORTED_MODULE_9__/* .runInGroup */ .Se)('setup-fortran-conda: Extract AOMP', async () => {
+  await (0,_common_js__WEBPACK_IMPORTED_MODULE_8__/* .runInGroup */ .Se)('setup-fortran-conda: Extract AOMP', async () => {
     (0,node_fs__WEBPACK_IMPORTED_MODULE_2__.mkdirSync)(extractionDirectory, { recursive: true });
     try {
       await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('tar', ['-xzf', archivePath, '-C', extractionDirectory]);
@@ -211,37 +202,27 @@ async function setup(version = '') {
     );
   }
 
-  const condaPrefix = await (0,_common_js__WEBPACK_IMPORTED_MODULE_9__/* .getCondaPrefix */ .s6)(_common_js__WEBPACK_IMPORTED_MODULE_9__/* .TOOLS_ENVIRONMENT_NAME */ .uU);
+  const condaPrefix = await (0,_common_js__WEBPACK_IMPORTED_MODULE_8__/* .getCondaPrefix */ .s6)(_common_js__WEBPACK_IMPORTED_MODULE_8__/* .TOOLS_ENVIRONMENT_NAME */ .uU);
   const binDirectory = (0,node_path__WEBPACK_IMPORTED_MODULE_5__.join)(aompRoot, 'bin');
   const libraryDirectory = (0,node_path__WEBPACK_IMPORTED_MODULE_5__.join)(aompRoot, 'lib');
   const library64Directory = (0,node_path__WEBPACK_IMPORTED_MODULE_5__.join)(aompRoot, 'lib64');
-  const ldLibraryPath = (0,_lib_environment_js__WEBPACK_IMPORTED_MODULE_7__/* .prependPathEntries */ .U)(
+  const ldLibraryPath = (0,_lib_environment_js__WEBPACK_IMPORTED_MODULE_6__/* .prependPathEntries */ .U)(
     [libraryDirectory, library64Directory].filter((candidate) =>
       (0,node_fs__WEBPACK_IMPORTED_MODULE_2__.existsSync)(candidate),
     ),
     process.env.LD_LIBRARY_PATH,
   );
 
-  await (0,_common_js__WEBPACK_IMPORTED_MODULE_9__/* .addExistingPaths */ .Bf)([(0,node_path__WEBPACK_IMPORTED_MODULE_5__.join)(condaPrefix, 'bin'), binDirectory]);
-
-  await (0,_common_js__WEBPACK_IMPORTED_MODULE_9__/* .verifyCommands */ .I6)([
-    { command: 'flang', args: ['--version'] },
-    { command: 'clang', args: ['--version'] },
-    { command: 'clang++', args: ['--version'] },
-  ]);
-
-  await (0,_common_js__WEBPACK_IMPORTED_MODULE_9__/* .exportCompilerEnvironment */ .x7)(
-    (0,_common_js__WEBPACK_IMPORTED_MODULE_9__/* .createCompilerEnvironment */ .Tp)('flang', 'clang', 'clang++', {
+  await (0,_common_js__WEBPACK_IMPORTED_MODULE_8__/* .configureLinuxCompiler */ .q3)({
+    paths: [(0,node_path__WEBPACK_IMPORTED_MODULE_5__.join)(condaPrefix, 'bin'), binDirectory],
+    compilers: { fortran: 'flang', c: 'clang', cxx: 'clang++' },
+    environment: {
       AOMP_HOME: aompRoot,
       AOMP_ROOT: aompRoot,
       AOMP_VERSION: release.version,
       LD_LIBRARY_PATH: ldLibraryPath,
-    }),
-  );
-
-  await (0,_common_js__WEBPACK_IMPORTED_MODULE_9__/* .configureLinuxUlimits */ .O7)();
-
-  (0,_common_js__WEBPACK_IMPORTED_MODULE_9__/* .logCompilerSetupComplete */ .Ys)();
+    },
+  });
 }
 
 
@@ -251,35 +232,21 @@ async function setup(version = '') {
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   Bf: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_6__.Bf),
-/* harmony export */   I6: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_6__.I6),
-/* harmony export */   MA: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_6__.MA),
-/* harmony export */   O7: () => (/* binding */ configureLinuxUlimits),
-/* harmony export */   PE: () => (/* binding */ downloadFile),
-/* harmony export */   Qv: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_6__.Qv),
-/* harmony export */   Se: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_6__.Se),
-/* harmony export */   Tp: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_6__.Tp),
-/* harmony export */   U_: () => (/* binding */ fetchTextWithCurl),
-/* harmony export */   Up: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_6__.Up),
-/* harmony export */   Ys: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_6__.Ys),
+/* harmony export */   Av: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_4__.Av),
+/* harmony export */   SE: () => (/* binding */ setupCondaCompiler),
+/* harmony export */   Se: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_4__.Se),
 /* harmony export */   b4: () => (/* binding */ assertLinux),
-/* harmony export */   s6: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_6__.s6),
-/* harmony export */   uU: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_6__.uU),
-/* harmony export */   wS: () => (/* binding */ installAptPackages),
-/* harmony export */   x7: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_6__.x7),
-/* harmony export */   zk: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_6__.zk)
+/* harmony export */   dV: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_4__.dV),
+/* harmony export */   q3: () => (/* binding */ configureLinuxCompiler),
+/* harmony export */   s6: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_4__.s6),
+/* harmony export */   uU: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_4__.uU)
 /* harmony export */ });
+/* unused harmony export configureLinuxUlimits */
 /* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3360);
-/* harmony import */ var _actions_exec__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2876);
-/* harmony import */ var node_fs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3024);
-/* harmony import */ var node_os__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(8161);
-/* harmony import */ var node_path__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(6760);
-/* harmony import */ var _lib_command_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(7819);
-/* harmony import */ var _lib_errors_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(7507);
-/* harmony import */ var _common_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(9674);
-
-
-
+/* harmony import */ var node_fs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3024);
+/* harmony import */ var node_os__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(8161);
+/* harmony import */ var node_path__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(6760);
+/* harmony import */ var _common_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(9674);
 
 
 
@@ -291,22 +258,155 @@ async function setup(version = '') {
 function assertLinux(
   message = 'This setup script is only supported on Linux.',
 ) {
-  (0,_common_js__WEBPACK_IMPORTED_MODULE_6__/* .assertPlatform */ .G6)('linux', message);
+  (0,_common_js__WEBPACK_IMPORTED_MODULE_4__/* .assertPlatform */ .G6)('linux', message);
+}
+
+async function setupCondaCompiler({
+  version = '',
+  versionedPackages = [],
+  packages = [],
+  channels,
+  compilers,
+  additionalVerificationCommands = [],
+  environment = {},
+}) {
+  assertLinux();
+
+  await (0,_common_js__WEBPACK_IMPORTED_MODULE_4__/* .installCondaCompilerPackages */ .dF)({
+    version,
+    versionedPackages,
+    packages,
+    channels,
+  });
+
+  const condaPrefix = await (0,_common_js__WEBPACK_IMPORTED_MODULE_4__/* .getCondaPrefix */ .s6)();
+  await configureLinuxCompiler({
+    paths: [(0,node_path__WEBPACK_IMPORTED_MODULE_3__.join)(condaPrefix, 'bin')],
+    compilers,
+    verificationCommands: (0,_common_js__WEBPACK_IMPORTED_MODULE_4__/* .createCompilerVerificationCommands */ .dQ)(
+      compilers,
+      additionalVerificationCommands,
+    ),
+    environment: {
+      ...environment,
+      LD_LIBRARY_PATH: (0,_common_js__WEBPACK_IMPORTED_MODULE_4__/* .prependPathEntries */ .Up)(
+        [(0,node_path__WEBPACK_IMPORTED_MODULE_3__.join)(condaPrefix, 'lib')],
+        process.env.LD_LIBRARY_PATH,
+      ),
+    },
+  });
+}
+
+async function configureLinuxCompiler({
+  paths,
+  compilers,
+  environment = {},
+  verificationCommands,
+}) {
+  assertLinux();
+
+  await (0,_common_js__WEBPACK_IMPORTED_MODULE_4__/* .addExistingPaths */ .Bf)(paths);
+  await (0,_common_js__WEBPACK_IMPORTED_MODULE_4__/* .verifyCommands */ .I6)(
+    verificationCommands || (0,_common_js__WEBPACK_IMPORTED_MODULE_4__/* .createCompilerVerificationCommands */ .dQ)(compilers),
+  );
+  await (0,_common_js__WEBPACK_IMPORTED_MODULE_4__/* .exportCompilerEnvironment */ .x7)(
+    (0,_common_js__WEBPACK_IMPORTED_MODULE_4__/* .createCompilerEnvironment */ .Tp)(
+      compilers.fortran,
+      compilers.c,
+      compilers.cxx,
+      environment,
+    ),
+  );
+  await configureLinuxUlimits();
+
+  (0,_common_js__WEBPACK_IMPORTED_MODULE_4__/* .logCompilerSetupComplete */ .Ys)();
 }
 
 async function configureLinuxUlimits() {
-  await (0,_common_js__WEBPACK_IMPORTED_MODULE_6__/* .runInGroup */ .Se)(
+  await (0,_common_js__WEBPACK_IMPORTED_MODULE_4__/* .runInGroup */ .Se)(
     'setup-fortran-conda: Configure Linux Environment',
     async () => {
       const command =
         'ulimit -c unlimited -d unlimited -f unlimited -m unlimited -s unlimited -t unlimited -v unlimited -x unlimited';
-      const script = (0,node_path__WEBPACK_IMPORTED_MODULE_4__.join)(process.env.RUNNER_TEMP, 'ulimit.sh');
-      (0,node_fs__WEBPACK_IMPORTED_MODULE_2__.appendFileSync)(script, `${command}${node_os__WEBPACK_IMPORTED_MODULE_3__.EOL}`);
-      (0,_common_js__WEBPACK_IMPORTED_MODULE_6__/* .exportEnvironmentVariable */ .qY)('BASH_ENV', script);
+      const script = (0,node_path__WEBPACK_IMPORTED_MODULE_3__.join)(process.env.RUNNER_TEMP, 'ulimit.sh');
+      (0,node_fs__WEBPACK_IMPORTED_MODULE_1__.appendFileSync)(script, `${command}${node_os__WEBPACK_IMPORTED_MODULE_2__.EOL}`);
+      (0,_common_js__WEBPACK_IMPORTED_MODULE_4__/* .exportEnvironmentVariable */ .qY)('BASH_ENV', script);
       (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)('ulimit settings exported to BASH_ENV');
     },
   );
 }
+
+
+/***/ }),
+
+/***/ 3302:
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+
+// EXPORTS
+__webpack_require__.d(__webpack_exports__, {
+  PE: () => (/* binding */ downloadFile),
+  P6: () => (/* binding */ downloadVerifiedFile),
+  U_: () => (/* binding */ fetchTextWithCurl),
+  wS: () => (/* binding */ installAptPackages)
+});
+
+// EXTERNAL MODULE: ./node_modules/@actions/exec/lib/exec.js + 5 modules
+var exec = __webpack_require__(2876);
+// EXTERNAL MODULE: ./node_modules/@actions/core/lib/core.js + 11 modules
+var core = __webpack_require__(3360);
+// EXTERNAL MODULE: external "node:crypto"
+var external_node_crypto_ = __webpack_require__(7598);
+// EXTERNAL MODULE: external "node:fs"
+var external_node_fs_ = __webpack_require__(3024);
+;// CONCATENATED MODULE: ./src/lib/checksum.js
+
+
+
+
+function calculateSha256(file) {
+  return new Promise((resolve, reject) => {
+    const hash = (0,external_node_crypto_.createHash)('sha256');
+    const stream = (0,external_node_fs_.createReadStream)(file);
+
+    stream.on('error', reject);
+    stream.on('data', (chunk) => hash.update(chunk));
+    stream.on('end', () => resolve(hash.digest('hex')));
+  });
+}
+
+async function verifySha256({ file, product, version, expected }) {
+  if (!expected) {
+    (0,core/* warning */.$e)(
+      `No ${product} checksum is known for ${version}; ` +
+        'skipping checksum verification.',
+    );
+    return;
+  }
+
+  const actual = await calculateSha256(file);
+  if (actual !== expected) {
+    throw new Error(
+      `${product} ${version} checksum mismatch: ` +
+        `expected ${expected}, got ${actual}`,
+    );
+  }
+
+  (0,core/* info */.pq)(`Verified ${product} ${version} SHA-256 checksum`);
+}
+
+// EXTERNAL MODULE: ./src/lib/command.js
+var command = __webpack_require__(7819);
+// EXTERNAL MODULE: ./src/lib/errors.js
+var errors = __webpack_require__(7507);
+// EXTERNAL MODULE: ./src/compilers/common.js
+var common = __webpack_require__(9674);
+;// CONCATENATED MODULE: ./src/compilers/linux/install.js
+
+
+
+
+
 
 async function installAptPackages(
   packages,
@@ -315,12 +415,12 @@ async function installAptPackages(
     errorMessage = 'System package installation failed',
   } = {},
 ) {
-  await (0,_common_js__WEBPACK_IMPORTED_MODULE_6__/* .runInGroup */ .Se)(groupName, async () => {
+  await (0,common/* runInGroup */.Se)(groupName, async () => {
     try {
-      await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('sudo', ['apt-get', 'update', '-y']);
-      await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('sudo', ['apt-get', 'install', '-y', ...packages]);
+      await (0,exec/* exec */.m)('sudo', ['apt-get', 'update', '-y']);
+      await (0,exec/* exec */.m)('sudo', ['apt-get', 'install', '-y', ...packages]);
     } catch (error) {
-      throw new Error(`${errorMessage}: ${(0,_lib_errors_js__WEBPACK_IMPORTED_MODULE_7__/* .getErrorMessage */ .u)(error)}`, {
+      throw new Error(`${errorMessage}: ${(0,errors/* getErrorMessage */.u)(error)}`, {
         cause: error,
       });
     }
@@ -355,14 +455,41 @@ async function downloadFile(
     url,
   ];
 
-  await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('curl', args);
+  await (0,exec/* exec */.m)('curl', args);
+}
+
+async function downloadVerifiedFile({
+  url,
+  destination,
+  product,
+  version,
+  checksum,
+  groupName,
+  errorMessage,
+  downloadOptions = {},
+}) {
+  await (0,common/* runInGroup */.Se)(groupName, async () => {
+    try {
+      await downloadFile(url, destination, downloadOptions);
+      await verifySha256({
+        file: destination,
+        product,
+        version,
+        expected: checksum,
+      });
+    } catch (error) {
+      throw new Error(`${errorMessage}: ${(0,errors/* getErrorMessage */.u)(error)}`, {
+        cause: error,
+      });
+    }
+  });
 }
 
 async function fetchTextWithCurl(
   url,
   { retryCount = 3, userAgent = 'setup-fortran-conda' } = {},
 ) {
-  const result = await (0,_lib_command_js__WEBPACK_IMPORTED_MODULE_5__/* .captureCommand */ .g)('curl', [
+  const result = await (0,command/* captureCommand */.g)('curl', [
     '--fail',
     '--location',
     '--silent',
@@ -382,53 +509,6 @@ async function fetchTextWithCurl(
   }
 
   return result.stdout;
-}
-
-
-/***/ }),
-
-/***/ 3379:
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   n: () => (/* binding */ verifySha256)
-/* harmony export */ });
-/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3360);
-/* harmony import */ var node_crypto__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7598);
-/* harmony import */ var node_fs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3024);
-
-
-
-
-function calculateSha256(file) {
-  return new Promise((resolve, reject) => {
-    const hash = (0,node_crypto__WEBPACK_IMPORTED_MODULE_1__.createHash)('sha256');
-    const stream = (0,node_fs__WEBPACK_IMPORTED_MODULE_2__.createReadStream)(file);
-
-    stream.on('error', reject);
-    stream.on('data', (chunk) => hash.update(chunk));
-    stream.on('end', () => resolve(hash.digest('hex')));
-  });
-}
-
-async function verifySha256({ file, product, version, expected }) {
-  if (!expected) {
-    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .warning */ .$e)(
-      `No ${product} checksum is known for ${version}; ` +
-        'skipping checksum verification.',
-    );
-    return;
-  }
-
-  const actual = await calculateSha256(file);
-  if (actual !== expected) {
-    throw new Error(
-      `${product} ${version} checksum mismatch: ` +
-        `expected ${expected}, got ${actual}`,
-    );
-  }
-
-  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)(`Verified ${product} ${version} SHA-256 checksum`);
 }
 
 

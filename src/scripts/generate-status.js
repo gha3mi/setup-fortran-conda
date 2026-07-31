@@ -1,12 +1,13 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { requestWorkflowJobs } from '../lib/github.js';
-import { inferToolFromJobName, TOOL_ORDER } from '../lib/metadata.js';
+import { TOOL_ORDER } from '../lib/metadata.js';
 import {
   compareConfigurations,
   createConfiguration,
-  readMetadataFiles,
+  inferMetadataTool,
+  loadWorkflowData,
+  readWorkflowContext,
 } from '../lib/reporting.js';
 
 const STATUS_STYLES = Object.freeze({
@@ -67,26 +68,15 @@ export async function generateStatus({
   if (!TOOL_ORDER.includes(tool)) {
     throw new Error(`Unsupported status tool: ${tool}`);
   }
-  if (!token) {
-    throw new Error('Missing GITHUB_TOKEN/GH_TOKEN');
-  }
-  if (!repository || !runId) {
-    throw new Error('Missing GITHUB_REPOSITORY or GITHUB_RUN_ID');
-  }
-
-  const [jobs, metadataEntries] = await Promise.all([
-    requestWorkflowJobs({ apiUrl, repository, runId, token }),
-    readMetadataFiles(metadataDirectory),
-  ]);
-  const metadataByJobId = new Map(
-    metadataEntries
-      .filter((metadata) => metadata?.job?.id)
-      .map((metadata) => [metadata.job.id, metadata]),
-  );
+  const { jobs, metadataByJobId } = await loadWorkflowData({
+    token,
+    repository,
+    runId,
+    apiUrl,
+    metadataDirectory,
+  });
   const entries = jobs
-    .filter(
-      (job) => inferToolFromJobName(job?.name, { minimumParts: 2 }) === tool,
-    )
+    .filter((job) => inferMetadataTool(null, job) === tool)
     .map((job) => createStatusEntry(job, metadataByJobId.get(job.id), tool));
 
   entries.sort((left, right) => {
@@ -121,12 +111,10 @@ export async function generateStatus({
 
 async function main() {
   const tool = process.argv[2] || '';
+  const context = readWorkflowContext();
   const outputPath = await generateStatus({
     tool,
-    token: process.env.GITHUB_TOKEN || process.env.GH_TOKEN,
-    repository: process.env.GITHUB_REPOSITORY || process.env.REPO,
-    runId: process.env.GITHUB_RUN_ID || process.env.RUN_ID,
-    apiUrl: process.env.GITHUB_API_URL || 'https://api.github.com',
+    ...context,
     metadataDirectory:
       process.env.SETUP_FORTRAN_CONDA_META_DIR || '.setup-fortran-conda-meta',
   });

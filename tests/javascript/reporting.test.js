@@ -5,6 +5,9 @@ import {
   compareConfigurations,
   configurationRank,
   createConfiguration,
+  getUsedTools,
+  inferMetadataTool,
+  readWorkflowContext,
 } from '../../src/lib/reporting.js';
 import { createStatusEntry } from '../../src/scripts/generate-status.js';
 import {
@@ -77,6 +80,40 @@ test('workflow job retrieval includes every API page', async () => {
 
   assert.equal(jobs.length, 205);
   assert.deepEqual(requestedPages, [1, 2, 3]);
+});
+
+test('reporting uses one validated workflow context', () => {
+  assert.deepEqual(
+    readWorkflowContext({
+      GH_TOKEN: 'token',
+      REPO: 'owner/repository',
+      RUN_ID: '42',
+    }),
+    {
+      token: 'token',
+      repository: 'owner/repository',
+      runId: '42',
+      apiUrl: 'https://api.github.com',
+    },
+  );
+  assert.throws(() => readWorkflowContext({}), /Missing GITHUB_TOKEN/);
+});
+
+test('reporting derives tools consistently from metadata and jobs', () => {
+  const metadataEntries = [
+    createMetadata({ id: 1, tool: 'fpm' }),
+    { ...createMetadata({ id: 2, tool: '' }), tool: '' },
+  ];
+  metadataEntries[1].job.name = 'ubuntu-latest_gfortran_meson';
+  const jobsById = new Map(
+    metadataEntries.map((metadata) => [
+      metadata.job.id,
+      { id: metadata.job.id, name: metadata.job.name },
+    ]),
+  );
+
+  assert.equal(inferMetadataTool(metadataEntries[1], jobsById.get(2)), 'meson');
+  assert.deepEqual(getUsedTools(metadataEntries, jobsById), ['fpm', 'meson']);
 });
 
 test('configuration sorting uses the four global toolchain groups', () => {

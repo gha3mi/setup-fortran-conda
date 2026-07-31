@@ -4,31 +4,23 @@ import { existsSync, mkdirSync, readdirSync } from 'node:fs';
 import { rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { verifySha256 } from '../../lib/checksum.js';
 import { prependPathEntries } from '../../lib/environment.js';
 import { getErrorMessage } from '../../lib/errors.js';
-import { requestGitHubJson } from '../../lib/github.js';
+import { getGitHubToken, requestGitHubJson } from '../../lib/github.js';
 import { compareNumericVersions } from '../../lib/version.js';
 import {
-  addExistingPaths,
   assertLinux,
-  configureLinuxUlimits,
-  createCompilerEnvironment,
-  downloadFile,
-  exportCompilerEnvironment,
+  configureLinuxCompiler,
   getCondaPrefix,
-  installAptPackages,
-  logCompilerSetupComplete,
   runInGroup,
   TOOLS_ENVIRONMENT_NAME,
-  verifyCommands,
 } from './common.js';
+import { downloadVerifiedFile, installAptPackages } from './install.js';
 
 const AOMP_REPO_API = 'https://api.github.com/repos/ROCm/aomp/releases';
 
 function requestAompApi(url) {
-  const token = process.env.GITHUB_TOKEN || process.env.GH_TOKEN || '';
-  return requestGitHubJson(url, token);
+  return requestGitHubJson(url, getGitHubToken());
 }
 
 function normalizeAompVersion(version = '') {
@@ -159,28 +151,20 @@ export async function setup(version = '') {
     `setup-fortran-conda-aomp-${release.version}`,
   );
 
-  await runInGroup(
-    'setup-fortran-conda: Download AOMP Binary Tarball',
-    async () => {
-      try {
-        await downloadFile(release.url, archivePath, {
-          connectTimeout: 30,
-          retryCount: 3,
-          retryDelay: 2,
-        });
-        await verifySha256({
-          file: archivePath,
-          product: 'AOMP',
-          version: release.version,
-          expected: release.checksum,
-        });
-      } catch (error) {
-        throw new Error(`AOMP download failed: ${getErrorMessage(error)}`, {
-          cause: error,
-        });
-      }
+  await downloadVerifiedFile({
+    url: release.url,
+    destination: archivePath,
+    product: 'AOMP',
+    version: release.version,
+    checksum: release.checksum,
+    groupName: 'setup-fortran-conda: Download AOMP Binary Tarball',
+    errorMessage: 'AOMP download failed',
+    downloadOptions: {
+      connectTimeout: 30,
+      retryCount: 3,
+      retryDelay: 2,
     },
-  );
+  });
 
   await runInGroup('setup-fortran-conda: Extract AOMP', async () => {
     mkdirSync(extractionDirectory, { recursive: true });
@@ -213,24 +197,14 @@ export async function setup(version = '') {
     process.env.LD_LIBRARY_PATH,
   );
 
-  await addExistingPaths([join(condaPrefix, 'bin'), binDirectory]);
-
-  await verifyCommands([
-    { command: 'flang', args: ['--version'] },
-    { command: 'clang', args: ['--version'] },
-    { command: 'clang++', args: ['--version'] },
-  ]);
-
-  await exportCompilerEnvironment(
-    createCompilerEnvironment('flang', 'clang', 'clang++', {
+  await configureLinuxCompiler({
+    paths: [join(condaPrefix, 'bin'), binDirectory],
+    compilers: { fortran: 'flang', c: 'clang', cxx: 'clang++' },
+    environment: {
       AOMP_HOME: aompRoot,
       AOMP_ROOT: aompRoot,
       AOMP_VERSION: release.version,
       LD_LIBRARY_PATH: ldLibraryPath,
-    }),
-  );
-
-  await configureLinuxUlimits();
-
-  logCompilerSetupComplete();
+    },
+  });
 }

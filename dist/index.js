@@ -28040,6 +28040,10 @@ var map = {
 		3735,
 		735
 	],
+	"./linux/install.js": [
+		3302,
+		302
+	],
 	"./linux/lfortran.js": [
 		310,
 		310
@@ -28095,6 +28099,10 @@ var map = {
 	"./windows/lfortran.js": [
 		2959,
 		959
+	],
+	"./windows/msvc.js": [
+		1394,
+		394
 	]
 };
 function webpackAsyncContext(req) {
@@ -31351,186 +31359,35 @@ function getExecOutput(commandLine, args, options) {
 
 /***/ }),
 
-/***/ 8110:
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __nccwpck_require__) => {
-
-/* harmony export */ __nccwpck_require__.d(__webpack_exports__, {
-/* harmony export */   WV: () => (/* binding */ createBlasPackageSpec),
-/* harmony export */   oW: () => (/* binding */ assertBlasToolchainSupported),
-/* harmony export */   z$: () => (/* binding */ inspectBlasInstallation)
-/* harmony export */ });
-/* unused harmony exports BLAS_IMPLEMENTATIONS, assertBlasSupported, validateBlasPackages */
-/* harmony import */ var _lib_command_js__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(7819);
-/* harmony import */ var _lib_errors_js__WEBPACK_IMPORTED_MODULE_2__ = __nccwpck_require__(7507);
-/* harmony import */ var _compilers_common_js__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(9674);
-
-
-
-
-const BLAS_IMPLEMENTATIONS = Object.freeze([
-  'none',
-  'netlib',
-  'openblas',
-  'mkl',
-  'accelerate',
-]);
-
-const REQUIRED_BLAS_PACKAGES = Object.freeze([
-  'blas-devel',
-  'libblas',
-  'liblapack',
-]);
-
-function assertBlasSupported(implementation) {
-  if (!BLAS_IMPLEMENTATIONS.includes(implementation)) {
-    throw new Error(
-      `Unsupported BLAS/LAPACK implementation: ${implementation}. ` +
-        `Supported values: ${BLAS_IMPLEMENTATIONS.join(', ')}.`,
-    );
-  }
-}
-
-function assertBlasToolchainSupported({
-  implementation,
-  operatingSystem,
-  compiler,
-}) {
-  assertBlasSupported(implementation);
-  const unsupportedWindowsIfxImplementation =
-    operatingSystem === 'windows' &&
-    compiler === 'ifx' &&
-    ['netlib', 'openblas'].includes(implementation);
-
-  if (unsupportedWindowsIfxImplementation) {
-    throw new Error(
-      `Unsupported BLAS/LAPACK toolchain: compiler=ifx with ` +
-        `blas=${implementation} on Windows. Use blas=mkl with Windows ifx.`,
-    );
-  }
-}
-
-function createBlasPackageSpec(implementation) {
-  assertBlasSupported(implementation);
-  return implementation === 'none' ? '' : `blas-devel=*=*_${implementation}`;
-}
-
-function validateBlasPackages(packages, implementation) {
-  assertBlasSupported(implementation);
-  if (implementation === 'none') {
-    return {};
-  }
-  if (!Array.isArray(packages)) {
-    throw new Error('Unable to validate BLAS/LAPACK packages.');
-  }
-
-  const expectedBuildSuffix = `_${implementation}`;
-  const selectedPackages = {};
-
-  for (const packageName of REQUIRED_BLAS_PACKAGES) {
-    const installedPackage = packages.find(
-      (candidate) => candidate?.name === packageName,
-    );
-    if (!installedPackage) {
-      throw new Error(
-        `The requested ${implementation} implementation did not install ${packageName}.`,
-      );
-    }
-
-    const build = String(
-      installedPackage.build_string ?? installedPackage.build ?? '',
-    );
-    if (!build.endsWith(expectedBuildSuffix)) {
-      throw new Error(
-        `${packageName} uses build "${build}", expected an exact ` +
-          `${implementation} provider build ending in "${expectedBuildSuffix}".`,
-      );
-    }
-
-    selectedPackages[packageName] = {
-      version: String(installedPackage.version || ''),
-      build,
-    };
-  }
-
-  return selectedPackages;
-}
-
-async function inspectBlasInstallation(
-  implementation,
-  environmentName = _compilers_common_js__WEBPACK_IMPORTED_MODULE_1__/* .TOOLS_ENVIRONMENT_NAME */ .uU,
-) {
-  const packageSpec = createBlasPackageSpec(implementation);
-  if (!packageSpec) {
-    return {
-      implementation,
-      packageSpec,
-      packages: {},
-      validated: false,
-    };
-  }
-
-  const result = await (0,_lib_command_js__WEBPACK_IMPORTED_MODULE_0__/* .captureCommand */ .g)('conda', [
-    'list',
-    '--name',
-    environmentName,
-    '--json',
-  ]);
-  if (result.exitCode !== 0) {
-    throw new Error(
-      `Unable to inspect BLAS/LAPACK packages: ${result.stderr || result.stdout}`,
-    );
-  }
-
-  let packages;
-  try {
-    packages = JSON.parse(result.stdout);
-  } catch (error) {
-    throw new Error(
-      `Unable to parse installed BLAS/LAPACK packages: ${(0,_lib_errors_js__WEBPACK_IMPORTED_MODULE_2__/* .getErrorMessage */ .u)(error)}`,
-      { cause: error },
-    );
-  }
-
-  return {
-    implementation,
-    packageSpec,
-    packages: validateBlasPackages(packages, implementation),
-    validated: true,
-  };
-}
-
-
-/***/ }),
-
 /***/ 9674:
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __nccwpck_require__) => {
 
 /* harmony export */ __nccwpck_require__.d(__webpack_exports__, {
-/* harmony export */   Bf: () => (/* binding */ addExistingPaths),
+/* harmony export */   Av: () => (/* reexport safe */ _lib_conda_js__WEBPACK_IMPORTED_MODULE_2__.Av),
+/* harmony export */   Bf: () => (/* reexport safe */ _lib_action_js__WEBPACK_IMPORTED_MODULE_1__.Bf),
 /* harmony export */   G6: () => (/* binding */ assertPlatform),
-/* harmony export */   I6: () => (/* binding */ verifyCommands),
-/* harmony export */   MA: () => (/* binding */ installCondaPackages),
-/* harmony export */   Qv: () => (/* binding */ showCondaEnvironment),
-/* harmony export */   Se: () => (/* binding */ runInGroup),
+/* harmony export */   I6: () => (/* reexport safe */ _lib_action_js__WEBPACK_IMPORTED_MODULE_1__.I6),
+/* harmony export */   MA: () => (/* reexport safe */ _lib_conda_js__WEBPACK_IMPORTED_MODULE_2__.MA),
+/* harmony export */   Qv: () => (/* reexport safe */ _lib_conda_js__WEBPACK_IMPORTED_MODULE_2__.Qv),
+/* harmony export */   Se: () => (/* reexport safe */ _lib_action_js__WEBPACK_IMPORTED_MODULE_1__.Se),
 /* harmony export */   Tp: () => (/* binding */ createCompilerEnvironment),
-/* harmony export */   Up: () => (/* reexport safe */ _lib_environment_js__WEBPACK_IMPORTED_MODULE_5__.U),
+/* harmony export */   Up: () => (/* reexport safe */ _lib_environment_js__WEBPACK_IMPORTED_MODULE_3__.U),
 /* harmony export */   Ys: () => (/* binding */ logCompilerSetupComplete),
-/* harmony export */   ZN: () => (/* binding */ exportCondaEnvironment),
-/* harmony export */   qY: () => (/* binding */ exportEnvironmentVariable),
-/* harmony export */   qw: () => (/* binding */ exportEnvironment),
-/* harmony export */   s6: () => (/* binding */ getCondaPrefix),
-/* harmony export */   uU: () => (/* binding */ TOOLS_ENVIRONMENT_NAME),
-/* harmony export */   wu: () => (/* binding */ getCondaExecutablePaths),
+/* harmony export */   ZN: () => (/* reexport safe */ _lib_conda_js__WEBPACK_IMPORTED_MODULE_2__.ZN),
+/* harmony export */   dF: () => (/* binding */ installCondaCompilerPackages),
+/* harmony export */   dQ: () => (/* binding */ createCompilerVerificationCommands),
+/* harmony export */   dV: () => (/* reexport safe */ _lib_conda_js__WEBPACK_IMPORTED_MODULE_2__.dV),
+/* harmony export */   qY: () => (/* reexport safe */ _lib_action_js__WEBPACK_IMPORTED_MODULE_1__.qY),
+/* harmony export */   s6: () => (/* reexport safe */ _lib_conda_js__WEBPACK_IMPORTED_MODULE_2__.s6),
+/* harmony export */   uU: () => (/* reexport safe */ _lib_conda_js__WEBPACK_IMPORTED_MODULE_2__.uU),
+/* harmony export */   wu: () => (/* reexport safe */ _lib_conda_js__WEBPACK_IMPORTED_MODULE_2__.wu),
 /* harmony export */   x7: () => (/* binding */ exportCompilerEnvironment),
-/* harmony export */   zk: () => (/* binding */ createCondaPackageSpec)
+/* harmony export */   zk: () => (/* reexport safe */ _lib_conda_js__WEBPACK_IMPORTED_MODULE_2__.zk)
 /* harmony export */ });
 /* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(3360);
-/* harmony import */ var _actions_exec__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(2876);
-/* harmony import */ var node_fs__WEBPACK_IMPORTED_MODULE_2__ = __nccwpck_require__(3024);
-/* harmony import */ var node_path__WEBPACK_IMPORTED_MODULE_3__ = __nccwpck_require__(6760);
-/* harmony import */ var _lib_command_js__WEBPACK_IMPORTED_MODULE_4__ = __nccwpck_require__(7819);
-/* harmony import */ var _lib_environment_js__WEBPACK_IMPORTED_MODULE_5__ = __nccwpck_require__(3775);
-/* harmony import */ var _lib_errors_js__WEBPACK_IMPORTED_MODULE_6__ = __nccwpck_require__(7507);
+/* harmony import */ var _lib_action_js__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(9766);
+/* harmony import */ var _lib_conda_js__WEBPACK_IMPORTED_MODULE_2__ = __nccwpck_require__(4801);
+/* harmony import */ var _lib_environment_js__WEBPACK_IMPORTED_MODULE_3__ = __nccwpck_require__(3775);
 
 
 
@@ -31538,17 +31395,91 @@ async function inspectBlasInstallation(
 
 
 
-
-const TOOLS_ENVIRONMENT_NAME = 'fortran';
-
-
-const RESERVED_ENVIRONMENT_NAME = /^(?:GITHUB_|RUNNER_)/i;
 
 function assertPlatform(expected, message) {
   if (process.platform !== expected) {
     throw new Error(message);
   }
 }
+
+function createCompilerEnvironment(
+  fortranCompiler,
+  cCompiler,
+  cxxCompiler,
+  extraVariables = {},
+) {
+  return {
+    FC: fortranCompiler,
+    CC: cCompiler,
+    CXX: cxxCompiler,
+    FPM_FC: fortranCompiler,
+    FPM_CC: cCompiler,
+    FPM_CXX: cxxCompiler,
+    CMAKE_Fortran_COMPILER: fortranCompiler,
+    CMAKE_C_COMPILER: cCompiler,
+    CMAKE_CXX_COMPILER: cxxCompiler,
+    ...extraVariables,
+  };
+}
+
+function createCompilerVerificationCommands(
+  compilers,
+  additionalCommands = [],
+) {
+  const compilerCommands = [
+    ...new Set([compilers.fortran, compilers.c, compilers.cxx].filter(Boolean)),
+  ].map((command) => ({ command, args: ['--version'] }));
+
+  return [...compilerCommands, ...additionalCommands];
+}
+
+async function installCondaCompilerPackages({
+  version = '',
+  versionedPackages = [],
+  packages = [],
+  channels,
+}) {
+  const requestedPackages = [
+    ...versionedPackages.map((name) => (0,_lib_conda_js__WEBPACK_IMPORTED_MODULE_2__/* .createCondaPackageSpec */ .zk)(name, version)),
+    ...packages,
+  ];
+  await (0,_lib_conda_js__WEBPACK_IMPORTED_MODULE_2__/* .installCondaPackages */ .MA)(requestedPackages, { channels });
+  await (0,_lib_conda_js__WEBPACK_IMPORTED_MODULE_2__/* .showCondaEnvironment */ .Qv)();
+}
+
+async function exportCompilerEnvironment(values) {
+  await (0,_lib_action_js__WEBPACK_IMPORTED_MODULE_1__/* .exportEnvironment */ .qw)(
+    values,
+    'setup-fortran-conda: Export Compiler Environment',
+  );
+}
+
+function logCompilerSetupComplete() {
+  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)('Compiler setup complete');
+}
+
+
+/***/ }),
+
+/***/ 9766:
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __nccwpck_require__) => {
+
+/* harmony export */ __nccwpck_require__.d(__webpack_exports__, {
+/* harmony export */   Bf: () => (/* binding */ addExistingPaths),
+/* harmony export */   I6: () => (/* binding */ verifyCommands),
+/* harmony export */   Se: () => (/* binding */ runInGroup),
+/* harmony export */   hu: () => (/* binding */ exportEnvironmentVariables),
+/* harmony export */   qY: () => (/* binding */ exportEnvironmentVariable),
+/* harmony export */   qw: () => (/* binding */ exportEnvironment)
+/* harmony export */ });
+/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(3360);
+/* harmony import */ var _actions_exec__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(2876);
+/* harmony import */ var node_fs__WEBPACK_IMPORTED_MODULE_2__ = __nccwpck_require__(3024);
+
+
+
+
+const RESERVED_ENVIRONMENT_NAME = /^(?:GITHUB_|RUNNER_)/i;
 
 async function runInGroup(name, operation) {
   (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .startGroup */ .Oh)(name);
@@ -31578,31 +31509,10 @@ function exportEnvironmentVariable(key, value) {
     throw new Error('GITHUB_ENV not defined');
   }
 
-  const normalized = String(value);
-  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .exportVariable */ .dN)(name, normalized);
+  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .exportVariable */ .dN)(name, String(value));
 }
 
-function createCompilerEnvironment(
-  fortranCompiler,
-  cCompiler,
-  cxxCompiler,
-  extraVariables = {},
-) {
-  return {
-    FC: fortranCompiler,
-    CC: cCompiler,
-    CXX: cxxCompiler,
-    FPM_FC: fortranCompiler,
-    FPM_CC: cCompiler,
-    FPM_CXX: cxxCompiler,
-    CMAKE_Fortran_COMPILER: fortranCompiler,
-    CMAKE_C_COMPILER: cCompiler,
-    CMAKE_CXX_COMPILER: cxxCompiler,
-    ...extraVariables,
-  };
-}
-
-function exportVariables(values, { skipEmpty = false } = {}) {
+function exportEnvironmentVariables(values, { skipEmpty = false } = {}) {
   for (const [key, value] of Object.entries(values)) {
     if (skipEmpty && !value) {
       continue;
@@ -31618,22 +31528,137 @@ async function exportEnvironment(
   groupName = 'setup-fortran-conda: Export Environment',
 ) {
   await runInGroup(groupName, async () => {
-    exportVariables(values);
+    exportEnvironmentVariables(values);
   });
 }
 
-async function exportCompilerEnvironment(values) {
-  await exportEnvironment(
-    values,
-    'setup-fortran-conda: Export Compiler Environment',
+async function addExistingPaths(paths, { log = true } = {}) {
+  await runInGroup(
+    'setup-fortran-conda: Configure Compiler Paths',
+    async () => {
+      for (const pathEntry of paths) {
+        if (!pathEntry || !(0,node_fs__WEBPACK_IMPORTED_MODULE_2__.existsSync)(pathEntry)) {
+          continue;
+        }
+
+        (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .addPath */ .fM)(pathEntry);
+        if (log) {
+          (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)(`Added to PATH: ${pathEntry}`);
+        }
+      }
+    },
   );
 }
+
+async function verifyCommands(commands, lookup) {
+  const lookupCommand =
+    lookup || (process.platform === 'win32' ? 'where' : 'which');
+
+  await runInGroup(
+    'setup-fortran-conda: Verify Compiler Commands',
+    async () => {
+      for (const { command, args } of commands) {
+        await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)(lookupCommand, [command]);
+        if (args) {
+          await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)(command, args);
+        }
+      }
+    },
+  );
+}
+
+
+/***/ }),
+
+/***/ 7819:
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __nccwpck_require__) => {
+
+/* harmony export */ __nccwpck_require__.d(__webpack_exports__, {
+/* harmony export */   g: () => (/* binding */ captureCommand),
+/* harmony export */   w: () => (/* binding */ combineCommandOutput)
+/* harmony export */ });
+/* harmony import */ var _actions_exec__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(2876);
+/* harmony import */ var _errors_js__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(7507);
+
+
+
+function combineCommandOutput(result) {
+  return `${result.stdout}\n${result.stderr}`.trim();
+}
+
+async function captureCommand(command, args = []) {
+  let stdout = '';
+  let stderr = '';
+
+  try {
+    const exitCode = await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_0__/* .exec */ .m)(command, args, {
+      silent: true,
+      ignoreReturnCode: true,
+      listeners: {
+        stdout: (data) => {
+          stdout += data.toString();
+        },
+        stderr: (data) => {
+          stderr += data.toString();
+        },
+      },
+    });
+
+    return { stdout, stderr, exitCode };
+  } catch (error) {
+    return {
+      stdout,
+      stderr: [stderr, (0,_errors_js__WEBPACK_IMPORTED_MODULE_1__/* .getErrorMessage */ .u)(error)].filter(Boolean).join('\n'),
+      exitCode: 1,
+    };
+  }
+}
+
+
+/***/ }),
+
+/***/ 4801:
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __nccwpck_require__) => {
+
+/* harmony export */ __nccwpck_require__.d(__webpack_exports__, {
+/* harmony export */   Av: () => (/* binding */ CONDA_FORGE_CHANNEL),
+/* harmony export */   MA: () => (/* binding */ installCondaPackages),
+/* harmony export */   Qv: () => (/* binding */ showCondaEnvironment),
+/* harmony export */   ZN: () => (/* binding */ exportCondaEnvironment),
+/* harmony export */   Ze: () => (/* binding */ listCondaPackages),
+/* harmony export */   dV: () => (/* binding */ INTEL_CONDA_CHANNEL),
+/* harmony export */   s6: () => (/* binding */ getCondaPrefix),
+/* harmony export */   uU: () => (/* binding */ TOOLS_ENVIRONMENT_NAME),
+/* harmony export */   wu: () => (/* binding */ getCondaExecutablePaths),
+/* harmony export */   zk: () => (/* binding */ createCondaPackageSpec)
+/* harmony export */ });
+/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(3360);
+/* harmony import */ var _actions_exec__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(2876);
+/* harmony import */ var node_fs__WEBPACK_IMPORTED_MODULE_2__ = __nccwpck_require__(3024);
+/* harmony import */ var node_path__WEBPACK_IMPORTED_MODULE_3__ = __nccwpck_require__(6760);
+/* harmony import */ var _action_js__WEBPACK_IMPORTED_MODULE_4__ = __nccwpck_require__(9766);
+/* harmony import */ var _command_js__WEBPACK_IMPORTED_MODULE_5__ = __nccwpck_require__(7819);
+/* harmony import */ var _environment_js__WEBPACK_IMPORTED_MODULE_6__ = __nccwpck_require__(3775);
+/* harmony import */ var _errors_js__WEBPACK_IMPORTED_MODULE_7__ = __nccwpck_require__(7507);
+
+
+
+
+
+
+
+
+
+const TOOLS_ENVIRONMENT_NAME = 'fortran';
+const CONDA_FORGE_CHANNEL = 'conda-forge';
+const INTEL_CONDA_CHANNEL =
+  'https://software.repos.intel.com/python/conda/';
 
 async function getCondaPrefix(
   environmentName = TOOLS_ENVIRONMENT_NAME,
   required = true,
 ) {
-  const result = await (0,_lib_command_js__WEBPACK_IMPORTED_MODULE_4__/* .captureCommand */ .g)('conda', ['env', 'list', '--json']);
+  const result = await (0,_command_js__WEBPACK_IMPORTED_MODULE_5__/* .captureCommand */ .g)('conda', ['env', 'list', '--json']);
   if (result.exitCode !== 0) {
     throw new Error(
       `Unable to inspect Conda environments: ${result.stderr || result.stdout}`,
@@ -31646,7 +31671,7 @@ async function getCondaPrefix(
     environments = Array.isArray(parsed.envs) ? parsed.envs : [];
   } catch (error) {
     throw new Error(
-      `Unable to parse Conda environment list: ${(0,_lib_errors_js__WEBPACK_IMPORTED_MODULE_6__/* .getErrorMessage */ .u)(error)}`,
+      `Unable to parse Conda environment list: ${(0,_errors_js__WEBPACK_IMPORTED_MODULE_7__/* .getErrorMessage */ .u)(error)}`,
       { cause: error },
     );
   }
@@ -31662,6 +31687,33 @@ async function getCondaPrefix(
     throw new Error(`Unable to locate Conda environment "${environmentName}".`);
   }
   return condaPrefix || '';
+}
+
+async function listCondaPackages(
+  environmentName = TOOLS_ENVIRONMENT_NAME,
+  { description = 'Conda', packageName = '' } = {},
+) {
+  const result = await (0,_command_js__WEBPACK_IMPORTED_MODULE_5__/* .captureCommand */ .g)('conda', [
+    'list',
+    '--name',
+    environmentName,
+    ...(packageName ? [packageName] : []),
+    '--json',
+  ]);
+  if (result.exitCode !== 0) {
+    throw new Error(
+      `Unable to inspect ${description} packages: ${result.stderr || result.stdout}`,
+    );
+  }
+
+  try {
+    return JSON.parse(result.stdout);
+  } catch (error) {
+    throw new Error(
+      `Unable to parse installed ${description} packages: ${(0,_errors_js__WEBPACK_IMPORTED_MODULE_7__/* .getErrorMessage */ .u)(error)}`,
+      { cause: error },
+    );
+  }
 }
 
 function createCondaPackageSpec(name, version = '') {
@@ -31713,7 +31765,7 @@ function createWindowsBlasAliases(condaPrefix) {
 }
 
 async function exportCondaEnvironment() {
-  await runInGroup(
+  await (0,_action_js__WEBPACK_IMPORTED_MODULE_4__/* .runInGroup */ .Se)(
     'setup-fortran-conda: Configure Conda Environment',
     async () => {
       const condaPrefix = await getCondaPrefix();
@@ -31756,38 +31808,38 @@ async function exportCondaEnvironment() {
         : [condaPrefix];
 
       const environment = {
-        LIBRARY_PATH: (0,_lib_environment_js__WEBPACK_IMPORTED_MODULE_5__/* .prependPathEntries */ .U)(
+        LIBRARY_PATH: (0,_environment_js__WEBPACK_IMPORTED_MODULE_6__/* .prependPathEntries */ .U)(
           libraryPaths,
           process.env.LIBRARY_PATH,
         ),
-        CMAKE_LIBRARY_PATH: (0,_lib_environment_js__WEBPACK_IMPORTED_MODULE_5__/* .prependPathEntries */ .U)(
+        CMAKE_LIBRARY_PATH: (0,_environment_js__WEBPACK_IMPORTED_MODULE_6__/* .prependPathEntries */ .U)(
           libraryPaths,
           process.env.CMAKE_LIBRARY_PATH,
         ),
-        CMAKE_PREFIX_PATH: (0,_lib_environment_js__WEBPACK_IMPORTED_MODULE_5__/* .prependPathEntries */ .U)(
+        CMAKE_PREFIX_PATH: (0,_environment_js__WEBPACK_IMPORTED_MODULE_6__/* .prependPathEntries */ .U)(
           cmakePrefixPaths,
           process.env.CMAKE_PREFIX_PATH,
         ),
-        PKG_CONFIG_PATH: (0,_lib_environment_js__WEBPACK_IMPORTED_MODULE_5__/* .prependPathEntries */ .U)(
+        PKG_CONFIG_PATH: (0,_environment_js__WEBPACK_IMPORTED_MODULE_6__/* .prependPathEntries */ .U)(
           pkgConfigPaths,
           process.env.PKG_CONFIG_PATH,
         ),
       };
 
       if (process.platform === 'linux') {
-        environment.LD_LIBRARY_PATH = (0,_lib_environment_js__WEBPACK_IMPORTED_MODULE_5__/* .prependPathEntries */ .U)(
+        environment.LD_LIBRARY_PATH = (0,_environment_js__WEBPACK_IMPORTED_MODULE_6__/* .prependPathEntries */ .U)(
           libraryPaths,
           process.env.LD_LIBRARY_PATH,
         );
       } else if (isWindows) {
-        environment.LIB = (0,_lib_environment_js__WEBPACK_IMPORTED_MODULE_5__/* .prependPathEntries */ .U)(libraryPaths, process.env.LIB);
-        environment.INCLUDE = (0,_lib_environment_js__WEBPACK_IMPORTED_MODULE_5__/* .prependPathEntries */ .U)(
+        environment.LIB = (0,_environment_js__WEBPACK_IMPORTED_MODULE_6__/* .prependPathEntries */ .U)(libraryPaths, process.env.LIB);
+        environment.INCLUDE = (0,_environment_js__WEBPACK_IMPORTED_MODULE_6__/* .prependPathEntries */ .U)(
           includePaths,
           process.env.INCLUDE,
         );
       }
 
-      exportVariables(environment, { skipEmpty: true });
+      (0,_action_js__WEBPACK_IMPORTED_MODULE_4__/* .exportEnvironmentVariables */ .hu)(environment, { skipEmpty: true });
     },
   );
 }
@@ -31802,7 +31854,7 @@ async function installCondaPackages(
   packages,
   {
     environmentName = TOOLS_ENVIRONMENT_NAME,
-    channels = ['conda-forge'],
+    channels = [CONDA_FORGE_CHANNEL],
     command = 'install',
     commandOptions = [],
     groupName = 'setup-fortran-conda: Install Conda Packages',
@@ -31810,7 +31862,7 @@ async function installCondaPackages(
     errorMessage = 'Conda install failed',
   } = {},
 ) {
-  await runInGroup(groupName, async () => {
+  await (0,_action_js__WEBPACK_IMPORTED_MODULE_4__/* .runInGroup */ .Se)(groupName, async () => {
     const args = [
       command,
       ...commandOptions,
@@ -31840,7 +31892,7 @@ async function installCondaPackages(
         return;
       } catch (error) {
         if (attempt === 2 || !isTransientCondaError(output)) {
-          throw new Error(`${errorMessage}: ${(0,_lib_errors_js__WEBPACK_IMPORTED_MODULE_6__/* .getErrorMessage */ .u)(error)}`, {
+          throw new Error(`${errorMessage}: ${(0,_errors_js__WEBPACK_IMPORTED_MODULE_7__/* .getErrorMessage */ .u)(error)}`, {
             cause: error,
           });
         }
@@ -31853,93 +31905,12 @@ async function installCondaPackages(
 async function showCondaEnvironment(
   environmentNames = [TOOLS_ENVIRONMENT_NAME],
 ) {
-  await runInGroup('setup-fortran-conda: Show Conda Environment', async () => {
+  await (0,_action_js__WEBPACK_IMPORTED_MODULE_4__/* .runInGroup */ .Se)('setup-fortran-conda: Show Conda Environment', async () => {
     await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('conda', ['info']);
     for (const environmentName of environmentNames) {
       await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('conda', ['list', '--name', environmentName]);
     }
   });
-}
-
-async function addExistingPaths(paths, { log = true } = {}) {
-  await runInGroup(
-    'setup-fortran-conda: Configure Compiler Paths',
-    async () => {
-      for (const pathEntry of paths) {
-        if (!pathEntry || !(0,node_fs__WEBPACK_IMPORTED_MODULE_2__.existsSync)(pathEntry)) {
-          continue;
-        }
-
-        (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .addPath */ .fM)(pathEntry);
-        if (log) {
-          (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)(`Added to PATH: ${pathEntry}`);
-        }
-      }
-    },
-  );
-}
-
-async function verifyCommands(commands, lookup) {
-  const lookupCommand =
-    lookup || (process.platform === 'win32' ? 'where' : 'which');
-
-  await runInGroup(
-    'setup-fortran-conda: Verify Compiler Commands',
-    async () => {
-      for (const { command, args } of commands) {
-        await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)(lookupCommand, [command]);
-        if (args) {
-          await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)(command, args);
-        }
-      }
-    },
-  );
-}
-
-function logCompilerSetupComplete() {
-  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)('Compiler setup complete');
-}
-
-
-/***/ }),
-
-/***/ 7819:
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __nccwpck_require__) => {
-
-/* harmony export */ __nccwpck_require__.d(__webpack_exports__, {
-/* harmony export */   g: () => (/* binding */ captureCommand)
-/* harmony export */ });
-/* harmony import */ var _actions_exec__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(2876);
-/* harmony import */ var _errors_js__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(7507);
-
-
-
-async function captureCommand(command, args = []) {
-  let stdout = '';
-  let stderr = '';
-
-  try {
-    const exitCode = await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_0__/* .exec */ .m)(command, args, {
-      silent: true,
-      ignoreReturnCode: true,
-      listeners: {
-        stdout: (data) => {
-          stdout += data.toString();
-        },
-        stderr: (data) => {
-          stderr += data.toString();
-        },
-      },
-    });
-
-    return { stdout, stderr, exitCode };
-  } catch (error) {
-    return {
-      stdout,
-      stderr: [stderr, (0,_errors_js__WEBPACK_IMPORTED_MODULE_1__/* .getErrorMessage */ .u)(error)].filter(Boolean).join('\n'),
-      exitCode: 1,
-    };
-  }
 }
 
 
@@ -32009,6 +31980,7 @@ function getErrorMessage(error) {
 
 /* harmony export */ __nccwpck_require__.d(__webpack_exports__, {
 /* harmony export */   FJ: () => (/* binding */ requestWorkflowJobs),
+/* harmony export */   lK: () => (/* binding */ getGitHubToken),
 /* harmony export */   rw: () => (/* binding */ requestGitHubJson)
 /* harmony export */ });
 /* unused harmony export isTransientGitHubRequestError */
@@ -32022,6 +31994,10 @@ const GITHUB_REQUEST_ATTEMPTS = 4;
 const GITHUB_RETRY_DELAY_MS = 2_000;
 const USER_AGENT = 'setup-fortran-conda';
 const TRANSIENT_HTTP_STATUSES = new Set([408, 425, 429]);
+
+function getGitHubToken(environment = process.env) {
+  return environment.GITHUB_TOKEN || environment.GH_TOKEN || '';
+}
 
 function isTransientGitHubRequestError(error) {
   const statusCode = Number(error?.statusCode);
@@ -32464,6 +32440,127 @@ var promises_ = __nccwpck_require__(1455);
 var external_node_os_ = __nccwpck_require__(8161);
 // EXTERNAL MODULE: external "node:path"
 var external_node_path_ = __nccwpck_require__(6760);
+// EXTERNAL MODULE: ./src/lib/conda.js
+var conda = __nccwpck_require__(4801);
+;// CONCATENATED MODULE: ./src/blas/support.js
+
+
+const BLAS_IMPLEMENTATIONS = Object.freeze([
+  'none',
+  'netlib',
+  'openblas',
+  'mkl',
+  'accelerate',
+]);
+
+const REQUIRED_BLAS_PACKAGES = Object.freeze([
+  'blas-devel',
+  'libblas',
+  'liblapack',
+]);
+
+function assertBlasSupported(implementation) {
+  if (!BLAS_IMPLEMENTATIONS.includes(implementation)) {
+    throw new Error(
+      `Unsupported BLAS/LAPACK implementation: ${implementation}. ` +
+        `Supported values: ${BLAS_IMPLEMENTATIONS.join(', ')}.`,
+    );
+  }
+}
+
+function assertBlasToolchainSupported({
+  implementation,
+  operatingSystem,
+  compiler,
+}) {
+  assertBlasSupported(implementation);
+  const unsupportedWindowsIfxImplementation =
+    operatingSystem === 'windows' &&
+    compiler === 'ifx' &&
+    ['netlib', 'openblas'].includes(implementation);
+
+  if (unsupportedWindowsIfxImplementation) {
+    throw new Error(
+      `Unsupported BLAS/LAPACK toolchain: compiler=ifx with ` +
+        `blas=${implementation} on Windows. Use blas=mkl with Windows ifx.`,
+    );
+  }
+}
+
+function createBlasPackageSpec(implementation) {
+  assertBlasSupported(implementation);
+  return implementation === 'none' ? '' : `blas-devel=*=*_${implementation}`;
+}
+
+function validateBlasPackages(packages, implementation) {
+  assertBlasSupported(implementation);
+  if (implementation === 'none') {
+    return {};
+  }
+  if (!Array.isArray(packages)) {
+    throw new Error('Unable to validate BLAS/LAPACK packages.');
+  }
+
+  const expectedBuildSuffix = `_${implementation}`;
+  const selectedPackages = {};
+
+  for (const packageName of REQUIRED_BLAS_PACKAGES) {
+    const installedPackage = packages.find(
+      (candidate) => candidate?.name === packageName,
+    );
+    if (!installedPackage) {
+      throw new Error(
+        `The requested ${implementation} implementation did not install ${packageName}.`,
+      );
+    }
+
+    const build = String(
+      installedPackage.build_string ?? installedPackage.build ?? '',
+    );
+    if (!build.endsWith(expectedBuildSuffix)) {
+      throw new Error(
+        `${packageName} uses build "${build}", expected an exact ` +
+          `${implementation} provider build ending in "${expectedBuildSuffix}".`,
+      );
+    }
+
+    selectedPackages[packageName] = {
+      version: String(installedPackage.version || ''),
+      build,
+    };
+  }
+
+  return selectedPackages;
+}
+
+async function inspectBlasInstallation(
+  implementation,
+  environmentName = conda/* TOOLS_ENVIRONMENT_NAME */.uU,
+) {
+  const packageSpec = createBlasPackageSpec(implementation);
+  if (!packageSpec) {
+    return {
+      implementation,
+      packageSpec,
+      packages: {},
+      validated: false,
+    };
+  }
+
+  const packages = await (0,conda/* listCondaPackages */.Ze)(environmentName, {
+    description: 'BLAS/LAPACK',
+  });
+
+  return {
+    implementation,
+    packageSpec,
+    packages: validateBlasPackages(packages, implementation),
+    validated: true,
+  };
+}
+
+// EXTERNAL MODULE: ./src/compilers/common.js
+var common = __nccwpck_require__(9674);
 // EXTERNAL MODULE: ./src/lib/version.js
 var lib_version = __nccwpck_require__(1018);
 ;// CONCATENATED MODULE: ./src/lib/action-inputs.js
@@ -32513,6 +32610,8 @@ function resolveOperatingSystem(platformInput) {
 
 // EXTERNAL MODULE: ./src/lib/errors.js
 var errors = __nccwpck_require__(7507);
+// EXTERNAL MODULE: ./src/lib/github.js
+var github = __nccwpck_require__(739);
 ;// CONCATENATED MODULE: ./src/lib/metadata.js
 const TOOL_ORDER = Object.freeze(['fpm', 'cmake', 'meson']);
 
@@ -32607,8 +32706,6 @@ function applyBlasDescriptor(metadata, descriptor) {
 
 // EXTERNAL MODULE: ./src/lib/command.js
 var lib_command = __nccwpck_require__(7819);
-// EXTERNAL MODULE: ./src/lib/github.js
-var github = __nccwpck_require__(739);
 ;// CONCATENATED MODULE: ./src/lib/runner.js
 
 
@@ -32800,13 +32897,19 @@ function createCompilerVersionProbes(compilerBinary, compiler) {
   return probes;
 }
 
+function readProbeOutput(result) {
+  return {
+    output: (0,lib_command/* combineCommandOutput */.w)(result),
+    rawFirstLine: (0,lib_version/* firstLine */.TM)(result.stdout) || (0,lib_version/* firstLine */.TM)(result.stderr),
+  };
+}
+
 async function detectCompilerVersion(compilerBinary, compiler) {
   const probes = createCompilerVersionProbes(compilerBinary, compiler);
 
   for (const [command, args] of probes) {
     const result = await (0,lib_command/* captureCommand */.g)(command, args);
-    const output = `${result.stdout}\n${result.stderr}`.trim();
-    const rawFirstLine = (0,lib_version/* firstLine */.TM)(result.stdout) || (0,lib_version/* firstLine */.TM)(result.stderr);
+    const { output, rawFirstLine } = readProbeOutput(result);
 
     if (
       result.exitCode !== 0 &&
@@ -32852,8 +32955,7 @@ async function detectToolVersion(tool) {
   }
 
   const result = await (0,lib_command/* captureCommand */.g)(probe.command, probe.args);
-  const output = `${result.stdout}\n${result.stderr}`.trim();
-  const rawFirstLine = (0,lib_version/* firstLine */.TM)(result.stdout) || (0,lib_version/* firstLine */.TM)(result.stderr);
+  const { output, rawFirstLine } = readProbeOutput(result);
 
   if (
     result.exitCode !== 0 &&
@@ -32870,9 +32972,10 @@ async function detectToolVersion(tool) {
 
 // EXTERNAL MODULE: external "node:fs"
 var external_node_fs_ = __nccwpck_require__(3024);
-// EXTERNAL MODULE: ./src/compilers/common.js
-var common = __nccwpck_require__(9674);
+// EXTERNAL MODULE: ./src/lib/action.js
+var action = __nccwpck_require__(9766);
 ;// CONCATENATED MODULE: ./src/mpi/common.js
+
 
 
 
@@ -32891,8 +32994,11 @@ const DEFAULT_LAUNCHER = Object.freeze({
   numProcFlag: '-n',
 });
 
-async function installMpiPackages(packages, channels = ['conda-forge']) {
-  await (0,common/* installCondaPackages */.MA)(packages, {
+async function installMpiPackages(
+  packages,
+  channels = [conda/* CONDA_FORGE_CHANNEL */.Av],
+) {
+  await (0,conda/* installCondaPackages */.MA)(packages, {
     channels,
     groupName: 'setup-fortran-conda: Install MPI Packages',
     successMessage: 'MPI packages installed',
@@ -32903,7 +33009,7 @@ async function installMpiPackages(packages, channels = ['conda-forge']) {
 function addMpiPaths(condaPrefix, operatingSystem) {
   const runtimePlatform = operatingSystem === 'windows' ? 'win32' : 'linux';
 
-  for (const candidate of (0,common/* getCondaExecutablePaths */.wu)(
+  for (const candidate of (0,conda/* getCondaExecutablePaths */.wu)(
     condaPrefix,
     runtimePlatform,
   )) {
@@ -32917,19 +33023,10 @@ function addMpiPaths(condaPrefix, operatingSystem) {
 }
 
 async function getCondaPackageVersion(packageName) {
-  const result = await (0,lib_command/* captureCommand */.g)('conda', [
-    'list',
-    '--name',
-    common/* TOOLS_ENVIRONMENT_NAME */.uU,
-    packageName,
-    '--json',
-  ]);
-  if (result.exitCode !== 0) {
-    return 'Unknown';
-  }
-
   try {
-    const packages = JSON.parse(result.stdout);
+    const packages = await (0,conda/* listCondaPackages */.Ze)(conda/* TOOLS_ENVIRONMENT_NAME */.uU, {
+      packageName,
+    });
     const match = packages.find((candidate) => candidate.name === packageName);
     return match?.version || 'Unknown';
   } catch {
@@ -33033,7 +33130,7 @@ function createMpiEnvironment(descriptor) {
 }
 
 function exportMpiEnvironment(descriptor) {
-  return (0,common/* exportEnvironment */.qw)(
+  return (0,action/* exportEnvironment */.qw)(
     createMpiEnvironment(descriptor),
     'setup-fortran-conda: Export MPI Environment',
   );
@@ -33129,13 +33226,13 @@ async function setupCondaMpi({
   operatingSystem,
 }) {
   const packages = [
-    (0,common/* createCondaPackageSpec */.zk)('gfortran', compilerVersion),
-    (0,common/* createCondaPackageSpec */.zk)(implementation, mpiVersion),
+    (0,conda/* createCondaPackageSpec */.zk)('gfortran', compilerVersion),
+    (0,conda/* createCondaPackageSpec */.zk)(implementation, mpiVersion),
   ];
 
-  await installMpiPackages(packages, ['conda-forge']);
+  await installMpiPackages(packages);
 
-  const condaPrefix = await (0,common/* getCondaPrefix */.s6)();
+  const condaPrefix = await (0,conda/* getCondaPrefix */.s6)();
   addMpiPaths(condaPrefix, operatingSystem);
   if (operatingSystem === 'macos') {
     normalizeMacOsMpiRpaths(condaPrefix, implementation);
@@ -33347,17 +33444,17 @@ var lib_environment = __nccwpck_require__(3775);
 
 
 async function installIntelMpiWheel(mpiVersion) {
-  await installMpiPackages(['pip'], ['conda-forge']);
+  await installMpiPackages(['pip']);
 
   const mpiPackageSpec = mpiVersion
     ? `impi-devel==${mpiVersion}`
     : 'impi-devel';
-  await (0,common/* runInGroup */.Se)('setup-fortran-conda: Install Intel MPI SDK', async () => {
+  await (0,action/* runInGroup */.Se)('setup-fortran-conda: Install Intel MPI SDK', async () => {
     try {
       await (0,src_exec/* exec */.m)('conda', [
         'run',
         '--name',
-        common/* TOOLS_ENVIRONMENT_NAME */.uU,
+        conda/* TOOLS_ENVIRONMENT_NAME */.uU,
         'python',
         '-m',
         'pip',
@@ -33443,7 +33540,7 @@ async function configureLinuxWrapper(environment) {
 async function setupIntelMpi({ mpiVersion, operatingSystem }) {
   await installIntelMpiWheel(mpiVersion);
 
-  const condaPrefix = await (0,common/* getCondaPrefix */.s6)();
+  const condaPrefix = await (0,conda/* getCondaPrefix */.s6)();
   const mpiRoot =
     operatingSystem === 'windows' ? (0,external_node_path_.join)(condaPrefix, 'Library') : condaPrefix;
   assertIntelMpiLayout(mpiRoot, operatingSystem);
@@ -33513,6 +33610,7 @@ async function setupIntelMpi({ mpiVersion, operatingSystem }) {
 
 
 
+
 const BINDING_DECLARATIONS = Object.freeze({
   mpi_f08: '  use mpi_f08\n  implicit none',
   mpi: '  use mpi\n  implicit none',
@@ -33569,7 +33667,7 @@ async function inspectWrapper(wrapper, descriptor) {
     wrapper,
     descriptor.wrapperProbe?.args || [],
   );
-  const output = `${result.stdout}\n${result.stderr}`.trim();
+  const output = (0,lib_command/* combineCommandOutput */.w)(result);
   if (result.exitCode !== 0) {
     throw new Error(
       `Unable to inspect MPI Fortran wrapper "${wrapper}": ${output}`,
@@ -33604,7 +33702,7 @@ async function compileBinding(wrapper, directory, binding) {
   return {
     supported: result.exitCode === 0,
     executable: executablePath,
-    diagnostic: `${result.stdout}\n${result.stderr}`.trim(),
+    diagnostic: (0,lib_command/* combineCommandOutput */.w)(result),
   };
 }
 
@@ -33637,7 +33735,7 @@ async function validateTwoRanks(launcher, executable) {
     '2',
     executable,
   ]);
-  const output = `${result.stdout}\n${result.stderr}`.trim();
+  const output = (0,lib_command/* combineCommandOutput */.w)(result);
   if (result.exitCode !== 0) {
     throw new Error(`MPI two-rank validation failed: ${output}`);
   }
@@ -33663,11 +33761,11 @@ async function detectVersion(descriptor) {
     descriptor.versionProbe.command,
     descriptor.versionProbe.args,
   );
-  return (0,lib_version/* firstVersion */.XO)(`${result.stdout}\n${result.stderr}`) || 'Unknown';
+  return (0,lib_version/* firstVersion */.XO)((0,lib_command/* combineCommandOutput */.w)(result)) || 'Unknown';
 }
 
 async function validateMpi(descriptor) {
-  return (0,common/* runInGroup */.Se)('setup-fortran-conda: Validate MPI Toolchain', async () => {
+  return (0,action/* runInGroup */.Se)('setup-fortran-conda: Validate MPI Toolchain', async () => {
     const resolved = await resolveToolchain(descriptor);
     const backendCompiler = await inspectWrapper(
       resolved.wrappers.fortran,
@@ -33737,12 +33835,10 @@ const MPI_SUPPORT = Object.freeze({
 });
 
 const MPI_INSTALLERS = Object.freeze({
-  mpich: (options) => setupCondaMpi({ ...options, implementation: 'mpich' }),
-  openmpi: (options) =>
-    setupCondaMpi({ ...options, implementation: 'openmpi' }),
-  intelmpi: ({ mpiVersion, operatingSystem }) =>
-    setupIntelMpi({ mpiVersion, operatingSystem }),
-  hpcx: ({ mpiVersion }) => setupHpcx({ mpiVersion }),
+  mpich: setupCondaMpi,
+  openmpi: setupCondaMpi,
+  intelmpi: setupIntelMpi,
+  hpcx: setupHpcx,
 });
 
 function createSupportedRows(operatingSystem) {
@@ -33788,6 +33884,7 @@ async function setupMpi({
   }
 
   const descriptor = await installer({
+    implementation,
     mpiVersion,
     compilerVersion,
     operatingSystem,
@@ -33799,9 +33896,52 @@ async function setupMpi({
   return validated;
 }
 
-// EXTERNAL MODULE: ./src/blas/support.js
-var support = __nccwpck_require__(8110);
+;// CONCATENATED MODULE: ./src/packages.js
+
+
+
+
+function createExtraPackageSpecs(
+  extraPackages = [],
+  fpmVersion = '',
+  blas = 'none',
+) {
+  const requestedFpmVersion =
+    (0,lib_version/* normalizeRequestedVersion */.Wy)(fpmVersion).toLowerCase();
+  const blasPackageSpec = createBlasPackageSpec(blas);
+  const normalizedExtraPackages = extraPackages
+    .map((packageName) => packageName.trim())
+    .filter(Boolean);
+
+  return [
+    (0,conda/* createCondaPackageSpec */.zk)('fpm', requestedFpmVersion),
+    'pkg-config',
+    'cmake',
+    'ninja',
+    'meson',
+    ...(blasPackageSpec ? [blasPackageSpec] : []),
+    ...normalizedExtraPackages,
+  ];
+}
+
+async function installExtras(
+  environmentName = conda/* TOOLS_ENVIRONMENT_NAME */.uU,
+  extraPackages = [],
+  fpmVersion = '',
+  blas = 'none',
+) {
+  const packages = createExtraPackageSpecs(extraPackages, fpmVersion, blas);
+
+  await (0,conda/* installCondaPackages */.MA)(packages, {
+    environmentName,
+    successMessage: 'Extra packages installed',
+    errorMessage: 'Extra package installation failed',
+  });
+}
+
 ;// CONCATENATED MODULE: ./src/index.js
+
+
 
 
 
@@ -33864,108 +34004,133 @@ function setMetadataOutputs(metadata, metadataPath, fallbackSuffix) {
   (0,core/* setOutput */.uH)('job-id', metadata.job.id ? String(metadata.job.id) : '');
 }
 
-async function main() {
-  let fatalError = null;
-  const inputs = readActionInputs();
-  const token = process.env.GITHUB_TOKEN || process.env.GH_TOKEN || '';
-  const runnerOperatingSystem = await detectOperatingSystem();
-  const metadata = createMetadata(inputs, runnerOperatingSystem);
-  const fallbackSuffix = `${process.env.GITHUB_RUN_ID || 'run'}-${Date.now()}`;
-  const temporaryDirectory = process.env.RUNNER_TEMP || external_node_os_.tmpdir();
+async function resolveMetadataPath(
+  metadata,
+  token,
+  temporaryDirectory,
+  fallbackSuffix,
+) {
   let metadataPath = external_node_path_.join(
     temporaryDirectory,
     `setup-fortran-conda-meta-${fallbackSuffix}.json`,
   );
 
   try {
-    try {
-      const job = await findCurrentJob(token);
-      if (job?.id) {
-        metadata.job.id = job.id;
-        metadata.job.name = job.name || metadata.job.name;
-        metadata.job.labels = job.labels || [];
-        metadata.tool = inferToolFromJobName(job.name) || metadata.tool;
-        metadataPath = external_node_path_.join(
-          temporaryDirectory,
-          `setup-fortran-conda-meta-${job.id}.json`,
-        );
-      }
-    } catch (error) {
-      (0,core/* warning */.$e)(
-        `Unable to resolve current workflow job metadata ` +
-          `(${(0,errors/* getErrorMessage */.u)(error)}); continuing with runner metadata.`,
+    const job = await findCurrentJob(token);
+    if (job?.id) {
+      metadata.job.id = job.id;
+      metadata.job.name = job.name || metadata.job.name;
+      metadata.job.labels = job.labels || [];
+      metadata.tool = inferToolFromJobName(job.name) || metadata.tool;
+      metadataPath = external_node_path_.join(
+        temporaryDirectory,
+        `setup-fortran-conda-meta-${job.id}.json`,
       );
     }
+  } catch (error) {
+    (0,core/* warning */.$e)(
+      `Unable to resolve current workflow job metadata ` +
+        `(${(0,errors/* getErrorMessage */.u)(error)}); continuing with runner metadata.`,
+    );
+  }
 
-    if (inputs.compiler === 'mpifort') {
-      throw new Error(
-        'compiler=mpifort is no longer supported because mpifort is an ' +
-          'MPI wrapper, not a compiler. Use compiler=gfortran and mpi=mpich.',
-      );
-    }
-    if (inputs.mpi === 'none' && inputs.rawMpiVersion) {
-      throw new Error(
-        'mpi-version requires an MPI implementation selected with the mpi input.',
-      );
-    }
-    const operatingSystem = resolveOperatingSystem(inputs.platform);
-    (0,support/* assertBlasToolchainSupported */.oW)({
-      implementation: inputs.blas,
+  return metadataPath;
+}
+
+function validateInputs(inputs, operatingSystem) {
+  if (inputs.compiler === 'mpifort') {
+    throw new Error(
+      'compiler=mpifort is no longer supported because mpifort is an ' +
+        'MPI wrapper, not a compiler. Use compiler=gfortran and mpi=mpich.',
+    );
+  }
+  if (inputs.mpi === 'none' && inputs.rawMpiVersion) {
+    throw new Error(
+      'mpi-version requires an MPI implementation selected with the mpi input.',
+    );
+  }
+
+  assertBlasToolchainSupported({
+    implementation: inputs.blas,
+    operatingSystem,
+    compiler: inputs.compiler,
+  });
+  if (inputs.mpi !== 'none') {
+    assertMpiSupported(operatingSystem, inputs.compiler, inputs.mpi);
+  }
+}
+
+async function setupToolchain(inputs, operatingSystem, metadata) {
+  await installExtras(
+    common/* TOOLS_ENVIRONMENT_NAME */.uU,
+    inputs.extraPackages,
+    inputs.fpmVersion,
+    inputs.blas,
+  );
+
+  if (inputs.compiler) {
+    const { setup } = await __nccwpck_require__(9467)(`./${operatingSystem}/${inputs.compiler}.js`);
+    await setup(inputs.compilerVersion);
+  }
+  await (0,common/* exportCondaEnvironment */.ZN)();
+
+  if (inputs.mpi !== 'none') {
+    const descriptor = await setupMpi({
       operatingSystem,
       compiler: inputs.compiler,
+      compilerVersion: inputs.compilerVersion,
+      implementation: inputs.mpi,
+      mpiVersion: inputs.mpiVersion,
     });
-    if (inputs.mpi !== 'none') {
-      assertMpiSupported(operatingSystem, inputs.compiler, inputs.mpi);
-    }
+    applyMpiDescriptor(metadata, descriptor);
+  }
 
-    const { installExtras } = await __nccwpck_require__.e(/* import() */ 409).then(__nccwpck_require__.bind(__nccwpck_require__, 409));
-    await installExtras(
-      common/* TOOLS_ENVIRONMENT_NAME */.uU,
-      inputs.extraPackages,
-      inputs.fpmVersion,
-      inputs.blas,
+  if (inputs.blas !== 'none') {
+    const descriptor = await inspectBlasInstallation(inputs.blas);
+    applyBlasDescriptor(metadata, descriptor);
+  }
+}
+
+async function detectVersions(inputs, metadata) {
+  if (inputs.compiler) {
+    const compilerBinary = process.env.FC || inputs.compiler;
+    const compilerVersion = await detectCompilerVersion(
+      compilerBinary,
+      inputs.compiler,
     );
+    metadata.compiler.binary = compilerBinary;
+    metadata.compiler.actual_version = compilerVersion.actual_version;
+    metadata.compiler.raw_first_line = compilerVersion.raw_first_line;
+  }
 
-    if (inputs.compiler) {
-      const { setup } = await __nccwpck_require__(9467)(`./${operatingSystem}/${inputs.compiler}.js`);
-      await setup(inputs.compilerVersion);
+  if (metadata.tool) {
+    const toolVersion = await detectToolVersion(metadata.tool);
+    if (toolVersion !== null) {
+      metadata.tools[metadata.tool] = { version: toolVersion };
     }
-    await (0,common/* exportCondaEnvironment */.ZN)();
+  }
+}
 
-    if (inputs.mpi !== 'none') {
-      const descriptor = await setupMpi({
-        operatingSystem,
-        compiler: inputs.compiler,
-        compilerVersion: inputs.compilerVersion,
-        implementation: inputs.mpi,
-        mpiVersion: inputs.mpiVersion,
-      });
-      applyMpiDescriptor(metadata, descriptor);
-    }
+async function main() {
+  let fatalError = null;
+  const inputs = readActionInputs();
+  const token = (0,github/* getGitHubToken */.lK)();
+  const runnerOperatingSystem = await detectOperatingSystem();
+  const metadata = createMetadata(inputs, runnerOperatingSystem);
+  const fallbackSuffix = `${process.env.GITHUB_RUN_ID || 'run'}-${Date.now()}`;
+  const temporaryDirectory = process.env.RUNNER_TEMP || external_node_os_.tmpdir();
+  const metadataPath = await resolveMetadataPath(
+    metadata,
+    token,
+    temporaryDirectory,
+    fallbackSuffix,
+  );
 
-    if (inputs.blas !== 'none') {
-      const descriptor = await (0,support/* inspectBlasInstallation */.z$)(inputs.blas);
-      applyBlasDescriptor(metadata, descriptor);
-    }
-
-    if (inputs.compiler) {
-      const compilerBinary = process.env.FC || inputs.compiler;
-      const compilerVersion = await detectCompilerVersion(
-        compilerBinary,
-        inputs.compiler,
-      );
-      metadata.compiler.binary = compilerBinary;
-      metadata.compiler.actual_version = compilerVersion.actual_version;
-      metadata.compiler.raw_first_line = compilerVersion.raw_first_line;
-    }
-
-    if (metadata.tool) {
-      const toolVersion = await detectToolVersion(metadata.tool);
-      if (toolVersion !== null) {
-        metadata.tools[metadata.tool] = { version: toolVersion };
-      }
-    }
-
+  try {
+    const operatingSystem = resolveOperatingSystem(inputs.platform);
+    validateInputs(inputs, operatingSystem);
+    await setupToolchain(inputs, operatingSystem, metadata);
+    await detectVersions(inputs, metadata);
     await writeSummary(metadata);
   } catch (error) {
     fatalError = error;

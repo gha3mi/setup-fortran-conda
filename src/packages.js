@@ -2,7 +2,8 @@ import {
   createCondaPackageSpec,
   installCondaPackages,
   TOOLS_ENVIRONMENT_NAME,
-} from './compilers/common.js';
+} from './lib/conda.js';
+import { normalizeRequestedVersion } from './lib/version.js';
 import { createBlasPackageSpec } from './blas/support.js';
 
 export function createExtraPackageSpecs(
@@ -10,11 +11,8 @@ export function createExtraPackageSpecs(
   fpmVersion = '',
   blas = 'none',
 ) {
-  const normalizedFpmVersion = String(fpmVersion || '')
-    .trim()
-    .toLowerCase();
   const requestedFpmVersion =
-    normalizedFpmVersion === 'latest' ? '' : normalizedFpmVersion;
+    normalizeRequestedVersion(fpmVersion).toLowerCase();
   const blasPackageSpec = createBlasPackageSpec(blas);
   const normalizedExtraPackages = extraPackages
     .map((packageName) => packageName.trim())

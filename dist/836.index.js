@@ -1,36 +1,114 @@
 export const id = 836;
-export const ids = [836];
+export const ids = [836,394];
 export const modules = {
 
 /***/ 9836:
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   Bf: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_4__.Bf),
-/* harmony export */   I6: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_4__.I6),
-/* harmony export */   MA: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_4__.MA),
-/* harmony export */   Qv: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_4__.Qv),
-/* harmony export */   Se: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_4__.Se),
-/* harmony export */   Tp: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_4__.Tp),
-/* harmony export */   Up: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_4__.Up),
-/* harmony export */   Ys: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_4__.Ys),
-/* harmony export */   lM: () => (/* binding */ initializeMsvcEnvironment),
+/* harmony export */   Av: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_0__.Av),
+/* harmony export */   MA: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_0__.MA),
+/* harmony export */   Qv: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_0__.Qv),
+/* harmony export */   SE: () => (/* binding */ setupCondaCompiler),
+/* harmony export */   Se: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_0__.Se),
+/* harmony export */   Up: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_0__.Up),
+/* harmony export */   Xv: () => (/* binding */ configureWindowsCompiler),
+/* harmony export */   dV: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_0__.dV),
+/* harmony export */   lM: () => (/* reexport safe */ _msvc_js__WEBPACK_IMPORTED_MODULE_1__.l),
 /* harmony export */   oB: () => (/* binding */ assertWindows),
-/* harmony export */   qY: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_4__.qY),
-/* harmony export */   s6: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_4__.s6),
-/* harmony export */   uU: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_4__.uU),
-/* harmony export */   wu: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_4__.wu),
-/* harmony export */   x7: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_4__.x7),
-/* harmony export */   zk: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_4__.zk)
+/* harmony export */   qY: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_0__.qY),
+/* harmony export */   s6: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_0__.s6),
+/* harmony export */   uU: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_0__.uU),
+/* harmony export */   wu: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_0__.wu),
+/* harmony export */   zk: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_0__.zk)
+/* harmony export */ });
+/* harmony import */ var _common_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(9674);
+/* harmony import */ var _msvc_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1394);
+
+
+
+
+
+
+function assertWindows() {
+  (0,_common_js__WEBPACK_IMPORTED_MODULE_0__/* .assertPlatform */ .G6)('win32', 'This setup script is only supported on Windows.');
+}
+
+async function setupCondaCompiler({
+  version = '',
+  versionedPackages = [],
+  packages = [],
+  channels,
+  compilers,
+  requiresMsvc = false,
+  additionalVerificationCommands = [],
+  createConfiguration = () => ({}),
+}) {
+  assertWindows();
+
+  if (requiresMsvc) {
+    await (0,_msvc_js__WEBPACK_IMPORTED_MODULE_1__/* .initializeMsvcEnvironment */ .l)();
+  }
+
+  await (0,_common_js__WEBPACK_IMPORTED_MODULE_0__/* .installCondaCompilerPackages */ .dF)({
+    version,
+    versionedPackages,
+    packages,
+    channels,
+  });
+
+  const condaPrefix = await (0,_common_js__WEBPACK_IMPORTED_MODULE_0__/* .getCondaPrefix */ .s6)();
+  const configuration = await createConfiguration(condaPrefix);
+  await configureWindowsCompiler({
+    paths: configuration.paths || (0,_common_js__WEBPACK_IMPORTED_MODULE_0__/* .getCondaExecutablePaths */ .wu)(condaPrefix),
+    compilers,
+    environment: configuration.environment,
+    additionalVerificationCommands,
+  });
+}
+
+async function configureWindowsCompiler({
+  paths,
+  compilers,
+  environment = {},
+  additionalVerificationCommands = [],
+}) {
+  assertWindows();
+
+  await (0,_common_js__WEBPACK_IMPORTED_MODULE_0__/* .addExistingPaths */ .Bf)(paths);
+  await (0,_common_js__WEBPACK_IMPORTED_MODULE_0__/* .verifyCommands */ .I6)(
+    (0,_common_js__WEBPACK_IMPORTED_MODULE_0__/* .createCompilerVerificationCommands */ .dQ)(
+      compilers,
+      additionalVerificationCommands,
+    ),
+  );
+  await (0,_common_js__WEBPACK_IMPORTED_MODULE_0__/* .exportCompilerEnvironment */ .x7)(
+    (0,_common_js__WEBPACK_IMPORTED_MODULE_0__/* .createCompilerEnvironment */ .Tp)(
+      compilers.fortran,
+      compilers.c,
+      compilers.cxx,
+      environment,
+    ),
+  );
+
+  (0,_common_js__WEBPACK_IMPORTED_MODULE_0__/* .logCompilerSetupComplete */ .Ys)();
+}
+
+
+/***/ }),
+
+/***/ 1394:
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   l: () => (/* binding */ initializeMsvcEnvironment)
 /* harmony export */ });
 /* unused harmony export createMsvcCommandArguments */
 /* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3360);
 /* harmony import */ var _actions_exec__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2876);
 /* harmony import */ var node_fs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3024);
 /* harmony import */ var node_path__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(6760);
-/* harmony import */ var _common_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(9674);
-
-
+/* harmony import */ var _lib_action_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(9766);
 
 
 
@@ -44,10 +122,6 @@ const MSVC_ENVIRONMENT_VARIABLES = Object.freeze([
   'LIB',
   'LIBPATH',
 ]);
-
-function assertWindows() {
-  (0,_common_js__WEBPACK_IMPORTED_MODULE_4__/* .assertPlatform */ .G6)('win32', 'This setup script is only supported on Windows.');
-}
 
 async function commandExists(command) {
   try {
@@ -102,7 +176,7 @@ async function initializeMsvcEnvironment() {
     );
   }
 
-  const vcvarsPath = await (0,_common_js__WEBPACK_IMPORTED_MODULE_4__/* .runInGroup */ .Se)(
+  const vcvarsPath = await (0,_lib_action_js__WEBPACK_IMPORTED_MODULE_4__/* .runInGroup */ .Se)(
     'setup-fortran-conda: Detect Visual Studio Installation',
     async () => {
       let vsPath = '';
@@ -149,7 +223,7 @@ async function initializeMsvcEnvironment() {
     throw new Error(`vcvars64.bat not found at expected path: ${vcvarsPath}`);
   }
 
-  const output = await (0,_common_js__WEBPACK_IMPORTED_MODULE_4__/* .runInGroup */ .Se)(
+  const output = await (0,_lib_action_js__WEBPACK_IMPORTED_MODULE_4__/* .runInGroup */ .Se)(
     'setup-fortran-conda: Initialize MSVC Environment',
     async () => {
       let captured = '';
@@ -181,7 +255,7 @@ async function initializeMsvcEnvironment() {
   );
 
   const environment = parseMsvcEnvironment(output);
-  await (0,_common_js__WEBPACK_IMPORTED_MODULE_4__/* .exportEnvironment */ .qw)(
+  await (0,_lib_action_js__WEBPACK_IMPORTED_MODULE_4__/* .exportEnvironment */ .qw)(
     environment,
     'setup-fortran-conda: Export MSVC Environment',
   );

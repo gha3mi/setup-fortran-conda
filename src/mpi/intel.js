@@ -4,9 +4,9 @@ import { existsSync } from 'node:fs';
 import { mkdtemp, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { TOOLS_ENVIRONMENT_NAME } from '../lib/conda.js';
 import { prependFlag, prependPathEntries } from '../lib/environment.js';
 import { getErrorMessage } from '../lib/errors.js';
-import { TOOLS_ENVIRONMENT_NAME } from '../compilers/common.js';
 import {
   addMpiPaths,
   captureCommand,
@@ -17,7 +17,7 @@ import {
 } from './common.js';
 
 async function installIntelMpiWheel(mpiVersion) {
-  await installMpiPackages(['pip'], ['conda-forge']);
+  await installMpiPackages(['pip']);
 
   const mpiPackageSpec = mpiVersion
     ? `impi-devel==${mpiVersion}`

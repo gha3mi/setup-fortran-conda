@@ -2,6 +2,7 @@ import { info } from '@actions/core';
 import { mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { combineCommandOutput } from '../lib/command.js';
 import { firstVersion } from '../lib/version.js';
 import {
   captureCommand,
@@ -66,7 +67,7 @@ async function inspectWrapper(wrapper, descriptor) {
     wrapper,
     descriptor.wrapperProbe?.args || [],
   );
-  const output = `${result.stdout}\n${result.stderr}`.trim();
+  const output = combineCommandOutput(result);
   if (result.exitCode !== 0) {
     throw new Error(
       `Unable to inspect MPI Fortran wrapper "${wrapper}": ${output}`,
@@ -101,7 +102,7 @@ async function compileBinding(wrapper, directory, binding) {
   return {
     supported: result.exitCode === 0,
     executable: executablePath,
-    diagnostic: `${result.stdout}\n${result.stderr}`.trim(),
+    diagnostic: combineCommandOutput(result),
   };
 }
 
@@ -134,7 +135,7 @@ async function validateTwoRanks(launcher, executable) {
     '2',
     executable,
   ]);
-  const output = `${result.stdout}\n${result.stderr}`.trim();
+  const output = combineCommandOutput(result);
   if (result.exitCode !== 0) {
     throw new Error(`MPI two-rank validation failed: ${output}`);
   }
@@ -160,7 +161,7 @@ async function detectVersion(descriptor) {
     descriptor.versionProbe.command,
     descriptor.versionProbe.args,
   );
-  return firstVersion(`${result.stdout}\n${result.stderr}`) || 'Unknown';
+  return firstVersion(combineCommandOutput(result)) || 'Unknown';
 }
 
 export async function validateMpi(descriptor) {

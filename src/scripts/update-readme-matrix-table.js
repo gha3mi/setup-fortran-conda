@@ -1,13 +1,14 @@
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { isCommandNotFoundOutput } from '../lib/diagnostics.js';
-import { requestWorkflowJobs } from '../lib/github.js';
 import { replaceMarkedSection } from '../lib/markdown.js';
-import { inferToolFromJobName, TOOL_ORDER } from '../lib/metadata.js';
 import {
   compareConfigurations,
   createConfiguration,
-  readMetadataFiles,
+  getUsedTools,
+  inferMetadataTool,
+  loadWorkflowData,
+  readWorkflowContext,
 } from '../lib/reporting.js';
 
 const START_MARKER = '<!-- STATUS:setup-fortran-conda:START -->';
@@ -42,29 +43,6 @@ function normalizeDisplayValue(value) {
   return normalized.length > 48 ? `${normalized.slice(0, 45)}…` : normalized;
 }
 
-function inferTool(metadata, job) {
-  return (
-    metadata?.tool ||
-    inferToolFromJobName(metadata?.job?.name || job?.name, {
-      minimumParts: 2,
-    })
-  );
-}
-
-function getUsedTools(metadataEntries, jobsById) {
-  const usedTools = new Set();
-
-  for (const metadata of metadataEntries) {
-    const job = metadata?.job?.id ? jobsById.get(metadata.job.id) : null;
-    const tool = inferTool(metadata, job);
-    if (TOOL_ORDER.includes(tool)) {
-      usedTools.add(tool);
-    }
-  }
-
-  return TOOL_ORDER.filter((tool) => usedTools.has(tool));
-}
-
 function createRowKey(row, includeMpiColumns, includeBlasColumn) {
   const values = [row.operatingSystem, row.compiler, row.compilerVersion];
   if (includeMpiColumns) {
@@ -87,7 +65,7 @@ export function createMatrix(metadataEntries, jobsById, tools) {
 
   for (const metadata of metadataEntries) {
     const job = metadata?.job?.id ? jobsById.get(metadata.job.id) : null;
-    const tool = inferTool(metadata, job);
+    const tool = inferMetadataTool(metadata, job);
     if (!tools.includes(tool)) {
       continue;
     }
@@ -170,29 +148,14 @@ export function renderTable(rows, tools, includeMpiColumns, includeBlasColumn) {
 }
 
 export async function main() {
-  const token = process.env.GITHUB_TOKEN || process.env.GH_TOKEN;
-  const repository = process.env.GITHUB_REPOSITORY;
-  const runId = process.env.GITHUB_RUN_ID;
-  const apiUrl = process.env.GITHUB_API_URL || 'https://api.github.com';
-
-  if (!token) {
-    throw new Error('Missing GITHUB_TOKEN/GH_TOKEN');
-  }
-  if (!repository || !runId) {
-    throw new Error('Missing GITHUB_REPOSITORY or GITHUB_RUN_ID');
-  }
-
+  const context = readWorkflowContext();
   const metadataDirectory =
     process.env.SETUP_FORTRAN_CONDA_META_DIR || '.setup-fortran-conda-meta';
   const readmePath = process.env.README_FILE || 'README.md';
-  const metadataEntries = await readMetadataFiles(metadataDirectory);
-  const jobs = await requestWorkflowJobs({
-    apiUrl,
-    repository,
-    runId,
-    token,
+  const { metadataEntries, jobsById } = await loadWorkflowData({
+    ...context,
+    metadataDirectory,
   });
-  const jobsById = new Map(jobs.map((job) => [job.id, job]));
   const tools = getUsedTools(metadataEntries, jobsById);
   const { rows, includeMpiColumns, includeBlasColumn } = createMatrix(
     metadataEntries,

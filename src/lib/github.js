@@ -7,6 +7,10 @@ const GITHUB_RETRY_DELAY_MS = 2_000;
 const USER_AGENT = 'setup-fortran-conda';
 const TRANSIENT_HTTP_STATUSES = new Set([408, 425, 429]);
 
+export function getGitHubToken(environment = process.env) {
+  return environment.GITHUB_TOKEN || environment.GH_TOKEN || '';
+}
+
 export function isTransientGitHubRequestError(error) {
   const statusCode = Number(error?.statusCode);
   if (!Number.isInteger(statusCode)) {

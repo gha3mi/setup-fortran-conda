@@ -3,6 +3,8 @@ import fs from 'node:fs/promises';
 import os from 'node:os';
 import { join } from 'node:path';
 import { test } from 'node:test';
+import { exportEnvironmentVariable } from '../../src/lib/action.js';
+import { combineCommandOutput } from '../../src/lib/command.js';
 import { isCommandNotFoundOutput } from '../../src/lib/diagnostics.js';
 import { prependPathEntries } from '../../src/lib/environment.js';
 import { getErrorMessage } from '../../src/lib/errors.js';
@@ -58,6 +60,21 @@ test('job and command names use consistent normalization', () => {
 test('errors use one consistent message representation', () => {
   assert.equal(getErrorMessage(new Error('failed')), 'failed');
   assert.equal(getErrorMessage('failed'), 'failed');
+  assert.equal(
+    combineCommandOutput({ stdout: 'output\n', stderr: 'warning\n' }),
+    'output\n\nwarning',
+  );
+});
+
+test('action environment exports reject protected variables', () => {
+  assert.throws(
+    () => exportEnvironmentVariable('GITHUB_TOKEN', 'secret'),
+    /reserved environment variable/,
+  );
+  assert.throws(
+    () => exportEnvironmentVariable('NODE_OPTIONS', '--require module'),
+    /reserved environment variable/,
+  );
 });
 
 test('GitHub requests retry transient errors but not permanent responses', async () => {

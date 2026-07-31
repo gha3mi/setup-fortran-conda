@@ -4,25 +4,18 @@ import { existsSync, readdirSync } from 'node:fs';
 import { rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { verifySha256 } from '../../lib/checksum.js';
 import { prependPathEntries } from '../../lib/environment.js';
 import { getErrorMessage } from '../../lib/errors.js';
 import { prepareAoccEnvironment } from './aocc/environment.js';
 import { resolveAoccRelease } from './aocc/release.js';
 import {
-  addExistingPaths,
   assertLinux,
-  configureLinuxUlimits,
-  createCompilerEnvironment,
-  downloadFile,
-  exportCompilerEnvironment,
+  configureLinuxCompiler,
   getCondaPrefix,
-  installAptPackages,
-  logCompilerSetupComplete,
   runInGroup,
   TOOLS_ENVIRONMENT_NAME,
-  verifyCommands,
 } from './common.js';
+import { downloadVerifiedFile, installAptPackages } from './install.js';
 
 function resolveAoccRoot(version) {
   const expectedRoot = `/opt/AMD/aocc-compiler-${version}`;
@@ -77,29 +70,21 @@ export async function setup(version = '') {
     `aocc-compiler-${resolvedVersion}_1_amd64.deb`,
   );
 
-  await runInGroup(
-    'setup-fortran-conda: Download AOCC Debian Package',
-    async () => {
-      try {
-        await downloadFile(release.url, packagePath, {
-          connectTimeout: 30,
-          http1: true,
-          retryCount: 3,
-          retryDelay: 2,
-        });
-        await verifySha256({
-          file: packagePath,
-          product: 'AOCC',
-          version: resolvedVersion,
-          expected: release.checksum,
-        });
-      } catch (error) {
-        throw new Error(`AOCC download failed: ${getErrorMessage(error)}`, {
-          cause: error,
-        });
-      }
+  await downloadVerifiedFile({
+    url: release.url,
+    destination: packagePath,
+    product: 'AOCC',
+    version: resolvedVersion,
+    checksum: release.checksum,
+    groupName: 'setup-fortran-conda: Download AOCC Debian Package',
+    errorMessage: 'AOCC download failed',
+    downloadOptions: {
+      connectTimeout: 30,
+      http1: true,
+      retryCount: 3,
+      retryDelay: 2,
     },
-  );
+  });
 
   await runInGroup(
     'setup-fortran-conda: Install AOCC Debian Package',
@@ -131,12 +116,6 @@ export async function setup(version = '') {
     wrapperDirectory,
     variables: aoccEnvironment,
   } = await prepareAoccEnvironment(aoccRoot);
-  await addExistingPaths([
-    join(condaPrefix, 'bin'),
-    binDirectory,
-    wrapperDirectory,
-  ]);
-
   const ldLibraryPath = prependPathEntries(
     [libraryDirectory, library32Directory].filter((candidate) =>
       existsSync(candidate),
@@ -149,22 +128,23 @@ export async function setup(version = '') {
     ),
   );
 
-  await verifyCommands([
-    { command: 'amdflang', args: ['--version'] },
-    { command: 'amdclang', args: ['-v'] },
-    { command: 'amdclang++', args: ['--version'] },
-  ]);
-
-  await exportCompilerEnvironment(
-    createCompilerEnvironment('amdflang', 'amdclang', 'amdclang++', {
+  await configureLinuxCompiler({
+    paths: [join(condaPrefix, 'bin'), binDirectory, wrapperDirectory],
+    compilers: {
+      fortran: 'amdflang',
+      c: 'amdclang',
+      cxx: 'amdclang++',
+    },
+    verificationCommands: [
+      { command: 'amdflang', args: ['--version'] },
+      { command: 'amdclang', args: ['-v'] },
+      { command: 'amdclang++', args: ['--version'] },
+    ],
+    environment: {
       ...additionalEnvironment,
       AOCC_HOME: aoccRoot,
       AOCC_ROOT: aoccRoot,
       LD_LIBRARY_PATH: ldLibraryPath,
-    }),
-  );
-
-  await configureLinuxUlimits();
-
-  logCompilerSetupComplete();
+    },
+  });
 }

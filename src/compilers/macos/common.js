@@ -1,11 +1,48 @@
 import { info } from '@actions/core';
 import { captureCommand } from '../../lib/command.js';
-import { assertPlatform, exportEnvironmentVariable } from '../common.js';
+import {
+  addExistingPaths,
+  assertPlatform,
+  createCompilerEnvironment,
+  createCompilerVerificationCommands,
+  exportCompilerEnvironment,
+  exportEnvironmentVariable,
+  logCompilerSetupComplete,
+  verifyCommands,
+} from '../common.js';
 
 export * from '../common.js';
 
 export function assertMacOs() {
   assertPlatform('darwin', 'This setup script is only supported on macOS.');
+}
+
+export async function configureMacOsCompiler({
+  paths,
+  compilers,
+  environment = {},
+  additionalVerificationCommands = [],
+}) {
+  assertMacOs();
+
+  await addExistingPaths(paths, { log: false });
+  await configureMacOsSdkRoot();
+  await verifyCommands(
+    createCompilerVerificationCommands(
+      compilers,
+      additionalVerificationCommands,
+    ),
+  );
+  await exportCompilerEnvironment(
+    createCompilerEnvironment(
+      compilers.fortran,
+      compilers.c,
+      compilers.cxx,
+      environment,
+    ),
+  );
+
+  logCompilerSetupComplete();
 }
 
 export async function configureMacOsSdkRoot() {

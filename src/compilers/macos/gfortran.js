@@ -6,18 +6,11 @@ import { captureCommand } from '../../lib/command.js';
 import { prependFlag } from '../../lib/environment.js';
 import { getErrorMessage } from '../../lib/errors.js';
 import {
-  addExistingPaths,
   assertMacOs,
-  configureMacOsSdkRoot,
-  createCompilerEnvironment,
-  createCondaPackageSpec,
-  exportCompilerEnvironment,
+  configureMacOsCompiler,
   getCondaPrefix,
-  installCondaPackages,
-  logCompilerSetupComplete,
+  installCondaCompilerPackages,
   runInGroup,
-  showCondaEnvironment,
-  verifyCommands,
 } from './common.js';
 
 async function detectHomebrewGccCommand() {
@@ -104,29 +97,20 @@ export async function setup(version = '') {
   assertMacOs();
 
   const { cCompiler, cxxCompiler } = await installHomebrewGcc(version);
-  await installCondaPackages([
-    createCondaPackageSpec('gfortran', version),
-    'binutils',
-  ]);
-  await showCondaEnvironment();
+  await installCondaCompilerPackages({
+    version,
+    versionedPackages: ['gfortran'],
+    packages: ['binutils'],
+  });
 
   const condaPrefix = await getCondaPrefix();
-  await addExistingPaths([join(condaPrefix, 'bin')], { log: false });
-  await configureMacOsSdkRoot();
-
-  await verifyCommands([
-    { command: 'gfortran', args: ['--version'] },
-    { command: cCompiler, args: ['--version'] },
-    { command: cxxCompiler, args: ['--version'] },
-  ]);
-  await exportCompilerEnvironment(
-    createCompilerEnvironment(
-      'gfortran',
-      cCompiler,
-      cxxCompiler,
-      createCondaGfortranEnvironment(condaPrefix),
-    ),
-  );
-
-  logCompilerSetupComplete();
+  await configureMacOsCompiler({
+    paths: [join(condaPrefix, 'bin')],
+    compilers: {
+      fortran: 'gfortran',
+      c: cCompiler,
+      cxx: cxxCompiler,
+    },
+    environment: createCondaGfortranEnvironment(condaPrefix),
+  });
 }

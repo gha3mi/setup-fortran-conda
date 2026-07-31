@@ -2,21 +2,17 @@ import { info } from '@actions/core';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import {
-  addExistingPaths,
   assertWindows,
-  createCompilerEnvironment,
+  configureWindowsCompiler,
   createCondaPackageSpec,
-  exportCompilerEnvironment,
   exportEnvironmentVariable,
   getCondaPrefix,
   initializeMsvcEnvironment,
   installCondaPackages,
-  logCompilerSetupComplete,
   prependPathEntries,
   runInGroup,
   showCondaEnvironment,
   TOOLS_ENVIRONMENT_NAME,
-  verifyCommands,
 } from './common.js';
 
 const COMPILER_ENVIRONMENT_NAME = 'setup-fortran-conda-lfortran';
@@ -82,16 +78,13 @@ export async function setup(version = '') {
   ]
     .filter((candidate) => candidate && existsSync(candidate))
     .reverse();
-  await addExistingPaths(compilerPaths);
-
-  await verifyCommands([
-    { command: 'lfortran', args: ['--version'] },
-    { command: 'clang', args: ['--version'] },
-    { command: 'clang++', args: ['--version'] },
-    { command: 'llvm-dwarfdump', args: ['--version'] },
-  ]);
-  await exportCompilerEnvironment(
-    createCompilerEnvironment('lfortran', 'clang', 'clang++', {
+  await configureWindowsCompiler({
+    paths: compilerPaths,
+    compilers: { fortran: 'lfortran', c: 'clang', cxx: 'clang++' },
+    additionalVerificationCommands: [
+      { command: 'llvm-dwarfdump', args: ['--version'] },
+    ],
+    environment: {
       INCLUDE: prependPathEntries(
         [
           join(toolsPrefix, 'Library', 'include'),
@@ -103,8 +96,6 @@ export async function setup(version = '') {
       CMAKE_AR: 'llvm-ar',
       CMAKE_RANLIB: 'llvm-ranlib',
       CMAKE_LINKER: 'lld',
-    }),
-  );
-
-  logCompilerSetupComplete();
+    },
+  });
 }

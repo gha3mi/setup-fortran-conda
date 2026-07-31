@@ -6,19 +6,13 @@ export const modules = {
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   Bf: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_2__.Bf),
-/* harmony export */   I6: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_2__.I6),
-/* harmony export */   MA: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_2__.MA),
-/* harmony export */   Qv: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_2__.Qv),
 /* harmony export */   Se: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_2__.Se),
-/* harmony export */   Tp: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_2__.Tp),
-/* harmony export */   WQ: () => (/* binding */ configureMacOsSdkRoot),
-/* harmony export */   Ys: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_2__.Ys),
+/* harmony export */   dF: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_2__.dF),
 /* harmony export */   eI: () => (/* binding */ assertMacOs),
-/* harmony export */   s6: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_2__.s6),
-/* harmony export */   x7: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_2__.x7),
-/* harmony export */   zk: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_2__.zk)
+/* harmony export */   fF: () => (/* binding */ configureMacOsCompiler),
+/* harmony export */   s6: () => (/* reexport safe */ _common_js__WEBPACK_IMPORTED_MODULE_2__.s6)
 /* harmony export */ });
+/* unused harmony export configureMacOsSdkRoot */
 /* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3360);
 /* harmony import */ var _lib_command_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7819);
 /* harmony import */ var _common_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(9674);
@@ -30,6 +24,34 @@ export const modules = {
 
 function assertMacOs() {
   (0,_common_js__WEBPACK_IMPORTED_MODULE_2__/* .assertPlatform */ .G6)('darwin', 'This setup script is only supported on macOS.');
+}
+
+async function configureMacOsCompiler({
+  paths,
+  compilers,
+  environment = {},
+  additionalVerificationCommands = [],
+}) {
+  assertMacOs();
+
+  await (0,_common_js__WEBPACK_IMPORTED_MODULE_2__/* .addExistingPaths */ .Bf)(paths, { log: false });
+  await configureMacOsSdkRoot();
+  await (0,_common_js__WEBPACK_IMPORTED_MODULE_2__/* .verifyCommands */ .I6)(
+    (0,_common_js__WEBPACK_IMPORTED_MODULE_2__/* .createCompilerVerificationCommands */ .dQ)(
+      compilers,
+      additionalVerificationCommands,
+    ),
+  );
+  await (0,_common_js__WEBPACK_IMPORTED_MODULE_2__/* .exportCompilerEnvironment */ .x7)(
+    (0,_common_js__WEBPACK_IMPORTED_MODULE_2__/* .createCompilerEnvironment */ .Tp)(
+      compilers.fortran,
+      compilers.c,
+      compilers.cxx,
+      environment,
+    ),
+  );
+
+  (0,_common_js__WEBPACK_IMPORTED_MODULE_2__/* .logCompilerSetupComplete */ .Ys)();
 }
 
 async function configureMacOsSdkRoot() {
@@ -160,31 +182,22 @@ async function setup(version = '') {
   (0,_common_js__WEBPACK_IMPORTED_MODULE_6__/* .assertMacOs */ .eI)();
 
   const { cCompiler, cxxCompiler } = await installHomebrewGcc(version);
-  await (0,_common_js__WEBPACK_IMPORTED_MODULE_6__/* .installCondaPackages */ .MA)([
-    (0,_common_js__WEBPACK_IMPORTED_MODULE_6__/* .createCondaPackageSpec */ .zk)('gfortran', version),
-    'binutils',
-  ]);
-  await (0,_common_js__WEBPACK_IMPORTED_MODULE_6__/* .showCondaEnvironment */ .Qv)();
+  await (0,_common_js__WEBPACK_IMPORTED_MODULE_6__/* .installCondaCompilerPackages */ .dF)({
+    version,
+    versionedPackages: ['gfortran'],
+    packages: ['binutils'],
+  });
 
   const condaPrefix = await (0,_common_js__WEBPACK_IMPORTED_MODULE_6__/* .getCondaPrefix */ .s6)();
-  await (0,_common_js__WEBPACK_IMPORTED_MODULE_6__/* .addExistingPaths */ .Bf)([(0,node_path__WEBPACK_IMPORTED_MODULE_3__.join)(condaPrefix, 'bin')], { log: false });
-  await (0,_common_js__WEBPACK_IMPORTED_MODULE_6__/* .configureMacOsSdkRoot */ .WQ)();
-
-  await (0,_common_js__WEBPACK_IMPORTED_MODULE_6__/* .verifyCommands */ .I6)([
-    { command: 'gfortran', args: ['--version'] },
-    { command: cCompiler, args: ['--version'] },
-    { command: cxxCompiler, args: ['--version'] },
-  ]);
-  await (0,_common_js__WEBPACK_IMPORTED_MODULE_6__/* .exportCompilerEnvironment */ .x7)(
-    (0,_common_js__WEBPACK_IMPORTED_MODULE_6__/* .createCompilerEnvironment */ .Tp)(
-      'gfortran',
-      cCompiler,
-      cxxCompiler,
-      createCondaGfortranEnvironment(condaPrefix),
-    ),
-  );
-
-  (0,_common_js__WEBPACK_IMPORTED_MODULE_6__/* .logCompilerSetupComplete */ .Ys)();
+  await (0,_common_js__WEBPACK_IMPORTED_MODULE_6__/* .configureMacOsCompiler */ .fF)({
+    paths: [(0,node_path__WEBPACK_IMPORTED_MODULE_3__.join)(condaPrefix, 'bin')],
+    compilers: {
+      fortran: 'gfortran',
+      c: cCompiler,
+      cxx: cxxCompiler,
+    },
+    environment: createCondaGfortranEnvironment(condaPrefix),
+  });
 }
 
 

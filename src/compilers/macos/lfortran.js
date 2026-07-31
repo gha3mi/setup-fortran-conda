@@ -1,55 +1,43 @@
 import { join } from 'node:path';
 import {
-  addExistingPaths,
   assertMacOs,
-  configureMacOsSdkRoot,
-  createCompilerEnvironment,
-  createCondaPackageSpec,
-  exportCompilerEnvironment,
+  configureMacOsCompiler,
   getCondaPrefix,
-  installCondaPackages,
-  logCompilerSetupComplete,
-  showCondaEnvironment,
-  verifyCommands,
+  installCondaCompilerPackages,
 } from './common.js';
 
 export async function setup(version = '') {
   assertMacOs();
 
-  const packages = [
-    createCondaPackageSpec('lfortran', version),
-    'git',
-    'llvm',
-    'llvm-tools',
-    'clangxx',
-    'clang-tools',
-    'llvm-openmp',
-  ];
-  await installCondaPackages(packages);
-  await showCondaEnvironment();
+  await installCondaCompilerPackages({
+    version,
+    versionedPackages: ['lfortran'],
+    packages: [
+      'git',
+      'llvm',
+      'llvm-tools',
+      'clangxx',
+      'clang-tools',
+      'llvm-openmp',
+    ],
+  });
 
   const condaPrefix = await getCondaPrefix();
-  await addExistingPaths([join(condaPrefix, 'bin')], { log: false });
-  await configureMacOsSdkRoot();
-
-  await verifyCommands([
-    { command: 'lfortran', args: ['--version'] },
-    { command: 'clang', args: ['--version'] },
-    { command: 'clang++', args: ['--version'] },
-    { command: 'llvm-dwarfdump', args: ['--version'] },
-    { command: 'llvm-ar' },
-    { command: 'llvm-ranlib' },
-  ]);
-  await exportCompilerEnvironment(
-    createCompilerEnvironment('lfortran', 'clang', 'clang++', {
+  await configureMacOsCompiler({
+    paths: [join(condaPrefix, 'bin')],
+    compilers: { fortran: 'lfortran', c: 'clang', cxx: 'clang++' },
+    additionalVerificationCommands: [
+      { command: 'llvm-dwarfdump', args: ['--version'] },
+      { command: 'llvm-ar' },
+      { command: 'llvm-ranlib' },
+    ],
+    environment: {
       FPM_AR: 'llvm-ar -c',
       AR: 'llvm-ar',
       RANLIB: 'llvm-ranlib',
       CMAKE_AR: 'llvm-ar',
       CMAKE_RANLIB: 'llvm-ranlib',
       LFORTRAN_LINKER: 'clang',
-    }),
-  );
-
-  logCompilerSetupComplete();
+    },
+  });
 }

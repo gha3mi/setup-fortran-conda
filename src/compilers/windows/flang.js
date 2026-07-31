@@ -1,19 +1,9 @@
 import { existsSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import {
-  addExistingPaths,
-  assertWindows,
-  createCompilerEnvironment,
-  createCondaPackageSpec,
-  exportCompilerEnvironment,
   getCondaExecutablePaths,
-  getCondaPrefix,
-  initializeMsvcEnvironment,
-  installCondaPackages,
-  logCompilerSetupComplete,
   prependPathEntries,
-  showCondaEnvironment,
-  verifyCommands,
+  setupCondaCompiler,
 } from './common.js';
 
 function getClangRuntimeLibraryPaths(condaPrefix) {
@@ -35,42 +25,34 @@ function getClangRuntimeLibraryPaths(condaPrefix) {
 }
 
 export async function setup(version = '') {
-  assertWindows();
+  await setupCondaCompiler({
+    version,
+    versionedPackages: ['flang'],
+    packages: ['flang-rt_win-64'],
+    compilers: { fortran: 'flang', c: 'clang-cl', cxx: 'clang-cl' },
+    requiresMsvc: true,
+    createConfiguration: (condaPrefix) => {
+      const libraryPath = join(condaPrefix, 'Library', 'lib');
+      const runtimeLibraryPaths = getClangRuntimeLibraryPaths(condaPrefix);
 
-  const packages = [
-    createCondaPackageSpec('flang', version),
-    'flang-rt_win-64',
-  ];
-  await initializeMsvcEnvironment();
-  await installCondaPackages(packages);
-  await showCondaEnvironment();
-
-  const condaPrefix = await getCondaPrefix();
-  const libraryPath = join(condaPrefix, 'Library', 'lib');
-  const runtimeLibraryPaths = getClangRuntimeLibraryPaths(condaPrefix);
-  await addExistingPaths([
-    ...getCondaExecutablePaths(condaPrefix),
-    libraryPath,
-    ...runtimeLibraryPaths,
-  ]);
-  await verifyCommands([
-    { command: 'flang', args: ['--version'] },
-    { command: 'clang-cl', args: ['--version'] },
-  ]);
-
-  await exportCompilerEnvironment(
-    createCompilerEnvironment('flang', 'clang-cl', 'clang-cl', {
-      INCLUDE: prependPathEntries(
-        [join(condaPrefix, 'Library', 'include')],
-        process.env.INCLUDE,
-      ),
-      LIB: prependPathEntries(
-        [...runtimeLibraryPaths, libraryPath],
-        process.env.LIB,
-      ),
-      AR: 'lib.exe',
-    }),
-  );
-
-  logCompilerSetupComplete();
+      return {
+        paths: [
+          ...getCondaExecutablePaths(condaPrefix),
+          libraryPath,
+          ...runtimeLibraryPaths,
+        ],
+        environment: {
+          INCLUDE: prependPathEntries(
+            [join(condaPrefix, 'Library', 'include')],
+            process.env.INCLUDE,
+          ),
+          LIB: prependPathEntries(
+            [...runtimeLibraryPaths, libraryPath],
+            process.env.LIB,
+          ),
+          AR: 'lib.exe',
+        },
+      };
+    },
+  });
 }

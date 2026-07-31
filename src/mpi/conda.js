@@ -1,7 +1,7 @@
 import { info } from '@actions/core';
 import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { createCondaPackageSpec } from '../compilers/common.js';
+import { createCondaPackageSpec } from '../lib/conda.js';
 import {
   addMpiPaths,
   createHostedRunnerUcxEnvironment,
@@ -98,7 +98,7 @@ export async function setupCondaMpi({
     createCondaPackageSpec(implementation, mpiVersion),
   ];
 
-  await installMpiPackages(packages, ['conda-forge']);
+  await installMpiPackages(packages);
 
   const condaPrefix = await getCondaPrefix();
   addMpiPaths(condaPrefix, operatingSystem);

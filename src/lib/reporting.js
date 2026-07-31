@@ -1,5 +1,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { getGitHubToken, requestWorkflowJobs } from './github.js';
+import { inferToolFromJobName, TOOL_ORDER } from './metadata.js';
 
 const OPERATING_SYSTEM_ORDER = Object.freeze(['ubuntu', 'macos', 'windows']);
 
@@ -11,17 +13,90 @@ export async function readMetadataFiles(directory) {
     return [];
   }
 
-  const metadataEntries = [];
-  for (const file of files.filter((name) => name.endsWith('.json'))) {
-    try {
-      const content = await fs.readFile(path.join(directory, file), 'utf8');
-      metadataEntries.push(JSON.parse(content));
-    } catch {
-      // Cancelled jobs may leave incomplete metadata artifacts.
+  const metadataEntries = await Promise.all(
+    files
+      .filter((name) => name.endsWith('.json'))
+      .map(async (file) => {
+        try {
+          const content = await fs.readFile(path.join(directory, file), 'utf8');
+          return JSON.parse(content);
+        } catch {
+          // Cancelled jobs may leave incomplete metadata artifacts.
+          return null;
+        }
+      }),
+  );
+
+  return metadataEntries.filter(Boolean);
+}
+
+function validateWorkflowContext(context) {
+  if (!context.token) {
+    throw new Error('Missing GITHUB_TOKEN/GH_TOKEN');
+  }
+  if (!context.repository || !context.runId) {
+    throw new Error('Missing GITHUB_REPOSITORY or GITHUB_RUN_ID');
+  }
+
+  return context;
+}
+
+export function readWorkflowContext(environment = process.env) {
+  return validateWorkflowContext({
+    token: getGitHubToken(environment),
+    repository: environment.GITHUB_REPOSITORY || environment.REPO || '',
+    runId: environment.GITHUB_RUN_ID || environment.RUN_ID || '',
+    apiUrl: environment.GITHUB_API_URL || 'https://api.github.com',
+  });
+}
+
+export async function loadWorkflowData({
+  token,
+  repository,
+  runId,
+  apiUrl = 'https://api.github.com',
+  metadataDirectory,
+}) {
+  validateWorkflowContext({ token, repository, runId, apiUrl });
+
+  const [jobs, metadataEntries] = await Promise.all([
+    requestWorkflowJobs({ apiUrl, repository, runId, token }),
+    readMetadataFiles(metadataDirectory),
+  ]);
+
+  return {
+    jobs,
+    metadataEntries,
+    jobsById: new Map(jobs.map((job) => [job.id, job])),
+    metadataByJobId: new Map(
+      metadataEntries
+        .filter((metadata) => metadata?.job?.id)
+        .map((metadata) => [metadata.job.id, metadata]),
+    ),
+  };
+}
+
+export function inferMetadataTool(metadata, job) {
+  return (
+    metadata?.tool ||
+    inferToolFromJobName(metadata?.job?.name || job?.name, {
+      minimumParts: 2,
+    })
+  );
+}
+
+export function getUsedTools(metadataEntries, jobsById) {
+  const usedTools = new Set();
+
+  for (const metadata of metadataEntries) {
+    const job = metadata?.job?.id ? jobsById.get(metadata.job.id) : null;
+    const tool = inferMetadataTool(metadata, job);
+    if (TOOL_ORDER.includes(tool)) {
+      usedTools.add(tool);
     }
   }
 
-  return metadataEntries;
+  return TOOL_ORDER.filter((tool) => usedTools.has(tool));
 }
 
 export function formatOperatingSystem(metadata) {

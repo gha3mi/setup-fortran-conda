@@ -1,6 +1,4 @@
-import { captureCommand } from '../lib/command.js';
-import { getErrorMessage } from '../lib/errors.js';
-import { TOOLS_ENVIRONMENT_NAME } from '../compilers/common.js';
+import { listCondaPackages, TOOLS_ENVIRONMENT_NAME } from '../lib/conda.js';
 
 export const BLAS_IMPLEMENTATIONS = Object.freeze([
   'none',
@@ -104,27 +102,9 @@ export async function inspectBlasInstallation(
     };
   }
 
-  const result = await captureCommand('conda', [
-    'list',
-    '--name',
-    environmentName,
-    '--json',
-  ]);
-  if (result.exitCode !== 0) {
-    throw new Error(
-      `Unable to inspect BLAS/LAPACK packages: ${result.stderr || result.stdout}`,
-    );
-  }
-
-  let packages;
-  try {
-    packages = JSON.parse(result.stdout);
-  } catch (error) {
-    throw new Error(
-      `Unable to parse installed BLAS/LAPACK packages: ${getErrorMessage(error)}`,
-      { cause: error },
-    );
-  }
+  const packages = await listCondaPackages(environmentName, {
+    description: 'BLAS/LAPACK',
+  });
 
   return {
     implementation,

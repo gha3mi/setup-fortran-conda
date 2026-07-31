@@ -1,6 +1,10 @@
 import { exec } from '@actions/exec';
 import { getErrorMessage } from './errors.js';
 
+export function combineCommandOutput(result) {
+  return `${result.stdout}\n${result.stderr}`.trim();
+}
+
 export async function captureCommand(command, args = []) {
   let stdout = '';
   let stderr = '';

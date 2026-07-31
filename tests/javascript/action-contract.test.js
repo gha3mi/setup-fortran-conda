@@ -19,6 +19,7 @@ import {
 } from '../../src/blas/support.js';
 import {
   createCompilerEnvironment,
+  createCompilerVerificationCommands,
   createCondaPackageSpec,
   getCondaExecutablePaths,
 } from '../../src/compilers/common.js';
@@ -36,6 +37,20 @@ test('compiler environment uses the public compiler variables', () => {
     CMAKE_C_COMPILER: 'gcc',
     CMAKE_CXX_COMPILER: 'g++',
   });
+});
+
+test('compiler verification checks each compiler command once', () => {
+  assert.deepEqual(
+    createCompilerVerificationCommands(
+      { fortran: 'ifx', c: 'icx', cxx: 'icx' },
+      [{ command: 'llvm-ar' }],
+    ),
+    [
+      { command: 'ifx', args: ['--version'] },
+      { command: 'icx', args: ['--version'] },
+      { command: 'llvm-ar' },
+    ],
+  );
 });
 
 test('MPI environment uses the public MPI variables', () => {

@@ -1,4 +1,4 @@
-import { captureCommand } from './command.js';
+import { captureCommand, combineCommandOutput } from './command.js';
 import { isCommandNotFoundOutput } from './diagnostics.js';
 import { firstLine, firstVersion } from './version.js';
 
@@ -42,13 +42,19 @@ function createCompilerVersionProbes(compilerBinary, compiler) {
   return probes;
 }
 
+function readProbeOutput(result) {
+  return {
+    output: combineCommandOutput(result),
+    rawFirstLine: firstLine(result.stdout) || firstLine(result.stderr),
+  };
+}
+
 export async function detectCompilerVersion(compilerBinary, compiler) {
   const probes = createCompilerVersionProbes(compilerBinary, compiler);
 
   for (const [command, args] of probes) {
     const result = await captureCommand(command, args);
-    const output = `${result.stdout}\n${result.stderr}`.trim();
-    const rawFirstLine = firstLine(result.stdout) || firstLine(result.stderr);
+    const { output, rawFirstLine } = readProbeOutput(result);
 
     if (
       result.exitCode !== 0 &&
@@ -94,8 +100,7 @@ export async function detectToolVersion(tool) {
   }
 
   const result = await captureCommand(probe.command, probe.args);
-  const output = `${result.stdout}\n${result.stderr}`.trim();
-  const rawFirstLine = firstLine(result.stdout) || firstLine(result.stderr);
+  const { output, rawFirstLine } = readProbeOutput(result);
 
   if (
     result.exitCode !== 0 &&

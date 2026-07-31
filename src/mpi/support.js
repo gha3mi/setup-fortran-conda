@@ -19,12 +19,10 @@ export const MPI_SUPPORT = Object.freeze({
 });
 
 const MPI_INSTALLERS = Object.freeze({
-  mpich: (options) => setupCondaMpi({ ...options, implementation: 'mpich' }),
-  openmpi: (options) =>
-    setupCondaMpi({ ...options, implementation: 'openmpi' }),
-  intelmpi: ({ mpiVersion, operatingSystem }) =>
-    setupIntelMpi({ mpiVersion, operatingSystem }),
-  hpcx: ({ mpiVersion }) => setupHpcx({ mpiVersion }),
+  mpich: setupCondaMpi,
+  openmpi: setupCondaMpi,
+  intelmpi: setupIntelMpi,
+  hpcx: setupHpcx,
 });
 
 function createSupportedRows(operatingSystem) {
@@ -70,6 +68,7 @@ export async function setupMpi({
   }
 
   const descriptor = await installer({
+    implementation,
     mpiVersion,
     compilerVersion,
     operatingSystem,

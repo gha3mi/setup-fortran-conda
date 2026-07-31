@@ -1,14 +1,15 @@
 import { addPath, info } from '@actions/core';
 import { existsSync } from 'node:fs';
+import { exportEnvironment, runInGroup } from '../lib/action.js';
 import { captureCommand } from '../lib/command.js';
 import {
-  exportEnvironment,
+  CONDA_FORGE_CHANNEL,
   getCondaExecutablePaths,
   getCondaPrefix,
   installCondaPackages,
-  runInGroup,
+  listCondaPackages,
   TOOLS_ENVIRONMENT_NAME,
-} from '../compilers/common.js';
+} from '../lib/conda.js';
 
 export { captureCommand, getCondaPrefix, runInGroup };
 
@@ -23,7 +24,10 @@ const DEFAULT_LAUNCHER = Object.freeze({
   numProcFlag: '-n',
 });
 
-export async function installMpiPackages(packages, channels = ['conda-forge']) {
+export async function installMpiPackages(
+  packages,
+  channels = [CONDA_FORGE_CHANNEL],
+) {
   await installCondaPackages(packages, {
     channels,
     groupName: 'setup-fortran-conda: Install MPI Packages',
@@ -49,19 +53,10 @@ export function addMpiPaths(condaPrefix, operatingSystem) {
 }
 
 export async function getCondaPackageVersion(packageName) {
-  const result = await captureCommand('conda', [
-    'list',
-    '--name',
-    TOOLS_ENVIRONMENT_NAME,
-    packageName,
-    '--json',
-  ]);
-  if (result.exitCode !== 0) {
-    return 'Unknown';
-  }
-
   try {
-    const packages = JSON.parse(result.stdout);
+    const packages = await listCondaPackages(TOOLS_ENVIRONMENT_NAME, {
+      packageName,
+    });
     const match = packages.find((candidate) => candidate.name === packageName);
     return match?.version || 'Unknown';
   } catch {

@@ -7,18 +7,12 @@ import { prependPathEntries } from '../../lib/environment.js';
 import { getErrorMessage } from '../../lib/errors.js';
 import { compareNumericVersions } from '../../lib/version.js';
 import {
-  addExistingPaths,
   assertLinux,
-  configureLinuxUlimits,
-  createCompilerEnvironment,
-  downloadFile,
-  exportCompilerEnvironment,
-  fetchTextWithCurl,
+  configureLinuxCompiler,
   getCondaPrefix,
-  logCompilerSetupComplete,
   runInGroup,
-  verifyCommands,
 } from './common.js';
+import { downloadFile, fetchTextWithCurl } from './install.js';
 
 const NVHPC_APT_ROOT =
   'https://developer.download.nvidia.com/hpc-sdk/ubuntu/amd64';
@@ -134,29 +128,15 @@ export async function setup(version = '') {
   const mpiLibraryDirectory = join(versionRoot, 'comm_libs', 'mpi', 'lib');
   const condaPrefix = await getCondaPrefix();
 
-  await addExistingPaths([
-    compilerBinDirectory,
-    mpiBinDirectory,
-    join(condaPrefix, 'bin'),
-  ]);
-
-  await verifyCommands([
-    { command: 'nvfortran', args: ['--version'] },
-    { command: 'nvc', args: ['--version'] },
-    { command: 'nvc++', args: ['--version'] },
-  ]);
-
-  await exportCompilerEnvironment(
-    createCompilerEnvironment('nvfortran', 'nvc', 'nvc++', {
+  await configureLinuxCompiler({
+    paths: [compilerBinDirectory, mpiBinDirectory, join(condaPrefix, 'bin')],
+    compilers: { fortran: 'nvfortran', c: 'nvc', cxx: 'nvc++' },
+    environment: {
       LD_LIBRARY_PATH: prependPathEntries(
         [compilerLibraryDirectory, mpiLibraryDirectory],
         process.env.LD_LIBRARY_PATH,
       ),
       NVHPC: NVHPC_INSTALLATION_ROOT,
-    }),
-  );
-
-  await configureLinuxUlimits();
-
-  logCompilerSetupComplete();
+    },
+  });
 }

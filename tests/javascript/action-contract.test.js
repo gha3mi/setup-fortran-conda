@@ -13,6 +13,7 @@ import { MPI_SUPPORT } from '../../src/mpi/support.js';
 import {
   assertBlasSupported,
   BLAS_IMPLEMENTATIONS,
+  createBlasCompilerEnvironment,
   createBlasPackageSpec,
   validateBlasPackages,
 } from '../../src/blas/support.js';
@@ -251,6 +252,44 @@ test('BLAS validation requires matching BLAS and LAPACK provider builds', () => 
   assert.throws(
     () => validateBlasPackages(packages, 'mkl'),
     /expected an exact mkl provider/,
+  );
+});
+
+test('Windows ifx uses GNU external names for Netlib and OpenBLAS', () => {
+  const options = {
+    operatingSystem: 'windows',
+    compiler: 'ifx',
+    currentFlags: '/O2',
+  };
+
+  const expected = {
+    FFLAGS: '/names:lowercase /assume:underscore /O2',
+  };
+  assert.deepEqual(
+    createBlasCompilerEnvironment({
+      ...options,
+      implementation: 'netlib',
+    }),
+    expected,
+  );
+  assert.deepEqual(
+    createBlasCompilerEnvironment({
+      ...options,
+      implementation: 'openblas',
+    }),
+    expected,
+  );
+  assert.deepEqual(
+    createBlasCompilerEnvironment({ ...options, implementation: 'mkl' }),
+    {},
+  );
+  assert.deepEqual(
+    createBlasCompilerEnvironment({
+      ...options,
+      operatingSystem: 'linux',
+      implementation: 'openblas',
+    }),
+    {},
   );
 });
 

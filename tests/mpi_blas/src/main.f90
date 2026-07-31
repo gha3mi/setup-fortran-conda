@@ -2,14 +2,16 @@ module mpi_blas_lapack_test
    use, intrinsic :: iso_fortran_env, only : real64
    use mpi_f08, only : mpi_allreduce, mpi_comm_rank, mpi_comm_size, mpi_comm_world, &
       mpi_finalize, mpi_init, mpi_integer, mpi_max
-   implicit none (type, external)
+   ! allow(C003)
+   implicit none
    private
    public :: verify_mpi_blas_lapack
 
    interface
       subroutine daxpy(n, alpha, x, incx, y, incy)
          import real64
-         implicit none (type, external)
+         ! allow(C003)
+         implicit none
          integer, intent(in) :: n, incx, incy
          real(real64), intent(in) :: alpha
          ! allow(C071)
@@ -20,7 +22,8 @@ module mpi_blas_lapack_test
 
       subroutine dgesv(n, nrhs, a, lda, ipiv, b, ldb, info)
          import real64
-         implicit none (type, external)
+         ! allow(C003)
+         implicit none
          integer, intent(in) :: n, nrhs, lda, ldb
          ! allow(C071)
          integer, intent(out) :: ipiv(*)

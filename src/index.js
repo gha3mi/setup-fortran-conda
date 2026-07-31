@@ -21,6 +21,7 @@ import {
 import { assertMpiSupported, setupMpi } from './mpi/support.js';
 import {
   assertBlasSupported,
+  configureBlasCompilerEnvironment,
   inspectBlasInstallation,
 } from './blas/support.js';
 import {
@@ -149,6 +150,11 @@ async function main() {
     }
 
     if (inputs.blas !== 'none') {
+      await configureBlasCompilerEnvironment({
+        implementation: inputs.blas,
+        operatingSystem,
+        compiler: inputs.compiler,
+      });
       const descriptor = await inspectBlasInstallation(inputs.blas);
       applyBlasDescriptor(metadata, descriptor);
     }

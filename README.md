@@ -128,7 +128,7 @@ subsequent workflow steps.
 - [Changelog](CHANGELOG.md)
 - [Releases](https://github.com/gha3mi/setup-fortran-conda/releases)
 - [Issues](https://github.com/gha3mi/setup-fortran-conda/issues)
-- [Maintainer release guide](RELEASING.md)
+- [Maintainer guide](MAINTAINING.md)
 - [License](LICENSE)
 
 ## Related

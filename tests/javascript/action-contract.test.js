@@ -226,9 +226,21 @@ test('BLAS input remains exact and uses an exact Conda provider selector', () =>
 
 test('BLAS validation requires matching BLAS and LAPACK provider builds', () => {
   const packages = [
-    { name: 'blas-devel', version: '3.11.0', build: '5_h1_openblas' },
-    { name: 'libblas', version: '3.11.0', build: '5_h2_openblas' },
-    { name: 'liblapack', version: '3.11.0', build: '5_h3_openblas' },
+    {
+      name: 'blas-devel',
+      version: '3.11.0',
+      build_string: '5_h1_openblas',
+    },
+    {
+      name: 'libblas',
+      version: '3.11.0',
+      build_string: '5_h2_openblas',
+    },
+    {
+      name: 'liblapack',
+      version: '3.11.0',
+      build_string: '5_h3_openblas',
+    },
   ];
 
   assert.deepEqual(validateBlasPackages(packages, 'openblas'), {

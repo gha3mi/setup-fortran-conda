@@ -31417,7 +31417,9 @@ function validateBlasPackages(packages, implementation) {
       );
     }
 
-    const build = String(installedPackage.build || '');
+    const build = String(
+      installedPackage.build_string ?? installedPackage.build ?? '',
+    );
     if (!build.endsWith(expectedBuildSuffix)) {
       throw new Error(
         `${packageName} uses build "${build}", expected an exact ` +

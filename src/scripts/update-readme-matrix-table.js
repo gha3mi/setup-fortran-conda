@@ -1,13 +1,17 @@
-import fs from 'node:fs/promises';
 import path from 'node:path';
+import { pathToFileURL } from 'node:url';
 import { isCommandNotFoundOutput } from '../lib/diagnostics.js';
-import { requestGitHubJson } from '../lib/github.js';
+import { requestWorkflowJobs } from '../lib/github.js';
 import { replaceMarkedSection } from '../lib/markdown.js';
 import { inferToolFromJobName, TOOL_ORDER } from '../lib/metadata.js';
+import {
+  compareConfigurations,
+  createConfiguration,
+  readMetadataFiles,
+} from '../lib/reporting.js';
 
 const START_MARKER = '<!-- STATUS:setup-fortran-conda:START -->';
 const END_MARKER = '<!-- STATUS:setup-fortran-conda:END -->';
-const OPERATING_SYSTEM_ORDER = Object.freeze(['ubuntu', 'macos', 'windows']);
 const STATUS_SYMBOLS = Object.freeze({
   success: '✅',
   failure: '❌',
@@ -47,55 +51,6 @@ function inferTool(metadata, job) {
   );
 }
 
-function formatOperatingSystem(metadata) {
-  const family = String(metadata?.runner?.os_family || '').toLowerCase();
-  const version = metadata?.runner?.os_version || '';
-  const label = metadata?.runner?.os_label || '';
-
-  if (family === 'ubuntu' && version) {
-    return `ubuntu ${version.split('.').slice(0, 2).join('.')}`;
-  }
-
-  if (family === 'macos' && version) {
-    return `macos ${version.split('.')[0]}`;
-  }
-
-  if (family === 'windows') {
-    const year = label.match(/(20\d{2})/)?.[1];
-    return year ? `windows ${year}` : 'windows';
-  }
-
-  if (family && version) {
-    return `${family} ${version}`;
-  }
-  if (family) {
-    return family;
-  }
-
-  return String(metadata?.runner?.os || 'unknown').toLowerCase();
-}
-
-async function readMetadataFiles(directory) {
-  let files;
-  try {
-    files = await fs.readdir(directory);
-  } catch {
-    return [];
-  }
-
-  const metadata = [];
-  for (const file of files.filter((name) => name.endsWith('.json'))) {
-    try {
-      const content = await fs.readFile(path.join(directory, file), 'utf8');
-      metadata.push(JSON.parse(content));
-    } catch {
-      // Ignore incomplete metadata from cancelled jobs.
-    }
-  }
-
-  return metadata;
-}
-
 function getUsedTools(metadataEntries, jobsById) {
   const usedTools = new Set();
 
@@ -110,17 +65,23 @@ function getUsedTools(metadataEntries, jobsById) {
   return TOOL_ORDER.filter((tool) => usedTools.has(tool));
 }
 
-function createRowKey(row, includeMpiColumns) {
+function createRowKey(row, includeMpiColumns, includeBlasColumn) {
   const values = [row.operatingSystem, row.compiler, row.compilerVersion];
   if (includeMpiColumns) {
     values.push(row.mpi, row.mpiVersion);
   }
+  if (includeBlasColumn) {
+    values.push(row.blas);
+  }
   return values.join('||');
 }
 
-function createMatrix(metadataEntries, jobsById, tools) {
+export function createMatrix(metadataEntries, jobsById, tools) {
   const includeMpiColumns = metadataEntries.some(
     (metadata) => metadata?.mpi?.enabled === true,
+  );
+  const includeBlasColumn = metadataEntries.some(
+    (metadata) => metadata?.blas?.enabled === true,
   );
   const matrix = new Map();
 
@@ -131,30 +92,23 @@ function createMatrix(metadataEntries, jobsById, tools) {
       continue;
     }
 
-    const compiler = escapeTableCell(metadata?.compiler?.requested || '');
+    const configuration = createConfiguration(metadata);
+    const compiler = escapeTableCell(configuration.compiler);
     if (!compiler) {
       continue;
     }
 
-    const mpiEnabled = metadata?.mpi?.enabled === true;
     const row = {
-      operatingSystem: escapeTableCell(formatOperatingSystem(metadata)),
+      operatingSystem: escapeTableCell(configuration.operatingSystem),
       compiler,
-      compilerVersion: normalizeDisplayValue(
-        metadata?.compiler?.actual_version,
-      ),
-      mpi: mpiEnabled
-        ? escapeTableCell(
-            metadata?.mpi?.implementation ||
-              metadata?.mpi?.requested ||
-              'Unknown',
-          )
+      compilerVersion: normalizeDisplayValue(configuration.compilerVersion),
+      mpi: escapeTableCell(configuration.mpi),
+      mpiVersion: configuration.mpi
+        ? normalizeDisplayValue(configuration.mpiVersion)
         : '',
-      mpiVersion: mpiEnabled
-        ? normalizeDisplayValue(metadata?.mpi?.actual_version)
-        : '',
+      blas: escapeTableCell(configuration.blas),
     };
-    const key = createRowKey(row, includeMpiColumns);
+    const key = createRowKey(row, includeMpiColumns, includeBlasColumn);
 
     if (!matrix.has(key)) {
       for (const availableTool of tools) {
@@ -169,49 +123,18 @@ function createMatrix(metadataEntries, jobsById, tools) {
 
   return {
     includeMpiColumns,
+    includeBlasColumn,
     rows: Array.from(matrix.values()),
   };
 }
 
-function operatingSystemRank(value) {
-  const family = String(value || '').split(' ')[0];
-  const index = OPERATING_SYSTEM_ORDER.indexOf(family);
-  return index === -1 ? Number.MAX_SAFE_INTEGER : index;
-}
-
-function compareRows(left, right) {
-  const rankDifference =
-    operatingSystemRank(left.operatingSystem) -
-    operatingSystemRank(right.operatingSystem);
-  if (rankDifference !== 0) {
-    return rankDifference;
-  }
-
-  for (const field of [
-    'operatingSystem',
-    'compiler',
-    'compilerVersion',
-    'mpi',
-  ]) {
-    const comparison = String(left[field] || '').localeCompare(
-      String(right[field] || ''),
-      undefined,
-      { numeric: true },
-    );
-    if (comparison !== 0) {
-      return comparison;
-    }
-  }
-
-  return 0;
-}
-
-function renderTable(rows, tools, includeMpiColumns) {
+export function renderTable(rows, tools, includeMpiColumns, includeBlasColumn) {
   const header = [
     'OS',
     'Compiler',
     'Version',
     ...(includeMpiColumns ? ['MPI', 'MPI Version'] : []),
+    ...(includeBlasColumn ? ['BLAS/LAPACK'] : []),
     ...tools,
   ];
   const alignment = [
@@ -219,6 +142,7 @@ function renderTable(rows, tools, includeMpiColumns) {
     '---',
     '---:',
     ...(includeMpiColumns ? ['---', '---:'] : []),
+    ...(includeBlasColumn ? ['---'] : []),
     ...tools.map(() => ':---:'),
   ];
   const lines = [
@@ -234,6 +158,9 @@ function renderTable(rows, tools, includeMpiColumns) {
       ...(includeMpiColumns
         ? [row.mpi ? `\`${escapeTableCell(row.mpi)}\`` : '', row.mpiVersion]
         : []),
+      ...(includeBlasColumn
+        ? [row.blas ? `\`${escapeTableCell(row.blas)}\`` : '']
+        : []),
       ...tools.map((tool) => row[tool] || '—'),
     ];
     lines.push(`| ${cells.join(' | ')} |`);
@@ -242,7 +169,7 @@ function renderTable(rows, tools, includeMpiColumns) {
   return lines.join('\n');
 }
 
-async function main() {
+export async function main() {
   const token = process.env.GITHUB_TOKEN || process.env.GH_TOKEN;
   const repository = process.env.GITHUB_REPOSITORY;
   const runId = process.env.GITHUB_RUN_ID;
@@ -259,30 +186,36 @@ async function main() {
     process.env.SETUP_FORTRAN_CONDA_META_DIR || '.setup-fortran-conda-meta';
   const readmePath = process.env.README_FILE || 'README.md';
   const metadataEntries = await readMetadataFiles(metadataDirectory);
-  const response = await requestGitHubJson(
-    `${apiUrl}/repos/${repository}/actions/runs/${runId}/jobs?per_page=100`,
+  const jobs = await requestWorkflowJobs({
+    apiUrl,
+    repository,
+    runId,
     token,
-  );
-  const jobs = Array.isArray(response.jobs) ? response.jobs : [];
+  });
   const jobsById = new Map(jobs.map((job) => [job.id, job]));
   const tools = getUsedTools(metadataEntries, jobsById);
-  const { rows, includeMpiColumns } = createMatrix(
+  const { rows, includeMpiColumns, includeBlasColumn } = createMatrix(
     metadataEntries,
     jobsById,
     tools,
   );
 
-  rows.sort(compareRows);
+  rows.sort(compareConfigurations);
   await replaceMarkedSection({
     filePath: readmePath,
     startMarker: START_MARKER,
     endMarker: END_MARKER,
-    content: renderTable(rows, tools, includeMpiColumns),
+    content: renderTable(rows, tools, includeMpiColumns, includeBlasColumn),
   });
   console.log('README updated with matrix table.');
 }
 
-main().catch((error) => {
-  console.error(error);
-  process.exitCode = 1;
-});
+const entryPath = process.argv[1]
+  ? pathToFileURL(path.resolve(process.argv[1])).href
+  : '';
+if (entryPath === import.meta.url) {
+  main().catch((error) => {
+    console.error(error);
+    process.exitCode = 1;
+  });
+}

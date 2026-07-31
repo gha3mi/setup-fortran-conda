@@ -6,6 +6,7 @@ import { test } from 'node:test';
 
 const REPOSITORY_ROOT = fileURLToPath(new URL('../..', import.meta.url));
 const UNBUNDLED_SCRIPTS = Object.freeze([
+  'src/scripts/generate-status.js',
   'src/scripts/update-readme-fpm-deps.js',
   'src/scripts/update-readme-fpm-modules.js',
   'src/scripts/update-readme-matrix-table.js',

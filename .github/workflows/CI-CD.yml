@@ -315,8 +315,6 @@ jobs:
         - {os: windows-latest, compiler: gfortran,  blas: netlib,     fpm-version: ""}
         - {os: windows-latest, compiler: gfortran,  blas: openblas,   fpm-version: ""}
         - {os: windows-latest, compiler: gfortran,  blas: mkl,        fpm-version: ""}
-        - {os: windows-latest, compiler: ifx,       blas: netlib,     fpm-version: "0.12.0"}
-        - {os: windows-latest, compiler: ifx,       blas: openblas,   fpm-version: "0.12.0"}
         - {os: windows-latest, compiler: ifx,       blas: mkl,        fpm-version: "0.12.0"}
         - {os: windows-latest, compiler: flang,     blas: netlib,     fpm-version: ""}
         - {os: windows-latest, compiler: flang,     blas: openblas,   fpm-version: ""}
@@ -375,8 +373,6 @@ jobs:
         - {os: windows-latest, compiler: gfortran,  blas: netlib}
         - {os: windows-latest, compiler: gfortran,  blas: openblas}
         - {os: windows-latest, compiler: gfortran,  blas: mkl}
-        - {os: windows-latest, compiler: ifx,       blas: netlib}
-        - {os: windows-latest, compiler: ifx,       blas: openblas}
         - {os: windows-latest, compiler: ifx,       blas: mkl}
         - {os: windows-latest, compiler: flang,     blas: netlib}
         - {os: windows-latest, compiler: flang,     blas: openblas}
@@ -435,8 +431,6 @@ jobs:
         - {os: windows-latest, compiler: gfortran,  blas: netlib}
         - {os: windows-latest, compiler: gfortran,  blas: openblas}
         - {os: windows-latest, compiler: gfortran,  blas: mkl}
-        - {os: windows-latest, compiler: ifx,       blas: netlib}
-        - {os: windows-latest, compiler: ifx,       blas: openblas}
         - {os: windows-latest, compiler: ifx,       blas: mkl}
         - {os: windows-latest, compiler: flang,     blas: netlib}
         - {os: windows-latest, compiler: flang,     blas: openblas}
@@ -493,8 +487,6 @@ jobs:
         - {os: macos-26-intel, compiler: gfortran,  mpi: openmpi,  blas: openblas,   fpm-version: ""}
         - {os: macos-26-intel, compiler: gfortran,  mpi: openmpi,  blas: mkl,        fpm-version: ""}
         - {os: macos-26-intel, compiler: gfortran,  mpi: openmpi,  blas: accelerate, fpm-version: ""}
-        - {os: windows-latest, compiler: ifx,       mpi: intelmpi, blas: netlib,     fpm-version: "0.12.0"}
-        - {os: windows-latest, compiler: ifx,       mpi: intelmpi, blas: openblas,   fpm-version: "0.12.0"}
         - {os: windows-latest, compiler: ifx,       mpi: intelmpi, blas: mkl,        fpm-version: "0.12.0"}
 
     steps:
@@ -548,8 +540,6 @@ jobs:
         - {os: macos-26-intel, compiler: gfortran,  mpi: openmpi,  blas: openblas}
         - {os: macos-26-intel, compiler: gfortran,  mpi: openmpi,  blas: mkl}
         - {os: macos-26-intel, compiler: gfortran,  mpi: openmpi,  blas: accelerate}
-        - {os: windows-latest, compiler: ifx,       mpi: intelmpi, blas: netlib}
-        - {os: windows-latest, compiler: ifx,       mpi: intelmpi, blas: openblas}
         - {os: windows-latest, compiler: ifx,       mpi: intelmpi, blas: mkl}
 
     steps:
@@ -608,8 +598,6 @@ jobs:
         - {os: macos-26-intel, compiler: gfortran,  mpi: openmpi,  blas: openblas}
         - {os: macos-26-intel, compiler: gfortran,  mpi: openmpi,  blas: mkl}
         - {os: macos-26-intel, compiler: gfortran,  mpi: openmpi,  blas: accelerate}
-        - {os: windows-latest, compiler: ifx,       mpi: intelmpi, blas: netlib}
-        - {os: windows-latest, compiler: ifx,       mpi: intelmpi, blas: openblas}
         - {os: windows-latest, compiler: ifx,       mpi: intelmpi, blas: mkl}
 
     steps:

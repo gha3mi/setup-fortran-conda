@@ -65,12 +65,12 @@
             <tbody>
               <tr>
                 <td>Netlib</td>
-                <td>Ubuntu, macOS, Windows</td>
+                <td>Ubuntu, macOS, Windows except ifx</td>
                 <td><code>netlib</code></td>
               </tr>
               <tr>
                 <td>OpenBLAS</td>
-                <td>Ubuntu, macOS, Windows</td>
+                <td>Ubuntu, macOS, Windows except ifx</td>
                 <td><code>openblas</code></td>
               </tr>
               <tr>
@@ -86,6 +86,7 @@
             </tbody>
           </table>
         </div>
+        <p>On Windows, use <code>blas: mkl</code> with <code>ifx</code>.</p>
       </section>
 
       <section>
@@ -171,13 +172,6 @@
               <tr>
                 <td>Windows</td>
                 <td><code>LIB</code>, <code>INCLUDE</code></td>
-              </tr>
-              <tr>
-                <td>Windows ifx with Netlib or OpenBLAS</td>
-                <td>
-                  <code>FFLAGS</code> with
-                  <code>/names:lowercase /assume:underscore</code>
-                </td>
               </tr>
             </tbody>
           </table>

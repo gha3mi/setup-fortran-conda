@@ -31355,17 +31355,14 @@ function getExecOutput(commandLine, args, options) {
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __nccwpck_require__) => {
 
 /* harmony export */ __nccwpck_require__.d(__webpack_exports__, {
-/* harmony export */   Px: () => (/* binding */ assertBlasSupported),
 /* harmony export */   WV: () => (/* binding */ createBlasPackageSpec),
-/* harmony export */   to: () => (/* binding */ configureBlasCompilerEnvironment),
+/* harmony export */   oW: () => (/* binding */ assertBlasToolchainSupported),
 /* harmony export */   z$: () => (/* binding */ inspectBlasInstallation)
 /* harmony export */ });
-/* unused harmony exports BLAS_IMPLEMENTATIONS, createBlasCompilerEnvironment, validateBlasPackages */
+/* unused harmony exports BLAS_IMPLEMENTATIONS, assertBlasSupported, validateBlasPackages */
 /* harmony import */ var _lib_command_js__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(7819);
-/* harmony import */ var _lib_environment_js__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(3775);
-/* harmony import */ var _lib_errors_js__WEBPACK_IMPORTED_MODULE_3__ = __nccwpck_require__(7507);
-/* harmony import */ var _compilers_common_js__WEBPACK_IMPORTED_MODULE_2__ = __nccwpck_require__(9674);
-
+/* harmony import */ var _lib_errors_js__WEBPACK_IMPORTED_MODULE_2__ = __nccwpck_require__(7507);
+/* harmony import */ var _compilers_common_js__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(9674);
 
 
 
@@ -31384,11 +31381,6 @@ const REQUIRED_BLAS_PACKAGES = Object.freeze([
   'liblapack',
 ]);
 
-const WINDOWS_IFX_GNU_BLAS_FLAGS = Object.freeze([
-  '/names:lowercase',
-  '/assume:underscore',
-]);
-
 function assertBlasSupported(implementation) {
   if (!BLAS_IMPLEMENTATIONS.includes(implementation)) {
     throw new Error(
@@ -31398,41 +31390,28 @@ function assertBlasSupported(implementation) {
   }
 }
 
-function createBlasPackageSpec(implementation) {
-  assertBlasSupported(implementation);
-  return implementation === 'none' ? '' : `blas-devel=*=*_${implementation}`;
-}
-
-function createBlasCompilerEnvironment({
+function assertBlasToolchainSupported({
   implementation,
   operatingSystem,
   compiler,
-  currentFlags = process.env.FFLAGS,
 }) {
   assertBlasSupported(implementation);
-  const usesGnuSymbols = ['netlib', 'openblas'].includes(implementation);
-  if (operatingSystem !== 'windows' || compiler !== 'ifx' || !usesGnuSymbols) {
-    return {};
-  }
+  const unsupportedWindowsIfxImplementation =
+    operatingSystem === 'windows' &&
+    compiler === 'ifx' &&
+    ['netlib', 'openblas'].includes(implementation);
 
-  return {
-    FFLAGS: WINDOWS_IFX_GNU_BLAS_FLAGS.reduceRight(
-      (flags, flag) => (0,_lib_environment_js__WEBPACK_IMPORTED_MODULE_1__/* .prependFlag */ .z)(flag, flags),
-      currentFlags,
-    ),
-  };
+  if (unsupportedWindowsIfxImplementation) {
+    throw new Error(
+      `Unsupported BLAS/LAPACK toolchain: compiler=ifx with ` +
+        `blas=${implementation} on Windows. Use blas=mkl with Windows ifx.`,
+    );
+  }
 }
 
-async function configureBlasCompilerEnvironment(options) {
-  const environment = createBlasCompilerEnvironment(options);
-  if (!Object.keys(environment).length) {
-    return;
-  }
-
-  await (0,_compilers_common_js__WEBPACK_IMPORTED_MODULE_2__/* .exportEnvironment */ .qw)(
-    environment,
-    'setup-fortran-conda: Configure BLAS/LAPACK Compiler ABI',
-  );
+function createBlasPackageSpec(implementation) {
+  assertBlasSupported(implementation);
+  return implementation === 'none' ? '' : `blas-devel=*=*_${implementation}`;
 }
 
 function validateBlasPackages(packages, implementation) {
@@ -31478,7 +31457,7 @@ function validateBlasPackages(packages, implementation) {
 
 async function inspectBlasInstallation(
   implementation,
-  environmentName = _compilers_common_js__WEBPACK_IMPORTED_MODULE_2__/* .TOOLS_ENVIRONMENT_NAME */ .uU,
+  environmentName = _compilers_common_js__WEBPACK_IMPORTED_MODULE_1__/* .TOOLS_ENVIRONMENT_NAME */ .uU,
 ) {
   const packageSpec = createBlasPackageSpec(implementation);
   if (!packageSpec) {
@@ -31507,7 +31486,7 @@ async function inspectBlasInstallation(
     packages = JSON.parse(result.stdout);
   } catch (error) {
     throw new Error(
-      `Unable to parse installed BLAS/LAPACK packages: ${(0,_lib_errors_js__WEBPACK_IMPORTED_MODULE_3__/* .getErrorMessage */ .u)(error)}`,
+      `Unable to parse installed BLAS/LAPACK packages: ${(0,_lib_errors_js__WEBPACK_IMPORTED_MODULE_2__/* .getErrorMessage */ .u)(error)}`,
       { cause: error },
     );
   }
@@ -33863,9 +33842,12 @@ async function main() {
         'mpi-version requires an MPI implementation selected with the mpi input.',
       );
     }
-    (0,support/* assertBlasSupported */.Px)(inputs.blas);
-
     const operatingSystem = resolveOperatingSystem(inputs.platform);
+    (0,support/* assertBlasToolchainSupported */.oW)({
+      implementation: inputs.blas,
+      operatingSystem,
+      compiler: inputs.compiler,
+    });
     if (inputs.mpi !== 'none') {
       assertMpiSupported(operatingSystem, inputs.compiler, inputs.mpi);
     }
@@ -33896,11 +33878,6 @@ async function main() {
     }
 
     if (inputs.blas !== 'none') {
-      await (0,support/* configureBlasCompilerEnvironment */.to)({
-        implementation: inputs.blas,
-        operatingSystem,
-        compiler: inputs.compiler,
-      });
       const descriptor = await (0,support/* inspectBlasInstallation */.z$)(inputs.blas);
       applyBlasDescriptor(metadata, descriptor);
     }

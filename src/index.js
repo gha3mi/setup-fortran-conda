@@ -20,8 +20,7 @@ import {
 } from './lib/tool-versions.js';
 import { assertMpiSupported, setupMpi } from './mpi/support.js';
 import {
-  assertBlasSupported,
-  configureBlasCompilerEnvironment,
+  assertBlasToolchainSupported,
   inspectBlasInstallation,
 } from './blas/support.js';
 import {
@@ -115,9 +114,12 @@ async function main() {
         'mpi-version requires an MPI implementation selected with the mpi input.',
       );
     }
-    assertBlasSupported(inputs.blas);
-
     const operatingSystem = resolveOperatingSystem(inputs.platform);
+    assertBlasToolchainSupported({
+      implementation: inputs.blas,
+      operatingSystem,
+      compiler: inputs.compiler,
+    });
     if (inputs.mpi !== 'none') {
       assertMpiSupported(operatingSystem, inputs.compiler, inputs.mpi);
     }
@@ -150,11 +152,6 @@ async function main() {
     }
 
     if (inputs.blas !== 'none') {
-      await configureBlasCompilerEnvironment({
-        implementation: inputs.blas,
-        operatingSystem,
-        compiler: inputs.compiler,
-      });
       const descriptor = await inspectBlasInstallation(inputs.blas);
       applyBlasDescriptor(metadata, descriptor);
     }

@@ -1,10 +1,6 @@
 import { captureCommand } from '../lib/command.js';
-import { prependFlag } from '../lib/environment.js';
 import { getErrorMessage } from '../lib/errors.js';
-import {
-  exportEnvironment,
-  TOOLS_ENVIRONMENT_NAME,
-} from '../compilers/common.js';
+import { TOOLS_ENVIRONMENT_NAME } from '../compilers/common.js';
 
 export const BLAS_IMPLEMENTATIONS = Object.freeze([
   'none',
@@ -20,11 +16,6 @@ const REQUIRED_BLAS_PACKAGES = Object.freeze([
   'liblapack',
 ]);
 
-const WINDOWS_IFX_GNU_BLAS_FLAGS = Object.freeze([
-  '/names:lowercase',
-  '/assume:underscore',
-]);
-
 export function assertBlasSupported(implementation) {
   if (!BLAS_IMPLEMENTATIONS.includes(implementation)) {
     throw new Error(
@@ -34,41 +25,28 @@ export function assertBlasSupported(implementation) {
   }
 }
 
-export function createBlasPackageSpec(implementation) {
-  assertBlasSupported(implementation);
-  return implementation === 'none' ? '' : `blas-devel=*=*_${implementation}`;
-}
-
-export function createBlasCompilerEnvironment({
+export function assertBlasToolchainSupported({
   implementation,
   operatingSystem,
   compiler,
-  currentFlags = process.env.FFLAGS,
 }) {
   assertBlasSupported(implementation);
-  const usesGnuSymbols = ['netlib', 'openblas'].includes(implementation);
-  if (operatingSystem !== 'windows' || compiler !== 'ifx' || !usesGnuSymbols) {
-    return {};
-  }
+  const unsupportedWindowsIfxImplementation =
+    operatingSystem === 'windows' &&
+    compiler === 'ifx' &&
+    ['netlib', 'openblas'].includes(implementation);
 
-  return {
-    FFLAGS: WINDOWS_IFX_GNU_BLAS_FLAGS.reduceRight(
-      (flags, flag) => prependFlag(flag, flags),
-      currentFlags,
-    ),
-  };
+  if (unsupportedWindowsIfxImplementation) {
+    throw new Error(
+      `Unsupported BLAS/LAPACK toolchain: compiler=ifx with ` +
+        `blas=${implementation} on Windows. Use blas=mkl with Windows ifx.`,
+    );
+  }
 }
 
-export async function configureBlasCompilerEnvironment(options) {
-  const environment = createBlasCompilerEnvironment(options);
-  if (!Object.keys(environment).length) {
-    return;
-  }
-
-  await exportEnvironment(
-    environment,
-    'setup-fortran-conda: Configure BLAS/LAPACK Compiler ABI',
-  );
+export function createBlasPackageSpec(implementation) {
+  assertBlasSupported(implementation);
+  return implementation === 'none' ? '' : `blas-devel=*=*_${implementation}`;
 }
 
 export function validateBlasPackages(packages, implementation) {

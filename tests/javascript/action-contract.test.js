@@ -12,8 +12,8 @@ import { createMpiEnvironment } from '../../src/mpi/common.js';
 import { MPI_SUPPORT } from '../../src/mpi/support.js';
 import {
   assertBlasSupported,
+  assertBlasToolchainSupported,
   BLAS_IMPLEMENTATIONS,
-  createBlasCompilerEnvironment,
   createBlasPackageSpec,
   validateBlasPackages,
 } from '../../src/blas/support.js';
@@ -255,41 +255,49 @@ test('BLAS validation requires matching BLAS and LAPACK provider builds', () => 
   );
 });
 
-test('Windows ifx uses GNU external names for Netlib and OpenBLAS', () => {
-  const options = {
+test('BLAS toolchain validation rejects incompatible Windows ifx providers', () => {
+  const windowsIfx = {
     operatingSystem: 'windows',
     compiler: 'ifx',
-    currentFlags: '/O2',
   };
 
-  const expected = {
-    FFLAGS: '/names:lowercase /assume:underscore /O2',
-  };
-  assert.deepEqual(
-    createBlasCompilerEnvironment({
-      ...options,
+  for (const implementation of ['netlib', 'openblas']) {
+    assert.throws(
+      () =>
+        assertBlasToolchainSupported({
+          ...windowsIfx,
+          implementation,
+        }),
+      /Use blas=mkl with Windows ifx/,
+    );
+  }
+
+  assert.doesNotThrow(() =>
+    assertBlasToolchainSupported({
+      ...windowsIfx,
+      implementation: 'mkl',
+    }),
+  );
+  assert.doesNotThrow(() =>
+    assertBlasToolchainSupported({
+      operatingSystem: 'windows',
+      compiler: 'gfortran',
       implementation: 'netlib',
     }),
-    expected,
   );
-  assert.deepEqual(
-    createBlasCompilerEnvironment({
-      ...options,
-      implementation: 'openblas',
-    }),
-    expected,
-  );
-  assert.deepEqual(
-    createBlasCompilerEnvironment({ ...options, implementation: 'mkl' }),
-    {},
-  );
-  assert.deepEqual(
-    createBlasCompilerEnvironment({
-      ...options,
+  assert.doesNotThrow(() =>
+    assertBlasToolchainSupported({
       operatingSystem: 'linux',
+      compiler: 'ifx',
       implementation: 'openblas',
     }),
-    {},
+  );
+  assert.doesNotThrow(() =>
+    assertBlasToolchainSupported({
+      operatingSystem: 'windows',
+      compiler: '',
+      implementation: 'openblas',
+    }),
   );
 });
 

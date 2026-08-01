@@ -62,7 +62,7 @@
                   <a class="nav-link" href="./lists/procedures.html">Procedures</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="./program/check.html">Program</a>
+                  <a class="nav-link" href="./lists/programs.html">Programs</a>
                 </li>
             </ul>
               <div class="d-flex align-items-end flex-grow-1">
@@ -92,8 +92,413 @@
       <div class="row" id='text'>
         <div class=col-md-8>
           <h1>test</h1>
-          <h1>Hello test</h1>
-<p>Fortran hello-world project used to test fpm, CMake and Meson.</p>
+          <h1>setup-fortran-conda</h1>
+<p><a href="https://github.com/marketplace/actions/setup-fortran-conda"><img alt="GitHub Marketplace" src="https://img.shields.io/badge/Marketplace-setup--fortran--conda-blue?logo=github"></a>
+<a href="https://github.com/gha3mi/setup-fortran-conda/actions/workflows/CI-CD.yml"><img alt="CI" src="https://github.com/gha3mi/setup-fortran-conda/actions/workflows/CI-CD.yml/badge.svg?branch=main"></a>
+<a href="https://github.com/gha3mi/setup-fortran-conda/actions/workflows/dist.yml"><img alt="Distribution" src="https://github.com/gha3mi/setup-fortran-conda/actions/workflows/dist.yml/badge.svg?branch=main"></a>
+<a href="https://gha3mi.github.io/setup-fortran-conda/"><img alt="Documentation" src="https://github.com/gha3mi/setup-fortran-conda/actions/workflows/docs.yml/badge.svg?branch=main"></a>
+<a href="https://github.com/gha3mi/setup-fortran-conda/releases/latest"><img alt="Release" src="https://img.shields.io/github/v/release/gha3mi/setup-fortran-conda?sort=semver"></a>
+<a href="LICENSE"><img alt="License" src="https://img.shields.io/github/license/gha3mi/setup-fortran-conda"></a></p>
+<p>Configure supported Fortran toolchains with matching C and C++ compilers on
+Ubuntu, macOS and Windows. The action also installs build tools and supports
+optional MPI toolchains, additional Conda packages, documentation generation,
+linting and repository status automation. Inspired by
+<a href="https://degenerateconic.com/conda-plus-fortran.html">Conda + Fortran</a>.</p>
+<h2>Quick start</h2>
+<p>The action checks out the repository and installs <code>fpm</code>, <code>CMake</code>, <code>Ninja</code>, <code>Meson</code>
+and <code>pkg-config</code> by default.</p>
+<div class="codehilite"><pre><span></span><code><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">test</span>
+
+<span class="nt">on</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">push</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">pull_request</span><span class="p p-Indicator">]</span>
+
+<span class="nt">jobs</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">test</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
+<span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gha3mi/setup-fortran-conda@latest</span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">compiler</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gfortran</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fpm test --compiler &quot;${{ env.FPM_FC }}&quot;</span>
+</code></pre></div>
+
+<h2>Compiler environment</h2>
+<p>The action configures the following matching Fortran, C and C++ compilers.</p>
+<table>
+<thead>
+<tr>
+<th>Runner</th>
+<th>Fortran</th>
+<th>C</th>
+<th>C++</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ubuntu</td>
+<td><a href="https://anaconda.org/conda-forge/gfortran">GNU Fortran</a></td>
+<td><a href="https://anaconda.org/conda-forge/gcc">GNU C</a></td>
+<td><a href="https://anaconda.org/conda-forge/gxx">GNU C++</a></td>
+</tr>
+<tr>
+<td>Ubuntu</td>
+<td><a href="https://www.intel.com/content/www/us/en/developer/tools/oneapi/fortran-compiler-download.html">Intel Fortran</a></td>
+<td><a href="https://www.intel.com/content/www/us/en/developer/tools/oneapi/dpc-compiler-download.html">Intel oneAPI DPC++/C++</a></td>
+<td><a href="https://www.intel.com/content/www/us/en/developer/tools/oneapi/dpc-compiler-download.html">Intel oneAPI DPC++/C++</a></td>
+</tr>
+<tr>
+<td>Ubuntu</td>
+<td><a href="https://anaconda.org/conda-forge/lfortran">LFortran</a></td>
+<td><a href="https://anaconda.org/conda-forge/clangxx">Clang</a></td>
+<td><a href="https://anaconda.org/conda-forge/clangxx">Clang</a></td>
+</tr>
+<tr>
+<td>Ubuntu</td>
+<td><a href="https://anaconda.org/conda-forge/flang">LLVM Flang</a></td>
+<td><a href="https://anaconda.org/conda-forge/clangxx">Clang</a></td>
+<td><a href="https://anaconda.org/conda-forge/clangxx">Clang</a></td>
+</tr>
+<tr>
+<td>Ubuntu</td>
+<td><a href="https://developer.nvidia.com/hpc-sdk/downloads">NVIDIA HPC SDK Fortran</a></td>
+<td><a href="https://developer.nvidia.com/hpc-sdk/downloads">NVIDIA HPC SDK C</a></td>
+<td><a href="https://developer.nvidia.com/hpc-sdk/downloads">NVIDIA HPC SDK C++</a></td>
+</tr>
+<tr>
+<td>Ubuntu</td>
+<td><a href="https://www.amd.com/en/developer/aocc.html">AOCC (Flang)</a></td>
+<td><a href="https://www.amd.com/en/developer/aocc.html">AOCC (Clang)</a></td>
+<td><a href="https://www.amd.com/en/developer/aocc.html">AOCC (Clang)</a></td>
+</tr>
+<tr>
+<td>Ubuntu</td>
+<td><a href="https://github.com/ROCm/aomp/releases">AOMP (Flang)</a></td>
+<td><a href="https://github.com/ROCm/aomp/releases">AOMP (Clang)</a></td>
+<td><a href="https://github.com/ROCm/aomp/releases">AOMP (Clang)</a></td>
+</tr>
+<tr>
+<td>macOS</td>
+<td><a href="https://anaconda.org/conda-forge/gfortran">GNU Fortran</a></td>
+<td><a href="https://formulae.brew.sh/formula/gcc">GNU C</a></td>
+<td><a href="https://formulae.brew.sh/formula/gcc">GNU C++</a></td>
+</tr>
+<tr>
+<td>macOS</td>
+<td><a href="https://anaconda.org/conda-forge/lfortran">LFortran</a></td>
+<td><a href="https://anaconda.org/conda-forge/clangxx">Clang</a></td>
+<td><a href="https://anaconda.org/conda-forge/clangxx">Clang</a></td>
+</tr>
+<tr>
+<td>Windows</td>
+<td><a href="https://anaconda.org/conda-forge/gfortran">GNU Fortran</a></td>
+<td><a href="https://anaconda.org/conda-forge/gcc">GNU C</a></td>
+<td><a href="https://anaconda.org/conda-forge/gxx">GNU C++</a></td>
+</tr>
+<tr>
+<td>Windows</td>
+<td><a href="https://www.intel.com/content/www/us/en/developer/tools/oneapi/fortran-compiler-download.html">Intel Fortran</a></td>
+<td><a href="https://www.intel.com/content/www/us/en/developer/tools/oneapi/dpc-compiler-download.html">Intel oneAPI DPC++/C++</a></td>
+<td><a href="https://www.intel.com/content/www/us/en/developer/tools/oneapi/dpc-compiler-download.html">Intel oneAPI DPC++/C++</a></td>
+</tr>
+<tr>
+<td>Windows</td>
+<td><a href="https://anaconda.org/conda-forge/lfortran">LFortran</a></td>
+<td><a href="https://anaconda.org/conda-forge/clangxx">Clang</a></td>
+<td><a href="https://anaconda.org/conda-forge/clangxx">Clang</a></td>
+</tr>
+<tr>
+<td>Windows</td>
+<td><a href="https://anaconda.org/conda-forge/flang">LLVM Flang</a></td>
+<td><a href="https://anaconda.org/conda-forge/clang">Clang</a></td>
+<td><a href="https://anaconda.org/conda-forge/clang">Clang</a></td>
+</tr>
+</tbody>
+</table>
+<p>The selected compiler commands are exported as environment variables for
+subsequent workflow steps.</p>
+<table>
+<thead>
+<tr>
+<th>Language</th>
+<th>General</th>
+<th>fpm</th>
+<th>CMake</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fortran</td>
+<td><code>FC</code></td>
+<td><code>FPM_FC</code></td>
+<td><code>CMAKE_Fortran_COMPILER</code></td>
+</tr>
+<tr>
+<td>C</td>
+<td><code>CC</code></td>
+<td><code>FPM_CC</code></td>
+<td><code>CMAKE_C_COMPILER</code></td>
+</tr>
+<tr>
+<td>C++</td>
+<td><code>CXX</code></td>
+<td><code>FPM_CXX</code></td>
+<td><code>CMAKE_CXX_COMPILER</code></td>
+</tr>
+</tbody>
+</table>
+<h2>Documentation</h2>
+<ul>
+<li><a href="https://gha3mi.github.io/setup-fortran-conda/">Overview</a></li>
+<li><a href="https://gha3mi.github.io/setup-fortran-conda/toolchains.html">Compilers and builds</a></li>
+<li><a href="https://gha3mi.github.io/setup-fortran-conda/mpi.html">MPI toolchains</a></li>
+<li><a href="https://gha3mi.github.io/setup-fortran-conda/ford.html">FORD documentation</a></li>
+<li><a href="https://gha3mi.github.io/setup-fortran-conda/doxygen.html">Doxygen documentation</a></li>
+<li><a href="https://gha3mi.github.io/setup-fortran-conda/fortitude.html">Fortitude linting</a></li>
+<li><a href="https://gha3mi.github.io/setup-fortran-conda/readme-table.html">README CI table</a></li>
+<li><a href="https://gha3mi.github.io/setup-fortran-conda/dependency-graphs.html">Dependency graphs</a></li>
+<li><a href="https://gha3mi.github.io/setup-fortran-conda/status-badges.html">Status badges</a></li>
+</ul>
+<h2>CI status</h2>
+<!-- STATUS:setup-fortran-conda:START -->
+
+<table>
+<thead>
+<tr>
+<th>OS</th>
+<th>Compiler</th>
+<th style="text-align: right;">Version</th>
+<th>MPI</th>
+<th style="text-align: right;">MPI Version</th>
+<th style="text-align: center;">fpm</th>
+<th style="text-align: center;">cmake</th>
+<th style="text-align: center;">meson</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ubuntu 24.04</td>
+<td><code>aocc</code></td>
+<td style="text-align: right;">5.2.0</td>
+<td></td>
+<td style="text-align: right;"></td>
+<td style="text-align: center;">0.13.0 ✅</td>
+<td style="text-align: center;">4.4.1 ✅</td>
+<td style="text-align: center;">1.11.2 ✅</td>
+</tr>
+<tr>
+<td>ubuntu 24.04</td>
+<td><code>aomp</code></td>
+<td style="text-align: right;">23.0-0</td>
+<td></td>
+<td style="text-align: right;"></td>
+<td style="text-align: center;">0.13.0 ✅</td>
+<td style="text-align: center;">4.4.1 ✅</td>
+<td style="text-align: center;">1.11.2 ✅</td>
+</tr>
+<tr>
+<td>ubuntu 24.04</td>
+<td><code>flang-new</code></td>
+<td style="text-align: right;">22.1.8</td>
+<td></td>
+<td style="text-align: right;"></td>
+<td style="text-align: center;">0.13.0 ✅</td>
+<td style="text-align: center;">4.4.1 ✅</td>
+<td style="text-align: center;">1.11.2 ✅</td>
+</tr>
+<tr>
+<td>ubuntu 24.04</td>
+<td><code>gfortran</code></td>
+<td style="text-align: right;">16.1.0</td>
+<td></td>
+<td style="text-align: right;"></td>
+<td style="text-align: center;">0.13.0 ✅</td>
+<td style="text-align: center;">4.4.1 ✅</td>
+<td style="text-align: center;">1.11.2 ✅</td>
+</tr>
+<tr>
+<td>ubuntu 24.04</td>
+<td><code>gfortran</code></td>
+<td style="text-align: right;">16.1.0</td>
+<td><code>mpich</code></td>
+<td style="text-align: right;">5.0.1</td>
+<td style="text-align: center;">0.13.0 ✅</td>
+<td style="text-align: center;">4.4.1 ✅</td>
+<td style="text-align: center;">1.11.2 ✅</td>
+</tr>
+<tr>
+<td>ubuntu 24.04</td>
+<td><code>gfortran</code></td>
+<td style="text-align: right;">16.1.0</td>
+<td><code>openmpi</code></td>
+<td style="text-align: right;">5.0.10</td>
+<td style="text-align: center;">0.13.0 ✅</td>
+<td style="text-align: center;">4.4.1 ✅</td>
+<td style="text-align: center;">1.11.2 ✅</td>
+</tr>
+<tr>
+<td>ubuntu 24.04</td>
+<td><code>ifx</code></td>
+<td style="text-align: right;">2026.1.1</td>
+<td></td>
+<td style="text-align: right;"></td>
+<td style="text-align: center;">0.13.0 ✅</td>
+<td style="text-align: center;">4.4.1 ✅</td>
+<td style="text-align: center;">1.11.2 ✅</td>
+</tr>
+<tr>
+<td>ubuntu 24.04</td>
+<td><code>ifx</code></td>
+<td style="text-align: right;">2026.1.1</td>
+<td><code>intelmpi</code></td>
+<td style="text-align: right;">2021.18.1</td>
+<td style="text-align: center;">0.13.0 ✅</td>
+<td style="text-align: center;">4.4.1 ✅</td>
+<td style="text-align: center;">1.11.2 ✅</td>
+</tr>
+<tr>
+<td>ubuntu 24.04</td>
+<td><code>lfortran</code></td>
+<td style="text-align: right;">0.64.0</td>
+<td></td>
+<td style="text-align: right;"></td>
+<td style="text-align: center;">0.12.0 ✅</td>
+<td style="text-align: center;">4.4.1 ✅</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td>ubuntu 24.04</td>
+<td><code>nvfortran</code></td>
+<td style="text-align: right;">26.5</td>
+<td></td>
+<td style="text-align: right;"></td>
+<td style="text-align: center;">0.13.0 ✅</td>
+<td style="text-align: center;">4.4.1 ✅</td>
+<td style="text-align: center;">1.11.2 ✅</td>
+</tr>
+<tr>
+<td>ubuntu 24.04</td>
+<td><code>nvfortran</code></td>
+<td style="text-align: right;">26.5</td>
+<td><code>hpcx</code></td>
+<td style="text-align: right;">2.50</td>
+<td style="text-align: center;">0.13.0 ✅</td>
+<td style="text-align: center;">4.4.1 ✅</td>
+<td style="text-align: center;">1.11.2 ✅</td>
+</tr>
+<tr>
+<td>macos 26</td>
+<td><code>gfortran</code></td>
+<td style="text-align: right;">16.1.0</td>
+<td></td>
+<td style="text-align: right;"></td>
+<td style="text-align: center;">0.13.0 ✅</td>
+<td style="text-align: center;">4.4.1 ✅</td>
+<td style="text-align: center;">1.11.2 ✅</td>
+</tr>
+<tr>
+<td>macos 26</td>
+<td><code>gfortran</code></td>
+<td style="text-align: right;">16.1.0</td>
+<td><code>mpich</code></td>
+<td style="text-align: right;">5.0.1</td>
+<td style="text-align: center;">0.13.0 ✅</td>
+<td style="text-align: center;">4.4.1 ✅</td>
+<td style="text-align: center;">1.11.2 ✅</td>
+</tr>
+<tr>
+<td>macos 26</td>
+<td><code>gfortran</code></td>
+<td style="text-align: right;">16.1.0</td>
+<td><code>openmpi</code></td>
+<td style="text-align: right;">5.0.10</td>
+<td style="text-align: center;">0.13.0 ✅</td>
+<td style="text-align: center;">4.4.1 ✅</td>
+<td style="text-align: center;">1.11.2 ✅</td>
+</tr>
+<tr>
+<td>macos 26</td>
+<td><code>lfortran</code></td>
+<td style="text-align: right;">0.64.0</td>
+<td></td>
+<td style="text-align: right;"></td>
+<td style="text-align: center;">0.12.0 ✅</td>
+<td style="text-align: center;">4.4.1 ✅</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td>windows 2025</td>
+<td><code>flang-new</code></td>
+<td style="text-align: right;">22.1.8</td>
+<td></td>
+<td style="text-align: right;"></td>
+<td style="text-align: center;">0.13.0 ✅</td>
+<td style="text-align: center;">4.4.1 ✅</td>
+<td style="text-align: center;">1.11.2 ✅</td>
+</tr>
+<tr>
+<td>windows 2025</td>
+<td><code>gfortran</code></td>
+<td style="text-align: right;">16.1.0</td>
+<td></td>
+<td style="text-align: right;"></td>
+<td style="text-align: center;">0.13.0 ✅</td>
+<td style="text-align: center;">4.4.1 ✅</td>
+<td style="text-align: center;">1.11.2 ✅</td>
+</tr>
+<tr>
+<td>windows 2025</td>
+<td><code>ifx</code></td>
+<td style="text-align: right;">2026.1.1</td>
+<td></td>
+<td style="text-align: right;"></td>
+<td style="text-align: center;">0.12.0 ✅</td>
+<td style="text-align: center;">4.4.1 ✅</td>
+<td style="text-align: center;">1.11.2 ✅</td>
+</tr>
+<tr>
+<td>windows 2025</td>
+<td><code>ifx</code></td>
+<td style="text-align: right;">2026.1.1</td>
+<td><code>intelmpi</code></td>
+<td style="text-align: right;">2021.18.1</td>
+<td style="text-align: center;">0.12.0 ✅</td>
+<td style="text-align: center;">4.4.1 ✅</td>
+<td style="text-align: center;">1.11.2 ✅</td>
+</tr>
+<tr>
+<td>windows 2025</td>
+<td><code>lfortran</code></td>
+<td style="text-align: right;">0.64.0</td>
+<td></td>
+<td style="text-align: right;"></td>
+<td style="text-align: center;">0.12.0 ✅</td>
+<td style="text-align: center;">4.4.1 ✅</td>
+<td style="text-align: center;">—</td>
+</tr>
+</tbody>
+</table>
+<!-- STATUS:setup-fortran-conda:END -->
+
+<ul>
+<li><a href="https://github.com/gha3mi/setup-fortran-conda/blob/status-fpm/STATUS.md">fpm status</a></li>
+<li><a href="https://github.com/gha3mi/setup-fortran-conda/blob/status-cmake/STATUS.md">CMake status</a></li>
+<li><a href="https://github.com/gha3mi/setup-fortran-conda/blob/status-meson/STATUS.md">Meson status</a></li>
+</ul>
+<h2>Project</h2>
+<ul>
+<li><a href="CHANGELOG.md">Changelog</a></li>
+<li><a href="https://github.com/gha3mi/setup-fortran-conda/releases">Releases</a></li>
+<li><a href="https://github.com/gha3mi/setup-fortran-conda/issues">Issues</a></li>
+<li><a href="RELEASING.md">Maintainer release guide</a></li>
+<li><a href="LICENSE">License</a></li>
+</ul>
+<h2>Related</h2>
+<ul>
+<li><a href="https://fortran-lang.discourse.group/t/github-action-setup-fortran-with-conda/9869/">Fortran Discourse</a></li>
+<li><a href="https://docs.github.com/en/actions">GitHub Actions documentation</a></li>
+<li><a href="https://github.com/gha3mi/setup-fortran-conda/blob/main/.github/workflows/CI-CD.yml">CI/CD workflow</a></li>
+<li><a href="https://github.com/fortran-lang/setup-fortran">fortran-lang/setup-fortran</a></li>
+</ul>
         </div>
           <div class="col-md-4">
             <div class="card card-body bg-light">
@@ -119,7 +524,7 @@
           <div class="col-xs-6 col-sm-4">
             <div>
               <h3>Source Files</h3>
-              <ul><li><a href='sourcefile/check.f90.html'>check.f90</a></li><li><a href='sourcefile/main.f90.html'>main.f90</a></li></ul>
+              <ul><li><a href='sourcefile/check.f90.html'>check.f90</a></li><li><a href='sourcefile/main.f90.html'>main.f90</a></li><li><a href='sourcefile/mpi_hello.f90.html'>mpi_hello.F90</a></li></ul>
             </div>
             <div>
               <ul>
@@ -130,7 +535,7 @@
           <div class="col-xs-6 col-sm-4">
             <div>
               <h3>Modules</h3>
-              <ul><li><a href='module/hello.html'>hello</a></li></ul>
+              <ul><li><a href='module/main.html'>main</a></li></ul>
             </div>
             <div>
               <ul>
@@ -165,7 +570,7 @@
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2026-07-31T21:32:18.379979+0000             </p>
+ on 2026-08-01T06:35:38.797667+0000             </p>
           </div>
         </div>
         <br>

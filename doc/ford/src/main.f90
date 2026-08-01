@@ -1,4 +1,4 @@
-module hello
+module main
    implicit none
    private
    public :: say_hello

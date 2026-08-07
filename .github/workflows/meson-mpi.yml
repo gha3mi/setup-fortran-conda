@@ -1,0 +1,48 @@
+name: Meson MPI
+
+on:
+  workflow_call:
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  test_mpi_meson:
+    if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
+    name: ${{ matrix.os }}_${{ matrix.compiler }}_${{ matrix.mpi }}_meson
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - {os: ubuntu-latest,  compiler: gfortran,   compiler-version: "", mpi: mpich,    mpi-version: ""}
+        - {os: ubuntu-latest,  compiler: gfortran,   compiler-version: "", mpi: openmpi,  mpi-version: ""}
+        - {os: macos-latest,   compiler: gfortran,   compiler-version: "", mpi: mpich,    mpi-version: ""}
+        - {os: macos-latest,   compiler: gfortran,   compiler-version: "", mpi: openmpi,  mpi-version: ""}
+        - {os: ubuntu-latest,  compiler: ifx,        compiler-version: "", mpi: intelmpi, mpi-version: ""}
+        - {os: windows-latest, compiler: ifx,        compiler-version: "", mpi: intelmpi, mpi-version: ""}
+        - {os: ubuntu-latest,  compiler: nvfortran,  compiler-version: "", mpi: hpcx,     mpi-version: ""}
+
+    steps:
+      - name: Setup Fortran and MPI
+        uses: gha3mi/setup-fortran-conda@dev
+        with:
+          compiler: ${{ matrix.compiler }}
+          compiler-version: ${{ matrix.compiler-version }}
+          mpi: ${{ matrix.mpi }}
+          mpi-version: ${{ matrix.mpi-version }}
+
+      - name: Meson MPI test (debug)
+        working-directory: tests/mpi
+        run: |
+          meson setup build/debug . --buildtype debug --backend=ninja
+          meson compile -C build/debug --verbose
+          meson test -C build/debug --verbose
+
+      - name: Meson MPI test (release)
+        working-directory: tests/mpi
+        run: |
+          meson setup build/release . --buildtype release --backend=ninja
+          meson compile -C build/release --verbose
+          meson test -C build/release --verbose

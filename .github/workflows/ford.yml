@@ -1,0 +1,25 @@
+name: FORD
+
+on:
+  workflow_call:
+
+permissions:
+  actions: read
+  contents: write
+
+jobs:
+  doc_ford:
+    if: ${{ (github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule') && !contains(github.event.head_commit.message, '[skip ci]') }}
+    name: Generate FORD Documentation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup and Generate FORD Documentation
+        uses: gha3mi/setup-fortran-conda@dev
+        with:
+          compiler: gfortran
+          generate-doc-ford: true
+          ford-working-directory: tests/hello
+          ford-config: README.md
+          ford-output-directory: doc/ford
+          ford-branch: gh-pages-ford
+          ford-target-folder: doc/ford

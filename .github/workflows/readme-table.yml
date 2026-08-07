@@ -1,0 +1,23 @@
+name: README table
+
+on:
+  workflow_call:
+
+permissions:
+  actions: read
+  contents: write
+  pull-requests: write
+
+jobs:
+  update_readme_table:
+    if: ${{ always() && (github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule') && github.ref == 'refs/heads/dev' && !contains(github.event.head_commit.message, '[skip ci]') }}
+    name: Update README.md status table
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update README status
+        uses: gha3mi/setup-fortran-conda@dev
+        with:
+          update-readme-table: true
+          update-readme-token: ${{ secrets.GH_PAT }}   # Update with your GitHub personal access token
+          update-readme-user-name: "Seyed Ali Ghasemi" # Update with your name
+          update-readme-user-email: "info@gha3mi.com"  # Update with your email

@@ -1,0 +1,25 @@
+name: Doxygen
+
+on:
+  workflow_call:
+
+permissions:
+  actions: read
+  contents: write
+
+jobs:
+  doc_doxygen:
+    if: ${{ (github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule') && !contains(github.event.head_commit.message, '[skip ci]') }}
+    name: Generate Doxygen Documentation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup and Generate Doxygen Documentation
+        uses: gha3mi/setup-fortran-conda@dev
+        with:
+          compiler: gfortran
+          generate-doc-doxygen: true
+          doxygen-working-directory: tests/hello
+          doxygen-config: Doxyfile
+          doxygen-output-directory: doc/doxygen
+          doxygen-branch: gh-pages-doxygen
+          doxygen-target-folder: doc/doxygen

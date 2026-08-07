@@ -1,0 +1,45 @@
+name: fpm MPI
+
+on:
+  workflow_call:
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  test_mpi_fpm:
+    if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
+    name: ${{ matrix.os }}_${{ matrix.compiler }}_${{ matrix.mpi }}_fpm
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - {os: ubuntu-latest,  compiler: gfortran,   compiler-version: "", mpi: mpich,    mpi-version: ""}
+        - {os: ubuntu-latest,  compiler: gfortran,   compiler-version: "", mpi: openmpi,  mpi-version: ""}
+        - {os: macos-latest,   compiler: gfortran,   compiler-version: "", mpi: mpich,    mpi-version: ""}
+        - {os: macos-latest,   compiler: gfortran,   compiler-version: "", mpi: openmpi,  mpi-version: ""}
+        - {os: ubuntu-latest,  compiler: ifx,        compiler-version: "", mpi: intelmpi, mpi-version: ""}
+        - {os: windows-latest, compiler: ifx,        compiler-version: "", mpi: intelmpi, mpi-version: "", fpm-version: "0.12.0"}
+        - {os: ubuntu-latest,  compiler: nvfortran,  compiler-version: "", mpi: hpcx,     mpi-version: ""}
+
+    steps:
+      - name: Setup Fortran and MPI
+        uses: gha3mi/setup-fortran-conda@dev
+        with:
+          compiler: ${{ matrix.compiler }}
+          compiler-version: ${{ matrix.compiler-version }}
+          mpi: ${{ matrix.mpi }}
+          mpi-version: ${{ matrix.mpi-version }}
+          fpm-version: ${{ matrix.fpm-version }}
+
+      - name: fpm MPI test (debug)
+        working-directory: tests/mpi
+        run: |
+          fpm test --target mpi_hello --profile debug --compiler "${{ env.MPIFC }}" --runner "${{ env.MPIEXEC }}" --runner-args=" ${{ env.MPIEXEC_NUMPROC_FLAG }} 2" --verbose
+
+      - name: fpm MPI test (release)
+        working-directory: tests/mpi
+        run: |
+          fpm test --target mpi_hello --profile release --compiler "${{ env.MPIFC }}" --runner "${{ env.MPIEXEC }}" --runner-args=" ${{ env.MPIEXEC_NUMPROC_FLAG }} 2" --verbose

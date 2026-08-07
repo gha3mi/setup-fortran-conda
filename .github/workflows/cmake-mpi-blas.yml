@@ -1,0 +1,67 @@
+name: CMake MPI and BLAS/LAPACK
+
+on:
+  workflow_call:
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  test_mpi_blas_cmake:
+    if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
+    name: ${{ matrix.os }}_${{ matrix.compiler }}_${{ matrix.mpi }}_${{ matrix.blas }}_cmake
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - {os: ubuntu-latest,  compiler: gfortran,  mpi: mpich,    blas: netlib}
+        - {os: ubuntu-latest,  compiler: gfortran,  mpi: mpich,    blas: openblas}
+        - {os: ubuntu-latest,  compiler: gfortran,  mpi: mpich,    blas: mkl}
+        - {os: ubuntu-latest,  compiler: gfortran,  mpi: openmpi,  blas: netlib}
+        - {os: ubuntu-latest,  compiler: gfortran,  mpi: openmpi,  blas: openblas}
+        - {os: ubuntu-latest,  compiler: gfortran,  mpi: openmpi,  blas: mkl}
+        - {os: ubuntu-latest,  compiler: ifx,       mpi: intelmpi, blas: netlib}
+        - {os: ubuntu-latest,  compiler: ifx,       mpi: intelmpi, blas: openblas}
+        - {os: ubuntu-latest,  compiler: ifx,       mpi: intelmpi, blas: mkl}
+        - {os: ubuntu-latest,  compiler: nvfortran, mpi: hpcx,     blas: netlib}
+        - {os: ubuntu-latest,  compiler: nvfortran, mpi: hpcx,     blas: openblas}
+        - {os: ubuntu-latest,  compiler: nvfortran, mpi: hpcx,     blas: mkl}
+        - {os: macos-latest,   compiler: gfortran,  mpi: mpich,    blas: netlib}
+        - {os: macos-latest,   compiler: gfortran,  mpi: mpich,    blas: openblas}
+        - {os: macos-latest,   compiler: gfortran,  mpi: mpich,    blas: accelerate}
+        - {os: macos-latest,   compiler: gfortran,  mpi: openmpi,  blas: netlib}
+        - {os: macos-latest,   compiler: gfortran,  mpi: openmpi,  blas: openblas}
+        - {os: macos-latest,   compiler: gfortran,  mpi: openmpi,  blas: accelerate}
+        - {os: macos-26-intel, compiler: gfortran,  mpi: mpich,    blas: netlib}
+        - {os: macos-26-intel, compiler: gfortran,  mpi: mpich,    blas: openblas}
+        - {os: macos-26-intel, compiler: gfortran,  mpi: mpich,    blas: mkl}
+        - {os: macos-26-intel, compiler: gfortran,  mpi: mpich,    blas: accelerate}
+        - {os: macos-26-intel, compiler: gfortran,  mpi: openmpi,  blas: netlib}
+        - {os: macos-26-intel, compiler: gfortran,  mpi: openmpi,  blas: openblas}
+        - {os: macos-26-intel, compiler: gfortran,  mpi: openmpi,  blas: mkl}
+        - {os: macos-26-intel, compiler: gfortran,  mpi: openmpi,  blas: accelerate}
+        - {os: windows-latest, compiler: ifx,       mpi: intelmpi, blas: mkl}
+
+    steps:
+      - name: Setup Fortran, MPI and BLAS/LAPACK
+        uses: gha3mi/setup-fortran-conda@dev
+        with:
+          compiler: ${{ matrix.compiler }}
+          mpi: ${{ matrix.mpi }}
+          blas: ${{ matrix.blas }}
+
+      - name: CMake MPI+BLAS/LAPACK test (debug)
+        working-directory: tests/mpi_blas
+        run: |
+          cmake -S . -B build/debug -DCMAKE_BUILD_TYPE=Debug -DCMAKE_Fortran_COMPILER="${{ env.MPIFC }}" -DMPIEXEC_EXECUTABLE="${{ env.MPIEXEC }}" -G Ninja
+          cmake --build build/debug --config Debug --verbose
+          ctest --test-dir build/debug --output-on-failure --no-tests=error -VV
+
+      - name: CMake MPI+BLAS/LAPACK test (release)
+        working-directory: tests/mpi_blas
+        run: |
+          cmake -S . -B build/release -DCMAKE_BUILD_TYPE=Release -DCMAKE_Fortran_COMPILER="${{ env.MPIFC }}" -DMPIEXEC_EXECUTABLE="${{ env.MPIEXEC }}" -G Ninja
+          cmake --build build/release --config Release --verbose
+          ctest --test-dir build/release --output-on-failure --no-tests=error -VV

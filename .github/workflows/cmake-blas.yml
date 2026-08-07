@@ -1,0 +1,69 @@
+name: CMake BLAS/LAPACK
+
+on:
+  workflow_call:
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  test_blas_cmake:
+    if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
+    name: ${{ matrix.os }}_${{ matrix.compiler }}_${{ matrix.blas }}_cmake
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - {os: ubuntu-latest,  compiler: gfortran,  blas: netlib}
+        - {os: ubuntu-latest,  compiler: gfortran,  blas: openblas}
+        - {os: ubuntu-latest,  compiler: gfortran,  blas: mkl}
+        - {os: ubuntu-latest,  compiler: ifx,       blas: netlib}
+        - {os: ubuntu-latest,  compiler: ifx,       blas: openblas}
+        - {os: ubuntu-latest,  compiler: ifx,       blas: mkl}
+        - {os: ubuntu-latest,  compiler: lfortran,  blas: mkl}
+        - {os: ubuntu-latest,  compiler: flang,     blas: netlib}
+        - {os: ubuntu-latest,  compiler: flang,     blas: openblas}
+        - {os: ubuntu-latest,  compiler: flang,     blas: mkl}
+        - {os: ubuntu-latest,  compiler: flang-new, blas: netlib}
+        - {os: ubuntu-latest,  compiler: flang-new, blas: openblas}
+        - {os: ubuntu-latest,  compiler: flang-new, blas: mkl}
+        - {os: ubuntu-latest,  compiler: nvfortran, blas: netlib}
+        - {os: ubuntu-latest,  compiler: nvfortran, blas: openblas}
+        - {os: ubuntu-latest,  compiler: nvfortran, blas: mkl}
+        - {os: ubuntu-latest,  compiler: aocc,      blas: netlib}
+        - {os: ubuntu-latest,  compiler: aocc,      blas: openblas}
+        - {os: ubuntu-latest,  compiler: aocc,      blas: mkl}
+        - {os: ubuntu-latest,  compiler: aomp,      blas: netlib}
+        - {os: ubuntu-latest,  compiler: aomp,      blas: openblas}
+        - {os: ubuntu-latest,  compiler: aomp,      blas: mkl}
+        - {os: macos-latest,   compiler: gfortran,  blas: netlib}
+        - {os: macos-latest,   compiler: gfortran,  blas: openblas}
+        - {os: macos-26-intel, compiler: gfortran,  blas: mkl}
+        - {os: macos-latest,   compiler: gfortran,  blas: accelerate}
+        - {os: macos-26-intel, compiler: lfortran,  blas: mkl}
+        - {os: windows-latest, compiler: gfortran,  blas: netlib}
+        - {os: windows-latest, compiler: gfortran,  blas: openblas}
+        - {os: windows-latest, compiler: gfortran,  blas: mkl}
+        - {os: windows-latest, compiler: ifx,       blas: mkl}
+        - {os: windows-latest, compiler: flang,     blas: netlib}
+        - {os: windows-latest, compiler: flang,     blas: openblas}
+        - {os: windows-latest, compiler: flang,     blas: mkl}
+        - {os: windows-latest, compiler: flang-new, blas: netlib}
+        - {os: windows-latest, compiler: flang-new, blas: openblas}
+        - {os: windows-latest, compiler: flang-new, blas: mkl}
+
+    steps:
+      - name: Setup Fortran and BLAS/LAPACK
+        uses: gha3mi/setup-fortran-conda@dev
+        with:
+          compiler: ${{ matrix.compiler }}
+          blas: ${{ matrix.blas }}
+
+      - name: CMake BLAS/LAPACK test
+        working-directory: tests/blas_lapack
+        run: |
+          cmake -S . -B build/release -DCMAKE_BUILD_TYPE=Release -DCMAKE_Fortran_COMPILER="${{ env.CMAKE_Fortran_COMPILER }}" -G Ninja
+          cmake --build build/release --config Release --verbose
+          ctest --test-dir build/release --output-on-failure --no-tests=error -VV

@@ -1,0 +1,48 @@
+name: CMake MPI
+
+on:
+  workflow_call:
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  test_mpi_cmake:
+    if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
+    name: ${{ matrix.os }}_${{ matrix.compiler }}_${{ matrix.mpi }}_cmake
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - {os: ubuntu-latest,  compiler: gfortran,   compiler-version: "", mpi: mpich,    mpi-version: ""}
+        - {os: ubuntu-latest,  compiler: gfortran,   compiler-version: "", mpi: openmpi,  mpi-version: ""}
+        - {os: macos-latest,   compiler: gfortran,   compiler-version: "", mpi: mpich,    mpi-version: ""}
+        - {os: macos-latest,   compiler: gfortran,   compiler-version: "", mpi: openmpi,  mpi-version: ""}
+        - {os: ubuntu-latest,  compiler: ifx,        compiler-version: "", mpi: intelmpi, mpi-version: ""}
+        - {os: windows-latest, compiler: ifx,        compiler-version: "", mpi: intelmpi, mpi-version: ""}
+        - {os: ubuntu-latest,  compiler: nvfortran,  compiler-version: "", mpi: hpcx,     mpi-version: ""}
+
+    steps:
+      - name: Setup Fortran and MPI
+        uses: gha3mi/setup-fortran-conda@dev
+        with:
+          compiler: ${{ matrix.compiler }}
+          compiler-version: ${{ matrix.compiler-version }}
+          mpi: ${{ matrix.mpi }}
+          mpi-version: ${{ matrix.mpi-version }}
+
+      - name: CMake MPI test (debug)
+        working-directory: tests/mpi
+        run: |
+          cmake -S . -B build/debug -DCMAKE_BUILD_TYPE=Debug -DCMAKE_Fortran_COMPILER="${{ env.MPIFC }}" -DMPIEXEC_EXECUTABLE="${{ env.MPIEXEC }}" -G Ninja
+          cmake --build build/debug --config Debug --verbose
+          ctest --test-dir build/debug --output-on-failure --no-tests=error -VV
+
+      - name: CMake MPI test (release)
+        working-directory: tests/mpi
+        run: |
+          cmake -S . -B build/release -DCMAKE_BUILD_TYPE=Release -DCMAKE_Fortran_COMPILER="${{ env.MPIFC }}" -DMPIEXEC_EXECUTABLE="${{ env.MPIEXEC }}" -G Ninja
+          cmake --build build/release --config Release --verbose
+          ctest --test-dir build/release --output-on-failure --no-tests=error -VV

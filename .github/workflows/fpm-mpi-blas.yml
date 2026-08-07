@@ -1,0 +1,62 @@
+name: fpm MPI and BLAS/LAPACK
+
+on:
+  workflow_call:
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  test_mpi_blas_fpm:
+    if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
+    name: ${{ matrix.os }}_${{ matrix.compiler }}_${{ matrix.mpi }}_${{ matrix.blas }}_fpm
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - {os: ubuntu-latest,  compiler: gfortran,  mpi: mpich,    blas: netlib,     fpm-version: ""}
+        - {os: ubuntu-latest,  compiler: gfortran,  mpi: mpich,    blas: openblas,   fpm-version: ""}
+        - {os: ubuntu-latest,  compiler: gfortran,  mpi: mpich,    blas: mkl,        fpm-version: ""}
+        - {os: ubuntu-latest,  compiler: gfortran,  mpi: openmpi,  blas: netlib,     fpm-version: ""}
+        - {os: ubuntu-latest,  compiler: gfortran,  mpi: openmpi,  blas: openblas,   fpm-version: ""}
+        - {os: ubuntu-latest,  compiler: gfortran,  mpi: openmpi,  blas: mkl,        fpm-version: ""}
+        - {os: ubuntu-latest,  compiler: ifx,       mpi: intelmpi, blas: netlib,     fpm-version: ""}
+        - {os: ubuntu-latest,  compiler: ifx,       mpi: intelmpi, blas: openblas,   fpm-version: ""}
+        - {os: ubuntu-latest,  compiler: ifx,       mpi: intelmpi, blas: mkl,        fpm-version: ""}
+        - {os: ubuntu-latest,  compiler: nvfortran, mpi: hpcx,     blas: netlib,     fpm-version: ""}
+        - {os: ubuntu-latest,  compiler: nvfortran, mpi: hpcx,     blas: openblas,   fpm-version: ""}
+        - {os: ubuntu-latest,  compiler: nvfortran, mpi: hpcx,     blas: mkl,        fpm-version: ""}
+        - {os: macos-latest,   compiler: gfortran,  mpi: mpich,    blas: netlib,     fpm-version: ""}
+        - {os: macos-latest,   compiler: gfortran,  mpi: mpich,    blas: openblas,   fpm-version: ""}
+        - {os: macos-latest,   compiler: gfortran,  mpi: mpich,    blas: accelerate, fpm-version: ""}
+        - {os: macos-latest,   compiler: gfortran,  mpi: openmpi,  blas: netlib,     fpm-version: ""}
+        - {os: macos-latest,   compiler: gfortran,  mpi: openmpi,  blas: openblas,   fpm-version: ""}
+        - {os: macos-latest,   compiler: gfortran,  mpi: openmpi,  blas: accelerate, fpm-version: ""}
+        - {os: macos-26-intel, compiler: gfortran,  mpi: mpich,    blas: netlib,     fpm-version: ""}
+        - {os: macos-26-intel, compiler: gfortran,  mpi: mpich,    blas: openblas,   fpm-version: ""}
+        - {os: macos-26-intel, compiler: gfortran,  mpi: mpich,    blas: mkl,        fpm-version: ""}
+        - {os: macos-26-intel, compiler: gfortran,  mpi: mpich,    blas: accelerate, fpm-version: ""}
+        - {os: macos-26-intel, compiler: gfortran,  mpi: openmpi,  blas: netlib,     fpm-version: ""}
+        - {os: macos-26-intel, compiler: gfortran,  mpi: openmpi,  blas: openblas,   fpm-version: ""}
+        - {os: macos-26-intel, compiler: gfortran,  mpi: openmpi,  blas: mkl,        fpm-version: ""}
+        - {os: macos-26-intel, compiler: gfortran,  mpi: openmpi,  blas: accelerate, fpm-version: ""}
+        - {os: windows-latest, compiler: ifx,       mpi: intelmpi, blas: mkl,        fpm-version: "0.12.0"}
+
+    steps:
+      - name: Setup Fortran, MPI and BLAS/LAPACK
+        uses: gha3mi/setup-fortran-conda@dev
+        with:
+          compiler: ${{ matrix.compiler }}
+          mpi: ${{ matrix.mpi }}
+          blas: ${{ matrix.blas }}
+          fpm-version: ${{ matrix.fpm-version }}
+
+      - name: fpm MPI+BLAS/LAPACK test (debug)
+        working-directory: tests/mpi_blas
+        run: fpm test --target mpi_blas_lapack --compiler "${{ env.MPIFC }}" --runner "${{ env.MPIEXEC }}" --runner-args=" ${{ env.MPIEXEC_NUMPROC_FLAG }} 2" --profile debug --verbose
+
+      - name: fpm MPI+BLAS/LAPACK test (release)
+        working-directory: tests/mpi_blas
+        run: fpm test --target mpi_blas_lapack --compiler "${{ env.MPIFC }}" --runner "${{ env.MPIEXEC }}" --runner-args=" ${{ env.MPIEXEC_NUMPROC_FLAG }} 2" --profile release --verbose

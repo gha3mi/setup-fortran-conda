@@ -688,7 +688,7 @@ jobs:
           generate-status-meson: true
 
   update_readme_table:
-    if: ${{ always() && (github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule') && github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, '[skip ci]') }}
+    if: ${{ always() && (github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule') && github.ref == 'refs/heads/dev' && !contains(github.event.head_commit.message, '[skip ci]') }}
     name: Update README.md status table
     needs: [test_fpm, test_mpi_fpm, test_blas_fpm, test_mpi_blas_fpm, test_cmake, test_mpi_cmake, test_blas_cmake, test_mpi_blas_cmake, test_meson, test_mpi_meson, test_blas_meson, test_mpi_blas_meson]
     runs-on: ubuntu-latest

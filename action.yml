@@ -154,7 +154,7 @@ runs:
   steps:
     - name: Checkout repository
       if: ${{ inputs.checkout-repo == 'true' || inputs.generate-doc-ford == 'true' || inputs.generate-doc-doxygen == 'true' }}
-      uses: actions/checkout@v7.0.1
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
     - name: Validate README update mode
       if: ${{ inputs.update-readme-table == 'true' && inputs.update-readme-dependencies != 'false' }}
@@ -187,7 +187,7 @@ runs:
           inputs.update-readme-dependencies != 'false' ||
           inputs.fortitude-check == 'true'
         }}
-      uses: conda-incubator/setup-miniconda@v4.0.1
+      uses: conda-incubator/setup-miniconda@8ee1f361103df19b6f8c8655fd3967a8ecb162d5 # v4.0.1
       with:
         auto-update-conda: true
         activate-environment: fortran
@@ -197,7 +197,7 @@ runs:
       id: setup_fortran
       if: ${{ inputs.compiler != '' || inputs.mpi != 'none' || inputs.update-readme-dependencies != 'false' }}
       shell: bash
-      run: node "${{ github.action_path }}/dist/index.js"
+      run: node "$GITHUB_ACTION_PATH/dist/index.js"
       env:
         INPUT_COMPILER: ${{ inputs.compiler != '' && inputs.compiler || 'gfortran' }}
         INPUT_COMPILER_VERSION: ${{ inputs.compiler-version }}
@@ -220,7 +220,7 @@ runs:
           inputs.generate-status-table != 'true' &&
           inputs.update-readme-table != 'true'
         }}
-      uses: actions/upload-artifact@v7
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
       with:
         name: ${{ steps.setup_fortran.outputs.metadata-artifact-name }}
         path: ${{ steps.setup_fortran.outputs.metadata-path }}
@@ -228,6 +228,8 @@ runs:
     - name: Install and Run Fortitude Linter
       if: ${{ inputs.fortitude-check == 'true' }}
       shell: bash
+      env:
+        FORTITUDE_SETTINGS: ${{ inputs.fortitude-settings }}
       run: |
         source "${CONDA}/etc/profile.d/conda.sh"
         conda activate fortran
@@ -240,11 +242,15 @@ runs:
         }
         echo "::endgroup::"
 
-        fortitude check ${{ inputs.fortitude-settings }}
+        fortitude check $FORTITUDE_SETTINGS
 
     - name: Build FORD documentation
       if: ${{ inputs.generate-doc-ford == 'true' }}
       shell: bash
+      env:
+        FORD_OUTPUT_DIRECTORY: ${{ inputs.ford-output-directory }}
+        FORD_WORKING_DIRECTORY: ${{ inputs.ford-working-directory }}
+        FORD_CONFIG: ${{ inputs.ford-config }}
       run: |
         source "${CONDA}/etc/profile.d/conda.sh"
         conda activate fortran
@@ -252,17 +258,17 @@ runs:
         echo "::group:: setup-fortran-conda: Prepare FORD Docs"
         conda install -y pip graphviz
         pip install ford
-        mkdir -p "${{ inputs.ford-output-directory }}"
-        cd "${{ inputs.ford-working-directory }}"
+        mkdir -p "$FORD_OUTPUT_DIRECTORY"
+        cd "$FORD_WORKING_DIRECTORY"
         echo "::endgroup::"
 
         echo "::group:: setup-fortran-conda: Build FORD Docs"
-        ford "${{ inputs.ford-config }}"
+        ford "$FORD_CONFIG"
         echo "::endgroup::"
 
     - name: Deploy FORD documentation
       if: ${{ inputs.generate-doc-ford == 'true' }}
-      uses: JamesIves/github-pages-deploy-action@v4.9.0
+      uses: JamesIves/github-pages-deploy-action@fa24774553152dd7873cd16ebd8d959b010c5445 # v4.9.0
       with:
         branch: ${{ inputs.ford-branch }}
         folder: ${{ inputs.ford-output-directory }}
@@ -273,23 +279,27 @@ runs:
     - name: Build Doxygen documentation
       if: ${{ inputs.generate-doc-doxygen == 'true' }}
       shell: bash
+      env:
+        DOXYGEN_OUTPUT_DIRECTORY: ${{ inputs.doxygen-output-directory }}
+        DOXYGEN_WORKING_DIRECTORY: ${{ inputs.doxygen-working-directory }}
+        DOXYGEN_CONFIG: ${{ inputs.doxygen-config }}
       run: |
         source "${CONDA}/etc/profile.d/conda.sh"
         conda activate fortran
 
         echo "::group:: setup-fortran-conda: Prepare Doxygen Docs"
         conda install -y graphviz doxygen
-        mkdir -p "${{ inputs.doxygen-output-directory }}"
-        cd "${{ inputs.doxygen-working-directory }}"
+        mkdir -p "$DOXYGEN_OUTPUT_DIRECTORY"
+        cd "$DOXYGEN_WORKING_DIRECTORY"
         echo "::endgroup::"
 
         echo "::group:: setup-fortran-conda: Build Doxygen Docs"
-        doxygen "${{ inputs.doxygen-config }}"
+        doxygen "$DOXYGEN_CONFIG"
         echo "::endgroup::"
 
     - name: Deploy Doxygen documentation
       if: ${{ inputs.generate-doc-doxygen == 'true' }}
-      uses: JamesIves/github-pages-deploy-action@v4.9.0
+      uses: JamesIves/github-pages-deploy-action@fa24774553152dd7873cd16ebd8d959b010c5445 # v4.9.0
       with:
         branch: ${{ inputs.doxygen-branch }}
         folder: ${{ inputs.doxygen-output-directory }}
@@ -306,12 +316,12 @@ runs:
         RUN_ID: ${{ github.run_id }}
       run: |
         echo "::group:: setup-fortran-conda: Generate FPM Status"
-        bash "${{ github.action_path }}/scripts/generate-status-fpm.sh"
+        bash "$GITHUB_ACTION_PATH/scripts/generate-status-fpm.sh"
         echo "::endgroup::"
 
     - name: Deploy STATUS.md (test_fpm)
       if: ${{ inputs.generate-status-fpm == 'true' }}
-      uses: JamesIves/github-pages-deploy-action@v4.9.0
+      uses: JamesIves/github-pages-deploy-action@fa24774553152dd7873cd16ebd8d959b010c5445 # v4.9.0
       with:
         branch: status-fpm
         folder: status-fpm
@@ -327,12 +337,12 @@ runs:
         RUN_ID: ${{ github.run_id }}
       run: |
         echo "::group:: setup-fortran-conda: Generate CMake Status"
-        bash "${{ github.action_path }}/scripts/generate-status-cmake.sh"
+        bash "$GITHUB_ACTION_PATH/scripts/generate-status-cmake.sh"
         echo "::endgroup::"
 
     - name: Deploy STATUS.md (test_cmake)
       if: ${{ inputs.generate-status-cmake == 'true' }}
-      uses: JamesIves/github-pages-deploy-action@v4.9.0
+      uses: JamesIves/github-pages-deploy-action@fa24774553152dd7873cd16ebd8d959b010c5445 # v4.9.0
       with:
         branch: status-cmake
         folder: status-cmake
@@ -348,12 +358,12 @@ runs:
         RUN_ID: ${{ github.run_id }}
       run: |
         echo "::group:: setup-fortran-conda: Generate Meson Status"
-        bash "${{ github.action_path }}/scripts/generate-status-meson.sh"
+        bash "$GITHUB_ACTION_PATH/scripts/generate-status-meson.sh"
         echo "::endgroup::"
 
     - name: Deploy STATUS.md (test_meson)
       if: ${{ inputs.generate-status-meson == 'true' }}
-      uses: JamesIves/github-pages-deploy-action@v4.9.0
+      uses: JamesIves/github-pages-deploy-action@fa24774553152dd7873cd16ebd8d959b010c5445 # v4.9.0
       with:
         branch: status-meson
         folder: status-meson
@@ -362,13 +372,13 @@ runs:
 
     - name: Checkout repository (for README update)
       if: ${{ inputs.update-readme-table == 'true' || inputs.update-readme-dependencies != 'false' }}
-      uses: actions/checkout@v7.0.1
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
         persist-credentials: false
 
     - name: Download setup-fortran-conda metadata artifacts
       if: ${{ inputs.generate-status-table == 'true' || inputs.update-readme-table == 'true' }}
-      uses: actions/download-artifact@v8
+      uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
       with:
         pattern: setup-fortran-conda-meta-*
         path: ${{ runner.temp }}/setup-fortran-conda-meta
@@ -379,7 +389,7 @@ runs:
       shell: bash
       run: |
         echo "::group:: setup-fortran-conda: Generate README Matrix"
-        node "${{ github.action_path }}/scripts/update-readme-matrix-table.js"
+        node "$GITHUB_ACTION_PATH/scripts/update-readme-matrix-table.js"
         echo "::endgroup::"
       env:
         GITHUB_TOKEN: ${{ github.token }}
@@ -391,7 +401,7 @@ runs:
       shell: bash
       run: |
         echo "::group:: setup-fortran-conda: Update README Status"
-        node "${{ github.action_path }}/scripts/update-readme-matrix-table.js"
+        node "$GITHUB_ACTION_PATH/scripts/update-readme-matrix-table.js"
         echo "::endgroup::"
       env:
         GITHUB_TOKEN: ${{ github.token }}
@@ -406,7 +416,7 @@ runs:
         conda activate fortran
 
         echo "::group:: setup-fortran-conda: Update README fpm Dependency Graph"
-        node "${{ github.action_path }}/scripts/update-readme-fpm-deps.js"
+        node "$GITHUB_ACTION_PATH/scripts/update-readme-fpm-deps.js"
         echo "::endgroup::"
       env:
         DEPENDENCY_GRAPH_WORKING_DIRECTORY: ${{ inputs.dependency-graph-working-directory }}
@@ -421,7 +431,7 @@ runs:
         conda activate fortran
 
         echo "::group:: setup-fortran-conda: Update README Module Dependency Graph"
-        node "${{ github.action_path }}/scripts/update-readme-fpm-modules.js"
+        node "$GITHUB_ACTION_PATH/scripts/update-readme-fpm-modules.js"
         echo "::endgroup::"
       env:
         DEPENDENCY_GRAPH_WORKING_DIRECTORY: ${{ inputs.dependency-graph-working-directory }}
@@ -431,13 +441,16 @@ runs:
     - name: Setup Git author
       if: ${{ inputs.update-readme-table == 'true' || inputs.update-readme-dependencies != 'false' }}
       shell: bash
+      env:
+        GIT_USER_NAME: ${{ inputs.update-readme-user-name }}
+        GIT_USER_EMAIL: ${{ inputs.update-readme-user-email }}
       run: |
-        git config user.name "${{ inputs.update-readme-user-name }}"
-        git config user.email "${{ inputs.update-readme-user-email }}"
+        git config user.name "$GIT_USER_NAME"
+        git config user.email "$GIT_USER_EMAIL"
 
     - name: Create Pull Request for README status table
       if: ${{ inputs.update-readme-table == 'true' }}
-      uses: peter-evans/create-pull-request@v8.1.1
+      uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
       with:
         token: "${{ inputs.update-readme-token }}"
         commit-message: "Update README.md status table [ci skip]"
@@ -448,7 +461,7 @@ runs:
 
     - name: Create Pull Request for fpm dependency graph
       if: ${{ inputs.update-readme-dependencies == 'fpm-deps' }}
-      uses: peter-evans/create-pull-request@v8.1.1
+      uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
       with:
         token: "${{ inputs.update-readme-token }}"
         commit-message: "Update README.md fpm dependency graph [ci skip]"
@@ -459,7 +472,7 @@ runs:
 
     - name: Create Pull Request for module dependency graph
       if: ${{ inputs.update-readme-dependencies == 'fpm-modules' }}
-      uses: peter-evans/create-pull-request@v8.1.1
+      uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
       with:
         token: "${{ inputs.update-readme-token }}"
         commit-message: "Update README.md module dependency graph [ci skip]"

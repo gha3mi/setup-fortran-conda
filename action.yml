@@ -187,7 +187,7 @@ runs:
           inputs.update-readme-dependencies != 'false' ||
           inputs.fortitude-check == 'true'
         }}
-      uses: conda-incubator/setup-miniconda@v4.0.1
+      uses: conda-incubator/setup-miniconda@v4.1.0
       with:
         auto-update-conda: true
         activate-environment: fortran

@@ -1,3 +1,28 @@
+## [v0.18.2](https://github.com/gha3mi/setup-fortran-conda/compare/v0.18.1...v0.18.2) - 2026-10-25
+
+
+### Others
+
+* chore(deps): bump JamesIves/github-pages-deploy-action (#200) ([f33be998](https://github.com/gha3mi/setup-fortran-conda/commit/f33be9987057cc69e8e9dce08f9df9be476a29d2)) by [@dependabot[bot]](https://github.com/dependabot[bot])
+* Update README.md status table [ci skip] (#198) ([097f7dd2](https://github.com/gha3mi/setup-fortran-conda/commit/097f7dd258bdf55092419914eebda649e9d4c1c9)) by [@gha3mi](https://github.com/gha3mi)
+* Update README.md status table [ci skip] (#202) ([b4c4272d](https://github.com/gha3mi/setup-fortran-conda/commit/b4c4272d3edf6f18fc3c48ca096d878b1276bc6c)) by [@gha3mi](https://github.com/gha3mi)
+* chore(deps): bump conda-incubator/setup-miniconda from 4.0.1 to 4.1.0 (#204) ([15c1d9cf](https://github.com/gha3mi/setup-fortran-conda/commit/15c1d9cf2af4eb7927abd292d623b950b1deebaa)) by [@dependabot[bot]](https://github.com/dependabot[bot])
+* Update README.md status table [ci skip] (#205) ([2ca82838](https://github.com/gha3mi/setup-fortran-conda/commit/2ca8283854912ce4385689a888aa5f90066120fd)) by [@gha3mi](https://github.com/gha3mi)
+* chore(deps-dev): bump @vercel/ncc from 0.44.1 to 0.45.0 (#201) ([911a6088](https://github.com/gha3mi/setup-fortran-conda/commit/911a608838420368fa3efc231c91c6ed2f89f08d)) by [@dependabot[bot]](https://github.com/dependabot[bot])
+* Update README.md status table [ci skip] (#206) ([740d992e](https://github.com/gha3mi/setup-fortran-conda/commit/740d992ecc06d0c562a5d8b6d8c9358b75c8aad2)) by [@gha3mi](https://github.com/gha3mi)
+* Update README.md status table [ci skip] (#207) ([14d4cba8](https://github.com/gha3mi/setup-fortran-conda/commit/14d4cba8274ae10c7aff3ee70756fe7364d89a02)) by [@gha3mi](https://github.com/gha3mi)
+* chore(deps): bump actions/setup-node from 7.0.0 to 7.1.0 (#208) ([be695ea8](https://github.com/gha3mi/setup-fortran-conda/commit/be695ea8f277180368dda33da5d02978aec2e761)) by [@dependabot[bot]](https://github.com/dependabot[bot])
+* Update README.md status table [ci skip] (#209) ([c9358d78](https://github.com/gha3mi/setup-fortran-conda/commit/c9358d78c610b0219b18f31a0f8b612b996d6c91)) by [@gha3mi](https://github.com/gha3mi)
+
+
+### Contributors
+- [@dependabot[bot]](https://github.com/dependabot[bot])
+- [@gha3mi](https://github.com/gha3mi)
+
+
+
+Full Changelog: [v0.18.1...v0.18.2](https://github.com/gha3mi/setup-fortran-conda/compare/v0.18.1...v0.18.2)
+
 ## [v0.18.1](https://github.com/gha3mi/setup-fortran-conda/compare/v0.18.0...v0.18.1) - 2026-07-30
 
 

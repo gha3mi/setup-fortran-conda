@@ -114,7 +114,7 @@ subsequent workflow steps.
 | windows 2025 | `gfortran` | 16.2.0 |  |  | 0.13.0 ✅ | 4.4.5 ✅ | 1.12.1 ✅ |
 | windows 2025 | `ifx` | 2026.2.0 |  |  | 0.12.0 ✅ | 4.4.5 ✅ | 1.12.1 ✅ |
 | windows 2025 | `ifx` | 2026.2.0 | `intelmpi` | 2021.19.1 | 0.12.0 ✅ | 4.4.5 ✅ | 1.12.1 ✅ |
-| windows 2025 | `lfortran` | 0.69.0 |  |  | 0.12.0 ✅ | 4.4.5 ✅ | — |
+| windows 2025 | `lfortran` | 0.69.0 |  |  | Not found ✅ | 4.4.5 ✅ | — |
 
 <!-- STATUS:setup-fortran-conda:END -->
 

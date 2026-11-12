@@ -70,37 +70,39 @@ export async function initializeMsvcEnvironment() {
   const output = await grouped(
     'setup-fortran-conda: Initialize MSVC Environment',
     async () => {
-      let captured = '';
-      const exitCode = await run('cmd.exe', ['/c', vcvars, '&&', 'set'], {
+      const captured = [];
+      const command = `""${vcvars}" >nul && "${process.execPath}" -p "JSON.stringify(process.env)""`;
+      const exitCode = await run('cmd.exe', ['/d', '/s', '/c', command], {
+        windowsVerbatimArguments: true,
         silent: true,
         ignoreReturnCode: true,
         listeners: {
           stdout: (data) => {
-            captured += data.toString();
-          },
-          stderr: (data) => {
-            captured += data.toString();
+            captured.push(data);
           },
         },
       });
 
       if (exitCode !== 0) {
         throw new Error(
-          `vcvars64.bat failed with code ${exitCode}:\n${captured}`
+          `vcvars64.bat failed with code ${exitCode}`
         );
       }
       info('vcvars64.bat ran successfully');
-      return captured;
+      try {
+        return JSON.parse(Buffer.concat(captured).toString('utf8'));
+      } catch {
+        throw new Error('Unable to parse MSVC environment.');
+      }
     }
   );
 
   await grouped('setup-fortran-conda: Export MSVC Environment', async () => {
     let exportedCount = 0;
-    for (const line of output.split('\n')) {
-      const [key, ...rest] = line.trim().split('=');
-      if (!key || rest.length === 0) continue;
+    for (const [key, value] of Object.entries(output)) {
+      if (process.env[key] === value) continue;
 
-      exportEnv(key, rest.join('='));
+      exportEnv(key, value);
       info(`Exported: ${key}`);
       exportedCount += 1;
     }

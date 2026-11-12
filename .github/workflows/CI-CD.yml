@@ -12,8 +12,8 @@ on:
     - cron: "0 10 * * SAT"
 
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
+  actions: read
 
 jobs:
   test_fpm:
@@ -40,7 +40,7 @@ jobs:
 
     steps:
       - name: Setup Fortran
-        uses: gha3mi/setup-fortran-conda@main
+        uses: gha3mi/setup-fortran-conda@fix/action-security
         with:
           compiler: ${{ matrix.compiler }}
           compiler-version: ${{ matrix.compiler-version }}
@@ -73,7 +73,7 @@ jobs:
 
     steps:
       - name: Setup Fortran and MPI
-        uses: gha3mi/setup-fortran-conda@main
+        uses: gha3mi/setup-fortran-conda@fix/action-security
         with:
           compiler: ${{ matrix.compiler }}
           compiler-version: ${{ matrix.compiler-version }}
@@ -113,7 +113,7 @@ jobs:
 
     steps:
       - name: Setup Fortran
-        uses: gha3mi/setup-fortran-conda@main
+        uses: gha3mi/setup-fortran-conda@fix/action-security
         with:
           compiler: ${{ matrix.compiler }}
           compiler-version: ${{ matrix.compiler-version }}
@@ -149,7 +149,7 @@ jobs:
 
     steps:
       - name: Setup Fortran and MPI
-        uses: gha3mi/setup-fortran-conda@main
+        uses: gha3mi/setup-fortran-conda@fix/action-security
         with:
           compiler: ${{ matrix.compiler }}
           compiler-version: ${{ matrix.compiler-version }}
@@ -189,7 +189,7 @@ jobs:
 
     steps:
       - name: Setup Fortran
-        uses: gha3mi/setup-fortran-conda@main
+        uses: gha3mi/setup-fortran-conda@fix/action-security
         with:
           compiler: ${{ matrix.compiler }}
           compiler-version: ${{ matrix.compiler-version }}
@@ -225,7 +225,7 @@ jobs:
 
     steps:
       - name: Setup Fortran and MPI
-        uses: gha3mi/setup-fortran-conda@main
+        uses: gha3mi/setup-fortran-conda@fix/action-security
         with:
           compiler: ${{ matrix.compiler }}
           compiler-version: ${{ matrix.compiler-version }}
@@ -245,12 +245,15 @@ jobs:
           meson test -C build/mpi/meson/release --verbose
 
   doc_ford:
+    permissions:
+      contents: write
+      actions: read
     if: ${{ (github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule') && !contains(github.event.head_commit.message, '[skip ci]') }}
     name: Generate FORD Documentation
     runs-on: ubuntu-latest
     steps:
       - name: Setup and Generate FORD Documentation
-        uses: gha3mi/setup-fortran-conda@main
+        uses: gha3mi/setup-fortran-conda@fix/action-security
         with:
           compiler: gfortran
           generate-doc-ford: true
@@ -261,12 +264,15 @@ jobs:
           ford-target-folder: doc/ford
 
   doc_doxygen:
+    permissions:
+      contents: write
+      actions: read
     if: ${{ (github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule') && !contains(github.event.head_commit.message, '[skip ci]') }}
     name: Generate Doxygen Documentation
     runs-on: ubuntu-latest
     steps:
       - name: Setup and Generate Doxygen Documentation
-        uses: gha3mi/setup-fortran-conda@main
+        uses: gha3mi/setup-fortran-conda@fix/action-security
         with:
           compiler: gfortran
           generate-doc-doxygen: true
@@ -277,35 +283,44 @@ jobs:
           doxygen-target-folder: doc/doxygen
 
   status_fpm:
+    permissions:
+      contents: write
+      actions: read
     if: ${{ always() && (github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule') && !contains(github.event.head_commit.message, '[skip ci]') }}
     name: Generate STATUS.md
     needs: [test_fpm, test_mpi_fpm]
     runs-on: ubuntu-latest
     steps:
       - name: Generate summary
-        uses: gha3mi/setup-fortran-conda@main
+        uses: gha3mi/setup-fortran-conda@fix/action-security
         with:
           generate-status-fpm: true
 
   status_cmake:
+    permissions:
+      contents: write
+      actions: read
     if: ${{ always() && (github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule') && !contains(github.event.head_commit.message, '[skip ci]') }}
     name: Generate STATUS.md
     needs: [test_cmake, test_mpi_cmake]
     runs-on: ubuntu-latest
     steps:
       - name: Generate summary
-        uses: gha3mi/setup-fortran-conda@main
+        uses: gha3mi/setup-fortran-conda@fix/action-security
         with:
           generate-status-cmake: true
 
   status_meson:
+    permissions:
+      contents: write
+      actions: read
     if: ${{ always() && (github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule') && !contains(github.event.head_commit.message, '[skip ci]') }}
     name: Generate STATUS.md
     needs: [test_meson, test_mpi_meson]
     runs-on: ubuntu-latest
     steps:
       - name: Generate summary
-        uses: gha3mi/setup-fortran-conda@main
+        uses: gha3mi/setup-fortran-conda@fix/action-security
         with:
           generate-status-meson: true
 
@@ -316,7 +331,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Update README status
-        uses: gha3mi/setup-fortran-conda@main
+        uses: gha3mi/setup-fortran-conda@fix/action-security
         with:
           update-readme-table: true
           update-readme-token: ${{ secrets.GH_PAT }}   # Update with your GitHub personal access token
@@ -329,7 +344,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Run Fortitude Linter
-        uses: gha3mi/setup-fortran-conda@main
+        uses: gha3mi/setup-fortran-conda@fix/action-security
         with:
           fortitude-check: true
           fortitude-settings: "--output-format github"

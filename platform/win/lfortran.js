@@ -15,6 +15,7 @@ import {
   installCondaPackages,
   showCondaEnvironment,
   verifyCommands,
+  windowsCondaPaths,
 } from './common.js';
 
 const COMPILER_ENVIRONMENT = 'setup-fortran-conda-lfortran';
@@ -81,7 +82,10 @@ export async function setup(version = '') {
   ]
     .filter((path) => path && existsSync(path))
     .reverse();
-  await addExistingPaths(compilerPaths);
+  await addExistingPaths([
+    ...windowsCondaPaths(toolsPrefix),
+    ...compilerPaths,
+  ]);
 
   await verifyCommands([
     { command: 'lfortran', args: ['--version'] },

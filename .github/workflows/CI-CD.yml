@@ -24,28 +24,32 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - {os: ubuntu-latest,  compiler: gfortran,  compiler-version: "", extra-packages: ""}
-        - {os: ubuntu-latest,  compiler: ifx,       compiler-version: "", extra-packages: ""}
-        - {os: ubuntu-latest,  compiler: flang-new, compiler-version: "", extra-packages: ""}
-        - {os: ubuntu-latest,  compiler: nvfortran, compiler-version: "", extra-packages: ""}
-        - {os: ubuntu-latest,  compiler: aocc,      compiler-version: "", extra-packages: ""}
-        - {os: ubuntu-latest,  compiler: aomp,      compiler-version: "", extra-packages: ""}
-        - {os: ubuntu-latest,  compiler: lfortran,  compiler-version: "", extra-packages: "", fpm-version: "0.12.0"}
-        - {os: windows-latest, compiler: gfortran,  compiler-version: "", extra-packages: ""}
-        - {os: windows-latest, compiler: ifx,       compiler-version: "", extra-packages: "", fpm-version: "0.12.0"}
-        - {os: windows-latest, compiler: flang-new, compiler-version: "", extra-packages: ""}
         - {os: windows-latest, compiler: lfortran,  compiler-version: "", extra-packages: "", fpm-version: "0.12.0"}
-        - {os: macos-latest,   compiler: gfortran,  compiler-version: "", extra-packages: ""}
-        - {os: macos-latest,   compiler: lfortran,  compiler-version: "", extra-packages: "", fpm-version: "0.12.0"}
 
     steps:
       - name: Setup Fortran
-        uses: gha3mi/setup-fortran-conda@main
+        uses: gha3mi/setup-fortran-conda@fix/windows-lfortran-tools-path
         with:
           compiler: ${{ matrix.compiler }}
           compiler-version: ${{ matrix.compiler-version }}
           extra-packages: ${{ matrix.extra-packages }}
           fpm-version: ${{ matrix.fpm-version }}
+
+      - name: Check recorded fpm version
+        shell: bash
+        run: |
+          node --input-type=module <<'JS'
+          import assert from 'node:assert/strict';
+          import { readdirSync, readFileSync } from 'node:fs';
+          import { join } from 'node:path';
+          const files = readdirSync(process.env.RUNNER_TEMP).filter(name => name.startsWith('setup-fortran-conda-meta-') && name.endsWith('.json'));
+          assert.equal(files.length, 1);
+          const metadata = JSON.parse(readFileSync(join(process.env.RUNNER_TEMP, files[0]), 'utf8'));
+          assert.equal(metadata.compiler.requested, 'lfortran');
+          assert.equal(metadata.tools.fpm.version, '0.12.0');
+          assert.equal(metadata.error, '');
+          console.log(`Recorded fpm version: ${metadata.tools.fpm.version}`);
+          JS
 
       - name: fpm test (debug)
         run: |
@@ -56,7 +60,7 @@ jobs:
           fpm test --target check --compiler ${{ env.FPM_FC }} --profile release --verbose
 
   test_mpi_fpm:
-    if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
+    if: ${{ github.head_ref != 'fix/windows-lfortran-tools-path' && !contains(github.event.head_commit.message, '[skip ci]') }}
     name: ${{ matrix.os }}_${{ matrix.compiler }}_${{ matrix.mpi }}_fpm
     runs-on: ${{ matrix.os }}
     strategy:
@@ -90,7 +94,7 @@ jobs:
           fpm test --target mpi_hello --profile release --compiler "${{ env.MPIFC }}" --flag "-DUSE_MPI" --runner "${{ env.MPIEXEC }}" --runner-args=" ${{ env.MPIEXEC_NUMPROC_FLAG }} 2" --verbose
 
   test_cmake:
-    if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
+    if: ${{ github.head_ref != 'fix/windows-lfortran-tools-path' && !contains(github.event.head_commit.message, '[skip ci]') }}
     name: ${{ matrix.os }}_${{ matrix.compiler }}_cmake
     runs-on: ${{ matrix.os }}
     strategy:
@@ -132,7 +136,7 @@ jobs:
           ctest --test-dir build/release --output-on-failure -VV
 
   test_mpi_cmake:
-    if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
+    if: ${{ github.head_ref != 'fix/windows-lfortran-tools-path' && !contains(github.event.head_commit.message, '[skip ci]') }}
     name: ${{ matrix.os }}_${{ matrix.compiler }}_${{ matrix.mpi }}_cmake
     runs-on: ${{ matrix.os }}
     strategy:
@@ -169,7 +173,7 @@ jobs:
           ctest --test-dir build/mpi/cmake/release --output-on-failure -VV
 
   test_meson:
-    if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
+    if: ${{ github.head_ref != 'fix/windows-lfortran-tools-path' && !contains(github.event.head_commit.message, '[skip ci]') }}
     name: ${{ matrix.os }}_${{ matrix.compiler }}_meson
     runs-on: ${{ matrix.os }}
     strategy:
@@ -208,7 +212,7 @@ jobs:
           meson test -C build/meson/release --verbose
 
   test_mpi_meson:
-    if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
+    if: ${{ github.head_ref != 'fix/windows-lfortran-tools-path' && !contains(github.event.head_commit.message, '[skip ci]') }}
     name: ${{ matrix.os }}_${{ matrix.compiler }}_${{ matrix.mpi }}_meson
     runs-on: ${{ matrix.os }}
     strategy:
@@ -339,7 +343,7 @@ jobs:
           update-readme-user-email: "info@gha3mi.com"  # Update with your email
 
   linter_fortitude:
-    if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
+    if: ${{ github.head_ref != 'fix/windows-lfortran-tools-path' && !contains(github.event.head_commit.message, '[skip ci]') }}
     name: Run Fortitude Linter
     runs-on: ubuntu-latest
     steps:

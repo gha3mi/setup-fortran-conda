@@ -1,3 +1,25 @@
+## [v0.18.3](https://github.com/gha3mi/setup-fortran-conda/compare/v0.18.2...v0.18.3) - 2026-11-12
+
+
+### Fixes
+
+* fix: support AOCC and AOMP on Ubuntu 26.04 (#211) ([2968eb53](https://github.com/gha3mi/setup-fortran-conda/commit/2968eb535a976f97c609dfea241d21bd5ac00297)) by [@gha3mi](https://github.com/gha3mi)
+* fix: resolve current compiler and MPI versions (#212) ([30ca88b6](https://github.com/gha3mi/setup-fortran-conda/commit/30ca88b6fb0ff76480b62887ac77c9745a8a1104)) by [@gha3mi](https://github.com/gha3mi)
+* fix: secure action inputs, environment and CI permissions (#213) ([dc0990ae](https://github.com/gha3mi/setup-fortran-conda/commit/dc0990aebee5b1792173c1a7c5a43b08cf6e6cce)) by [@gha3mi](https://github.com/gha3mi)
+* fix: detect fpm in Windows LFortran setup (#215) ([748611e9](https://github.com/gha3mi/setup-fortran-conda/commit/748611e9ac3dccb9d082e20d6fca1f6639926686)) by [@gha3mi](https://github.com/gha3mi)
+
+### Others
+
+* Update README.md status table [ci skip] (#210) ([85dfe837](https://github.com/gha3mi/setup-fortran-conda/commit/85dfe837efa03568b5865a0801d57794e92e1fc5)) by [@gha3mi](https://github.com/gha3mi)
+
+
+### Contributors
+- [@gha3mi](https://github.com/gha3mi)
+
+
+
+Full Changelog: [v0.18.2...v0.18.3](https://github.com/gha3mi/setup-fortran-conda/compare/v0.18.2...v0.18.3)
+
 ## [v0.18.2](https://github.com/gha3mi/setup-fortran-conda/compare/v0.18.1...v0.18.2) - 2026-10-25
 
 

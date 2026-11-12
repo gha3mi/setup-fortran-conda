@@ -210,7 +210,6 @@ export async function setup(version = '') {
           'gzip',
           'libstdc++6',
           'libtinfo6',
-          // This pulls in libxml2 or libxml2-16, depending on Ubuntu.
           'libxml2-dev',
           'libdrm2',
           'zlib1g',

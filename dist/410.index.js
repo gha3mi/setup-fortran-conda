@@ -137,6 +137,7 @@ async function installCondaPackages(
     try {
       const args = [
         command,
+        ...(command === 'install' ? ['--update-specs'] : []),
         ...commandOptions,
         '--yes',
         '--name',

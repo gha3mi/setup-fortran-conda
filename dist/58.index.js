@@ -401,7 +401,7 @@ async function setup(version = '') {
           'gzip',
           'libstdc++6',
           'libtinfo6',
-          'libxml2',
+          'libxml2-dev',
           'libdrm2',
           'zlib1g',
           'python3',

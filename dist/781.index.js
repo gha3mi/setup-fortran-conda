@@ -562,10 +562,13 @@ async function setup(version = '') {
           '-y',
           'ca-certificates',
           'curl',
+          'gcc',
           'libstdc++6',
+          'libzstd1',
           'libncurses-dev',
           'zlib1g',
-          'libxml2',
+          // This pulls in libxml2 or libxml2-16, depending on Ubuntu.
+          'libxml2-dev',
           'libquadmath0',
           'python3',
         ]);
@@ -611,13 +614,11 @@ async function setup(version = '') {
     'setup-fortran-conda: Install AOCC Debian Package',
     async () => {
       try {
-        const exitCode = await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('sudo', ['dpkg', '-i', debPath], {
-          ignoreReturnCode: true,
-        });
-        if (exitCode !== 0) {
-          await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('sudo', ['apt-get', 'install', '-f', '-y']);
-        }
-        (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)('AOCC Debian package installed');
+        // The vendor package still declares libxml2, which newer Ubuntu
+        // releases replaced with libxml2-16. Dependencies are installed above,
+        // so extract the payload without registering the obsolete requirement.
+        await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('sudo', ['dpkg-deb', '--extract', debPath, '/']);
+        (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)('AOCC Debian package extracted');
       } catch (error) {
         throw new Error(`AOCC install failed: ${error.message}`);
       }

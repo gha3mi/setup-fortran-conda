@@ -54,10 +54,6 @@ The action configures the following matching Fortran, C and C++ compilers.
 | Windows | [LFortran][conda-lfortran] | [Clang][conda-clangxx] | [Clang][conda-clangxx] |
 | Windows | [LLVM Flang][conda-flang] | [Clang][conda-clang] | [Clang][conda-clang] |
 
-AOCC and AOMP CI jobs use `ubuntu-24.04`. Their current installers require the
-legacy `libxml2` package, which is unavailable on Ubuntu 26.04 (`ubuntu-latest`).
-Use `runs-on: ubuntu-24.04` for these compilers.
-
 [conda-gfortran]: https://anaconda.org/conda-forge/gfortran
 [conda-gcc]: https://anaconda.org/conda-forge/gcc
 [conda-gxx]: https://anaconda.org/conda-forge/gxx

@@ -374,7 +374,6 @@ export async function setup(version = '') {
           '-y',
           'ca-certificates',
           'curl',
-          'gcc',
           'libstdc++6',
           'libzstd1',
           'libncurses-dev',

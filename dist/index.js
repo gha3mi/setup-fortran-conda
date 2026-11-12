@@ -31597,7 +31597,7 @@ async function getCondaPrefix(envName = 'fortran') {
 async function installCondaPackages(packages, channels) {
   await grouped('setup-fortran-conda: Install MPI Packages', async () => {
     try {
-      const args = ['install', '--yes', '--name', 'fortran', ...packages];
+      const args = ['install', '--update-specs', '--yes', '--name', 'fortran', ...packages];
       for (const channel of channels) args.push('-c', channel);
       await (0,index_exec/* exec */.m)('conda', args);
     } catch (error) {

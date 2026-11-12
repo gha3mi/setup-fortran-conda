@@ -22,15 +22,15 @@ export const modules = {
 /* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3360);
 /* harmony import */ var _actions_exec__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2876);
 /* harmony import */ var node_fs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3024);
-/* harmony import */ var node_os__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(8161);
-/* harmony import */ var node_path__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(6760);
-
+/* harmony import */ var node_path__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(6760);
 
 
 
 
 
 const TOOLS_ENVIRONMENT = 'fortran';
+
+const initialEnvironment = { ...process.env };
 
 function assertPlatform(expected, message) {
   if (process.platform !== expected) {
@@ -51,9 +51,7 @@ function exportEnv(key, value) {
   const envFile = process.env.GITHUB_ENV;
   if (!envFile) throw new Error('GITHUB_ENV not defined');
 
-  const normalized = String(value);
-  (0,node_fs__WEBPACK_IMPORTED_MODULE_2__.appendFileSync)(envFile, `${key}=${normalized}${node_os__WEBPACK_IMPORTED_MODULE_3__.EOL}`);
-  process.env[key] = normalized;
+  (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .exportVariable */ .dN)(key, String(value));
 }
 
 function compilerEnvironment(fortran, c, cxx, extra = {}) {
@@ -83,11 +81,10 @@ async function exportCompilerEnvironment(values) {
 async function exportProcessEnvironment({ warningPrefix = '⚠️ ' } = {}) {
   await grouped('setup-fortran-conda: Export Process Environment', async () => {
     for (const [key, value] of Object.entries(process.env)) {
-      if (typeof value !== 'string') continue;
+      if (typeof value !== 'string' || value === initialEnvironment[key]) continue;
 
       try {
-        process.env[key] = value;
-        (0,node_fs__WEBPACK_IMPORTED_MODULE_2__.appendFileSync)(process.env.GITHUB_ENV, `${key}=${value}${node_os__WEBPACK_IMPORTED_MODULE_3__.EOL}`);
+        exportEnv(key, value);
         (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)(`Exported: ${key}`);
       } catch (error) {
         (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)(`${warningPrefix}Failed to export: ${key} (${error.message})`);
@@ -113,7 +110,7 @@ async function getCondaPrefix(
   const { envs = [] } = JSON.parse(output);
   const prefix = envs.find(
     (candidate) =>
-      candidate.endsWith(node_path__WEBPACK_IMPORTED_MODULE_4__.sep + envName) || candidate.endsWith('/' + envName)
+      candidate.endsWith(node_path__WEBPACK_IMPORTED_MODULE_3__.sep + envName) || candidate.endsWith('/' + envName)
   );
 
   if (!prefix && required) {
@@ -285,37 +282,39 @@ async function initializeMsvcEnvironment() {
   const output = await (0,_common_js__WEBPACK_IMPORTED_MODULE_4__/* .grouped */ .zD)(
     'setup-fortran-conda: Initialize MSVC Environment',
     async () => {
-      let captured = '';
-      const exitCode = await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('cmd.exe', ['/c', vcvars, '&&', 'set'], {
+      const captured = [];
+      const command = `""${vcvars}" >nul && "${process.execPath}" -p "JSON.stringify(process.env)""`;
+      const exitCode = await (0,_actions_exec__WEBPACK_IMPORTED_MODULE_1__/* .exec */ .m)('cmd.exe', ['/d', '/s', '/c', command], {
+        windowsVerbatimArguments: true,
         silent: true,
         ignoreReturnCode: true,
         listeners: {
           stdout: (data) => {
-            captured += data.toString();
-          },
-          stderr: (data) => {
-            captured += data.toString();
+            captured.push(data);
           },
         },
       });
 
       if (exitCode !== 0) {
         throw new Error(
-          `vcvars64.bat failed with code ${exitCode}:\n${captured}`
+          `vcvars64.bat failed with code ${exitCode}`
         );
       }
       (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)('vcvars64.bat ran successfully');
-      return captured;
+      try {
+        return JSON.parse(Buffer.concat(captured).toString('utf8'));
+      } catch {
+        throw new Error('Unable to parse MSVC environment.');
+      }
     }
   );
 
   await (0,_common_js__WEBPACK_IMPORTED_MODULE_4__/* .grouped */ .zD)('setup-fortran-conda: Export MSVC Environment', async () => {
     let exportedCount = 0;
-    for (const line of output.split('\n')) {
-      const [key, ...rest] = line.trim().split('=');
-      if (!key || rest.length === 0) continue;
+    for (const [key, value] of Object.entries(output)) {
+      if (process.env[key] === value) continue;
 
-      (0,_common_js__WEBPACK_IMPORTED_MODULE_4__/* .exportEnv */ .EE)(key, rest.join('='));
+      (0,_common_js__WEBPACK_IMPORTED_MODULE_4__/* .exportEnv */ .EE)(key, value);
       (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .info */ .pq)(`Exported: ${key}`);
       exportedCount += 1;
     }

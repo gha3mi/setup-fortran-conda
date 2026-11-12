@@ -413,7 +413,10 @@ async function setup(version = '') {
   ]
     .filter((path) => path && (0,node_fs__WEBPACK_IMPORTED_MODULE_1__.existsSync)(path))
     .reverse();
-  await (0,_common_js__WEBPACK_IMPORTED_MODULE_3__/* .addExistingPaths */ .Bf)(compilerPaths);
+  await (0,_common_js__WEBPACK_IMPORTED_MODULE_3__/* .addExistingPaths */ .Bf)([
+    ...(0,_common_js__WEBPACK_IMPORTED_MODULE_3__/* .windowsCondaPaths */ .RB)(toolsPrefix),
+    ...compilerPaths,
+  ]);
 
   await (0,_common_js__WEBPACK_IMPORTED_MODULE_3__/* .verifyCommands */ .I6)([
     { command: 'lfortran', args: ['--version'] },

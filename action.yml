@@ -450,7 +450,7 @@ runs:
 
     - name: Create Pull Request for README status table
       if: ${{ inputs.update-readme-table == 'true' }}
-      uses: peter-evans/create-pull-request@v8.1.1
+      uses: peter-evans/create-pull-request@v8.1.3
       with:
         token: "${{ inputs.update-readme-token }}"
         commit-message: "Update README.md status table [ci skip]"
@@ -461,7 +461,7 @@ runs:
 
     - name: Create Pull Request for fpm dependency graph
       if: ${{ inputs.update-readme-dependencies == 'fpm-deps' }}
-      uses: peter-evans/create-pull-request@v8.1.1
+      uses: peter-evans/create-pull-request@v8.1.3
       with:
         token: "${{ inputs.update-readme-token }}"
         commit-message: "Update README.md fpm dependency graph [ci skip]"
@@ -472,7 +472,7 @@ runs:
 
     - name: Create Pull Request for module dependency graph
       if: ${{ inputs.update-readme-dependencies == 'fpm-modules' }}
-      uses: peter-evans/create-pull-request@v8.1.1
+      uses: peter-evans/create-pull-request@v8.1.3
       with:
         token: "${{ inputs.update-readme-token }}"
         commit-message: "Update README.md module dependency graph [ci skip]"
